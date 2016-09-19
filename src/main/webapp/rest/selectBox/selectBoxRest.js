@@ -32,7 +32,7 @@ SelectBoxRest.prototype.bindEvent = function () {
         var tree = me._tree;
         var select = new Select();
         var outResult = select.reload('DHI_WF_EDITOR_STRUCTURE', wfId, me._stdYN);
-        var parser = new Parser();
+        var parser = new Parser(tree);
         var otherWorkFlowData = parser.createOtherWorkFlowData(outResult.nodeList);
 
         tree.removeDataByFilter({position: tree.Constants.POSITION.OTHER});
