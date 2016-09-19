@@ -76,11 +76,11 @@ Parser.prototype = {
         return data;
     },
     createMyWorkFlowData: function (inResultNodeList, outResultNodeList) {
-        if (!inResultNodeList) {
+        if (inResultNodeList) {
             return this.createWorkFlowData(inResultNodeList, 'my', 'in');
         }
 
-        if (!outResultNodeList) {
+        if (outResultNodeList) {
             return this.createWorkFlowData(outResultNodeList, 'my', 'out');
         }
         return null;
