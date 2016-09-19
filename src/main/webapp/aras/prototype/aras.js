@@ -7,8 +7,11 @@ var Aras = function () {
 };
 Aras.prototype = {
     applyMethod: function (methodName) {
-        var inn = this.arasObject.newIOMInnovator();
-        return inn.applyMethod(methodName, this.body);
+        if(this.arasObject){
+            var inn = this.arasObject.newIOMInnovator();
+            return inn.applyMethod(methodName, this.body);
+        }
+        return null;
     }
 };
 Aras.prototype.constructor = Aras;
