@@ -1883,6 +1883,7 @@ Tree.prototype = {
     bindEvent: function () {
         var me = this;
         me.bindMappingEvent();
+        me.enableShapeContextMenu();
     },
     bindMappingEvent: function () {
         var me = this;
@@ -1951,6 +1952,46 @@ Tree.prototype = {
     onMapping: function (event, mapping) {
         console.log(event, mapping);
         return true;
+    },
+
+    /**
+     * Shape 에 마우스 우클릭 메뉴를 가능하게 한다.
+     */
+    enableShapeContextMenu: function () {
+        //var me = this;
+        //$.contextMenu({
+        //    position: function (opt, x, y) {
+        //        opt.$menu.css({top: y + 10, left: x + 10});
+        //    },
+        //    selector: '#' + me._RENDERER.getRootElement().id + ' [_type=SHAPE]',
+        //    build: function ($trigger, event) {
+        //        $(me._RENDERER.getContainer()).focus();
+        //        var items;
+        //
+        //        if (me._getSelectedElement().length == 1) {
+        //            if (me._getSelectedElement()[0].shape instanceof OG.shape.EdgeShape) {
+        //                items = me.makeEdgeContextMenu(true);
+        //            } else if (me._getSelectedElement()[0].shape instanceof OG.shape.bpmn.G_Gateway) {
+        //                items = me.makeGatewayContextMenu();
+        //            } else if (me._getSelectedElement()[0].shape instanceof OG.shape.bpmn.Event) {
+        //                items = me.makeEventContextMenu();
+        //            } else if (me._getSelectedElement()[0].shape instanceof OG.shape.bpmn.A_Task) {
+        //                items = me.makeTaskContextMenu();
+        //            } else if (me._getSelectedElement()[0].shape instanceof OG.shape.bpmn.A_Subprocess) {
+        //                items = me.makeSubprocessContextMenu();
+        //            } else if (me._getSelectedElement()[0].shape instanceof OG.shape.bpmn.Value_Chain) {
+        //                items = me.makeValueChainContextMenu();
+        //            } else {
+        //                items = me.makeDefaultContextMenu();
+        //            }
+        //        } else {
+        //            items = me.makeMultiContextMenu();
+        //        }
+        //        return {
+        //            items: items
+        //        };
+        //    }
+        //});
     }
 };
 Tree.prototype.constructor = Tree;
