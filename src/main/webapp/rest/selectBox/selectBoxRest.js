@@ -5,7 +5,7 @@ var SelectBoxRest = function (tree) {
     SelectBoxRest.superclass.call(this);
     this._wfId = (parent.top.aras != null && typeof parent.top.aras != 'undefined') ? parent.top.thisItem.getID() : '';
     this._stdYN = (parent.top.aras != null && typeof parent.top.aras != 'undefined') ? parent.top.thisItem.getType() == 'DHI_WF_WFT' ? 'Y' : 'N' : '';
-    this._projectId = "49BEBF8A1CDA4B96BF0A0C31EBB4B449";
+    this._projectId = (parent.top.aras != null && typeof parent.top.aras != 'undefined') ? parent.top.thisItem.getProperty('_rel_project') ? parent.top.thisItem.getProperty('_rel_project') : '' : '';
     this._tree = tree;
 };
 
