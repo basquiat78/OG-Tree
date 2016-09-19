@@ -212,6 +212,9 @@ Tree.prototype = {
      * @param data
      */
     updateMyData: function (data) {
+        if (!data) {
+            return;
+        }
         var me = this;
         me.removeDataByFilter({position: me.Constants.POSITION.MY});
         me.removeDataByFilter({position: me.Constants.POSITION.MY_IN});
@@ -225,6 +228,9 @@ Tree.prototype = {
      * @param data
      */
     updateOtherData: function (data) {
+        if (!data) {
+            return;
+        }
         var me = this;
         me.removeDataByFilter({position: me.Constants.POSITION.OTHER});
         me.removeDataByFilter({position: me.Constants.POSITION.OTHER_OUT});
@@ -233,6 +239,9 @@ Tree.prototype = {
         me.render();
     },
     updateData: function (data) {
+        if (!data) {
+            return;
+        }
         var me = this;
         var copyObj;
         if ($.isArray(data)) {
@@ -861,7 +870,7 @@ Tree.prototype = {
             if (toRemove) {
                 me.canvas.removeShape(currentDisplayShapes[i]);
                 //라벨이 있다면 함께 지운다.
-                if(me.canvas.getElementById(currentDisplayShapes[i].id + me.Constants.PREFIX.LABEL)){
+                if (me.canvas.getElementById(currentDisplayShapes[i].id + me.Constants.PREFIX.LABEL)) {
                     me.canvas.removeShape(currentDisplayShapes[i].id + me.Constants.PREFIX.LABEL);
                 }
             }
@@ -1502,18 +1511,15 @@ Tree.prototype = {
      * 주어진 Boundary 영역 안으로 공간 기하 객체를 적용한다.(이동 & 리사이즈)
      *
      * @param element
-     * @param upper
-     * @param low
-     * @param left
-     * @param right
+     * @param offset[upper,low,left,right]
      * @return {element} 적용된 엘리먼트
      */
-    fitToBoundary: function (element, [upper,low,left,right]) {
+    fitToBoundary: function (element, offset) {
         var boundary = element.shape.geom.boundary,
-            newUpper = boundary.getUpperCenter().y - upper,
-            newLower = low - boundary.getLowerCenter().y,
-            newLeft = boundary.getLeftCenter().x - left,
-            newRight = right - boundary.getRightCenter().x;
+            newUpper = boundary.getUpperCenter().y - offset[0],
+            newLower = offset[1] - boundary.getLowerCenter().y,
+            newLeft = boundary.getLeftCenter().x - offset[2],
+            newRight = offset[3] - boundary.getRightCenter().x;
         this._RENDERER.resize(element, [newUpper, newLower, newLeft, newRight]);
         return element;
     },

@@ -23,32 +23,52 @@ $(function () {
         console.log(event, mapping);
     };
 
-    $.getJSON("doosan/sample/myData.json", function (myData) {
+    // create load aras data
+    var select = new Select();
+    var inResult = select.load('DHI_WF_EDITOR_STRUCTURE', 'IN');
+    var outResult = select.load('DHI_WF_EDITOR_STRUCTURE', 'OUT');
 
-        tree.updateMyData(myData);
+    // load rest selectbox
+    var selectBoxRest = new SelectBoxRest(tree);
+    selectBoxRest.load();
+    selectBoxRest.bindEvent();
 
-        $.getJSON("doosan/sample/otherData.json", function (otherData) {
-            tree.updateOtherData(otherData);
+    // create data
+    var parser = new Parser(tree);
+    var myWorkFlowData = parser.createMyWorkFlowData(inResult.nodeList, outResult.nodeList);
+    var otherWorkFlowData = parser.createOtherWorkFlowData();
 
-            //전체 데이터 불러오기
-            tree.load();
+    console.log(myWorkFlowData, otherWorkFlowData);
 
-            //매핑 데이터 불러오기
-            tree.loadByFilter({type: tree.Constants.TYPE.MAPPING});
+    tree.updateOtherData(otherWorkFlowData);
+    tree.updateMyData(myWorkFlowData);
 
-            //아더 액티비티 불러오기
-            tree.loadByFilter({type: tree.Constants.POSITION.OTHER});
-
-            //아더 폴더,ED 불러오기
-            tree.loadByFilter({type: tree.Constants.POSITION.OTHER_OUT});
-
-            //마이 액티비티 불러오기
-            tree.loadByFilter({type: tree.Constants.POSITION.MY});
-
-            //마이 폴더,ED 불러오기
-            tree.loadByFilter({type: tree.Constants.POSITION.MY_OUT});
-        });
-    });
+    //$.getJSON("doosan/sample/myData.json", function (myData) {
+    //
+    //    tree.updateMyData(myData);
+    //
+    //    $.getJSON("doosan/sample/otherData.json", function (otherData) {
+    //        tree.updateOtherData(otherData);
+    //
+    //        //전체 데이터 불러오기
+    //        tree.load();
+    //
+    //        //매핑 데이터 불러오기
+    //        tree.loadByFilter({type: tree.Constants.TYPE.MAPPING});
+    //
+    //        //아더 액티비티 불러오기
+    //        tree.loadByFilter({type: tree.Constants.POSITION.OTHER});
+    //
+    //        //아더 폴더,ED 불러오기
+    //        tree.loadByFilter({type: tree.Constants.POSITION.OTHER_OUT});
+    //
+    //        //마이 액티비티 불러오기
+    //        tree.loadByFilter({type: tree.Constants.POSITION.MY});
+    //
+    //        //마이 폴더,ED 불러오기
+    //        tree.loadByFilter({type: tree.Constants.POSITION.MY_OUT});
+    //    });
+    //});
 
     //var otherData = randomData('other');
     //var myData = randomData('my');
