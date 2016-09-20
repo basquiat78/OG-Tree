@@ -124,6 +124,13 @@ $(function () {
     tree.onMakeDelete = function (data) {
         console.log('onMakeDelete', data);
     };
+    /**
+     * 폴더 또는 ED 를 input 으로 쓰는 모든 Workflow - Activity 리스트를 보여주기
+     * @param data
+     */
+    tree.onMakeListRelation = function (data) {
+        console.log('onMakeListRelation', data);
+    }
 });
 
 var randomData = function (type) {

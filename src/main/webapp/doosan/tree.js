@@ -45,7 +45,28 @@ var Tree = function (container) {
         AREA: {
             LEFT_SIZE_RATE: (5 / 12) - 0.002,
             RIGHT_SIZE_RATE: (7 / 12) + 0.002,
-            ACTIVITY_SIZE: 100
+            ACTIVITY_SIZE: 100,
+            BOTTOM_MARGIN: 50
+        },
+        AREA_STYLE: {
+            lAc: {
+                'fill': 'RGB(246,246,246)',
+                'fill-opacity': '1'
+            },
+            lOut: {
+                'fill': 'RGB(246,246,246)',
+                'fill-opacity': '1'
+            },
+            rIn: {
+                'fill': 'RGB(255,255,255)',
+            },
+            rAc: {
+                'fill': 'RGB(255,255,255)'
+            },
+            rOut: {
+                'fill': 'RGB(246,246,246)',
+                'fill-opacity': '1'
+            }
         },
         SHAPE_SIZE: {
             COL_SIZE: 50,
@@ -142,6 +163,11 @@ Tree.prototype = {
         me.AREA.rIn = me.canvas.drawShape([0, 0], new OG.Area(), [50, 50], {stroke: '#555', 'stroke-width': 2});
         me.AREA.rAc = me.canvas.drawShape([0, 0], new OG.Area(), [50, 50], {stroke: '#555', 'stroke-width': 2});
         me.AREA.rOut = me.canvas.drawShape([0, 0], new OG.Area(), [50, 50], {stroke: '#555', 'stroke-width': 2});
+        me.canvas.setShapeStyle(me.AREA.lAc, me._CONFIG.AREA_STYLE.lAc);
+        me.canvas.setShapeStyle(me.AREA.lOut, me._CONFIG.AREA_STYLE.lOut);
+        me.canvas.setShapeStyle(me.AREA.rIn, me._CONFIG.AREA_STYLE.rIn);
+        me.canvas.setShapeStyle(me.AREA.rAc, me._CONFIG.AREA_STYLE.rAc);
+        me.canvas.setShapeStyle(me.AREA.rOut, me._CONFIG.AREA_STYLE.rOut);
     },
 
     //========================================================================//
@@ -876,15 +902,22 @@ Tree.prototype = {
         for (var i = 0; i < currentDisplayShapes.length; i++) {
             var existId = currentDisplayShapes[i].id;
             var toRemove = true;
+            var haMapping = false;
             for (var c = 0; c < displayViews.length; c++) {
                 if (displayViews[c].id == existId) {
                     toRemove = false;
+                    if (displayViews[c].mapping) {
+                        haMapping = true;
+                    }
                     break;
                 }
             }
             if (toRemove) {
                 me.canvas.removeShape(currentDisplayShapes[i]);
-                //라벨이 있다면 함께 지운다.
+            }
+
+            //매핑이 아닐 경우 라벨이 있다면 지운다.
+            if (!haMapping) {
                 if (me.canvas.getElementById(currentDisplayShapes[i].id + me.Constants.PREFIX.MAPPING_LABEL)) {
                     me.canvas.removeShape(currentDisplayShapes[i].id + me.Constants.PREFIX.MAPPING_LABEL);
                 }
@@ -1143,6 +1176,7 @@ Tree.prototype = {
         $(element).click(function () {
             console.log(element.id);
         });
+        me.bindDblClickEvent(element);
     },
     updateFolder: function (view, element) {
         if (view.blur) {
@@ -1167,7 +1201,7 @@ Tree.prototype = {
         $(element).click(function () {
             console.log(element.id);
         });
-
+        me.bindDblClickEvent(element);
     },
     updateEd: function (view, element) {
         if (view.blur) {
@@ -1192,6 +1226,7 @@ Tree.prototype = {
         $(element).click(function () {
             console.log(element.id);
         });
+        me.bindDblClickEvent(element);
     },
     drawMappingLine: function (view) {
         if (view.vertieces) {
@@ -1502,7 +1537,7 @@ Tree.prototype = {
         var myInAreaWidth = getAreaWidth(viewsByPosition[me.Constants.POSITION.MY_IN]);
         var myOutAreaWidth = getAreaWidth(viewsByPosition[me.Constants.POSITION.MY_OUT]);
         var otherOutAreaWidth = getAreaWidth(viewsByPosition[me.Constants.POSITION.OTHER_OUT]);
-        var totalHeight = viewData.totalHeight;
+        var totalHeight = viewData.totalHeight + me._CONFIG.AREA.BOTTOM_MARGIN;
 
         upper = 0;
         low = totalHeight;
@@ -1780,6 +1815,32 @@ Tree.prototype = {
         return view;
     },
     /**
+     * 주어진 필터 조건에 따라 뷰데이터를 반환한다.
+     * @param viewData
+     * @param filterData
+     * @returns {Array}
+     */
+    selectViewByFilter: function (viewData, filterData) {
+        var data = [];
+        var view;
+        if (viewData && viewData['views']) {
+            for (var i = 0; i < viewData['views'].length; i++) {
+                var toAdd = true;
+                view = viewData['views'][i];
+                for (var filterKey in filterData) {
+                    //하나라도 필터 조건이 맞지 않다면 추가하지 않도록 한다.
+                    if (view[filterKey] != filterData[filterKey]) {
+                        toAdd = false;
+                    }
+                }
+                if (toAdd) {
+                    data.push(view);
+                }
+            }
+        }
+        return data;
+    },
+    /**
      * 주어진 아이디의 자식 뷰 데이터를 재귀호출하여 반환한다.
      * @param viewData
      * @param id
@@ -1915,7 +1976,107 @@ Tree.prototype = {
     bindEvent: function () {
         var me = this;
         me.bindMappingEvent();
+        me.bindActivityMove();
         me.enableShapeContextMenu();
+    },
+    bindDblClickEvent: function (element) {
+        var me = this;
+        $(element).unbind('dblclick');
+        $(element).bind({
+            'dblclick': function () {
+                var id = element.id;
+                var view = me.selectViewById(me._VIEWDATA, id);
+                if (!view || !view.data) {
+                    return;
+                }
+                //뷰 타입이 액티비티,폴더,ED 가 아닐경우 리턴
+                if (view.type != me.Constants.TYPE.ACTIVITY &&
+                    view.type != me.Constants.TYPE.FOLDER &&
+                    view.type != me.Constants.TYPE.ED) {
+                    return;
+                }
+                var data = me.selectById(view.data.id);
+                if (!data) {
+                    return;
+                }
+                me.onShowProperties(data);
+            }
+        });
+    },
+    bindActivityMove: function () {
+        var me = this;
+        var eventX, eventY, targetEle, targetView, source, target, position, activityViews, area;
+        me.canvas.onMoveShape(function (event, shapeElement, offset) {
+            var view = me.selectViewById(me._VIEWDATA, shapeElement.id);
+            if (view.type == me.Constants.TYPE.ACTIVITY) {
+                position = view.position;
+                eventX = shapeElement.shape.geom.getBoundary().getCentroid().x;
+                eventY = shapeElement.shape.geom.getBoundary().getCentroid().y;
+                activityViews = me.selectViewByFilter(me._VIEWDATA,
+                    {
+                        type: me.Constants.TYPE.ACTIVITY,
+                        position: position
+                    });
+
+                var enableSort = true;
+                //해당 에어리어 영역 인지 알아본다.
+                area = position == me.Constants.POSITION.OTHER ? me.AREA.lAc : me.AREA.rAc;
+                if (!area) {
+                    enableSort = false;
+                }
+                if (!area.shape.geom.getBoundary().isContains([eventX, eventY])) {
+                    enableSort = false;
+                }
+                if(!enableSort){
+                    //원래 상태로 원복
+                    shapeElement.shape.geom.move(-(offset[0]), -(offset[1]));
+                    me._RENDERER.redrawShape(shapeElement);
+                    return;
+                }
+
+                //activityViews 의 인덱스를 재정립한다.
+                var sorted = [];
+                for (var i = 0; i < activityViews.length; i++) {
+                    var y = activityViews[i].y;
+                    if (activityViews[i].id == view.id) {
+                        y = eventY;
+                        activityViews[i].y = y;
+                    }
+                    var pushed = false;
+                    for (var c = 0; c < sorted.length; c++) {
+                        //sorted 중에서 나의 y 가 더 작다면 중간에 삽입
+                        if (sorted[c].y > y) {
+                            sorted.splice(c, 0, activityViews[i]);
+                            pushed = true;
+                            break;
+                        }
+                    }
+                    if (!pushed) {
+                        sorted.push(activityViews[i]);
+                    }
+                }
+                var prev;
+                var activities = [];
+                for (var i = 0; i < sorted.length; i++) {
+                    var data = JSON.parse(JSON.stringify(me.selectById(sorted[i].id)));
+                    if(data){
+                        delete data.prev;
+                        delete data.next;
+                        if (prev) {
+                            data.prev = prev.id;
+                            prev.next = data.id;
+                        }
+                        prev = data;
+                        activities.push(data);
+                    }
+                }
+                for(var i = 0; i < activities.length; i++){
+                    me.removeDataByFilter({id: activities[i].id});
+                    me.updateData([activities[i]],true);
+                }
+                me.render();
+            }
+        });
     },
     bindMappingEvent: function () {
         var me = this;
@@ -2028,13 +2189,12 @@ Tree.prototype = {
                             };
                             existMapping = me.loadByFilter({id: parents[i].id + '-' + target.id});
                             if (!existMapping || !existMapping.length) {
-                                me.updateData([existMapping], true);
+                                me.updateData([parentMapping], true);
                             }
                         }
                     }
                 }
                 me.render();
-
                 me.onMapping(event, mappingData);
             }
         });
@@ -2065,33 +2225,8 @@ Tree.prototype = {
      * Shape 에 마우스 우클릭 메뉴를 가능하게 한다.
      */
     enableShapeContextMenu: function () {
-
-        // 1.콘텍스트 메뉴
-        // 1-1) position: my-in type: a,f,e
-        // 매핑 삭제
-        // 폴더,ED : 선택한 Folder or ED를 Input 으로 쓰는 Workflow - Activity정보 표현 (my-out 쪽과 같은 것을 표현)
-
-        // 1-2) position: my-out type: a,f,e
-        // 액티비티 : 폴더,ed 추가 삭제 (폴더가 있을경우 폴더만 가능)
-        // 폴더 : 폴더,ed 추가 삭제 (폴더가 있을경우 폴더만 가능)
-        // ED : 삭제
-        // 폴더,ED : 선택한 Folder or ED를 Input 으로 쓰는 Workflow - Activity정보 표현
-        // PICK ED : 미정.
-
-        // 1-3) position: other-out type: a,f,e
-        // 폴더,ED : 선택한 Folder or ED를 Input 으로 쓰는 Workflow - Activity정보 표현
-
-        // 1-4) 공통
-        // 더블 클릭시 프로퍼티 보기.
-
-        // 2.Area
-        // Area 별로 색상 틀리기 해놓기.
-
         // 3.Save
         //  중요. Save 시에, 데이터 변화 리스트중에서, 삭제에 관련한 항목을 먼저 실행 후, CRU 에 대한걸 처리하도록 한다.
-
-        // 5.데이터
-        // id 를 바탕으로 선택한 Folder or ED를 Input 으로 쓰는 Workflow - Activity 정보 호출을 불러오는 쿼리
 
         var me = this;
         $.contextMenu({
@@ -2109,6 +2244,12 @@ Tree.prototype = {
                 if (!view || !view.data) {
                     return false;
                 }
+                //뷰 타입이 액티비티,폴더,ED 가 아닐경우 리턴
+                if (view.type != me.Constants.TYPE.ACTIVITY &&
+                    view.type != me.Constants.TYPE.FOLDER &&
+                    view.type != me.Constants.TYPE.ED) {
+                    return false;
+                }
                 var data = me.selectById(view.data.id);
                 if (!data) {
                     return false;
@@ -2116,7 +2257,7 @@ Tree.prototype = {
                 me.selectedView = view;
                 me.selectedData = data;
 
-                //폴더,ED 생성
+                //폴더,ED 생성 및 삭제
                 if (view.position == me.Constants.POSITION.MY || view.position == me.Constants.POSITION.MY_OUT) {
                     var enableCreateEd = true;
                     var enableCreateFolder = true;
@@ -2142,6 +2283,20 @@ Tree.prototype = {
                     if (enableDelete) {
                         items.makeDelete = me.makeDelete();
                     }
+                }
+
+                //선택한 Folder or ED를 Input 으로 쓰는 Workflow - Activity정보 표현
+                if (view.position == me.Constants.POSITION.MY_OUT ||
+                    view.position == me.Constants.POSITION.OTHER_OUT ||
+                    view.position == me.Constants.POSITION.MY_IN) {
+                    if (data.type != me.Constants.TYPE.ACTIVITY) {
+                        items.makeListRelation = me.makeListRelation();
+                    }
+                }
+
+                //매핑 삭제
+                if (view.position == me.Constants.POSITION.MY_IN && view.mapping) {
+                    items.makeDeleteRelation = me.makeDeleteRelation();
                 }
 
                 //공통
@@ -2184,7 +2339,25 @@ Tree.prototype = {
         return {
             name: 'delete',
             callback: function () {
-                me.onMakeDelete(me.selectedData);
+                me.onDelete(me.selectedData);
+            }
+        }
+    },
+    makeListRelation: function () {
+        var me = this;
+        return {
+            name: 'list relation',
+            callback: function () {
+                me.onListRelation(me.selectedData);
+            }
+        }
+    },
+    makeDeleteRelation: function () {
+        var me = this;
+        return {
+            name: 'delete relation',
+            callback: function () {
+                me.onDeleteRelation(me.selectedView, me.selectedData);
             }
         }
     },
@@ -2194,7 +2367,48 @@ Tree.prototype = {
     },
     onMakeEd: function (data) {
     },
-    onMakeDelete: function (data) {
+    onDelete: function (data) {
+    },
+    onListRelation: function (data) {
+    },
+    onDeleteRelation: function (view, data) {
+        //매핑 삭제 로직을 만든다.
+        //자기자신을 삭제한다.
+        //자식들에 대한 매핑을 삭제한다.
+        //부모 일람중에, 부모의 자식들 중 매핑요소가 없다면 매핑을 삭제한다.
+        var me = this;
+        var source = view.source;
+        var target = view.target;
+        var mappingId = source + '-' + target;
+
+        //자기 자신 삭제
+        me.removeDataByFilter({id: mappingId});
+
+        //자식들에 대한 매핑 삭제
+        var child = me.selectRecursiveChildById(source);
+        for (var i = 0; i < child.length; i++) {
+            mappingId = child[i].id + '-' + target;
+            me.removeDataByFilter({id: mappingId});
+        }
+
+        //부모에 대한 매핑 삭제
+        var parentsChild;
+        var parents = me.selectRecursiveParentById(source);
+        for (var i = 0; i < parents.length; i++) {
+            var hasChildMapping = false;
+            mappingId = parents[i].id + '-' + target;
+            parentsChild = me.selectChildById(parents[i].id);
+            for (var c = 0; c < parentsChild.length; c++) {
+                var parentChildMapping = me.loadByFilter({id: parentsChild[c].id + '-' + target});
+                if (parentChildMapping && parentChildMapping.length) {
+                    hasChildMapping = true;
+                }
+            }
+            if (!hasChildMapping) {
+                me.removeDataByFilter({id: mappingId});
+            }
+        }
+        me.render();
     }
 };
 Tree.prototype.constructor = Tree;
