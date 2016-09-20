@@ -20,7 +20,13 @@ var Tree = function (container) {
             /**
              * 매핑에 사용되는 연결선
              */
-            MAPPING_EDGE: "mappingEdge"
+            MAPPING_EDGE: "mappingEdge",
+
+
+            /**
+             * 액티비티 연결선
+             */
+            ACTIVITY_REL: "activityRel"
         },
         POSITION: {
             MY: "my",
@@ -36,7 +42,8 @@ var Tree = function (container) {
             EXPANDER_TO: "-expanderTo",
             MAPPING_EDGE: "-mappingEdge",
             MAPPING_LABEL: "-mapping-label",
-            SELECTED_LABEL: "-selected-label"
+            SELECTED_LABEL: "-selected-label",
+            ACTIVITY_REL: "-activity-rel"
         }
     };
     this._CONFIG = {
@@ -715,6 +722,32 @@ Tree.prototype = {
             }
         }
 
+        //액티비티 간의 릴레이션 연결선 제작
+        var activityView, nextActivityView, activityRelView;
+        for (var i = 0; i < viewData.views.length; i++) {
+            if (viewData.views[i].type == me.Constants.TYPE.ACTIVITY) {
+                activityView = viewData.views[i];
+                if (activityView.data.next) {
+                    nextActivityView = me.selectViewById(viewData, activityView.data.next);
+                    activityRelView = {
+                        id: activityView.id + me.Constants.PREFIX.ACTIVITY_REL,
+                        parentId: nextActivityView.id,
+                        y: activityView.y,
+                        bottom: activityView.y,
+                        root: activityView.root,
+                        position: activityView.position == me.Constants.POSITION.OTHER ? me.Constants.POSITION.OTHER_OUT : me.Constants.POSITION.MY_OUT,
+                        type: me.Constants.TYPE.ACTIVITY_REL,
+                        depth: activityView.depth,
+                        data: activityView.data,
+                        index: activityView.index,
+                        transparent: true,
+                        parentY: nextActivityView.y
+                    };
+                    viewData.views.push(activityRelView);
+                }
+            }
+        }
+
         var insertDuplicate = function (list, obj) {
             if (obj.source && obj.target) {
                 var duplicate = false;
@@ -731,38 +764,28 @@ Tree.prototype = {
             }
         };
 
-        //매핑 데이터의 source 의 자식들 중 자식이 없는 집합을 구한다.(자기 자신 포함) => mappingConnects
-        var lastChildList;
-        var mappingConnects = [];
+        //매핑 데이터들 중에서 자식이 없거나 expand 가 false 인 것들을 찾는다.
+        var mappingConnects = [], mappingsChild, enableConnect, selfData;
         for (var i = 0; i < mappings.length; i++) {
+            enableConnect = false;
             mapping = mappings[i];
             source = mapping['source'];
             target = mapping['target'];
-            lastChildList = me.selectRecursiveLastChildById(source);
-            for (var c = 0; c < lastChildList.length; c++) {
-                var connect = {
-                    source: lastChildList[c].id,
-                    target: target
-                };
-                insertDuplicate(mappingConnects, connect);
-            }
-        }
-
-        //mappingConnects 의 부모 추적 리스트를 구한다. 리스트 중 expand 가 false 인 것이 존재한다면,
-        // mappingConnects 에 추가한다. => mappingConnects
-        var recursiveParent;
-        for (var i = 0; i < mappingConnects.length; i++) {
-            source = mappingConnects[i]['source'];
-            target = mappingConnects[i]['target'];
-
-            recursiveParent = me.selectRecursiveParentById(source);
-            for (var c = 0; c < recursiveParent.length; c++) {
-                var data = {
-                    source: recursiveParent[c].id,
-                    target: target
-                };
-                if (!recursiveParent[c].expand) {
-                    insertDuplicate(mappingConnects, data);
+            selfData = me.selectById(source);
+            if (selfData) {
+                mappingsChild = me.selectChildById(source);
+                if (!mappingsChild || !mappingsChild.length) {
+                    enableConnect = true;
+                }
+                if (!selfData.expand) {
+                    enableConnect = true;
+                }
+                if (enableConnect) {
+                    var connect = {
+                        source: source,
+                        target: target
+                    };
+                    insertDuplicate(mappingConnects, connect);
                 }
             }
         }
@@ -903,6 +926,7 @@ Tree.prototype = {
             var existId = currentDisplayShapes[i].id;
             var toRemove = true;
             var haMapping = false;
+
             for (var c = 0; c < displayViews.length; c++) {
                 if (displayViews[c].id == existId) {
                     toRemove = false;
@@ -957,6 +981,10 @@ Tree.prototype = {
                 otherOutViews[i].vertieces = me.getExpanderToVertices(
                     me.Constants.POSITION.OTHER_OUT, depth, boundary.getLeftCenter().x, otherOutViews[i].parentY, otherOutViews[i].y);
             }
+            else if (type == me.Constants.TYPE.ACTIVITY_REL) {
+                otherOutViews[i].vertieces = me.getActivityRelVertices(
+                    me.Constants.POSITION.OTHER_OUT, depth, boundary.getLeftCenter().x, otherOutViews[i].parentY, otherOutViews[i].y);
+            }
         }
 
         var myInViews = viewsByPosition[me.Constants.POSITION.MY_IN];
@@ -1006,6 +1034,10 @@ Tree.prototype = {
                 myOutViews[i].vertieces = me.getExpanderToVertices(
                     me.Constants.POSITION.MY_OUT, depth, boundary.getLeftCenter().x, myOutViews[i].parentY, myOutViews[i].y);
             }
+            else if (type == me.Constants.TYPE.ACTIVITY_REL) {
+                myOutViews[i].vertieces = me.getActivityRelVertices(
+                    me.Constants.POSITION.MY_OUT, depth, boundary.getLeftCenter().x, myOutViews[i].parentY, myOutViews[i].y);
+            }
         }
 
         var mappingViews = viewsByPosition[me.Constants.POSITION.OTHER_MY];
@@ -1020,7 +1052,6 @@ Tree.prototype = {
                 me._RENDERER.getBoundary(me.AREA.rIn).getRightCenter().x,
                 mappingViews[i].hasChild
             );
-            //getMappingEdgeVertices: function (depth, parentY, myY, pStandardX, myStandardX, hasChild) {
         }
 
         var position, root, id, element, envelope, currentX, currentY, currentEndX, currentEndY,
@@ -1039,15 +1070,25 @@ Tree.prototype = {
                 //선 연결 도형이 아닌경우 도형을 이동시킨다.
                 if (type != me.Constants.TYPE.EXPANDER_FROM &&
                     type != me.Constants.TYPE.EXPANDER_TO &&
-                    type != me.Constants.TYPE.MAPPING_EDGE) {
+                    type != me.Constants.TYPE.MAPPING_EDGE &&
+                    type != me.Constants.TYPE.ACTIVITY_REL) {
                     envelope = me._RENDERER.getBoundary(element);
                     currentX = envelope.getCentroid().x;
                     currentY = envelope.getCentroid().y;
                     if (currentX != displayViews[i].x || currentY != displayViews[i].y) {
                         moveX = displayViews[i].x - envelope.getCentroid().x;
                         moveY = displayViews[i].y - envelope.getCentroid().y;
-                        element.shape.geom.move(moveX, moveY);
-                        me._RENDERER.redrawShape(element);
+
+                        //액티비티일 경우 connect 연결선을 위한 무브 처리
+                        if (type == me.Constants.TYPE.ACTIVITY) {
+                            element.shape.geom.move(moveX, moveY);
+                            me._RENDERER.redrawShape(element);
+                        }
+                        //그 밖의 경우는 퍼포먼스를 위한 geom 이동
+                        else {
+                            element.shape.geom.move(moveX, moveY);
+                            me._RENDERER.redrawShape(element);
+                        }
                     }
                 }
                 //선 연결 도형일 경우 vertices 의 0번째 요소를 비교후, x,y 의 차이만큼 이동시킨다.
@@ -1089,6 +1130,8 @@ Tree.prototype = {
                     me.updateExpanderLine(displayViews[i]);
                 } else if (type == me.Constants.TYPE.EXPANDER_TO) {
                     me.updateExpanderLine(displayViews[i]);
+                } else if (type == me.Constants.TYPE.ACTIVITY_REL) {
+                    me.updateActivityRelLien(displayViews[i]);
                 }
 
             } else {
@@ -1107,6 +1150,8 @@ Tree.prototype = {
                     me.drawExpanderLine(displayViews[i]);
                 } else if (type == me.Constants.TYPE.MAPPING_EDGE) {
                     me.drawMappingLine(displayViews[i]);
+                } else if (type == me.Constants.TYPE.ACTIVITY_REL) {
+                    me.drawActivityRelLine(displayViews[i]);
                 }
             }
         }
@@ -1283,6 +1328,23 @@ Tree.prototype = {
             }
         }
     },
+    updateActivityRelLien: function(view,element){
+        //if (view.blur) {
+        //    this.canvas.setShapeStyle(element, {"stroke-dasharray": "-"});
+        //} else {
+        //    this.canvas.setShapeStyle(element, {"stroke-dasharray": "none"});
+        //}
+    },
+    drawActivityRelLine: function (view) {
+        if (view.vertieces) {
+            var me = this;
+            var edgeShape = new OG.EdgeShape([0, 0], [0, 0]);
+            edgeShape.geom = new OG.PolyLine(view.vertieces);
+            var element = me.canvas.drawShape(null, edgeShape, null, null, view.id);
+            element.shape.CONNECTABLE = false;
+            element.shape.DELETABLE = false;
+        }
+    },
     /**
      * expander 를 업데이트한다.
      * @param view
@@ -1384,6 +1446,16 @@ Tree.prototype = {
             [(start[0] + end[0]) / 2, end[1]],
             end
         ];
+        return vertieces;
+    },
+    getActivityRelVertices: function (position, depth, standardX, parentY, myY) {
+        var me = this;
+
+        var centerX = standardX - me._CONFIG.AREA.ACTIVITY_SIZE / 2;
+        var start = [centerX, myY + (me._CONFIG.SHAPE_SIZE.ACTIVITY_HEIGHT / 2) + me._CONFIG.SHAPE_SIZE.ACTIVITY_MARGIN];
+        var end = [centerX, parentY - 15];
+
+        var vertieces = [start, end];
         return vertieces;
     },
     /**
@@ -2276,6 +2348,7 @@ Tree.prototype = {
                     }
                     if (enableCreateEd) {
                         items.makeEd = me.makeEd();
+                        items.makePickEd = me.makePickEd();
                     }
                     if (enableCreateFolder) {
                         items.makeFolder = me.makeFolder();
@@ -2334,6 +2407,15 @@ Tree.prototype = {
             }
         }
     },
+    makePickEd: function () {
+        var me = this;
+        return {
+            name: 'pick ed',
+            callback: function () {
+                me.onPickEd(me.selectedData, me.selectedView);
+            }
+        }
+    },
     makeDelete: function () {
         var me = this;
         return {
@@ -2366,6 +2448,8 @@ Tree.prototype = {
     onMakeFolder: function (data, view) {
     },
     onMakeEd: function (data, view) {
+    },
+    onPickEd: function (data, view) {
     },
     onDelete: function (data, view) {
     },

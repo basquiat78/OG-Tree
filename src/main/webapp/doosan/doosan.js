@@ -99,6 +99,7 @@ $(function () {
     /**
      * 프로퍼티 보기 콘텍스트 클릭시
      * @param data
+     * @param view
      */
     tree.onShowProperties = function (data, view) {
         console.log('onShowProperties', data, view);
@@ -106,6 +107,7 @@ $(function () {
     /**
      * Ed 생성 콘텍스트 클릭시
      * @param data
+     * @param view
      */
     tree.onMakeEd = function (data, view) {
         console.log('onMakeEd', data, view);
@@ -113,6 +115,7 @@ $(function () {
     /**
      * 폴더 생성 콘텍스트 클릭시
      * @param data
+     * @param view
      */
     tree.onMakeFolder = function (data, view) {
         var addFolder = new Add(tree);
@@ -126,8 +129,13 @@ $(function () {
     /**
      * 폴더 또는 ED 또는 액티비티 삭제 콘텍스트 클릭시
      * @param data
+     * @param view
      */
     tree.onMakeDelete = function (data, view) {
+        //주의!!
+        //삭제는 실제로 폴더또는 ED 를 삭제하는것이 아니라, 릴레이션만 끊어야 한다.
+        //릴레이션을 끊은 후 Aras 에서 제공하는 메소드 호출 시 완료처리가 된다고 함.
+
         var targetDelete = new Delete(tree);
         if (data.type == 'activity') {
             if (targetDelete._stdYN == 'Y') {
@@ -148,10 +156,19 @@ $(function () {
     /**
      * 폴더 또는 ED 를 input 으로 쓰는 모든 Workflow - Activity 리스트를 보여주기
      * @param data
+     * @param view
      */
     tree.onMakeListRelation = function (data, view) {
         console.log('onMakeListRelation', data, view);
-    }
+    };
+    /**
+     * 선택 된 폴더에 연결할 ED 리스트를 불러오기(Pick ed) 콘텍스트 클릭시
+     * @param data
+     * @param view
+     */
+    tree.onPickEd = function (data, view) {
+        console.log('onPickEd', data, view);
+    };
 });
 
 var randomData = function (type) {
