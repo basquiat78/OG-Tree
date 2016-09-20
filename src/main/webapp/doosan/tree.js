@@ -2027,7 +2027,7 @@ Tree.prototype = {
                 if (!area.shape.geom.getBoundary().isContains([eventX, eventY])) {
                     enableSort = false;
                 }
-                if(!enableSort){
+                if (!enableSort) {
                     //원래 상태로 원복
                     shapeElement.shape.geom.move(-(offset[0]), -(offset[1]));
                     me._RENDERER.redrawShape(shapeElement);
@@ -2059,7 +2059,7 @@ Tree.prototype = {
                 var activities = [];
                 for (var i = 0; i < sorted.length; i++) {
                     var data = JSON.parse(JSON.stringify(me.selectById(sorted[i].id)));
-                    if(data){
+                    if (data) {
                         delete data.prev;
                         delete data.next;
                         if (prev) {
@@ -2070,9 +2070,9 @@ Tree.prototype = {
                         activities.push(data);
                     }
                 }
-                for(var i = 0; i < activities.length; i++){
+                for (var i = 0; i < activities.length; i++) {
                     me.removeDataByFilter({id: activities[i].id});
-                    me.updateData([activities[i]],true);
+                    me.updateData([activities[i]], true);
                 }
                 me.render();
             }
@@ -2312,7 +2312,7 @@ Tree.prototype = {
         return {
             name: 'properties',
             callback: function () {
-                me.onShowProperties(me.selectedData);
+                me.onShowProperties(me.selectedData, me.selectedView);
             }
         }
     },
@@ -2321,7 +2321,7 @@ Tree.prototype = {
         return {
             name: 'create folder',
             callback: function () {
-                me.onMakeFolder(me.selectedData);
+                me.onMakeFolder(me.selectedData, me.selectedView);
             }
         }
     },
@@ -2330,7 +2330,7 @@ Tree.prototype = {
         return {
             name: 'create ed',
             callback: function () {
-                me.onMakeEd(me.selectedData);
+                me.onMakeEd(me.selectedData, me.selectedView);
             }
         }
     },
@@ -2339,7 +2339,7 @@ Tree.prototype = {
         return {
             name: 'delete',
             callback: function () {
-                me.onDelete(me.selectedData);
+                me.onDelete(me.selectedData, me.selectedView);
             }
         }
     },
@@ -2348,7 +2348,7 @@ Tree.prototype = {
         return {
             name: 'list relation',
             callback: function () {
-                me.onListRelation(me.selectedData);
+                me.onListRelation(me.selectedData, me.selectedView);
             }
         }
     },
@@ -2357,21 +2357,21 @@ Tree.prototype = {
         return {
             name: 'delete relation',
             callback: function () {
-                me.onDeleteRelation(me.selectedView, me.selectedData);
+                me.onDeleteRelation(me.selectedData, me.selectedView);
             }
         }
     },
-    onShowProperties: function (data) {
+    onShowProperties: function (data, view) {
     },
-    onMakeFolder: function (data) {
+    onMakeFolder: function (data, view) {
     },
-    onMakeEd: function (data) {
+    onMakeEd: function (data, view) {
     },
-    onDelete: function (data) {
+    onDelete: function (data, view) {
     },
-    onListRelation: function (data) {
+    onListRelation: function (data, view) {
     },
-    onDeleteRelation: function (view, data) {
+    onDeleteRelation: function (data, view) {
         //매핑 삭제 로직을 만든다.
         //자기자신을 삭제한다.
         //자식들에 대한 매핑을 삭제한다.
