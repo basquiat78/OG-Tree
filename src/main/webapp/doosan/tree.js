@@ -1999,7 +1999,7 @@ Tree.prototype = {
                 if (!data) {
                     return;
                 }
-                me.onShowProperties(data);
+                me.onShowProperties(data, view);
             }
         });
     },
