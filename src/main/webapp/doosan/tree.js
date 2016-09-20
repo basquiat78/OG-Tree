@@ -609,11 +609,14 @@ Tree.prototype = {
                                 targetView.bottom = sourceView.bottom + diffY;
                                 targetView.y = sourceView.y + diffY;
 
+                                //소스와 타켓을 등록한다.
+                                targetView.source = sourceView['data']['id'];
+                                targetView.target = targetActivity['id'];
+
                                 //익스팬더를 제외한 객체는 blur 처리한다.
                                 if (sourceView['type'] != me.Constants.TYPE.EXPANDER) {
                                     targetView.blur = true;
                                 }
-
 
                                 if (sourceView.parentY) {
                                     //액티비티와 익스팬더의 연결 처리 (EXPANDER_FROM)
@@ -721,14 +724,10 @@ Tree.prototype = {
 
         //mappingConnects 의 부모 추적 리스트를 구한다. 리스트 중 expand 가 false 인 것이 존재한다면,
         // mappingConnects 에 추가한다. => mappingConnects
-        //mappingConnects 의 자기 자신을 포함한 부모 추적 리스트를 구한다. => mappingHighlights
         var recursiveParent;
-        var mappingHighlights = [];
         for (var i = 0; i < mappingConnects.length; i++) {
             source = mappingConnects[i]['source'];
             target = mappingConnects[i]['target'];
-
-            insertDuplicate(mappingHighlights, JSON.parse(JSON.stringify(mappingConnects[i])));
 
             recursiveParent = me.selectRecursiveParentById(source);
             for (var c = 0; c < recursiveParent.length; c++) {
@@ -739,28 +738,33 @@ Tree.prototype = {
                 if (!recursiveParent[c].expand) {
                     insertDuplicate(mappingConnects, data);
                 }
-                insertDuplicate(mappingHighlights, data);
             }
         }
 
-        //view 에서 MY_IN 인 것에 한하여,
-        //mappingHighlights view 에 자신,expander from,expander to 들은 blur 처리를 해제한다.
+        //blur 처리를 해제할 view 아이디 리스트를 구한다.
+        var mappingHighlights = [];
+        for (var i = 0; i < mappings.length; i++) {
+            source = mappings[i]['source'];
+            target = mappings[i]['target'];
 
+            selfId = source + '-to-' + target + '-mirror';
+            expanderFromId = source + me.Constants.PREFIX.EXPANDER_FROM + '-to-' + target + '-mirror';
+            expanderToId = source + me.Constants.PREFIX.EXPANDER_TO + '-to-' + target + '-mirror';
+            mappingHighlights.push(selfId);
+            mappingHighlights.push(expanderFromId);
+            mappingHighlights.push(expanderToId);
+        }
+
+
+        //view 에서 MY_IN 인 것에 한하여,
+        //mappingHighlights 에 속한 것에 한하여 blur 처리를 해제한다.
         //mappingConnects 에 해당하는 view 가 있다면 해당 view 의 mirror 와 MAPPING_EDGE 를 생성한다.
         var selfId, expanderFromId, expanderToId, mappingView, parentView;
         for (var i = 0; i < viewData.views.length; i++) {
             var view = viewData.views[i];
             if (view.position == me.Constants.POSITION.MY_IN) {
-                for (var c = 0; c < mappingHighlights.length; c++) {
-                    source = mappingHighlights[c]['source'];
-                    target = mappingHighlights[c]['target'];
-
-                    selfId = source + '-to-' + target + '-mirror';
-                    expanderFromId = source + me.Constants.PREFIX.EXPANDER_FROM + '-to-' + target + '-mirror';
-                    expanderToId = source + me.Constants.PREFIX.EXPANDER_TO + '-to-' + target + '-mirror';
-                    if (view.id == selfId || view.id == expanderFromId || view.id == expanderToId) {
-                        view.blur = false;
-                    }
+                if(mappingHighlights.indexOf(view.id) != -1){
+                    view.blur = false;
                 }
                 for (var c = 0; c < mappingConnects.length; c++) {
                     source = mappingConnects[c]['source'];
