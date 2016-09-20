@@ -2,6 +2,10 @@
  * Created by MisakaMikoto on 2016. 9. 6..
  */
 var Rest = function () {
+	this._wfId = (parent.top.aras != null && typeof parent.top.aras != 'undefined') ? parent.top.thisItem.getID() : '';
+    this._stdYN = (parent.top.aras != null && typeof parent.top.aras != 'undefined') ? parent.top.thisItem.getType() == 'DHI_WF_WFT' ? 'Y' : 'N' : '';
+    this._projectId = (parent.top.aras != null && typeof parent.top.aras != 'undefined') ? parent.top.thisItem.getProperty('_rel_project') ? parent.top.thisItem.getProperty('_rel_project') : '' : '';
+
     this._type = '';
     this._url = '';
     this._data = '';
