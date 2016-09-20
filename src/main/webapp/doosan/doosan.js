@@ -72,6 +72,58 @@ $(function () {
     tree.onMapping = function (event, mapping) {
         console.log(event, mapping);
     };
+
+    /**
+     * 세이브 버튼 클릭시
+     */
+    $('#saveBtn').click(function () {
+        //전체 데이터 불러오기
+        tree.load();
+
+        //매핑 데이터 불러오기
+        tree.loadByFilter({type: tree.Constants.TYPE.MAPPING});
+
+        //아더 액티비티 불러오기
+        tree.loadByFilter({type: tree.Constants.POSITION.OTHER});
+
+        //아더 폴더,ED 불러오기
+        tree.loadByFilter({type: tree.Constants.POSITION.OTHER_OUT});
+
+        //마이 액티비티 불러오기
+        tree.loadByFilter({type: tree.Constants.POSITION.MY});
+
+        //마이 폴더,ED 불러오기
+        tree.loadByFilter({type: tree.Constants.POSITION.MY_OUT});
+    });
+
+    /**
+     * 프로퍼티 보기 콘텍스트 클릭시
+     * @param data
+     */
+    tree.onShowProperties = function (data) {
+        console.log('onShowProperties', data);
+    };
+    /**
+     * Ed 생성 콘텍스트 클릭시
+     * @param data
+     */
+    tree.onMakeEd = function (data) {
+        console.log('onMakeEd', data);
+    };
+    /**
+     * 폴더 생성 콘텍스트 클릭시
+     * @param data
+     */
+    tree.onMakeFolder = function (data) {
+        console.log('onMakeFolder', data);
+    };
+    /**
+     * 폴더 또는 ED 또는 액티비티 삭제 콘텍스트 클릭시
+     * @param data
+     */
+    tree.onMakeDelete = function (data) {
+        console.log('onMakeDelete', data);
+    };
 });
 
 var randomData = function (type) {

@@ -763,7 +763,7 @@ Tree.prototype = {
         for (var i = 0; i < viewData.views.length; i++) {
             var view = viewData.views[i];
             if (view.position == me.Constants.POSITION.MY_IN) {
-                if(mappingHighlights.indexOf(view.id) != -1){
+                if (mappingHighlights.indexOf(view.id) != -1) {
                     view.blur = false;
                 }
                 for (var c = 0; c < mappingConnects.length; c++) {
@@ -2100,31 +2100,101 @@ Tree.prototype = {
             },
             selector: '#' + me._RENDERER.getRootElement().id + ' [_type=SHAPE]',
             build: function ($trigger, event) {
+                var items = {};
                 $(me._RENDERER.getContainer()).focus();
                 var element = $trigger[0];
                 var id = element.id;
+                var view = me.selectViewById(me._VIEWDATA, id);
 
-                var items;
-                items = {
-                    'addED': {
-                        name: 'Add ED', icon: 'edit'
-                    },
-                    'remove': {
-                        name: 'Remove', icon: 'delete'
-                    },
-                    'properties': {
-                        name: 'Properties', icon: 'edit'
-                    },
-                    'listProperties': {
-                        name: 'List Properties', icon: 'edit'
+                if (!view || !view.data) {
+                    return false;
+                }
+                var data = me.selectById(view.data.id);
+                if (!data) {
+                    return false;
+                }
+                me.selectedView = view;
+                me.selectedData = data;
+
+                //폴더,ED 생성
+                if (view.position == me.Constants.POSITION.MY || view.position == me.Constants.POSITION.MY_OUT) {
+                    var enableCreateEd = true;
+                    var enableCreateFolder = true;
+                    var enableDelete = true;
+                    var child = me.selectChildById(data.id);
+                    if (child && child.length) {
+                        for (var i = 0; i < child.length; i++) {
+                            if (child[i].type == me.Constants.TYPE.FOLDER) {
+                                enableCreateEd = false;
+                            }
+                        }
                     }
+                    if (data.type == me.Constants.TYPE.Ed) {
+                        enableCreateEd = false;
+                        enableCreateFolder = false;
+                    }
+                    if (enableCreateEd) {
+                        items.makeEd = me.makeEd();
+                    }
+                    if (enableCreateFolder) {
+                        items.makeFolder = me.makeFolder();
+                    }
+                    if (enableDelete) {
+                        items.makeDelete = me.makeDelete();
+                    }
+                }
+
+                //공통
+                items.showProperties = me.makeShowProperties();
+                return {
+                    items: items
                 };
-                return false;
-                //return {
-                //    items: items
-                //};
             }
         });
+    },
+    makeShowProperties: function () {
+        var me = this;
+        return {
+            name: 'properties',
+            callback: function () {
+                me.onShowProperties(me.selectedData);
+            }
+        }
+    },
+    makeFolder: function () {
+        var me = this;
+        return {
+            name: 'create folder',
+            callback: function () {
+                me.onMakeFolder(me.selectedData);
+            }
+        }
+    },
+    makeEd: function () {
+        var me = this;
+        return {
+            name: 'create ed',
+            callback: function () {
+                me.onMakeEd(me.selectedData);
+            }
+        }
+    },
+    makeDelete: function () {
+        var me = this;
+        return {
+            name: 'delete',
+            callback: function () {
+                me.onMakeDelete(me.selectedData);
+            }
+        }
+    },
+    onShowProperties: function (data) {
+    },
+    onMakeFolder: function (data) {
+    },
+    onMakeEd: function (data) {
+    },
+    onMakeDelete: function (data) {
     }
 };
 Tree.prototype.constructor = Tree;
