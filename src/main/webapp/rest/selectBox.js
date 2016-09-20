@@ -1,19 +1,16 @@
 /**
  * Created by MisakaMikoto on 2016. 9. 6..
  */
-var SelectBoxRest = function (tree) {
-    SelectBoxRest.superclass.call(this);
-    this._wfId = (parent.top.aras != null && typeof parent.top.aras != 'undefined') ? parent.top.thisItem.getID() : '';
-    this._stdYN = (parent.top.aras != null && typeof parent.top.aras != 'undefined') ? parent.top.thisItem.getType() == 'DHI_WF_WFT' ? 'Y' : 'N' : '';
-    this._projectId = (parent.top.aras != null && typeof parent.top.aras != 'undefined') ? parent.top.thisItem.getProperty('_rel_project') ? parent.top.thisItem.getProperty('_rel_project') : '' : '';
+var SelectBox = function (tree) {
+	SelectBox.superclass.call(this);
     this._tree = tree;
 };
 
-SelectBoxRest.prototype = new Rest();
-SelectBoxRest.superclass = Rest;
-SelectBoxRest.prototype.constructor = SelectBoxRest;
+SelectBox.prototype = new Rest();
+SelectBox.superclass = Rest;
+SelectBox.prototype.constructor = SelectBox;
 
-SelectBoxRest.prototype.bindEvent = function () {
+SelectBox.prototype.bindEvent = function () {
     var me = this;
     $('#discipline').change(function () {
         me.reload();
@@ -43,7 +40,7 @@ SelectBoxRest.prototype.bindEvent = function () {
     });
 };
 
-SelectBoxRest.prototype.load = function () {
+SelectBox.prototype.load = function () {
     var pDatainitCB = "{kind: 'Init', discLine: '', discSpec: '', bg: '', wf_id: '" + this._wfId + "', stdYN: '" + this._stdYN + "', project_id: '" + this._projectId + "', REL_WF_ID: ''}";
 
     this._type = 'POST';
@@ -53,7 +50,7 @@ SelectBoxRest.prototype.load = function () {
     this.call();
 };
 
-SelectBoxRest.prototype.reload = function () {
+SelectBox.prototype.reload = function () {
     var pDatainitCB = "{kind: '', discLine: '" + $("#discipline").val() + "', discSpec: '" + $("#disciplineSpec").val() + "', bg: '" + $("#bg").val()
         + "', wf_id: '" + this._wfId + "', stdYN: '" + this._stdYN + "', project_id: '" + this._projectId + "', REL_WF_ID: ''}";
 
@@ -64,7 +61,7 @@ SelectBoxRest.prototype.reload = function () {
     this.call();
 };
 
-SelectBoxRest.prototype.renderOtherWorkFlowBox = function (response) {
+SelectBox.prototype.renderOtherWorkFlowBox = function (response) {
     var json = jQuery.parseJSON(response.d);
     if (json.rtn) {
         var otherWorkFlows = jQuery.parseJSON(json.data);
@@ -73,13 +70,13 @@ SelectBoxRest.prototype.renderOtherWorkFlowBox = function (response) {
         }
     }
 };
-SelectBoxRest.prototype.appendSelectBoxElement = function (element, label, value) {
+SelectBox.prototype.appendSelectBoxElement = function (element, label, value) {
     element.append($('<option>', {
         value: value,
         text: label
     }));
 };
-SelectBoxRest.prototype.renderSelectBox = function (response) {
+SelectBox.prototype.renderSelectBox = function (response) {
     var json = jQuery.parseJSON(response.d);
 
     if (json.rtn) {
