@@ -64,9 +64,10 @@ Parser.prototype = {
                 // in 일 경우에는 무조건 마이-인 쪽의 매핑 데이터만 온다고 가정
                 object = {
                     type: tree.Constants.TYPE.MAPPING,
-                    id: node.id + '-mappingId',
+                    id: node.id + '-' + node.fs_parent_id, //소스 + '-' + 타겟
                     source: node.id,
                     target: node.fs_parent_id,
+                    selected: tree.emptyString(node.selected) ? false : true,
                     position: tree.Constants.POSITION.MY_IN,
                     extData: JSON.parse(JSON.stringify(node))
                 };

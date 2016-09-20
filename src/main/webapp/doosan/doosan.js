@@ -2,6 +2,56 @@ $(function () {
     var tree = new Tree('canvas');
     tree.init();
 
+    //// create load aras data
+    //var select = new Select();
+    //var inResult = select.load('DHI_WF_EDITOR_STRUCTURE', 'IN');
+    //var outResult = select.load('DHI_WF_EDITOR_STRUCTURE', 'OUT');
+    //
+    //// load rest selectbox
+    //var selectBoxRest = new SelectBoxRest(tree);
+    //selectBoxRest.load();
+    //selectBoxRest.bindEvent();
+    //
+    //// create data
+    //var parser = new Parser(tree);
+    //var myWorkFlowData = parser.createMyWorkFlowData(inResult.nodeList, outResult.nodeList);
+    //var otherWorkFlowData = parser.createOtherWorkFlowData();
+    //
+    //tree.updateOtherData(otherWorkFlowData);
+    //tree.updateMyData(myWorkFlowData);
+
+    $.getJSON("doosan/sample/myData.json", function (myData) {
+
+        tree.updateMyData(myData);
+
+        $.getJSON("doosan/sample/otherData.json", function (otherData) {
+            tree.updateOtherData(otherData);
+
+            //전체 데이터 불러오기
+            tree.load();
+
+            //매핑 데이터 불러오기
+            tree.loadByFilter({type: tree.Constants.TYPE.MAPPING});
+
+            //아더 액티비티 불러오기
+            tree.loadByFilter({type: tree.Constants.POSITION.OTHER});
+
+            //아더 폴더,ED 불러오기
+            tree.loadByFilter({type: tree.Constants.POSITION.OTHER_OUT});
+
+            //마이 액티비티 불러오기
+            tree.loadByFilter({type: tree.Constants.POSITION.MY});
+
+            //마이 폴더,ED 불러오기
+            tree.loadByFilter({type: tree.Constants.POSITION.MY_OUT});
+        });
+    });
+
+    //var otherData = randomData('other');
+    //var myData = randomData('my');
+    //tree.updateOtherData(otherData);
+    //tree.updateMyData(myData);
+
     /**
      * GUI 상에서 매핑이 되기 전의 핸들러
      * @param event
@@ -22,56 +72,6 @@ $(function () {
     tree.onMapping = function (event, mapping) {
         console.log(event, mapping);
     };
-
-    // create load aras data
-    var select = new Select();
-    var inResult = select.load('DHI_WF_EDITOR_STRUCTURE', 'IN');
-    var outResult = select.load('DHI_WF_EDITOR_STRUCTURE', 'OUT');
-
-    // load rest selectbox
-    var selectBoxRest = new SelectBoxRest(tree);
-    selectBoxRest.load();
-    selectBoxRest.bindEvent();
-
-    // create data
-    var parser = new Parser(tree);
-    var myWorkFlowData = parser.createMyWorkFlowData(inResult.nodeList, outResult.nodeList);
-    var otherWorkFlowData = parser.createOtherWorkFlowData();
-
-    tree.updateOtherData(otherWorkFlowData);
-    tree.updateMyData(myWorkFlowData);
-
-    //$.getJSON("doosan/sample/myData.json", function (myData) {
-    //
-    //    tree.updateMyData(myData);
-    //
-    //    $.getJSON("doosan/sample/otherData.json", function (otherData) {
-    //        tree.updateOtherData(otherData);
-    //
-    //        //전체 데이터 불러오기
-    //        tree.load();
-    //
-    //        //매핑 데이터 불러오기
-    //        tree.loadByFilter({type: tree.Constants.TYPE.MAPPING});
-    //
-    //        //아더 액티비티 불러오기
-    //        tree.loadByFilter({type: tree.Constants.POSITION.OTHER});
-    //
-    //        //아더 폴더,ED 불러오기
-    //        tree.loadByFilter({type: tree.Constants.POSITION.OTHER_OUT});
-    //
-    //        //마이 액티비티 불러오기
-    //        tree.loadByFilter({type: tree.Constants.POSITION.MY});
-    //
-    //        //마이 폴더,ED 불러오기
-    //        tree.loadByFilter({type: tree.Constants.POSITION.MY_OUT});
-    //    });
-    //});
-
-    //var otherData = randomData('other');
-    //var myData = randomData('my');
-    //tree.updateOtherData(otherData);
-    //tree.updateMyData(myData);
 });
 
 var randomData = function (type) {

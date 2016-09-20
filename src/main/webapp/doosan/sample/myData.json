@@ -117,53 +117,55 @@
     "parentId": "my-fd-2",
     "extData": {}
   },
-
-
   {
     "type": "mapping",
-    "id": "mapping-1",
-    "source": "other-ed-2-1-1-1",
+    "id": "other-fd-2-1-2-my-ac-2",
+    "source": "other-fd-2-1-2",
+    "target": "my-ac-2",
+    "selected": true,
+    "position": "my-in",
+    "extData": {}
+  },
+  {
+    "type": "mapping",
+    "id": "other-fd-2-1-2-1-my-ac-2",
+    "source": "other-fd-2-1-2-1",
+    "target": "my-ac-2",
+    "selected": true,
+    "position": "my-in",
+    "extData": {}
+  },
+  {
+    "type": "mapping",
+    "id": "other-ed-2-1-2-1-1-my-ac-2",
+    "source": "other-ed-2-1-2-1-1",
     "target": "my-ac-2",
     "position": "my-in",
     "extData": {}
   },
   {
     "type": "mapping",
-    "id": "mapping-2",
-    "source": "other-ed-2-1-1-2",
+    "id": "other-ed-2-1-2-1-2-my-ac-2",
+    "source": "other-ed-2-1-2-1-2",
     "target": "my-ac-2",
     "position": "my-in",
     "extData": {}
   },
   {
     "type": "mapping",
-    "id": "mapping-3",
-    "source": "other-fd-3",
+    "id": "other-fd-2-1-my-ac-2",
+    "source": "other-fd-2-1",
     "target": "my-ac-2",
+    "selected": false,
     "position": "my-in",
     "extData": {}
   },
   {
     "type": "mapping",
-    "id": "mapping-4",
-    "source": "other-fd-5",
+    "id": "other-fd-2-my-ac-2",
+    "source": "other-fd-2",
     "target": "my-ac-2",
-    "position": "my-in",
-    "extData": {}
-  },
-  {
-    "type": "mapping",
-    "id": "mapping-4",
-    "source": "other-ed-2-1-1-2",
-    "target": "my-ac-3",
-    "position": "my-in",
-    "extData": {}
-  },
-  {
-    "type": "mapping",
-    "id": "mapping-6",
-    "source": "other-fd-1",
-    "target": "my-ac-2",
+    "selected": false,
     "position": "my-in",
     "extData": {}
   }

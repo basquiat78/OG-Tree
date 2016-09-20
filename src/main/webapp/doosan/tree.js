@@ -35,7 +35,8 @@ var Tree = function (container) {
             EXPANDER_FROM: "-expanderFrom",
             EXPANDER_TO: "-expanderTo",
             MAPPING_EDGE: "-mappingEdge",
-            LABEL: "-label"
+            MAPPING_LABEL: "-mapping-label",
+            SELECTED_LABEL: "-selected-label"
         }
     };
     this._CONFIG = {
@@ -238,7 +239,12 @@ Tree.prototype = {
         me.updateData(data);
         me.render();
     },
-    updateData: function (data) {
+    /**
+     * 데이터를 업데이트한다.
+     * @param data
+     * @param preventRender 업데이트 후 렌더링 방지 여부.
+     */
+    updateData: function (data, preventRender) {
         if (!data) {
             return;
         }
@@ -259,7 +265,9 @@ Tree.prototype = {
                 }
             }
         }
-        me.render();
+        if (!preventRender) {
+            me.render();
+        }
     },
 
 
@@ -538,12 +546,13 @@ Tree.prototype = {
             getViewData(myActivities[i]);
         }
         //3. 매핑 데이터 기준 시작
-        var mapping, source, target, sourceActivity, targetActivity, sourceActivityView, targetActivityView, sourceView, loaded = [], diffY;
+        var mapping, source, target, selected, sourceActivity, targetActivity, sourceActivityView, targetActivityView, sourceView, loaded = [], diffY;
         var mappings = me.selectMappings();
         for (var i = 0; i < mappings.length; i++) {
             mapping = mappings[i];
             source = mapping['source'];
             target = mapping['target'];
+            selected = mapping['selected'];
             sourceActivity = me.selectRootActivityById(source);
             targetActivity = me.selectById(target);
             if (sourceActivity && targetActivity) {
@@ -577,6 +586,7 @@ Tree.prototype = {
                     for (var v = 0; v < viewData.views.length; v++) {
                         if (viewData.views[v]['id'] == source + '-to-' + targetActivity['id'] + '-mirror') {
                             viewData.views[v].mapping = true;
+                            viewData.views[v].selected = selected;
                         }
                     }
                 }
@@ -615,9 +625,10 @@ Tree.prototype = {
                                         targetView.parentY = sourceView.parentY + diffY;
                                     }
                                 }
-                                //매핑 된 대상에는 mapping 칼럼을 추가해준다.
+                                //매핑 된 대상에는 mapping 과 selected 칼럼을 추가해준다.
                                 if (sourceView['data']['id'] == source) {
                                     targetView.mapping = true;
+                                    targetView.selected = selected;
                                 }
                                 viewData.views.push(targetView);
                             }
@@ -870,8 +881,11 @@ Tree.prototype = {
             if (toRemove) {
                 me.canvas.removeShape(currentDisplayShapes[i]);
                 //라벨이 있다면 함께 지운다.
-                if (me.canvas.getElementById(currentDisplayShapes[i].id + me.Constants.PREFIX.LABEL)) {
-                    me.canvas.removeShape(currentDisplayShapes[i].id + me.Constants.PREFIX.LABEL);
+                if (me.canvas.getElementById(currentDisplayShapes[i].id + me.Constants.PREFIX.MAPPING_LABEL)) {
+                    me.canvas.removeShape(currentDisplayShapes[i].id + me.Constants.PREFIX.MAPPING_LABEL);
+                }
+                if (me.canvas.getElementById(currentDisplayShapes[i].id + me.Constants.PREFIX.SELECTED_LABEL)) {
+                    me.canvas.removeShape(currentDisplayShapes[i].id + me.Constants.PREFIX.SELECTED_LABEL);
                 }
             }
         }
@@ -997,8 +1011,6 @@ Tree.prototype = {
                         moveY = displayViews[i].y - envelope.getCentroid().y;
                         element.shape.geom.move(moveX, moveY);
                         me._RENDERER.redrawShape(element);
-
-                        me.drawMappingLabel(displayViews[i], element);
                     }
                 }
                 //선 연결 도형일 경우 vertices 의 0번째 요소를 비교후, x,y 의 차이만큼 이동시킨다.
@@ -1074,23 +1086,40 @@ Tree.prototype = {
     },
     drawMappingLabel: function (view, element) {
         if (view.mapping) {
-            var id = view.id + this.Constants.PREFIX.LABEL;
-            var size = [20, 12];
-            var offset = [view.x + 5, view.y - 16];
+            var id = view.id + this.Constants.PREFIX.MAPPING_LABEL;
+            var size = [11, 12];
+            var offset = [view.x + 10, view.y - 16];
             var style = {
                 '-webkit-tap-highlight-color': 'rgba(0, 0, 0, 0)',
                 'font-size': '11px',
                 'background-color': 'RGB(66,139,202)',
                 'color': 'whitesmoke',
-                'line-height': '13px',
+                'line-height': '11px',
                 'padding': '2px',
                 'border': '1px solid gray',
-                'width': '22px'
+                'width': '15px'
             };
-            var text = 'mp';
+            var text = 'm';
             var label = this.drawLabel(id, style, element, text, offset, size);
             $(label).find('foreignObject').css(style);
-            return label;
+        }
+        if (view.selected) {
+            var id = view.id + this.Constants.PREFIX.SELECTED_LABEL;
+            var size = [11, 12];
+            var offset = [view.x - 5, view.y - 16];
+            var style = {
+                '-webkit-tap-highlight-color': 'rgba(0, 0, 0, 0)',
+                'font-size': '11px',
+                'background-color': '#5cb85c',
+                'color': 'whitesmoke',
+                'line-height': '10px',
+                'padding': '3px',
+                'border': '1px solid gray',
+                'width': '13px'
+            };
+            var text = 's';
+            var label = this.drawLabel(id, style, element, text, offset, size);
+            $(label).find('foreignObject').css(style);
         }
     },
     drawLabel: function (id, style, element, text, offset, size) {
@@ -1117,6 +1146,7 @@ Tree.prototype = {
         } else {
             this.canvas.setShapeStyle(element, {"opacity": "1"});
         }
+        this.drawMappingLabel(view, element);
     },
     drawFolder: function (view) {
         var me = this;
@@ -1141,6 +1171,7 @@ Tree.prototype = {
         } else {
             this.canvas.setShapeStyle(element, {"opacity": "1"});
         }
+        this.drawMappingLabel(view, element);
     },
     drawEd: function (view) {
         var me = this;
@@ -1176,9 +1207,6 @@ Tree.prototype = {
 
             me.canvas.setShapeStyle(element, {"stroke-dasharray": "-"});
             me.canvas.setShapeStyle(element, {"opacity": "0.3"});
-            if (view.blur) {
-                me.canvas.setShapeStyle(element, {"stroke-dasharray": "-"});
-            }
         }
     },
     /**
@@ -1190,7 +1218,7 @@ Tree.prototype = {
         if (view.blur) {
             this.canvas.setShapeStyle(element, {"stroke-dasharray": "-"});
         } else {
-            this.canvas.setShapeStyle(element, {"stroke-dasharray": ""});
+            this.canvas.setShapeStyle(element, {"stroke-dasharray": "none"});
         }
     },
     /**
@@ -1918,15 +1946,90 @@ Tree.prototype = {
                     }
                 }
 
+                //  selected 가 실제 사용자가 선택한 매핑요소이고,그 여파로 부모폴더(재귀호출) 과 자식들(재귀호출은) 레코드를 생성한다.
+
+                //  폴더 매핑일 경우 부모 폴더의 selected 는 빈 스트링으로 처리한다.
+                //  폴더 매핑일 경우 자식들의 폴더(재귀호출)은 selected ’S’ 처리한다.
+                //
+                //  Ed 매핑일 경우 ed 의 부모 폴더 하나만 selected S 처리한다.
+                //  Ed 매핑일 경우 나머지 부모 폴더는 selected 빈 스트링 처리한다.
+
+                //매핑 데이터 생성
                 var mappingData = {
-                    id: me.uuid(),
+                    id: source.id + '-' + target.id,
                     type: me.Constants.TYPE.MAPPING,
                     source: source.id,
                     target: target.id,
                     position: me.Constants.POSITION.MY_IN,
                     extData: {}
                 };
-                me.updateData([mappingData]);
+                //폴더 드래그일 경우 폴더를 selected 처리.
+                if (source.type == me.Constants.TYPE.FOLDER) {
+                    mappingData.selected = true;
+                }
+                //드래그 된 대상 업데이트
+                me.updateData([mappingData], true);
+
+
+                //ED 드래그 일 경우 부모 폴더를 대상으로 선정과 동시에 selected 처리한다.
+                var standardFolder;
+                if (source.type == me.Constants.TYPE.ED) {
+                    standardFolder = me.selectParentById(source.id);
+                    if (standardFolder && standardFolder.type == me.Constants.TYPE.FOLDER) {
+                        mappingData = {
+                            id: standardFolder.id + '-' + target.id,
+                            type: me.Constants.TYPE.MAPPING,
+                            source: standardFolder.id,
+                            target: target.id,
+                            position: me.Constants.POSITION.MY_IN,
+                            extData: {}
+                        };
+                        me.updateData([mappingData], true);
+                    }
+                } else {
+                    standardFolder = source;
+                }
+
+                if (standardFolder && standardFolder.type == me.Constants.TYPE.FOLDER) {
+                    //자식들(재귀호출) 의 매핑데이터를 생성하고, 폴더는 selected 처리한다.
+                    var child = me.selectRecursiveChildById(standardFolder.id);
+                    var childMapping;
+                    for (var i = 0; i < child.length; i++) {
+                        childMapping = {
+                            id: child[i].id + '-' + target.id,
+                            type: me.Constants.TYPE.MAPPING,
+                            source: child[i].id,
+                            target: target.id,
+                            position: me.Constants.POSITION.MY_IN,
+                            extData: {}
+                        };
+                        if (child[i].type == me.Constants.TYPE.FOLDER) {
+                            childMapping.selected = true;
+                        }
+                        me.updateData([childMapping], true);
+                    }
+
+                    //부모들(재귀호출) 의 매핑데이터를 생성한다. 매핑데이터가 이미 있다면 추가하지 않는다.(selected 보존을 위해서이다.)
+                    var parentMapping, existMapping;
+                    var parents = me.selectRecursiveParentById(standardFolder.id);
+                    for (var i = 0; i < parents.length; i++) {
+                        if (parents[i].type == me.Constants.TYPE.FOLDER) {
+                            parentMapping = {
+                                id: parents[i].id + '-' + target.id,
+                                type: me.Constants.TYPE.MAPPING,
+                                source: parents[i].id,
+                                target: target.id,
+                                position: me.Constants.POSITION.MY_IN,
+                                extData: {}
+                            };
+                            existMapping = me.loadByFilter({id: parents[i].id + '-' + target.id});
+                            if (!existMapping || !existMapping.length) {
+                                me.updateData([existMapping], true);
+                            }
+                        }
+                    }
+                }
+                me.render();
 
                 me.onMapping(event, mappingData);
             }
@@ -1958,40 +2061,66 @@ Tree.prototype = {
      * Shape 에 마우스 우클릭 메뉴를 가능하게 한다.
      */
     enableShapeContextMenu: function () {
-        //var me = this;
-        //$.contextMenu({
-        //    position: function (opt, x, y) {
-        //        opt.$menu.css({top: y + 10, left: x + 10});
-        //    },
-        //    selector: '#' + me._RENDERER.getRootElement().id + ' [_type=SHAPE]',
-        //    build: function ($trigger, event) {
-        //        $(me._RENDERER.getContainer()).focus();
-        //        var items;
-        //
-        //        if (me._getSelectedElement().length == 1) {
-        //            if (me._getSelectedElement()[0].shape instanceof OG.shape.EdgeShape) {
-        //                items = me.makeEdgeContextMenu(true);
-        //            } else if (me._getSelectedElement()[0].shape instanceof OG.shape.bpmn.G_Gateway) {
-        //                items = me.makeGatewayContextMenu();
-        //            } else if (me._getSelectedElement()[0].shape instanceof OG.shape.bpmn.Event) {
-        //                items = me.makeEventContextMenu();
-        //            } else if (me._getSelectedElement()[0].shape instanceof OG.shape.bpmn.A_Task) {
-        //                items = me.makeTaskContextMenu();
-        //            } else if (me._getSelectedElement()[0].shape instanceof OG.shape.bpmn.A_Subprocess) {
-        //                items = me.makeSubprocessContextMenu();
-        //            } else if (me._getSelectedElement()[0].shape instanceof OG.shape.bpmn.Value_Chain) {
-        //                items = me.makeValueChainContextMenu();
-        //            } else {
-        //                items = me.makeDefaultContextMenu();
-        //            }
-        //        } else {
-        //            items = me.makeMultiContextMenu();
-        //        }
-        //        return {
-        //            items: items
-        //        };
-        //    }
-        //});
+
+        // 1.콘텍스트 메뉴
+        // 1-1) position: my-in type: a,f,e
+        // 매핑 삭제
+        // 폴더,ED : 선택한 Folder or ED를 Input 으로 쓰는 Workflow - Activity정보 표현 (my-out 쪽과 같은 것을 표현)
+
+        // 1-2) position: my-out type: a,f,e
+        // 액티비티 : 폴더,ed 추가 삭제 (폴더가 있을경우 폴더만 가능)
+        // 폴더 : 폴더,ed 추가 삭제 (폴더가 있을경우 폴더만 가능)
+        // ED : 삭제
+        // 폴더,ED : 선택한 Folder or ED를 Input 으로 쓰는 Workflow - Activity정보 표현
+        // PICK ED : 미정.
+
+        // 1-3) position: other-out type: a,f,e
+        // 폴더,ED : 선택한 Folder or ED를 Input 으로 쓰는 Workflow - Activity정보 표현
+
+        // 1-4) 공통
+        // 더블 클릭시 프로퍼티 보기.
+
+        // 2.Area
+        // Area 별로 색상 틀리기 해놓기.
+
+        // 3.Save
+        //  중요. Save 시에, 데이터 변화 리스트중에서, 삭제에 관련한 항목을 먼저 실행 후, CRU 에 대한걸 처리하도록 한다.
+
+        // 5.데이터
+        // id 를 바탕으로 선택한 Folder or ED를 Input 으로 쓰는 Workflow - Activity 정보 호출을 불러오는 쿼리
+
+        var me = this;
+        $.contextMenu({
+            position: function (opt, x, y) {
+                opt.$menu.css({top: y + 10, left: x + 10});
+            },
+            selector: '#' + me._RENDERER.getRootElement().id + ' [_type=SHAPE]',
+            build: function ($trigger, event) {
+                $(me._RENDERER.getContainer()).focus();
+                var element = $trigger[0];
+                var id = element.id;
+
+                var items;
+                items = {
+                    'addED': {
+                        name: 'Add ED', icon: 'edit'
+                    },
+                    'remove': {
+                        name: 'Remove', icon: 'delete'
+                    },
+                    'properties': {
+                        name: 'Properties', icon: 'edit'
+                    },
+                    'listProperties': {
+                        name: 'List Properties', icon: 'edit'
+                    }
+                };
+                return false;
+                //return {
+                //    items: items
+                //};
+            }
+        });
     }
 };
 Tree.prototype.constructor = Tree;
