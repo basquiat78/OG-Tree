@@ -1222,6 +1222,7 @@ Tree.prototype = {
             console.log(element.id);
         });
         me.bindDblClickEvent(element);
+        me.bindTooltip(element);
     },
     updateFolder: function (view, element) {
         if (view.blur) {
@@ -1247,6 +1248,7 @@ Tree.prototype = {
             console.log(element.id);
         });
         me.bindDblClickEvent(element);
+        me.bindTooltip(element);
     },
     updateEd: function (view, element) {
         if (view.blur) {
@@ -1272,6 +1274,7 @@ Tree.prototype = {
             console.log(element.id);
         });
         me.bindDblClickEvent(element);
+        me.bindTooltip(element);
     },
     drawMappingLine: function (view) {
         if (view.vertieces) {
@@ -1328,7 +1331,7 @@ Tree.prototype = {
             }
         }
     },
-    updateActivityRelLien: function(view,element){
+    updateActivityRelLien: function (view, element) {
         //if (view.blur) {
         //    this.canvas.setShapeStyle(element, {"stroke-dasharray": "-"});
         //} else {
@@ -2051,6 +2054,34 @@ Tree.prototype = {
         me.bindActivityMove();
         me.enableShapeContextMenu();
     },
+    bindTooltip: function (element) {
+        var me = this;
+        var view = me.selectViewById(me._VIEWDATA, element.id);
+        if (view) {
+            var text = view.data.id + '-' + view.data.name;
+            var tooltip =
+                $('<div class="ui-tooltip ui-widget ui-corner-all" id="' + element.id + '-tooltip">' +
+                    '<div class="ui-tooltip-content">'+text+'</div>' +
+                    '</div>');
+            tooltip.css({
+                position: 'absolute'
+            });
+            $(element).bind('mouseover', function (event) {
+                tooltip.css({
+                    'top': event.pageY,
+                    'left': event.pageX,
+                    'background-color': '#333',
+                    'color': 'whitesmoke',
+                    'font-size': '12px'
+                });
+                $('body').append(tooltip);
+                console.log(123);
+            });
+            $(element).bind('mouseout', function () {
+                tooltip.remove();
+            });
+        }
+    },
     bindDblClickEvent: function (element) {
         var me = this;
         $(element).unbind('dblclick');
@@ -2493,6 +2524,19 @@ Tree.prototype = {
             }
         }
         me.render();
-    }
+    },
+
+
+    //TODO
+    //워크플로우 - 액티비티 관게를 표현할 그리드 창 만들기.
+    //각 아이템마다, 말풍선은 넘버와 name 이 표기되면 된다. OK.
+    //담당자명 , 명칭, 생성일 재정렬
+    //라벨 on / off 옵션
+    //상단 정보창 접었다 핌
+    //상단 폰트 조정
+    //상단 기본정보창 워크플로우 정보 바인딩.
+
+    //======뷰어 창=======
+
 };
 Tree.prototype.constructor = Tree;
