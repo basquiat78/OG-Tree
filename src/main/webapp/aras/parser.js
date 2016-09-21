@@ -18,7 +18,12 @@ Parser.prototype = {
         var prev;
         for (var i = 0; i < resultNodeList.length; i++) {
             var xmlNode = resultNodeList[i];
-            var xmlNodeToString = '<node>' + $(xmlNode).html() + '</node>';
+            var xmlNodeToString = '';
+            if(window.ActiveXObject){
+                xmlNodeToString = xmlNode.xml;
+            }else{
+                xmlNodeToString = '<node>' + $(xmlNode).html() + '</node>';
+            }
             var xmlNodeStringToJSON = $.xml2json(xmlNodeToString);
             var node = xmlNodeStringToJSON, object;
 
