@@ -173,6 +173,7 @@ Add.prototype.refresh = function () {
     var select = new Select();
 
     //불러낸 자식 및 폴더 리스트.
+    var refreshData = [];
     var apiResult = select.loadChild('OUT', data, view);
     var nodeList = apiResult.nodeList;
     for (var i = 0; i < nodeList.length; i++) {
@@ -202,11 +203,11 @@ Add.prototype.refresh = function () {
             };
         }
         if (object) {
-            data.push(object);
+            refreshData.push(object);
         }
     }
 
-    tree.updateData(data);
+    tree.updateData(refreshData);
 };
 
 Add.prototype.addRelation = function (itmFolder, itmParentItem, str_parent_type, str_parent_id, dataType) {
