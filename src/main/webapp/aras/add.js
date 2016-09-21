@@ -12,122 +12,7 @@ Add.prototype = new Aras();
 Add.superclass = Aras;
 Add.prototype.constructor = Add;
 
-Add.prototype.alert = function () {
-	alert(1);
-//    //이벤트가 발생한 폴더 (부모폴더)
-//    var data = this.data;
-//    var view = this.view;
-//    var tree = this.tree;
-//    var parent = this.tree.selectById(data);
-//
-//    //parent 의 아이디를 사용해서 아라스를 통해 만들어낸 자식 폴더 및 ED 를 불러오기
-//
-//
-//    //불러낸 자식 및 폴더 리스트.
-//    var apiResult = [];
-//    var nodeList = apiResult.nodeList;
-//    for (var i = 0; i < nodeList.length; i++) {
-//        var xmlNode = nodeList[i];
-//        var xmlNodeToString = '<node>' + $(xmlNode).html() + '</node>';
-//        var xmlNodeStringToJSON = $.xml2json(xmlNodeToString);
-//        var node = xmlNodeStringToJSON, object;
-//        if (node.kind == 'F') {
-//            object = {
-//                type: tree.Constants.TYPE.FOLDER,
-//                id: node.f_id,
-//                name: node.fs_name,
-//                position: tree.Constants.POSITION.MY_OUT,
-//                parentId: node.fs_parent_id,
-//                expand: true,
-//                extData: JSON.parse(JSON.stringify(node))
-//            };
-//        } else if (node.kind == 'E') {
-//            object = {
-//                type: tree.Constants.TYPE.ED,
-//                id: node.f_id,
-//                name: node.fs_name,
-//                position: tree.Constants.POSITION.MY_OUT,
-//                parentId: node.fs_parent_id,
-//                expand: true,
-//                extData: JSON.parse(JSON.stringify(node))
-//            };
-//        }
-//        if (object) {
-//            data.push(object);
-//        }
-//    }
-//
-//    tree.updateData(data);
-};
-
-Add.prototype.addRel = function(itmFolder, itmParentItem, str_parent_type, str_parent_id) {
-    // parent type에 따라 set property 대상 분기
-    var amlbody = '';
-    var strOutRelTypeName = '';
-    if (str_parent_type == 'DHI_WF_WFAT') {
-        itmFolder.setProperty('_rel_wfat', str_parent_id);
-        strOutRelTypeName = 'DHI_WF_WFAT_FDT_OUT_REL';
-        
-    }  else if (str_parent_type == 'DHI_WF_WFA') {
-        itmFolder.setProperty('_rel_wfa', str_parent_id);
-        strOutRelTypeName = 'DHI_WF_WFA_FD_OUT_REL';
-        
-    }  else if (str_parent_type == 'DHI_WF_Folder_Template') {
-        itmFolder.setProperty('_rel_wfat', itmParentItem.getProperty('_rel_wfat', ''));
-        strOutRelTypeName = 'DHI_WF_FDT_FDT_OUT_REL';
-        
-    } else if (str_parent_type == 'DHI_WF_Folder') {
-        itmFolder.setProperty('_rel_wfa', itmParentItem.getProperty('_rel_wfa', ''));
-        strOutRelTypeName = 'DHI_WF_FD_FD_OUT_REL';
-        
-    } else {
-    	;
-    }
-    var path = '';
-    var getItem = parent.top.thisItem.newItem(itmParentItem.GetType(), 'get');
-    getItem.setProperty('id', itmParentItem.getID());
-    getItem = getItem.apply();
-   
-    if (getItem.getItemCount() > 0) {
-        if (this.data.extData.kind == 'A') {
-            path = getItem.getProperty('item_number', '');
-            
-        } else if (this.data.extData.kind == 'F') {
-            path = getItem.getProperty('_path', '');
-        }
-    }
-
-    var currentfolder = parent.top.thisItem.newItem(itmFolder.GetType(), 'get');
-    currentfolder.setProperty('id', itmFolder.getID());
-    currentfolder = currentfolder.apply();
-    path += '||' + currentfolder.getProperty('item_number', '');
-    
-    var chkDup = parent.top.thisItem.newItem(strOutRelTypeName, 'get');
-    chkDup.setProperty('source_id', str_parent_id);
-    chkDup.setProperty('related_id', itmFolder.getID());
-    chkDup = chkDup.apply();
-    
-    if (chkDup.getItemCount() == 0) {
-    	body = "<sqlString>UPDATE innovator." + itmFolder.GetType() + " SET _PATH = '" + path + "' WHERE id = '" + itmFolder.getID() + "'</sqlString>";
-        var cruApply = inn.applyMethod('DHI_APPLY_SQL', body);
-
-        // make output Relationship
-        var itmOutRelType = inn.newItem(strOutRelTypeName, 'add');
-        itmOutRelType.setProperty('source_id', str_parent_id);
-        itmOutRelType.setProperty('related_id', itmFolder.getID());
-        itmOutRelType.setProperty('owned_by_id', itmParentItem.getProperty('owned_by_id', ''));
-        itmOutRelType.apply();
-
-        var body = '<source_id>' + str_parent_id + '</source_id>';
-        body += '<related_id>' + itmFolder.getID() + '</related_id>';
-        var result = inn.applyMethod('DHI_WF_RESET_STATE_ITEM', body);
-    }
-    
-    // call
-    this.alert();
-};
-
-Add.prototype.open = function (data, view) {
+Add.prototype.createFolder = function (data, view) {
 	this.data = data;
 	this.view = view;
 
@@ -267,11 +152,129 @@ Add.prototype.open = function (data, view) {
     asyncResult.then(function (arasWindow) {
         var EventBottomSave = {};
         EventBottomSave.window = window;
-        EventBottomSave.handler =me.addRel;
+        EventBottomSave.handler = function() { me.addRelation(itmFolder, itmParentItem, tmpType, me.data.extData.f_id, me.data.extData.kind); }
         arasWindow.top.commandEventHandlers['aftersave'] = [];
         arasWindow.top.commandEventHandlers['aftersave'].push(EventBottomSave);
 
         arasWindow.top.commandEventHandlers['afterunlock'] = [];
         arasWindow.top.commandEventHandlers['afterunlock'].push(EventBottomSave);
     });
+};
+
+Add.prototype.refresh = function () {
+	alert(1);
+//    //이벤트가 발생한 폴더 (부모폴더)
+//    var data = this.data;
+//    var view = this.view;
+//    var tree = this.tree;
+//    var parent = this.tree.selectById(data);
+//
+//    //parent 의 아이디를 사용해서 아라스를 통해 만들어낸 자식 폴더 및 ED 를 불러오기
+//
+//
+//    //불러낸 자식 및 폴더 리스트.
+//    var apiResult = [];
+//    var nodeList = apiResult.nodeList;
+//    for (var i = 0; i < nodeList.length; i++) {
+//        var xmlNode = nodeList[i];
+//        var xmlNodeToString = '<node>' + $(xmlNode).html() + '</node>';
+//        var xmlNodeStringToJSON = $.xml2json(xmlNodeToString);
+//        var node = xmlNodeStringToJSON, object;
+//        if (node.kind == 'F') {
+//            object = {
+//                type: tree.Constants.TYPE.FOLDER,
+//                id: node.f_id,
+//                name: node.fs_name,
+//                position: tree.Constants.POSITION.MY_OUT,
+//                parentId: node.fs_parent_id,
+//                expand: true,
+//                extData: JSON.parse(JSON.stringify(node))
+//            };
+//        } else if (node.kind == 'E') {
+//            object = {
+//                type: tree.Constants.TYPE.ED,
+//                id: node.f_id,
+//                name: node.fs_name,
+//                position: tree.Constants.POSITION.MY_OUT,
+//                parentId: node.fs_parent_id,
+//                expand: true,
+//                extData: JSON.parse(JSON.stringify(node))
+//            };
+//        }
+//        if (object) {
+//            data.push(object);
+//        }
+//    }
+//
+//    tree.updateData(data);
+};
+
+Add.prototype.addRelation = function(itmFolder, itmParentItem, str_parent_type, str_parent_id, dataType) {
+	var inn = this._arasObject.newIOMInnovator();
+	
+    // parent type에 따라 set property 대상 분기
+    var amlbody = '';
+    var strOutRelTypeName = '';
+    if (str_parent_type == 'DHI_WF_WFAT') {
+        itmFolder.setProperty('_rel_wfat', str_parent_id);
+        strOutRelTypeName = 'DHI_WF_WFAT_FDT_OUT_REL';
+        
+    }  else if (str_parent_type == 'DHI_WF_WFA') {
+        itmFolder.setProperty('_rel_wfa', str_parent_id);
+        strOutRelTypeName = 'DHI_WF_WFA_FD_OUT_REL';
+        
+    }  else if (str_parent_type == 'DHI_WF_Folder_Template') {
+        itmFolder.setProperty('_rel_wfat', itmParentItem.getProperty('_rel_wfat', ''));
+        strOutRelTypeName = 'DHI_WF_FDT_FDT_OUT_REL';
+        
+    } else if (str_parent_type == 'DHI_WF_Folder') {
+        itmFolder.setProperty('_rel_wfa', itmParentItem.getProperty('_rel_wfa', ''));
+        strOutRelTypeName = 'DHI_WF_FD_FD_OUT_REL';
+        
+    } else {
+    	;
+    }
+    var path = '';
+    var getItem = this._arasThisItem.newItem(itmParentItem.GetType(), 'get');
+    getItem.setProperty('id', itmParentItem.getID());
+    getItem = getItem.apply();
+   
+    if (getItem.getItemCount() > 0) {
+        if (dataType == 'A') {
+            path = getItem.getProperty('item_number', '');
+            
+        } else if (dataType == 'F') {
+            path = getItem.getProperty('_path', '');
+        }
+    }
+
+    var currentfolder = this._arasThisItem.newItem(itmFolder.GetType(), 'get');
+    currentfolder.setProperty('id', itmFolder.getID());
+    currentfolder = currentfolder.apply();
+    path += '||' + currentfolder.getProperty('item_number', '');
+    
+    var chkDup = this._arasThisItem.newItem(strOutRelTypeName, 'get');
+    chkDup.setProperty('source_id', str_parent_id);
+    chkDup.setProperty('related_id', itmFolder.getID());
+    chkDup = chkDup.apply();
+    
+    if (chkDup.getItemCount() == 0) {
+    	body = "<sqlString>UPDATE innovator." + itmFolder.GetType() + " SET _PATH = '" + path + "' WHERE id = '" + itmFolder.getID() + "'</sqlString>";
+        var cruApply = inn.applyMethod('DHI_APPLY_SQL', body);
+
+        // make output Relationship
+        var itmOutRelType = inn.newItem(strOutRelTypeName, 'add');
+        itmOutRelType.setProperty('source_id', str_parent_id);
+        itmOutRelType.setProperty('related_id', itmFolder.getID());
+        itmOutRelType.setProperty('owned_by_id', itmParentItem.getProperty('owned_by_id', ''));
+        itmOutRelType.apply();
+
+        var body = '<source_id>' + str_parent_id + '</source_id>';
+        body += '<related_id>' + itmFolder.getID() + '</related_id>';
+        var result = inn.applyMethod('DHI_WF_RESET_STATE_ITEM', body);
+        
+        if(result) {
+        	this.refresh();
+        }
+    }
 };

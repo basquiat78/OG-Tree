@@ -115,8 +115,8 @@ $(function () {
      * @param data
      */
     tree.onMakeFolder = function (data, view) {
-        var addFolder = new Add(tree);
-        addFolder.open(data, view);
+        var add = new Add(tree);
+        add.createFolder(data, view);
     };
     /**
      * 폴더 또는 ED 또는 액티비티 삭제 콘텍스트 클릭시
