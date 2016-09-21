@@ -83,6 +83,29 @@
     <script type="text/javascript" src="doosan/shape/Expander.js"></script>
     <script type="text/javascript" src="doosan/tree.js"></script>
     <script type="text/javascript" src="doosan/doosan.js"></script>
+    
+    <style>
+        a svg:hover #SVGID_2_RFR
+        {
+            fill: #111;
+        }
+
+        #base_popup { position:absolute; top:0%; left:0%; width:100%; height:100%;overflow:hidden; margin:0px; padding:0px;  }
+        #base_popup_bg { position:absolute; top:0%; left:0%; width:100%; height:100%;overflow:hidden; background-color: darkslategray; filter:alpha(opacity:'80'); opacity : 0.8; margin:0px; padding:0px; }   
+        #menu_popup { position:absolute; top:50%; left:50%; width:300px; height:360px;margin-left: -150px;margin-top: -175px; overflow:hidden; background-color: white; border: 1px solid black; }   
+
+        .cbgcolor
+        {
+            background-color: #3498DB;
+        }
+
+        .cbgcolor_close
+        {
+            background-color: #F1C000;
+        }
+
+    </style>
+    
 </head>
 
 <div class="wrapper">
@@ -243,7 +266,7 @@
                 </div>
                 <div>
                     <button class="btn btn-default" id="saveBtn" type="button">Save</button>
-                    <button class="btn btn-default" id="newActivity" type="button">New Activity</button>
+                    <button class="btn btn-default" id="newActivity" type="button" onclick="javascript: onMakeActivity()">New Activity</button>
                     <button class="btn btn-default" id="refresh" type="button">Refresh</button>
                     <button class="btn btn-default" id="zoomIn" type="button">Zoom | IN</button>
                     <button class="btn btn-default" id="zoomOut" type="button">Zoom | OUT</button>
@@ -258,6 +281,82 @@
     </div>
     <!--/container-->
     <!-- End Content Part -->
+    
+    <div id="base_popup" style=" display:none ; z-index:5001;">
+        <div id="base_popup_bg" style="width:100%; height:100%;"></div>
+        <div id="menu_popup">
+            <table style="width:100%">
+                <tr>
+                    <td style="text-align:center; background-color:#3498DB; height:35px; font-weight:bold; font-size:medium;"><font size="5" color="white">Select ED Type</font></td>
+                </tr>
+                <tr>
+                    <td style="height:35px; text-align:center">
+                        Select the Type of Item That is to be created.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <table style="width:100%">
+                            
+                            <tr>
+                                <td style="text-align:center; height:30px;">
+                                    <div class="widget">
+                                        <button class="cbgcolor" style="width:250px;" data="test" id="CAD" ><font size="4" color="white">2D & 3D Drawing</font></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                                        
+                            <tr>
+                                <td style="text-align:center; height:30px;">
+                                    <div class="widget">
+                                        <button class="cbgcolor" style="width:250px;" data="test" id="DHI_C3D_OUTPUT" ><font size="4" color="white">3D BOM</font></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                                        
+                            <tr>
+                                <td style="text-align:center; height:30px;">
+                                    <div class="widget">
+                                        <button class="cbgcolor" style="width:250px;" data="test" id="Document" ><font size="4" color="white">Document</font></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                                        
+                            <tr>
+                                <td style="text-align:center; height:30px;">
+                                    <div class="widget">
+                                        <button class="cbgcolor" style="width:250px;" data="test" id="DHI_IntelliSheet" ><font size="4" color="white">Engineering Data</font></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                                        
+                            <tr>
+                                <td style="text-align:center; height:30px;">
+                                    <div class="widget">
+                                        <button class="cbgcolor" style="width:250px;" data="test" id="DHI_ED_KDM" ><font size="4" color="white">Key Data</font></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                                        
+                            <tr>
+                                <td style="text-align:center; height:30px;">
+                                    <div class="widget">
+                                        <button class="cbgcolor_close" style="width:250px;" id="popupclose" ><font size="4" color="white">Close</font></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
 
 </div>
 <!--/wrapper-->
