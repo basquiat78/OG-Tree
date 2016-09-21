@@ -12,6 +12,10 @@ Add.prototype = new Aras();
 Add.superclass = Aras;
 Add.prototype.constructor = Add;
 
+Add.prototype.createActivity = function() {
+	
+};
+
 Add.prototype.createFolder = function (data, view) {
     this.data = data;
     this.view = view;
@@ -22,7 +26,7 @@ Add.prototype.createFolder = function (data, view) {
     var targetwfa = '';
     var targetwf = '';
     var target_rel_wf = '';
-    // ==================================================================
+    
     if (this._stdYN == 'Y') {
         if (this.data.extData.kind == 'A') {
             tmpType = 'DHI_WF_WFAT';
@@ -161,6 +165,10 @@ Add.prototype.createFolder = function (data, view) {
         arasWindow.top.commandEventHandlers['afterunlock'] = [];
         arasWindow.top.commandEventHandlers['afterunlock'].push(EventBottomSave);
     });
+};
+
+Add.prototype.createED = function(data, view) {
+	$('#base_popup').show();
 };
 
 Add.prototype.refresh = function () {

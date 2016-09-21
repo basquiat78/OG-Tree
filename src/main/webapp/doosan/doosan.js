@@ -110,7 +110,8 @@ $(function () {
      * @param view
      */
     tree.onMakeEd = function (data, view) {
-        console.log('onMakeEd', data, view);
+    	var add = new Add(tree);
+        add.createED(data, view);
     };
     /**
      * 폴더 생성 콘텍스트 클릭시
@@ -120,6 +121,16 @@ $(function () {
     tree.onMakeFolder = function (data, view) {
         var add = new Add(tree);
         add.createFolder(data, view);
+    };
+    
+    /**
+     * 액티비티 생성 콘텍스트 클릭시
+     * @param data
+     * @param view
+     */
+    function onMakeActivity() {
+        var add = new Add(tree);
+        add.createActivity();
     };
     /**
      * 폴더 또는 ED 또는 액티비티 삭제 콘텍스트 클릭시
