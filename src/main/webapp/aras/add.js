@@ -168,7 +168,6 @@ Add.prototype.refresh = function () {
     var data = this.data;
     var view = this.view;
     var tree = this.tree;
-    var parent = tree.selectById(data);
 
     //parent 의 아이디를 사용해서 아라스를 통해 만들어낸 자식 폴더 및 ED 를 불러오기
     var select = new Select();

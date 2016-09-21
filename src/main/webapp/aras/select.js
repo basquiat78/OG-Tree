@@ -11,9 +11,10 @@ Select.prototype.constructor = Select;
 
 Select.prototype.loadChild = function (inout, data, view) {
     var me = this;
+    var folderYn = data.type == 'folder' ? 'Y' : 'N';
     var body = '<activity_id>' + view.root + '</activity_id>';
     body += '<std_yn>' + this._stdYN + '</std_yn>';
-    body += '<folder_yn>' + data.type == 'folder' ? 'Y' : 'N' + '</folder_yn>';
+    body += '<folder_yn>' + folderYn + '</folder_yn>';
     body += '<folder_id>' + data.id + '</folder_id>';
     body += '<inout>' + inout + '</inout>';
 
