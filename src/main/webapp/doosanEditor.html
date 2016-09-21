@@ -65,6 +65,10 @@
     <!-- uengine CSS -->
     <link rel="stylesheet" href="resources/assets/css/uengine.css">
 
+    <!-- data table -->
+    <link rel="stylesheet" href="resources/plugins/datatable/datatables.css">
+    <script type="text/javascript" src="resources/plugins/datatable/datatables.js"></script>
+
     <!-- libs -->
     <script type="text/javascript" src="lib/jqueryXML2JSON/jquery.xml2json.js"></script>
     <script type="text/javascript" src="aras/prototype/aras.js"></script>
@@ -124,15 +128,32 @@
 
     <div class="breadcrumbs">
         <div class="container">
-            <h1 class="pull-left">Doosan Workflow Editor</h1>
+            <h1 class="pull-left">Doosan Workflow Editor <i class="header-angle fa fa-angle-down" style="cursor: pointer"></i></h1>
+            <script>
+                $(function () {
+                    $('.header-angle').click(function () {
+                        var headerAngle = $(this);
+                        if (headerAngle.hasClass('fa-angle-down')) {
+                            headerAngle.removeClass('fa-angle-down');
+                            headerAngle.addClass('fa-angle-right');
+                            $('.header-info').hide();
+                        }else{
+                            headerAngle.addClass('fa-angle-down');
+                            headerAngle.removeClass('fa-angle-right');
+                            $('.header-info').show();
+                        }
+                    });
+                })
+            </script>
         </div>
     </div>
 
     <!--=== Content Part ===-->
     <div class="container" style="padding-top: 30px;padding-bottom: 30px;">
-        <div class="row">
+        <div class="row header-info">
             <div class="col-md-5" style="border-right: 1px solid grey">
                 <h4>Other Workflow</h4>
+
                 <div class="form-group col-md-4">
                     <label class="control-label">Discipline</label>
 
@@ -169,7 +190,7 @@
                 <h4>My Workflow</h4>
             </div>
         </div>
-        <div class="row">
+        <div class="row header-info">
             <div class="col-md-5" style="border-right: 1px solid grey">
                 <div class="tag-box tag-box-v2" style="padding: 5px;">
                     <table class="table margin-bottom-10">
@@ -241,12 +262,13 @@
                         </tbody>
                     </table>
                 </div>
-                <div>
+                <div class="toolbar">
                     <button class="btn btn-default" id="saveBtn" type="button">Save</button>
                     <button class="btn btn-default" id="newActivity" type="button">New Activity</button>
                     <button class="btn btn-default" id="refresh" type="button">Refresh</button>
                     <button class="btn btn-default" id="zoomIn" type="button">Zoom | IN</button>
                     <button class="btn btn-default" id="zoomOut" type="button">Zoom | OUT</button>
+                    <button class="btn btn-default" id="labelSwitch" type="button">Label On|Off</button>
                 </div>
             </div>
         </div>
@@ -261,6 +283,24 @@
 
 </div>
 <!--/wrapper-->
+
+<div class="modal fade" id="listRelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title">List Relations</h4>
+            </div>
+            <div class="modal-body">
+                <table id="listRelGrid" class="display" width="100%"></table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-u" type="button" name="close">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- ajax 호출 UI 블락커 && 커스터마이징 -->
 <script type="text/javascript" src="resources/plugins/blockUI/blockUI.js"></script>
