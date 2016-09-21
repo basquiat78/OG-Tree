@@ -2543,7 +2543,7 @@ Tree.prototype = {
             }
         }
         me.render();
-    },
+    }
 
 
     //TODO
