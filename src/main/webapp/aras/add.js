@@ -167,8 +167,11 @@ Add.prototype.createFolder = function (data, view) {
     });
 };
 
-Add.prototype.createED = function(data, view) {
-	$('#base_popup').show();
+Add.prototype.createED = function(edType) {
+	 var inn = this._arasObject.newIOMInnovator();
+	// ed item 생성
+    var itmED = inn.newItem(edType, "add");
+	this._arasObject.uiShowItem(itmED.getType(), itmED.getID());
 };
 
 Add.prototype.refresh = function () {

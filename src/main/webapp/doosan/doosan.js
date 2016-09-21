@@ -110,9 +110,35 @@ $(function () {
      * @param view
      */
     tree.onMakeEd = function (data, view) {
-    	var add = new Add(tree);
-        add.createED(data, view);
+    	showSelectEDTypeMenu();
     };
+    
+    /**
+     * Ed 생성 콘텍스트 클릭시
+     * @param data
+     * @param view
+     */
+    $('.cbgcolor').click(function() {
+    	var edType = $(this).attr('id');
+    	
+    	var add = new Add(tree);
+    	add.createED(edType);
+    });
+    
+    /**
+     * Ed 생성 콘텍스트 클릭시 ED 선택 팝업 보이기
+     */
+    function showSelectEDTypeMenu() {
+    	$('#base_popup').show();
+    };
+    
+    /**
+     * Ed 생성 콘텍스트 클릭시 ED 선택 팝업 숨기기
+     */
+    $('#edPopupClose').click(function() {
+    	$('#base_popup').hide();
+    });
+    
     /**
      * 폴더 생성 콘텍스트 클릭시
      * @param data
@@ -124,14 +150,14 @@ $(function () {
     };
     
     /**
-     * 액티비티 생성 콘텍스트 클릭시
+     * 액티비티 생성 콘텍스트 버튼 클릭시
      * @param data
      * @param view
      */
-    function onMakeActivity() {
+    $('#newActivity').click(function() {
         var add = new Add(tree);
         add.createActivity();
-    };
+    });
     /**
      * 폴더 또는 ED 또는 액티비티 삭제 콘텍스트 클릭시
      * @param data
