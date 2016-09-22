@@ -395,7 +395,7 @@ Doosan.prototype = {
                     };
                 } else if (node.kind == 'E') {
                     object = {
-                        type: tree.Constants.TYPE.ED,
+                        type: me.tree.Constants.TYPE.ED,
                         id: node.f_id,
                         name: node.fs_name,
                         position: who == 'other' ? me.tree.Constants.POSITION.OTHER_OUT : me.tree.Constants.POSITION.MY_OUT,
