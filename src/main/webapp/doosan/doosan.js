@@ -11,6 +11,7 @@ Doosan.prototype = {
         me.tree = new Tree('canvas');
         me.tree.init();
         me.aras = new Aras(me.tree);
+        me.aras.init();
 
         //셀렉트 박스 이벤트를 걸고 초기데이터를 불러온다.
         me.bindSelectBoxEvent();
