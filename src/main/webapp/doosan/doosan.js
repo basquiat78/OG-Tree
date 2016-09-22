@@ -28,8 +28,8 @@ Doosan.prototype = {
         // create data
         var myInData = me.createMyWorkFlowData(inResult['nodeList'], 'in');
         var myOutData = me.createMyWorkFlowData(outResult['nodeList'], 'out');
-        myInData.concat(myOutData);
-        me.tree.updateData(myInData);
+        var concat = myInData.concat(myOutData);
+        me.tree.updateData(concat);
 
         //$.getJSON("doosan/sample/myData.json", function (myData) {
         //
