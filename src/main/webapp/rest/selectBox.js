@@ -1,9 +1,10 @@
 /**
  * Created by MisakaMikoto on 2016. 9. 6..
  */
-var SelectBox = function (tree) {
-	SelectBox.superclass.call(this);
-    this._tree = tree;
+var SelectBox = function (tree, aras) {
+    SelectBox.superclass.call(this);
+    this.tree = tree;
+    this.aras = aras;
 };
 
 SelectBox.prototype = new Rest();

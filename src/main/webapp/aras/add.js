@@ -26,6 +26,7 @@ Add.prototype.createFolder = function (data, view) {
     var targetwfa = '';
     var targetwf = '';
     var target_rel_wf = '';
+    var target_rel_wf_com = '_rel_wf';
     
     if (this._stdYN == 'Y') {
         if (this.data.extData.kind == 'A') {
@@ -52,7 +53,6 @@ Add.prototype.createFolder = function (data, view) {
         target_rel_wf = '_rel_wf';
 
     }
-    target_rel_wf_com = '_rel_wf';
 
     var strItemTypeName = '';
     if (tmpType == 'DHI_WF_WFAT' || tmpType == 'DHI_WF_Folder_Template') {
@@ -158,7 +158,7 @@ Add.prototype.createFolder = function (data, view) {
         EventBottomSave.window = window;
         EventBottomSave.handler = function () {
             me.addRelation(itmFolder, itmParentItem, tmpType, me.data.extData.f_id, me.data.extData.kind);
-        }
+        };
         arasWindow.top.commandEventHandlers['aftersave'] = [];
         arasWindow.top.commandEventHandlers['aftersave'].push(EventBottomSave);
 
@@ -224,7 +224,6 @@ Add.prototype.refresh = function () {
 Add.prototype.addRelation = function (itmFolder, itmParentItem, str_parent_type, str_parent_id, dataType) {
     var inn = this._arasObject.newIOMInnovator();
 
-    // parent type에 따라 set property 대상 분기
     var amlbody = '';
     var strOutRelTypeName = '';
     if (str_parent_type == 'DHI_WF_WFAT') {
