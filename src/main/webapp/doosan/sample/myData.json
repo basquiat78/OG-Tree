@@ -172,11 +172,20 @@
   {
     "type": "mapping",
     "id": "another-fd-1-my-ac-3",
-    "source": "another-fd-1",
+    "source": "another-fd-1-1",
+    "target": "my-ac-1",
+    "selected": false,
+    "position": "my-in",
+    "extData": {}
+  },
+  {
+    "type": "mapping",
+    "id": "another-fd-1-1-my-ac-3",
+    "source": "another-fd-1-1",
     "target": "my-ac-1",
     "selected": false,
     "position": "my-in",
     "extData": {},
-    "parentId" : "0C0B8C09D8224BE7853824277EF9A0D2"
+    "parentId" : "another-fd-1"
   }
 ]
