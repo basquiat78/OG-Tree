@@ -1,5 +1,5 @@
 /**
- * Created by MisakaMikoto on 2016. 9. 6..
+ * Created by Seungpil, Park on 2016. 9. 6..
  */
 var Add = function (tree) {
     Add.superclass.call(this);

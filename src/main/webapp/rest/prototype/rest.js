@@ -1,5 +1,5 @@
 /**
- * Created by MisakaMikoto on 2016. 9. 6..
+ * Created by Seungpil, Park on 2016. 9. 6..
  */
 var Rest = function () {
 	this._wfId = (parent.top.aras != null && typeof parent.top.aras != 'undefined') ? parent.top.thisItem.getID() : '';

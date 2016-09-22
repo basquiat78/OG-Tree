@@ -272,7 +272,6 @@ Tree.prototype = {
         me.removeDataByFilter({position: me.Constants.POSITION.MY_OUT});
 
         me.updateData(data);
-        me.render();
     },
     /**
      * 스토리지의 Other Workflow 관련 데이터를 삭제하고, 업데이트 한 후 렌더링을 수행한다.
@@ -287,7 +286,6 @@ Tree.prototype = {
         me.removeDataByFilter({position: me.Constants.POSITION.OTHER_OUT});
 
         me.updateData(data);
-        me.render();
     },
     /**
      * 데이터를 업데이트한다.

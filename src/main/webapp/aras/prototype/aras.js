@@ -1,5 +1,5 @@
 /**
- * Created by MisakaMikoto on 2016. 9. 6..
+ * Created by Seungpil, Park on 2016. 9. 6..
  */
 var Aras = function () {
     this._arasObject = (parent.top.aras != null && typeof parent.top.aras != 'undefined') ? parent.top.aras : '';

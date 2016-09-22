@@ -1,5 +1,5 @@
 /**
- * Created by MisakaMikoto on 2016. 7. 27..
+ * Created by Seungpil, Park on 2016. 7. 27..
  */
 var Parser = function (tree) {
     this.tree = tree;

@@ -1,5 +1,5 @@
 /**
- * Created by MisakaMikoto on 2016. 9. 6..
+ * Created by Seungpil Park on 2016. 9. 6..
  */
 var Doosan = function () {
     this.tree = null;
@@ -306,9 +306,9 @@ Doosan.prototype = {
             var otherWorkFlowData;
             if (outResult) {
                 otherWorkFlowData = me.createOtherWorkFlowData(outResult['nodeList']);
-                tree.removeDataByFilter({position: tree.Constants.POSITION.OTHER});
-                tree.removeDataByFilter({position: tree.Constants.POSITION.OTHER_OUT});
-                tree.updateData(otherWorkFlowData);
+                me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER});
+                me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER_OUT});
+                me.tree.updateData(otherWorkFlowData);
             }
         });
     },
@@ -388,7 +388,7 @@ Doosan.prototype = {
                         type: me.tree.Constants.TYPE.FOLDER,
                         id: node.f_id,
                         name: node.fs_name,
-                        position: who == 'other' ? tree.Constants.POSITION.OTHER_OUT : me.tree.Constants.POSITION.MY_OUT,
+                        position: who == 'other' ? me.tree.Constants.POSITION.OTHER_OUT : me.tree.Constants.POSITION.MY_OUT,
                         parentId: node.fs_parent_id,
                         expand: true,
                         extData: JSON.parse(JSON.stringify(node))

@@ -1,5 +1,5 @@
 /**
- * Created by MisakaMikoto on 2016. 9. 6..
+ * Created by Seungpil, Park on 2016. 9. 6..
  */
 var Select = function () {
     Select.superclass.call(this);
