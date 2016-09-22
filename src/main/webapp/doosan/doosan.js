@@ -26,8 +26,8 @@ Doosan.prototype = {
         var outResult = me.aras.getWorkflowStructure(me.aras.wfId, 'OUT');
 
         // create data
-        var myInData = me.createMyWorkFlowData(inResult, 'in');
-        var myOutData = me.createMyWorkFlowData(outResult, 'out');
+        var myInData = me.createMyWorkFlowData(inResult['nodeList'], 'in');
+        var myOutData = me.createMyWorkFlowData(outResult['nodeList'], 'out');
         myInData.concat(myOutData);
         me.tree.updateData(myInData);
 
