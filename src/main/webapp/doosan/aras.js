@@ -156,7 +156,7 @@ Aras.prototype = {
     getItemType: function (type) {
         var itemType;
         if (type == this.TYPE.ACTIVITY) {
-            itemType = this.stdYN == 'Y' ? 'DHI_WF_WFAT' : 'DHI_WF_WFAT';
+            itemType = this.stdYN == 'Y' ? 'DHI_WF_WFAT' : 'DHI_WF_WFA';
         }
         else if (type == this.TYPE.FOLDER) {
             itemType = this.stdYN == 'Y' ? 'DHI_WF_Folder_Template' : 'DHI_WF_Folder';
