@@ -21,15 +21,6 @@ Doosan.prototype = {
             }
         });
 
-        ////마이워크플로우 데이터를 불러온다.
-        //var inResult = me.aras.getWorkflowStructure(me.aras.wfId, 'IN');
-        //var outResult = me.aras.getWorkflowStructure(me.aras.wfId, 'OUT');
-        //
-        //// create data
-        //var myInData = me.aras.createMyWorkFlowData(inResult['nodeList'], 'in');
-        //var myOutData = me.aras.createMyWorkFlowData(outResult['nodeList'], 'out');
-        //var concat = myInData.concat(myOutData);
-        //me.tree.updateData(concat);
         me.aras.refreshMyWorkFlow();
 
         //$.getJSON("doosan/sample/myData.json", function (myData) {
@@ -263,7 +254,7 @@ Doosan.prototype = {
             var outResult = me.aras.getWorkflowStructure(wfId, 'OUT');
             var otherWorkFlowData;
             if (outResult) {
-                otherWorkFlowData = me.createOtherWorkFlowData(outResult['nodeList']);
+                otherWorkFlowData = me.aras.createOtherWorkFlowData(outResult['nodeList']);
                 me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER});
                 me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER_OUT});
                 me.tree.updateData(otherWorkFlowData);
