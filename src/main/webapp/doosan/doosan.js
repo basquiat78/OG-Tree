@@ -13,37 +13,37 @@ Doosan.prototype = {
         me.aras = new Aras(me.tree);
         me.aras.init();
 
-        ////셀렉트 박스 이벤트를 걸고 초기데이터를 불러온다.
-        //me.bindSelectBoxEvent();
-        //me.aras.getSchCombo('Init', null, null, null, null, function (err, res) {
-        //    if (res) {
-        //        me.renderSelectBox(res);
-        //    }
-        //});
-        //
-        ////마이워크플로우 데이터를 불러온다.
-        //var inResult = me.aras.getWorkflowStructure(me.aras.wfId, 'IN');
-        //var outResult = me.aras.getWorkflowStructure(me.aras.wfId, 'OUT');
-        //
-        //// create data
-        //var myInData = me.createMyWorkFlowData(inResult['nodeList'], 'in');
-        //var myOutData = me.createMyWorkFlowData(outResult['nodeList'], 'out');
-        //var concat = myInData.concat(myOutData);
-        //me.tree.updateData(concat);
-
-        $.getJSON("doosan/sample/myData.json", function (myData) {
-
-            me.tree.updateMyData(myData);
-
-            $.getJSON("doosan/sample/otherData.json", function (otherData) {
-                me.tree.updateOtherData(otherData);
-            });
+        //셀렉트 박스 이벤트를 걸고 초기데이터를 불러온다.
+        me.bindSelectBoxEvent();
+        me.aras.getSchCombo('Init', null, null, null, null, function (err, res) {
+            if (res) {
+                me.renderSelectBox(res);
+            }
         });
 
-        var otherData = randomData('other');
-        var myData = randomData('my');
-        tree.updateOtherData(otherData);
-        tree.updateMyData(myData);
+        //마이워크플로우 데이터를 불러온다.
+        var inResult = me.aras.getWorkflowStructure(me.aras.wfId, 'IN');
+        var outResult = me.aras.getWorkflowStructure(me.aras.wfId, 'OUT');
+
+        // create data
+        var myInData = me.createMyWorkFlowData(inResult['nodeList'], 'in');
+        var myOutData = me.createMyWorkFlowData(outResult['nodeList'], 'out');
+        var concat = myInData.concat(myOutData);
+        me.tree.updateData(concat);
+
+        //$.getJSON("doosan/sample/myData.json", function (myData) {
+        //
+        //    me.tree.updateMyData(myData);
+        //
+        //    $.getJSON("doosan/sample/otherData.json", function (otherData) {
+        //        me.tree.updateOtherData(otherData);
+        //    });
+        //});
+
+        //var otherData = randomData('other');
+        //var myData = randomData('my');
+        //tree.updateOtherData(otherData);
+        //tree.updateMyData(myData);
 
         /**
          * GUI 상에서 매핑이 되기 전의 핸들러
