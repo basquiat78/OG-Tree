@@ -210,7 +210,7 @@ Aras.prototype = {
         //부모 아이템(선택된 아이템) 가져오기
         var parentItem = inn.newItem(parentItemType, "get");
         parentItem.setProperty('id', data.extData['f_id']);
-        //parentItem.setAttribute('select', 'id,_rel_wfa,_rel_wfat,item_number,_level,owned_by_id');
+        parentItem.setAttribute('select', 'id,_rel_wfa,_rel_wfat,item_number,_level,owned_by_id');
         parentItem = parentItem.apply();
 
         //폴더 아이템 생성
@@ -249,6 +249,9 @@ Aras.prototype = {
                 newItem.setProperty('_discipline_spec', workflowItem.getProperty('_discipline_spec', ''));
                 newItem.setProperty('_rel_ownedteam', workflowItem.getProperty('_rel_ownedteam', ''));
                 newItem.setProperty('owned_by_id', workflowItem.getProperty('owned_by_id', ''));
+
+                newItem.setProperty("_parent_type", parentItemType);
+                newItem.setProperty("_parent_id", parentId);
             }
 
         } else if (data.type == me.TYPE.FOLDER) {
@@ -523,10 +526,12 @@ Aras.prototype = {
             var result = inn.applyMethod("DHI_WF_DEL_RELATION_ITEM", body);
 
             if (result) {
+                console.log('del result', result);
                 relType = me.getRelType(parentData.type, data.type, 'out');
                 relItem = inn.newItem(relType, 'delete');
                 relItem.setProperty("source_id", parentData.id);
                 relItem.setProperty("related_id", data.id);
+                console.log('del', relItem);
                 relItem.apply();
                 me.refreshOutFolder(parentData, parentView);
             }
@@ -665,7 +670,7 @@ Aras.prototype = {
         }
         return data;
     },
-    refreshMyWorkFlow: function(){
+    refreshMyWorkFlow: function () {
         //마이워크플로우 데이터를 불러온다.
         var me = this;
         var inResult = me.getWorkflowStructure(me.wfId, 'IN');
