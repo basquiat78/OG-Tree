@@ -353,6 +353,123 @@ Aras.prototype = {
             }
         }
     },
+    createEd: function (data, view, edType) {
+        var me = this;
+        var inn = this.aras.newIOMInnovator();
+        var parentId = data.id;
+
+        var parentItemType = me.getItemType(data.type);
+
+        //부모 정보 가져오기
+        var parentItem = inn.newItem(parentItemType, "get");
+        parentItem.setProperty("id", parentId);
+        parentItem = parentItem.apply();
+
+        // ED 추가 메소드 호출
+        var edItem = inn.newItem(edType, "add");
+        edItem.setProperty("_p_id", data.extData['fs_id']);
+
+        edItem.setProperty("_eng_mat_structure", parentItem.getProperty('_eng_mat_structure', ''));
+        edItem.setProperty("_eng_mat_code", parentItem.getProperty('_eng_mat_code', ''));
+
+        edItem.setProperty("_eng_func_structure", parentItem.getProperty('_eng_func_structure', ''));
+        edItem.setProperty("_eng_func_code", parentItem.getProperty('_eng_func_code', ''));
+
+        edItem.setProperty("_doc_structure", parentItem.getProperty('_doc_structure', ''));
+        edItem.setProperty("_doc_code", parentItem.getProperty('_doc_code', ''));
+
+        edItem.setProperty("_rel_project", parentItem.getProperty('_rel_project', ''));
+        edItem.setProperty("_rel_ownedteam", parentItem.getProperty('_rel_ownedteam', ''));
+        edItem.setProperty("_bg", parentItem.getProperty('_bg', ''));
+        edItem.setProperty("_discipline", parentItem.getProperty("_discipline", ""));
+        edItem.setProperty("_discipline_spec", parentItem.getProperty('_discipline_spec', ''));
+
+        edItem.setProperty("_first_p6_act", parentItem.getProperty("_first_p6_act", ""));
+        edItem.setProperty("_first_pims_act", parentItem.getProperty("_first_pims_act", ""));
+        edItem.setProperty("_first_act_name", parentItem.getProperty("_first_act_name", ""));
+        edItem.setProperty("_final_p6_act", parentItem.getProperty("_final_p6_act", ""));
+        edItem.setProperty("_final_pims_act", parentItem.getProperty("_final_pims_act", ""));
+        edItem.setProperty("_final_act_name", parentItem.getProperty("_final_act_name", ""));
+        edItem.setProperty("_class", parentItem.getProperty("_class", ""));
+
+        // STD
+        if (me.stdYN == 'Y')            // STD
+        {
+            edItem.setProperty("_rel_wfat", view.root);
+            edItem.setProperty("_rel_wft", parentItem.getProperty('_rel_wft', ''));
+            edItem.setProperty("is_template", "1");
+        }
+        else                        // template
+        {
+            edItem.setProperty("_rel_wfa", view.root);
+            edItem.setProperty("_rel_wf", parentItem.getProperty('_rel_wf', ''));
+        }
+
+        var asyncResult = me.aras.uiShowItemEx(edItem.node, undefined, true);
+        asyncResult.then(function (arasWindow) {
+                var EventBottomSave = {}
+                EventBottomSave.window = window;
+                EventBottomSave.handler = function () {
+                    me.addFolderEDOutRelation(edItem, parentItem, data, view);
+                };
+                arasWindow.top.commandEventHandlers["aftersave"] = [];
+                arasWindow.top.commandEventHandlers["aftersave"].push(EventBottomSave);
+
+                arasWindow.top.commandEventHandlers["afterunlock"] = [];
+                arasWindow.top.commandEventHandlers["afterunlock"].push(EventBottomSave);
+
+                //alert('test');
+            },
+            function (obj) {
+                alert('처리중 오류가 발생하였습니다.');
+            }
+        );
+    },
+    addFolderEDOutRelation: function (edItem, parentItem, data, view) {
+        var me = this;
+        var inn = this.aras.newIOMInnovator();
+        var edId = edItem.getID();
+        var relType = me.getRelType(me.TYPE.FOLDER, me.TYPE.ED, 'out');
+        var existRelItem;
+        var relItem;
+
+        //parentItem = inn.newItem(me.getItemType(data.type), 'get');
+        //parentItem.setProperty('id', data.id);
+        //parentItem = tmpFolderItem.apply();
+
+        var createEDItem = inn.newItem(edItem.getType(), "get");
+        createEDItem.setProperty("id", edItem.getID());
+        createEDItem = createEDItem.apply();
+
+        var path = parentItem.getProperty("_path") + '||' + createEDItem.getProperty("_ed_number", "");
+
+        body = "<sqlString>UPDATE innovator." + createEDItem.GetType() + " SET _PATH = '" + path + "' WHERE id = '" + createEDItem.getID() + "'</sqlString>";
+        inn.applyMethod("DHI_APPLY_SQL", body);
+
+
+        existRelItem = inn.newItem(relType, "get");
+        existRelItem.setProperty("source_id", data.id);
+        existRelItem.setProperty("related_id", edId);
+        existRelItem = existRelItem.apply();
+        if (existRelItem.getItemCount() == 0) {
+            try {
+                // parentFolderItem output rel
+                relItem = inn.newItem(relType, "add");
+                relItem.setProperty("source_id", data.id);
+                relItem.setProperty("related_id", edId);
+                relItem.setProperty("owned_by_id", parentItem.getProperty("owned_by_id", ""));
+                relItem = relItem.apply();
+
+                var body = "<source_id>" + data.id + "</source_id>";
+                body += "<related_id>" + edId + "</related_id>";
+                var result = inn.applyMethod("DHI_WF_RESET_STATE_ITEM", body);
+            }
+            catch (e) {
+                msgBox('Failed to create ' + relType + ' Relation : ' + data.id + ' to ' + edId);
+            }
+        }
+        this.refreshOutFolder(data, view);
+    },
     refreshOutFolder: function (data, view) {
         //이벤트가 발생한 폴더 (부모폴더)
         var tree = this.tree;
@@ -395,9 +512,6 @@ Aras.prototype = {
         }
 
         tree.updateData(refreshData);
-    },
-    createEd: function (data, view) {
-
     }
 }
 ;

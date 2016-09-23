@@ -2450,8 +2450,37 @@ Tree.prototype = {
         var me = this;
         return {
             name: 'create ed',
-            callback: function () {
-                me.onMakeEd(me.selectedData, me.selectedView);
+            items: {
+                cad: {
+                    name : '2D & 3D Drawing',
+                    callback: function () {
+                        me.onMakeEd(me.selectedData, me.selectedView, 'CAD');
+                    }
+                },
+                dhi_c3d_output: {
+                    name : '3D BOM',
+                    callback: function () {
+                        me.onMakeEd(me.selectedData, me.selectedView, 'DHI_C3D_OUTPUT');
+                    }
+                },
+                document: {
+                    name : 'Document',
+                    callback: function () {
+                        me.onMakeEd(me.selectedData, me.selectedView, 'Document');
+                    }
+                },
+                dhi_intellisheet: {
+                    name : 'Engineering Data',
+                    callback: function () {
+                        me.onMakeEd(me.selectedData, me.selectedView, 'DHI_IntelliSheet');
+                    }
+                },
+                dhi_ed_kdm: {
+                    name : 'Key Data',
+                    callback: function () {
+                        me.onMakeEd(me.selectedData, me.selectedView, 'DHI_ED_KDM');
+                    }
+                }
             }
         }
     },
@@ -2495,7 +2524,7 @@ Tree.prototype = {
     },
     onMakeFolder: function (data, view) {
     },
-    onMakeEd: function (data, view) {
+    onMakeEd: function (data, view, edType) {
     },
     onPickEd: function (data, view) {
     },
