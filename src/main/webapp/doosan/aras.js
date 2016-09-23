@@ -317,7 +317,7 @@ Aras.prototype = {
         var path = '';
 
         //부모 폴더 객체 얻기
-        var updatedParentItem = inn.newItem(parentItemType, 'get');
+        var updatedParentItem = this.thisItem.newItem(parentItemType, 'get');
         updatedParentItem.setProperty('id', parentItem.getID());
         updatedParentItem = updatedParentItem.apply();
 
@@ -331,13 +331,13 @@ Aras.prototype = {
         }
 
         //생성된 폴더 정보 얻기
-        var createdFolder = inn.newItem(newItem.GetType(), 'get');
+        var createdFolder = this.thisItem.newItem(newItem.GetType(), 'get');
         createdFolder.setProperty('id', newItem.getID());
         createdFolder = createdFolder.apply();
         path += '||' + createdFolder.getProperty('item_number', '');
 
         //릴레이션이 존재하는지 확인
-        var existRelItem = inn.newItem(relType, 'get');
+        var existRelItem = this.thisItem.newItem(relType, 'get');
         existRelItem.setProperty('source_id', parentId);
         existRelItem.setProperty('related_id', newItem.getID());
         existRelItem = existRelItem.apply();
@@ -353,11 +353,13 @@ Aras.prototype = {
             relItem.setProperty('source_id', parentId);
             relItem.setProperty('related_id', newItem.getID());
             relItem.setProperty('owned_by_id', parentItem.getProperty('owned_by_id', ''));
-            relItem.apply();
+            relItem = relItem.apply();
+            console.log('relItem' , relItem.node);
 
             var body = '<source_id>' + parentId + '</source_id>';
             body += '<related_id>' + newItem.getID() + '</related_id>';
             var result = inn.applyMethod('DHI_WF_RESET_STATE_ITEM', body);
+            console.log(result);
 
             if (result) {
                 this.refreshOutFolder(parentData, parentView);
