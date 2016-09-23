@@ -140,6 +140,7 @@ Doosan.prototype = {
         me.tree.onMakeFolder = function (data, view) {
             //var add = new Add(tree);
             //add.createFolder(data, view);
+            me.aras.createFolder(data, view);
         };
 
         /**
