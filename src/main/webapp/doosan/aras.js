@@ -164,6 +164,9 @@ Aras.prototype = {
         else if (type == this.TYPE.ED) {
             itemType = 'DHI_EDB';
         }
+        else if(type == this.TYPE.WORKFLOW){
+            itemType = this.stdYN == 'Y' ? 'DHI_WF_WFT' : 'DHI_WF_WF';
+        }
         return itemType;
     },
     getRelType: function (sourceType, targetType, inout) {
