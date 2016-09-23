@@ -392,6 +392,9 @@ Aras.prototype = {
         edItem.setProperty("_final_act_name", parentItem.getProperty("_final_act_name", ""));
         edItem.setProperty("_class", parentItem.getProperty("_class", ""));
 
+        edItem.setProperty("_parent_type", parentItemType);
+        edItem.setProperty("_parent_id", parentId);
+
         // STD
         if (me.stdYN == 'Y')            // STD
         {
@@ -426,49 +429,91 @@ Aras.prototype = {
         );
     },
     addFolderEDOutRelation: function (edItem, parentItem, data, view) {
+        //var me = this;
+        //var inn = this.aras.newIOMInnovator();
+        //var edId = edItem.getID();
+        //var relType = me.getRelType(me.TYPE.FOLDER, me.TYPE.ED, 'out');
+        //var existRelItem;
+        //var relItem;
+        //
+        ////parentItem = inn.newItem(me.getItemType(data.type), 'get');
+        ////parentItem.setProperty('id', data.id);
+        ////parentItem = tmpFolderItem.apply();
+        //
+        //var createEDItem = inn.newItem(edItem.getType(), "get");
+        //createEDItem.setProperty("id", edItem.getID());
+        //createEDItem = createEDItem.apply();
+        //
+        //var path = parentItem.getProperty("_path") + '||' + createEDItem.getProperty("_ed_number", "");
+        //
+        //body = "<sqlString>UPDATE innovator." + createEDItem.GetType() + " SET _PATH = '" + path + "' WHERE id = '" + createEDItem.getID() + "'</sqlString>";
+        //inn.applyMethod("DHI_APPLY_SQL", body);
+        //
+        //
+        //existRelItem = inn.newItem(relType, "get");
+        //existRelItem.setProperty("source_id", data.id);
+        //existRelItem.setProperty("related_id", edId);
+        //existRelItem = existRelItem.apply();
+        //if (existRelItem.getItemCount() == 0) {
+        //    try {
+        //        // parentFolderItem output rel
+        //        relItem = inn.newItem(relType, "add");
+        //        relItem.setProperty("source_id", data.id);
+        //        relItem.setProperty("related_id", edId);
+        //        relItem.setProperty("owned_by_id", parentItem.getProperty("owned_by_id", ""));
+        //        relItem = relItem.apply();
+        //
+        //        var body = "<source_id>" + data.id + "</source_id>";
+        //        body += "<related_id>" + edId + "</related_id>";
+        //        var result = inn.applyMethod("DHI_WF_RESET_STATE_ITEM", body);
+        //    }
+        //    catch (e) {
+        //        msgBox('Failed to create ' + relType + ' Relation : ' + data.id + ' to ' + edId);
+        //    }
+        //}
+        this.refreshOutFolder(data, view);
+    },
+    deleteOutItem: function (data, view) {
         var me = this;
         var inn = this.aras.newIOMInnovator();
-        var edId = edItem.getID();
-        var relType = me.getRelType(me.TYPE.FOLDER, me.TYPE.ED, 'out');
-        var existRelItem;
+        var relType;
+        var parentData;
+        var parentView;
         var relItem;
 
-        //parentItem = inn.newItem(me.getItemType(data.type), 'get');
-        //parentItem.setProperty('id', data.id);
-        //parentItem = tmpFolderItem.apply();
+        //액티비티 삭제일 경우
+        if (data.type == me.TYPE.ACTIVITY) {
 
-        var createEDItem = inn.newItem(edItem.getType(), "get");
-        createEDItem.setProperty("id", edItem.getID());
-        createEDItem = createEDItem.apply();
-
-        var path = parentItem.getProperty("_path") + '||' + createEDItem.getProperty("_ed_number", "");
-
-        body = "<sqlString>UPDATE innovator." + createEDItem.GetType() + " SET _PATH = '" + path + "' WHERE id = '" + createEDItem.getID() + "'</sqlString>";
-        inn.applyMethod("DHI_APPLY_SQL", body);
-
-
-        existRelItem = inn.newItem(relType, "get");
-        existRelItem.setProperty("source_id", data.id);
-        existRelItem.setProperty("related_id", edId);
-        existRelItem = existRelItem.apply();
-        if (existRelItem.getItemCount() == 0) {
-            try {
-                // parentFolderItem output rel
-                relItem = inn.newItem(relType, "add");
-                relItem.setProperty("source_id", data.id);
-                relItem.setProperty("related_id", edId);
-                relItem.setProperty("owned_by_id", parentItem.getProperty("owned_by_id", ""));
-                relItem = relItem.apply();
-
-                var body = "<source_id>" + data.id + "</source_id>";
-                body += "<related_id>" + edId + "</related_id>";
-                var result = inn.applyMethod("DHI_WF_RESET_STATE_ITEM", body);
-            }
-            catch (e) {
-                msgBox('Failed to create ' + relType + ' Relation : ' + data.id + ' to ' + edId);
-            }
         }
-        this.refreshOutFolder(data, view);
+        //폴더,ED 삭제일 경우
+        else {
+            parentData = me.tree.selectParentById(data.id);
+            if (!parentData) {
+                msgBox('Failed to delete selected Item.');
+            }
+            if (parentData) {
+                parentView = me.tree.selectViewById(me.tree._VIEWDATA, parentData.id);
+            }
+            if (!parentView) {
+                msgBox('Failed to delete selected Item.');
+            }
+            relType = me.getRelType(parentData.id, data.id, 'out');
+            relItem = inn.newItem(relType, 'delete');
+            relItem.setProperty("source_id", parentData.id);
+            relItem.setProperty("related_id", data.id);
+            relItem.apply();
+
+            // parentFolderItem output rel
+            //relItem = inn.newItem(relType, "add");
+            //relItem.setProperty("source_id", data.id);
+            //relItem.setProperty("related_id", edId);
+            //relItem.setProperty("owned_by_id", parentItem.getProperty("owned_by_id", ""));
+            //relItem = relItem.apply();
+            //
+            //var body = "<source_id>" + data.id + "</source_id>";
+            //body += "<related_id>" + edId + "</related_id>";
+            //var result = inn.applyMethod("DHI_WF_RESET_STATE_ITEM", body);
+        }
     },
     refreshOutFolder: function (data, view) {
         //이벤트가 발생한 폴더 (부모폴더)

@@ -112,8 +112,6 @@ Doosan.prototype = {
          * @param view
          */
         me.tree.onMakeFolder = function (data, view) {
-            //var add = new Add(tree);
-            //add.createFolder(data, view);
             me.aras.createFolder(data, view);
         };
 
@@ -132,26 +130,7 @@ Doosan.prototype = {
          * @param view
          */
         me.tree.onDelete = function (data, view) {
-            //주의!!
-            //삭제는 실제로 폴더또는 ED 를 삭제하는것이 아니라, 릴레이션만 끊어야 한다.
-            //릴레이션을 끊은 후 Aras 에서 제공하는 메소드 호출 시 완료처리가 된다고 함.
-
-            //var targetDelete = new Delete(me.tree);
-            //if (data.type == 'activity') {
-            //    if (targetDelete._stdYN == 'Y') {
-            //        targetDelete.open(targetDelete._Constants.ITEM_TYPE.FOLDER_STANDARD, targetDelete._Constants.TYPE.DELETE, data, view);
-            //
-            //    } else {
-            //        targetDelete.open(targetDelete._Constants.ITEM_TYPE.FOLDER_PROJECT, targetDelete._Constants.TYPE.DELETE, data, view);
-            //    }
-            //
-            //} else if (data.type == 'folder') {
-            //
-            //} else if (data.type == 'ed') {
-            //
-            //} else {
-            //    ;
-            //}
+            me.aras.deleteOutItem(data, view);
         };
         /**
          * 폴더 또는 ED 를 input 으로 쓰는 모든 Workflow - Activity 리스트를 보여주기
