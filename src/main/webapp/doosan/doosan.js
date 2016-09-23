@@ -187,6 +187,9 @@ Doosan.prototype = {
         me.tree.onListRelation = function (data, view) {
             console.log('onListRelation', data, view);
 
+            var parentList = me.aras.getEdParentList(data.id, me.tree.Constants.TYPE.ED == data.type ? 'Y' : 'N');
+            console.log(parentList);
+
             //1. Workflow - Activity 리스트 칼럼 정보 맞출것.
             var dataSet = [];
             var gridPanel = $('#listRelGrid');

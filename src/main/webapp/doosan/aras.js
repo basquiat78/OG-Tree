@@ -338,10 +338,11 @@ Aras.prototype = {
         existRelItem.setProperty('related_id', newItem.getID());
         existRelItem = existRelItem.apply();
 
-        if (existRelItem.getItemCount() == 0) {
+        //릴레이션이 존재하지 않을 경우
+        if (existRelItem.getItemCount() < 1) {
             //생성된 폴더의 path 를 업데이트 한다.
-            body = "<sqlString>UPDATE innovator." + newItem.GetType() + " SET _PATH = '" + path + "' WHERE id = '" + newItem.getID() + "'</sqlString>";
-            inn.applyMethod('DHI_APPLY_SQL', body);
+            var sql = "<sqlString>UPDATE innovator." + newItem.GetType() + " SET _PATH = '" + path + "' WHERE id = '" + newItem.getID() + "'</sqlString>";
+            inn.applyMethod('DHI_APPLY_SQL', sql);
 
             //아웃풋 릴레이션을 생성한다.
             var relItem = inn.newItem(relType, 'add');
@@ -358,7 +359,6 @@ Aras.prototype = {
                 this.refreshOutFolder(parentData, parentView);
             }
         }
-
     },
     refreshOutFolder: function (data, view) {
         //이벤트가 발생한 폴더 (부모폴더)
