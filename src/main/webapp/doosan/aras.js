@@ -197,11 +197,11 @@ Aras.prototype = {
         this.view = view;
 
         var me = this;
-        var inn = this._arasObject.newIOMInnovator();
+        var inn = this.aras.newIOMInnovator();
         var target_rel_wf = '';
         var target_rel_wf_com = '_rel_wf';
 
-        if (this._stdYN == 'Y') {
+        if (this.stdYN == 'Y') {
             target_rel_wf = '_rel_wft';
         } else {
             target_rel_wf = '_rel_wf';
