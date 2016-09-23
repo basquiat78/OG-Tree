@@ -308,6 +308,7 @@ Aras.prototype = {
         });
     },
     addFolderOutRelation: function (parentData, parentView, newItem, parentItem, parentType, parentId) {
+        console.log(parentData, parentView, newItem, parentItem, parentType, parentId);
         var me = this;
         var inn = this.aras.newIOMInnovator();
         var parentItemType = me.getItemType(parentType);
