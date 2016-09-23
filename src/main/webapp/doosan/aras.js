@@ -164,7 +164,7 @@ Aras.prototype = {
         else if (type == this.TYPE.ED) {
             itemType = 'DHI_EDB';
         }
-        else if(type == this.TYPE.WORKFLOW){
+        else if (type == this.TYPE.WORKFLOW) {
             itemType = this.stdYN == 'Y' ? 'DHI_WF_WFT' : 'DHI_WF_WF';
         }
         return itemType;
@@ -317,7 +317,7 @@ Aras.prototype = {
         var path = '';
 
         //부모 폴더 객체 얻기
-        var updatedParentItem = this.aras.newItem(parentItemType, 'get');
+        var updatedParentItem = inn.newItem(parentItemType, 'get');
         updatedParentItem.setProperty('id', parentItem.getID());
         updatedParentItem = updatedParentItem.apply();
 
@@ -331,13 +331,13 @@ Aras.prototype = {
         }
 
         //생성된 폴더 정보 얻기
-        var createdFolder = this.aras.newItem(newItem.GetType(), 'get');
+        var createdFolder = inn.newItem(newItem.GetType(), 'get');
         createdFolder.setProperty('id', newItem.getID());
         createdFolder = createdFolder.apply();
         path += '||' + createdFolder.getProperty('item_number', '');
 
         //릴레이션이 존재하는지 확인
-        var existRelItem = this.aras.newItem(relType, 'get');
+        var existRelItem = inn.newItem(relType, 'get');
         existRelItem.setProperty('source_id', parentId);
         existRelItem.setProperty('related_id', newItem.getID());
         existRelItem = existRelItem.apply();
@@ -406,6 +406,9 @@ Aras.prototype = {
         }
 
         tree.updateData(refreshData);
+    },
+    createEd: function (data, view) {
+
     }
 }
 ;
