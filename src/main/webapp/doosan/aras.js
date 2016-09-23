@@ -504,7 +504,8 @@ Aras.prototype = {
                 relItem = inn.newItem(relType, 'delete');
                 relItem.setProperty("source_id", me.wfId);
                 relItem.setProperty("related_id", data.id);
-                relItem.apply();
+                alert(1);
+                relItem = relItem.apply();
                 me.refreshMyWorkFlow();
             }
         }
@@ -531,8 +532,9 @@ Aras.prototype = {
                 relItem = inn.newItem(relType, 'delete');
                 relItem.setProperty("source_id", parentData.id);
                 relItem.setProperty("related_id", data.id);
-                console.log('del', relItem);
-                relItem.apply();
+                console.log('del', relItem.node);
+                alert(1);
+                relItem = relItem.apply();
                 me.refreshOutFolder(parentData, parentView);
             }
         }
