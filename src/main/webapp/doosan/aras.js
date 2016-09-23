@@ -204,6 +204,7 @@ Aras.prototype = {
         var target_rel_wf_com = '_rel_wf';
 
         var parentItemType = me.getItemType(data.type);
+        var parentId = data.id;
         var newItemType = me.getItemType(me.TYPE.FOLDER);
 
         //부모 아이템(선택된 아이템) 가져오기
@@ -276,6 +277,9 @@ Aras.prototype = {
                 newItem.setProperty('_final_pims_act', parentItem.getProperty('_final_pims_act', ''));
                 newItem.setProperty('_final_act_name', parentItem.getProperty('_final_act_name', ''));
                 newItem.setProperty('_class', parentItem.getProperty('_class', ''));
+
+                newItem.setProperty("_parent_type", parentItemType);
+                newItem.setProperty("_parent_id", parentId);
             }
         }
 
@@ -296,62 +300,64 @@ Aras.prototype = {
     },
     addFolderOutRelation: function (parentData, parentView, newItem, parentItem, parentType, parentId) {
         console.log(parentData, parentView, newItem, parentItem, parentType, parentId);
-        var me = this;
-        var inn = this.aras.newIOMInnovator();
-        var parentItemType = me.getItemType(parentType);
-        var relType = me.getRelType(parentType, this.TYPE.FOLDER, 'out');
+        //var me = this;
+        //var inn = this.aras.newIOMInnovator();
+        //var parentItemType = me.getItemType(parentType);
+        //var relType = me.getRelType(parentType, this.TYPE.FOLDER, 'out');
+        //
+        //var path = '';
+        //
+        ////부모 폴더 객체 얻기
+        //var updatedParentItem = this.thisItem.newItem(parentItemType, 'get');
+        //updatedParentItem.setProperty('id', parentItem.getID());
+        //updatedParentItem = updatedParentItem.apply();
+        //
+        //if (updatedParentItem.getItemCount() > 0) {
+        //    if (parentType == this.TYPE.ACTIVITY) {
+        //        path = updatedParentItem.getProperty('item_number', '');
+        //
+        //    } else if (parentType == this.TYPE.FOLDER) {
+        //        path = updatedParentItem.getProperty('_path', '');
+        //    }
+        //}
+        //
+        ////생성된 폴더 정보 얻기
+        //var createdFolder = this.thisItem.newItem(newItem.GetType(), 'get');
+        //createdFolder.setProperty('id', newItem.getID());
+        //createdFolder = createdFolder.apply();
+        //path += '||' + createdFolder.getProperty('item_number', '');
+        //
+        ////릴레이션이 존재하는지 확인
+        //var existRelItem = this.thisItem.newItem(relType, 'get');
+        //existRelItem.setProperty('source_id', parentId);
+        //existRelItem.setProperty('related_id', newItem.getID());
+        //existRelItem = existRelItem.apply();
+        //
+        ////릴레이션이 존재하지 않을 경우
+        //if (existRelItem.getItemCount() < 1) {
+        //    //생성된 폴더의 path 를 업데이트 한다.
+        //    var sql = "<sqlString>UPDATE innovator." + newItem.GetType() + " SET _PATH = '" + path + "' WHERE id = '" + newItem.getID() + "'</sqlString>";
+        //    inn.applyMethod('DHI_APPLY_SQL', sql);
+        //
+        //    //아웃풋 릴레이션을 생성한다.
+        //    var relItem = inn.newItem(relType, 'add');
+        //    relItem.setProperty('source_id', parentId);
+        //    relItem.setProperty('related_id', newItem.getID());
+        //    relItem.setProperty('owned_by_id', parentItem.getProperty('owned_by_id', ''));
+        //    relItem = relItem.apply();
+        //    console.log('relItem', relItem.node);
+        //
+        //    var body = '<source_id>' + parentId + '</source_id>';
+        //    body += '<related_id>' + newItem.getID() + '</related_id>';
+        //    var result = inn.applyMethod('DHI_WF_RESET_STATE_ITEM', body);
+        //    console.log(result);
+        //
+        //    if (result) {
+        //        this.refreshOutFolder(parentData, parentView);
+        //    }
+        //}
 
-        var path = '';
-
-        //부모 폴더 객체 얻기
-        var updatedParentItem = this.thisItem.newItem(parentItemType, 'get');
-        updatedParentItem.setProperty('id', parentItem.getID());
-        updatedParentItem = updatedParentItem.apply();
-
-        if (updatedParentItem.getItemCount() > 0) {
-            if (parentType == this.TYPE.ACTIVITY) {
-                path = updatedParentItem.getProperty('item_number', '');
-
-            } else if (parentType == this.TYPE.FOLDER) {
-                path = updatedParentItem.getProperty('_path', '');
-            }
-        }
-
-        //생성된 폴더 정보 얻기
-        var createdFolder = this.thisItem.newItem(newItem.GetType(), 'get');
-        createdFolder.setProperty('id', newItem.getID());
-        createdFolder = createdFolder.apply();
-        path += '||' + createdFolder.getProperty('item_number', '');
-
-        //릴레이션이 존재하는지 확인
-        var existRelItem = this.thisItem.newItem(relType, 'get');
-        existRelItem.setProperty('source_id', parentId);
-        existRelItem.setProperty('related_id', newItem.getID());
-        existRelItem = existRelItem.apply();
-
-        //릴레이션이 존재하지 않을 경우
-        if (existRelItem.getItemCount() < 1) {
-            //생성된 폴더의 path 를 업데이트 한다.
-            var sql = "<sqlString>UPDATE innovator." + newItem.GetType() + " SET _PATH = '" + path + "' WHERE id = '" + newItem.getID() + "'</sqlString>";
-            inn.applyMethod('DHI_APPLY_SQL', sql);
-
-            //아웃풋 릴레이션을 생성한다.
-            var relItem = inn.newItem(relType, 'add');
-            relItem.setProperty('source_id', parentId);
-            relItem.setProperty('related_id', newItem.getID());
-            relItem.setProperty('owned_by_id', parentItem.getProperty('owned_by_id', ''));
-            relItem = relItem.apply();
-            console.log('relItem', relItem.node);
-
-            var body = '<source_id>' + parentId + '</source_id>';
-            body += '<related_id>' + newItem.getID() + '</related_id>';
-            var result = inn.applyMethod('DHI_WF_RESET_STATE_ITEM', body);
-            console.log(result);
-
-            if (result) {
-                this.refreshOutFolder(parentData, parentView);
-            }
-        }
+        this.refreshOutFolder(parentData, parentView);
     },
     createEd: function (data, view, edType) {
         var me = this;
@@ -483,7 +489,12 @@ Aras.prototype = {
 
         //액티비티 삭제일 경우
         if (data.type == me.TYPE.ACTIVITY) {
-
+            relType = me.getRelType(me.TYPE.WORKFLOW, me.TYPE.ACTIVITY, 'out');
+            relItem = inn.newItem(relType, 'delete');
+            relItem.setProperty("source_id", me.wfId);
+            relItem.setProperty("related_id", data.id);
+            relItem.apply();
+            me.refreshOutFolder(data, view);
         }
         //폴더,ED 삭제일 경우
         else {
@@ -497,22 +508,12 @@ Aras.prototype = {
             if (!parentView) {
                 msgBox('Failed to delete selected Item.');
             }
-            relType = me.getRelType(parentData.id, data.id, 'out');
+            relType = me.getRelType(parentData.type, data.type, 'out');
             relItem = inn.newItem(relType, 'delete');
             relItem.setProperty("source_id", parentData.id);
             relItem.setProperty("related_id", data.id);
             relItem.apply();
-
-            // parentFolderItem output rel
-            //relItem = inn.newItem(relType, "add");
-            //relItem.setProperty("source_id", data.id);
-            //relItem.setProperty("related_id", edId);
-            //relItem.setProperty("owned_by_id", parentItem.getProperty("owned_by_id", ""));
-            //relItem = relItem.apply();
-            //
-            //var body = "<source_id>" + data.id + "</source_id>";
-            //body += "<related_id>" + edId + "</related_id>";
-            //var result = inn.applyMethod("DHI_WF_RESET_STATE_ITEM", body);
+            me.refreshOutFolder(data, view);
         }
     },
     refreshOutFolder: function (data, view) {
