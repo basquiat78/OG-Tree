@@ -201,14 +201,7 @@ Aras.prototype = {
 
         var me = this;
         var inn = this.aras.newIOMInnovator();
-        var target_rel_wf = '';
         var target_rel_wf_com = '_rel_wf';
-
-        if (this.stdYN == 'Y') {
-            target_rel_wf = '_rel_wft';
-        } else {
-            target_rel_wf = '_rel_wf';
-        }
 
         var parentItemType = me.getItemType(data.type);
         var newItemType = me.getItemType(me.TYPE.FOLDER);
@@ -224,14 +217,8 @@ Aras.prototype = {
         newItem.setProperty('_p_id', parentItem.getProperty('item_number', ''));
         newItem.setProperty('_level', (Number(parentItem.getProperty('_level', '0')) + 1));
 
-        //부모가 액티비티 인 경우
-        if (data.type == me.TYPE.ACTIVITY) {
-            newItem.setProperty(me.stdYN == 'Y' ? '_rel_wfat' : '_rel_wfa', data.extData['f_id']);
-        }
-        //부모가 폴더 인 경우
-        else {
-            newItem.setProperty(me.stdYN == 'Y' ? '_rel_wfat' : '_rel_wfa', '');
-        }
+        //연결 액티비티 설정
+        newItem.setProperty(me.stdYN == 'Y' ? '_rel_wfat' : '_rel_wfa', view.root);
 
         //상위 액티비티 아이템 취득
         var activityItem;
@@ -244,8 +231,8 @@ Aras.prototype = {
         workflowItem.setProperty('id', activityItem.getProperty(target_rel_wf_com, ''));
         workflowItem = workflowItem.apply();
 
-
-        newItem.setProperty(target_rel_wf, workflowItem.getProperty('id', ''));
+        //연결 워크플로우 설정
+        newItem.setProperty(me.stdYN == 'Y' ? '_rel_wft' : '_rel_wf', workflowItem.getProperty('id', ''));
 
 
         //폴더 기본 정보 설정
@@ -354,7 +341,7 @@ Aras.prototype = {
             relItem.setProperty('related_id', newItem.getID());
             relItem.setProperty('owned_by_id', parentItem.getProperty('owned_by_id', ''));
             relItem = relItem.apply();
-            console.log('relItem' , relItem.node);
+            console.log('relItem', relItem.node);
 
             var body = '<source_id>' + parentId + '</source_id>';
             body += '<related_id>' + newItem.getID() + '</related_id>';
