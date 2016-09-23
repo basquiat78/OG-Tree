@@ -487,14 +487,23 @@ Aras.prototype = {
         var parentView;
         var relItem;
 
+
         //액티비티 삭제일 경우
         if (data.type == me.TYPE.ACTIVITY) {
-            relType = me.getRelType(me.TYPE.WORKFLOW, me.TYPE.ACTIVITY, 'out');
-            relItem = inn.newItem(relType, 'delete');
-            relItem.setProperty("source_id", me.wfId);
-            relItem.setProperty("related_id", data.id);
-            relItem.apply();
-            me.refreshOutFolder(data, view);
+
+            //관계 삭제 전 상위 상태 재설정
+            var body = "<source_id>" + me.wfId + "</source_id>";
+            body += "<related_id>" + data.id + "</related_id>";
+            var result = inn.applyMethod("DHI_WF_DEL_RELATION_ITEM_WFA", body);
+
+            if (result) {
+                relType = me.getRelType(me.TYPE.WORKFLOW, me.TYPE.ACTIVITY, 'out');
+                relItem = inn.newItem(relType, 'delete');
+                relItem.setProperty("source_id", me.wfId);
+                relItem.setProperty("related_id", data.id);
+                relItem.apply();
+                me.refreshOutFolder(data, view);
+            }
         }
         //폴더,ED 삭제일 경우
         else {
@@ -508,12 +517,19 @@ Aras.prototype = {
             if (!parentView) {
                 msgBox('Failed to delete selected Item.');
             }
-            relType = me.getRelType(parentData.type, data.type, 'out');
-            relItem = inn.newItem(relType, 'delete');
-            relItem.setProperty("source_id", parentData.id);
-            relItem.setProperty("related_id", data.id);
-            relItem.apply();
-            me.refreshOutFolder(data, view);
+            //관계 삭제 전 상위 상태 재설정
+            var body = "<source_id>" + parentData.id + "</source_id>";
+            body += "<related_id>" + data.id + "</related_id>";
+            var result = inn.applyMethod("DHI_WF_DEL_RELATION_ITEM", body);
+
+            if (result) {
+                relType = me.getRelType(parentData.type, data.type, 'out');
+                relItem = inn.newItem(relType, 'delete');
+                relItem.setProperty("source_id", parentData.id);
+                relItem.setProperty("related_id", data.id);
+                relItem.apply();
+                me.refreshOutFolder(data, view);
+            }
         }
     },
     refreshOutFolder: function (data, view) {
