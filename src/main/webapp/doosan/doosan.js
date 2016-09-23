@@ -21,15 +21,16 @@ Doosan.prototype = {
             }
         });
 
-        //마이워크플로우 데이터를 불러온다.
-        var inResult = me.aras.getWorkflowStructure(me.aras.wfId, 'IN');
-        var outResult = me.aras.getWorkflowStructure(me.aras.wfId, 'OUT');
-
-        // create data
-        var myInData = me.createMyWorkFlowData(inResult['nodeList'], 'in');
-        var myOutData = me.createMyWorkFlowData(outResult['nodeList'], 'out');
-        var concat = myInData.concat(myOutData);
-        me.tree.updateData(concat);
+        ////마이워크플로우 데이터를 불러온다.
+        //var inResult = me.aras.getWorkflowStructure(me.aras.wfId, 'IN');
+        //var outResult = me.aras.getWorkflowStructure(me.aras.wfId, 'OUT');
+        //
+        //// create data
+        //var myInData = me.aras.createMyWorkFlowData(inResult['nodeList'], 'in');
+        //var myOutData = me.aras.createMyWorkFlowData(outResult['nodeList'], 'out');
+        //var concat = myInData.concat(myOutData);
+        //me.tree.updateData(concat);
+        me.aras.refreshMyWorkFlow();
 
         //$.getJSON("doosan/sample/myData.json", function (myData) {
         //
@@ -306,96 +307,6 @@ Doosan.prototype = {
             value: value,
             text: label
         }));
-    },
-    createWorkFlowData: function (resultNodeList, who, inout) {
-        var me = this;
-        var data = [];
-
-        var prev;
-        for (var i = 0; i < resultNodeList.length; i++) {
-            var xmlNode = resultNodeList[i];
-            var xmlNodeToString = '';
-            if (window.ActiveXObject) {
-                xmlNodeToString = xmlNode.xml;
-            } else {
-                xmlNodeToString = '<node>' + $(xmlNode).html() + '</node>';
-            }
-            var xmlNodeStringToJSON = $.xml2json(xmlNodeToString);
-            var node = xmlNodeStringToJSON, object;
-
-            if (inout == 'out') {
-                if (node.kind == 'A') {
-                    object = {
-                        type: me.tree.Constants.TYPE.ACTIVITY,
-                        id: node.f_id,
-                        name: node.fs_name,
-                        position: who == 'other' ? me.tree.Constants.POSITION.OTHER : me.tree.Constants.POSITION.MY,
-                        parentId: "",
-                        expand: true,
-                        extData: JSON.parse(JSON.stringify(node))
-                    };
-                    //전 단계 액티비티가 있다면...
-                    if (prev) {
-                        object.prev = prev.id;
-                        prev.next = object.id;
-                    }
-                    prev = object;
-                } else if (node.kind == 'F') {
-                    object = {
-                        type: me.tree.Constants.TYPE.FOLDER,
-                        id: node.f_id,
-                        name: node.fs_name,
-                        position: who == 'other' ? me.tree.Constants.POSITION.OTHER_OUT : me.tree.Constants.POSITION.MY_OUT,
-                        parentId: node.fs_parent_id,
-                        expand: true,
-                        extData: JSON.parse(JSON.stringify(node))
-                    };
-                } else if (node.kind == 'E') {
-                    object = {
-                        type: me.tree.Constants.TYPE.ED,
-                        id: node.f_id,
-                        name: node.fs_name,
-                        position: who == 'other' ? me.tree.Constants.POSITION.OTHER_OUT : me.tree.Constants.POSITION.MY_OUT,
-                        parentId: node.fs_parent_id,
-                        expand: true,
-                        extData: JSON.parse(JSON.stringify(node))
-                    };
-                }
-            } else if (inout == 'in') {
-                // in 일 경우에는 무조건 마이-인 쪽의 매핑 데이터만 온다고 가정
-                object = {
-                    type: me.tree.Constants.TYPE.MAPPING,
-                    id: node.id + '-' + node.fs_parent_id, //소스 + '-' + 타겟
-                    source: node.id,
-                    target: node.fs_parent_id,
-                    selected: me.tree.emptyString(node.selected) ? false : true,
-                    position: me.tree.Constants.POSITION.MY_IN,
-                    extData: JSON.parse(JSON.stringify(node))
-                };
-            }
-            data.push(object);
-        }
-        return data;
-    },
-    createMyWorkFlowData: function (resultNodeList, inout) {
-        var data = [];
-        if (resultNodeList) {
-            data = this.createWorkFlowData(resultNodeList, 'my', inout);
-        }
-        if (!data || !data.length) {
-            data = [];
-        }
-        return data;
-    },
-    createOtherWorkFlowData: function (resultNodeList) {
-        var data = [];
-        if (resultNodeList) {
-            data = this.createWorkFlowData(resultNodeList, 'other', 'out');
-        }
-        if (!data || !data.length) {
-            data = [];
-        }
-        return data;
     }
 }
 ;
