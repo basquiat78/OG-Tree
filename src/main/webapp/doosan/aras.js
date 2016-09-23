@@ -293,7 +293,7 @@ Aras.prototype = {
         }
 
         // aras callback
-        var asyncResult = this._arasObject.uiShowItemEx(newItem.node, undefined, true);
+        var asyncResult = this.aras.uiShowItemEx(newItem.node, undefined, true);
         asyncResult.then(function (arasWindow) {
             var EventBottomSave = {};
             EventBottomSave.window = window;
