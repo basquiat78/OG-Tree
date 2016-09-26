@@ -20,9 +20,6 @@ function XML2jsobj(node) {
 
     // element attributes
     var c, cn;
-    for (c = 0; cn = node.attributes[c]; c++) {
-        Add(cn.name, cn.value);
-    }
 
     // child elements
     for (c = 0; cn = node.childNodes[c]; c++) {
