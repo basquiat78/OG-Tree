@@ -607,7 +607,12 @@ Aras.prototype = {
 
         for (var i = 0; i < nodeList.length; i++) {
             var xmlNode = nodeList[i];
-            var xmlNodeToString = '<node>' + $(xmlNode).html() + '</node>';
+            var xmlNodeToString = '';
+            if (OG.Util.isIE()) {
+                xmlNodeToString = '<node>' + xmlNode.xml + '</node>';
+            }else{
+                xmlNodeToString = '<node>' + $(xmlNode).html() + '</node>';
+            }
             var xmlNodeStringToJSON = OG.Util.xmlToJson(xmlNodeToString);// $.xml2json(xmlNodeToString);
             var node = xmlNodeStringToJSON, object;
             if (node.kind == 'F') {
@@ -646,12 +651,12 @@ Aras.prototype = {
         for (var i = 0; i < resultNodeList.length; i++) {
             var xmlNode = resultNodeList[i];
             var xmlNodeToString = '';
-            if (window.ActiveXObject) {
-                xmlNodeToString = xmlNode.xml;
-            } else {
+            if (OG.Util.isIE()) {
+                xmlNodeToString = '<node>' + xmlNode.xml + '</node>';
+            }else{
                 xmlNodeToString = '<node>' + $(xmlNode).html() + '</node>';
             }
-            var xmlNodeStringToJSON = $.xml2json(xmlNodeToString);
+            var xmlNodeStringToJSON = OG.Util.xmlToJson(xmlNodeToString);
             var node = xmlNodeStringToJSON, object;
 
             if (inout == 'out') {
