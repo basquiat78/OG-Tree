@@ -10,7 +10,8 @@ function XML2jsobj(node) {
         item = node.childNodes[0].childNodes[0];
         if (item) {
             for (var i = 0; i < item.childNodes.length; i++) {
-                data[item.childNodes[i].nodeName] = item.childNodes[i].firstChild.nodeValue;
+                data[item.childNodes[i].nodeName] =
+                    item.childNodes[i].firstChild ? item.childNodes[i].firstChild.nodeValue : ''
             }
         }
     }
