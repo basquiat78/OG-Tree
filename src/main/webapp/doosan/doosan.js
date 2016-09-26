@@ -21,16 +21,16 @@ Doosan.prototype = {
             }
         });
 
-        //me.aras.refreshMyWorkFlow();
+        me.aras.refreshMyWorkFlow();
 
-        $.getJSON("doosan/sample/myData.json", function (myData) {
-
-            me.tree.updateMyData(myData);
-
-            $.getJSON("doosan/sample/otherData.json", function (otherData) {
-                me.tree.updateOtherData(otherData);
-            });
-        });
+        //$.getJSON("doosan/sample/myData.json", function (myData) {
+        //
+        //    me.tree.updateMyData(myData);
+        //
+        //    $.getJSON("doosan/sample/otherData.json", function (otherData) {
+        //        me.tree.updateOtherData(otherData);
+        //    });
+        //});
 
         //var otherData = randomData('other');
         //var myData = randomData('my');
