@@ -613,7 +613,7 @@ Aras.prototype = {
             }else{
                 xmlNodeToString = '<node>' + $(xmlNode).html() + '</node>';
             }
-            var xmlNodeStringToJSON = OG.Util.xmlToJson(xmlNodeToString);// $.xml2json(xmlNodeToString);
+            var xmlNodeStringToJSON = $.xml2json(xmlNodeToString);// $.xml2json(xmlNodeToString);
             var node = xmlNodeStringToJSON, object;
             if (node.kind == 'F') {
                 object = {
@@ -656,7 +656,7 @@ Aras.prototype = {
             }else{
                 xmlNodeToString = '<node>' + $(xmlNode).html() + '</node>';
             }
-            var xmlNodeStringToJSON = OG.Util.xmlToJson(xmlNodeToString);
+            var xmlNodeStringToJSON = $.xml2json(xmlNodeToString);
             var node = xmlNodeStringToJSON, object;
 
             if (inout == 'out') {
