@@ -21,16 +21,16 @@ Doosan.prototype = {
             }
         });
 
-        me.aras.refreshMyWorkFlow();
+        //me.aras.refreshMyWorkFlow();
 
-        //$.getJSON("doosan/sample/myData.json", function (myData) {
-        //
-        //    me.tree.updateMyData(myData);
-        //
-        //    $.getJSON("doosan/sample/otherData.json", function (otherData) {
-        //        me.tree.updateOtherData(otherData);
-        //    });
-        //});
+        $.getJSON("doosan/sample/myData.json", function (myData) {
+
+            me.tree.updateMyData(myData);
+
+            $.getJSON("doosan/sample/otherData.json", function (otherData) {
+                me.tree.updateOtherData(otherData);
+            });
+        });
 
         //var otherData = randomData('other');
         //var myData = randomData('my');
@@ -109,11 +109,16 @@ Doosan.prototype = {
 
         /**
          * 액티비티 생성 콘텍스트 버튼 클릭시
-         * @param data
-         * @param view
          */
-        $('#newActivity').click(function (data, view) {
+        $('#newActivity').click(function () {
             me.aras.createActivity();
+        });
+
+        /**
+         * 리프레쉬 버튼 클릭시
+         */
+        $('#refresh').click(function () {
+            me.aras.refreshMyWorkFlow();
         });
         /**
          * 폴더 또는 ED 또는 액티비티 삭제 콘텍스트 클릭시

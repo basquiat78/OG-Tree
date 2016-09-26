@@ -577,7 +577,7 @@ Aras.prototype = {
             newItem.setProperty('owned_by_id', workflowItem.getProperty('owned_by_id', ''));
 
             newItem.setProperty("_parent_type", workflowItemType);
-            newItem.setProperty("_parent_id", me.wfId);
+            newItem.setProperty("_parent_id", workflowItem.getProperty('id', ''));
         }
 
         // aras callback
@@ -608,7 +608,7 @@ Aras.prototype = {
         for (var i = 0; i < nodeList.length; i++) {
             var xmlNode = nodeList[i];
             var xmlNodeToString = '<node>' + $(xmlNode).html() + '</node>';
-            var xmlNodeStringToJSON = $.xml2json(xmlNodeToString);
+            var xmlNodeStringToJSON = OG.Util.xmlToJson(xmlNodeToString);// $.xml2json(xmlNodeToString);
             var node = xmlNodeStringToJSON, object;
             if (node.kind == 'F') {
                 object = {
