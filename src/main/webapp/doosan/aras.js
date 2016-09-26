@@ -1,6 +1,46 @@
 /**
  * Created by Seungpil, Park on 2016. 9. 6..
  */
+function XML2jsobj(node) {
+
+    var data = {};
+
+    // append a value
+    function Add(name, value) {
+        if (data[name]) {
+            if (data[name].constructor != Array) {
+                data[name] = [data[name]];
+            }
+            data[name][data[name].length] = value;
+        }
+        else {
+            data[name] = value;
+        }
+    };
+
+    // element attributes
+    var c, cn;
+    for (c = 0; cn = node.attributes[c]; c++) {
+        Add(cn.name, cn.value);
+    }
+
+    // child elements
+    for (c = 0; cn = node.childNodes[c]; c++) {
+        if (cn.nodeType == 1) {
+            if (cn.childNodes.length == 1 && cn.firstChild.nodeType == 3) {
+                // text value
+                Add(cn.nodeName, cn.firstChild.nodeValue);
+            }
+            else {
+                // sub-object
+                Add(cn.nodeName, XML2jsobj(cn));
+            }
+        }
+    }
+
+    return data;
+
+}
 var Aras = function (tree) {
 
     /**
@@ -610,7 +650,7 @@ Aras.prototype = {
             var xmlNodeToString = '';
             if (OG.Util.isIE()) {
                 xmlNodeToString = '<node>' + xmlNode.xml + '</node>';
-            }else{
+            } else {
                 xmlNodeToString = '<node>' + $(xmlNode).html() + '</node>';
             }
             var xmlNodeStringToJSON = $.xml2json(xmlNodeToString);// $.xml2json(xmlNodeToString);
@@ -653,10 +693,12 @@ Aras.prototype = {
             var xmlNodeToString = '';
             if (OG.Util.isIE()) {
                 xmlNodeToString = '<node>' + xmlNode.xml + '</node>';
-            }else{
+            } else {
                 xmlNodeToString = '<node>' + $(xmlNode).html() + '</node>';
             }
-            var xmlNodeStringToJSON = $.xml2json(xmlNodeToString);
+            //$.parseXML( xml )
+            //var xmlNodeStringToJSON = $.xml2json(xmlNodeToString);
+            var xmlNodeStringToJSON = XML2jsobj($.parseXML(xmlNodeToString));
             var node = xmlNodeStringToJSON, object;
 
             if (inout == 'out') {
