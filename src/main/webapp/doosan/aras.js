@@ -1,23 +1,6 @@
 /**
  * Created by Seungpil, Park on 2016. 9. 6..
  */
-function XML2jsobj(node) {
-
-    var data = {};
-    var item;
-    if (node && node.childNodes && node.childNodes[0] &&
-        node.childNodes[0].childNodes && node.childNodes[0].childNodes[0]) {
-        item = node.childNodes[0].childNodes[0];
-        if (item) {
-            for (var i = 0; i < item.childNodes.length; i++) {
-                data[item.childNodes[i].nodeName] =
-                    item.childNodes[i].firstChild ? item.childNodes[i].firstChild.nodeValue : ''
-            }
-        }
-    }
-    return data;
-
-}
 var Aras = function (tree) {
 
     /**
@@ -50,6 +33,21 @@ var Aras = function (tree) {
     }
 };
 Aras.prototype = {
+    iExmL2jsobj: function (node) {
+        var data = {};
+        var item;
+        if (node && node.childNodes && node.childNodes[0] &&
+            node.childNodes[0].childNodes && node.childNodes[0].childNodes[0]) {
+            item = node.childNodes[0].childNodes[0];
+            if (item) {
+                for (var i = 0; i < item.childNodes.length; i++) {
+                    data[item.childNodes[i].nodeName] =
+                        item.childNodes[i].firstChild ? item.childNodes[i].firstChild.nodeValue : ''
+                }
+            }
+        }
+        return data;
+    },
     init: function () {
         this.aras = parent.top.aras;
         this.thisItem = parent.top.thisItem;
@@ -625,12 +623,14 @@ Aras.prototype = {
         for (var i = 0; i < nodeList.length; i++) {
             var xmlNode = nodeList[i];
             var xmlNodeToString = '';
+            var xmlNodeStringToJSON;
             if (OG.Util.isIE()) {
                 xmlNodeToString = '<node>' + xmlNode.xml + '</node>';
+                xmlNodeStringToJSON = me.iExmL2jsobj($.parseXML(xmlNodeToString));
             } else {
                 xmlNodeToString = '<node>' + $(xmlNode).html() + '</node>';
+                xmlNodeStringToJSON = $.xml2json(xmlNodeToString);
             }
-            var xmlNodeStringToJSON = $.xml2json(xmlNodeToString);// $.xml2json(xmlNodeToString);
             var node = xmlNodeStringToJSON, object;
             if (node.kind == 'F') {
                 object = {
@@ -668,14 +668,14 @@ Aras.prototype = {
         for (var i = 0; i < resultNodeList.length; i++) {
             var xmlNode = resultNodeList[i];
             var xmlNodeToString = '';
+            var xmlNodeStringToJSON;
             if (OG.Util.isIE()) {
                 xmlNodeToString = '<node>' + xmlNode.xml + '</node>';
+                xmlNodeStringToJSON = me.iExmL2jsobj($.parseXML(xmlNodeToString));
             } else {
                 xmlNodeToString = '<node>' + $(xmlNode).html() + '</node>';
+                xmlNodeStringToJSON = $.xml2json(xmlNodeToString);
             }
-            //$.parseXML( xml )
-            //var xmlNodeStringToJSON = $.xml2json(xmlNodeToString);
-            var xmlNodeStringToJSON = XML2jsobj($.parseXML(xmlNodeToString));
             var node = xmlNodeStringToJSON, object;
 
             if (inout == 'out') {
