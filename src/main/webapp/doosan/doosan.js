@@ -112,9 +112,8 @@ Doosan.prototype = {
          * @param data
          * @param view
          */
-        $('#newActivity').click(function () {
-            //var add = new Add(tree);
-            //add.createActivity();
+        $('#newActivity').click(function (data, view) {
+            me.aras.createActivity();
         });
         /**
          * 폴더 또는 ED 또는 액티비티 삭제 콘텍스트 클릭시
