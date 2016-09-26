@@ -501,7 +501,7 @@ Aras.prototype = {
                 existRelItem.setProperty("source_id", me.wfId);
                 existRelItem.setProperty("related_id", data.id);
                 existRelItem = existRelItem.apply();
-                if (existRelItem.getItemCount() == 0) {
+                if (existRelItem.getItemCount() > 0) {
                     relItem = inn.newItem(relType, 'delete');
                     relItem.setProperty("source_id", me.wfId);
                     relItem.setProperty("related_id", data.id);
@@ -533,7 +533,7 @@ Aras.prototype = {
                 existRelItem.setProperty("source_id", parentData.id);
                 existRelItem.setProperty("related_id", data.id);
                 existRelItem = existRelItem.apply();
-                if (existRelItem.getItemCount() == 0) {
+                if (existRelItem.getItemCount() > 0) {
                     relItem = inn.newItem(relType, 'delete');
                     relItem.setProperty("source_id", parentData.id);
                     relItem.setProperty("related_id", data.id);
