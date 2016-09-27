@@ -2224,7 +2224,7 @@ Tree.prototype = {
                 if (!target || !source) {
                     return;
                 }
-                var beforeMapping = me.onBeforeMapping(event, source, target);
+                var beforeMapping = me.onBeforeMapping(source, target);
                 if (typeof beforeMapping == 'boolean') {
                     if (!beforeMapping) {
                         return;
@@ -2257,8 +2257,10 @@ Tree.prototype = {
 
 
                 //ED 드래그 일 경우 부모 폴더를 대상으로 선정과 동시에 selected 처리한다.
+                var edDrag = false;
                 var standardFolder;
                 if (source.type == me.Constants.TYPE.ED) {
+                    edDrag = true;
                     standardFolder = me.selectParentById(source.id);
                     if (standardFolder && standardFolder.type == me.Constants.TYPE.FOLDER) {
                         mappingData = {
@@ -2267,7 +2269,8 @@ Tree.prototype = {
                             source: standardFolder.id,
                             target: target.id,
                             position: me.Constants.POSITION.MY_IN,
-                            extData: {}
+                            extData: {},
+                            selected: true
                         };
                         me.updateData([mappingData], true);
                     }
@@ -2277,21 +2280,24 @@ Tree.prototype = {
 
                 if (standardFolder && standardFolder.type == me.Constants.TYPE.FOLDER) {
                     //자식들(재귀호출) 의 매핑데이터를 생성하고, 폴더는 selected 처리한다.
+                    //ED 드래그일 경우는 자식들의 매핑데이터를 생성하지 않는다.
                     var child = me.selectRecursiveChildById(standardFolder.id);
                     var childMapping;
-                    for (var i = 0; i < child.length; i++) {
-                        childMapping = {
-                            id: child[i].id + '-' + target.id,
-                            type: me.Constants.TYPE.MAPPING,
-                            source: child[i].id,
-                            target: target.id,
-                            position: me.Constants.POSITION.MY_IN,
-                            extData: {}
-                        };
-                        if (child[i].type == me.Constants.TYPE.FOLDER) {
-                            childMapping.selected = true;
+                    if (!edDrag) {
+                        for (var i = 0; i < child.length; i++) {
+                            childMapping = {
+                                id: child[i].id + '-' + target.id,
+                                type: me.Constants.TYPE.MAPPING,
+                                source: child[i].id,
+                                target: target.id,
+                                position: me.Constants.POSITION.MY_IN,
+                                extData: {}
+                            };
+                            if (child[i].type == me.Constants.TYPE.FOLDER) {
+                                childMapping.selected = true;
+                            }
+                            me.updateData([childMapping], true);
                         }
-                        me.updateData([childMapping], true);
                     }
 
                     //부모들(재귀호출) 의 매핑데이터를 생성한다. 매핑데이터가 이미 있다면 추가하지 않는다.(selected 보존을 위해서이다.)
@@ -2315,30 +2321,59 @@ Tree.prototype = {
                     }
                 }
                 me.render();
-                me.onMapping(event, mappingData);
+                me.onMapping(source, target);
             }
         });
     },
-    /**
-     * GUI 상에서 매핑이 되기 전의 핸들러
-     * @param event
-     * @param source
-     * @param target
-     * @returns {boolean}
-     */
-    onBeforeMapping: function (event, source, target) {
-        console.log(event, source, target);
-        return true;
-    },
+    deleteMapping: function (data, view) {
+        //매핑 삭제 로직을 만든다.
+        //자기자신을 삭제한다.
+        //자식들에 대한 매핑을 삭제한다.
+        //부모 일람중에, 부모의 자식들 중 매핑요소가 없다면 매핑을 삭제한다.
+        var me = this;
+        var source = view.source;
+        var target = view.target;
+        var mappingId = source + '-' + target;
 
-    /**
-     * GUI 상에서 매핑이 이루어졌을 때 핸들러
-     * @param event
-     * @param mapping
-     */
-    onMapping: function (event, mapping) {
-        console.log(event, mapping);
-        return true;
+        //onBeforeDeleteMapping 이벤트 발생
+        var beforeDelete = me.onBeforeDeleteMapping(source, target);
+        if (typeof beforeDelete == 'boolean') {
+            if (!beforeDelete) {
+                return;
+            }
+        }
+
+        //자기 자신 삭제
+        me.removeDataByFilter({id: mappingId});
+
+        //자식들에 대한 매핑 삭제
+        var child = me.selectRecursiveChildById(source);
+        for (var i = 0; i < child.length; i++) {
+            mappingId = child[i].id + '-' + target;
+            me.removeDataByFilter({id: mappingId});
+        }
+
+        //부모에 대한 매핑 삭제
+        var parentsChild;
+        var parents = me.selectRecursiveParentById(source);
+        for (var i = 0; i < parents.length; i++) {
+            var hasChildMapping = false;
+            mappingId = parents[i].id + '-' + target;
+            parentsChild = me.selectChildById(parents[i].id);
+            for (var c = 0; c < parentsChild.length; c++) {
+                var parentChildMapping = me.loadByFilter({id: parentsChild[c].id + '-' + target});
+                if (parentChildMapping && parentChildMapping.length) {
+                    hasChildMapping = true;
+                }
+            }
+            if (!hasChildMapping) {
+                me.removeDataByFilter({id: mappingId});
+            }
+        }
+        me.render();
+
+        //onDeleteMapping  이벤트 발생
+        me.onDeleteMapping(source, target);
     },
 
     /**
@@ -2452,31 +2487,31 @@ Tree.prototype = {
             name: 'create ed',
             items: {
                 cad: {
-                    name : '2D & 3D Drawing',
+                    name: '2D & 3D Drawing',
                     callback: function () {
                         me.onMakeEd(me.selectedData, me.selectedView, 'CAD');
                     }
                 },
                 dhi_c3d_output: {
-                    name : '3D BOM',
+                    name: '3D BOM',
                     callback: function () {
                         me.onMakeEd(me.selectedData, me.selectedView, 'DHI_C3D_OUTPUT');
                     }
                 },
                 document: {
-                    name : 'Document',
+                    name: 'Document',
                     callback: function () {
                         me.onMakeEd(me.selectedData, me.selectedView, 'Document');
                     }
                 },
                 dhi_intellisheet: {
-                    name : 'Engineering Data',
+                    name: 'Engineering Data',
                     callback: function () {
                         me.onMakeEd(me.selectedData, me.selectedView, 'DHI_IntelliSheet');
                     }
                 },
                 dhi_ed_kdm: {
-                    name : 'Key Data',
+                    name: 'Key Data',
                     callback: function () {
                         me.onMakeEd(me.selectedData, me.selectedView, 'DHI_ED_KDM');
                     }
@@ -2516,7 +2551,7 @@ Tree.prototype = {
         return {
             name: 'delete relation',
             callback: function () {
-                me.onDeleteRelation(me.selectedData, me.selectedView);
+                me.deleteMapping(me.selectedData, me.selectedView);
             }
         }
     },
@@ -2532,47 +2567,35 @@ Tree.prototype = {
     },
     onListRelation: function (data, view) {
     },
-    onDeleteRelation: function (data, view) {
-        //매핑 삭제 로직을 만든다.
-        //자기자신을 삭제한다.
-        //자식들에 대한 매핑을 삭제한다.
-        //부모 일람중에, 부모의 자식들 중 매핑요소가 없다면 매핑을 삭제한다.
-        var me = this;
-        var source = view.source;
-        var target = view.target;
-        var mappingId = source + '-' + target;
+    /**
+     * GUI 상에서 매핑이 되기 전의 핸들러
+     * @param event
+     * @param source
+     * @param target
+     * @returns {boolean}
+     */
+    onBeforeMapping: function (source, target) {
+        console.log(source, target);
+        return true;
+    },
+    /**
+     * GUI 상에서 매핑이 이루어졌을 때 핸들러
+     * @param event
+     * @param mapping
+     */
+    onMapping: function (source, target) {
+        console.log(source, target);
+        return true;
+    },
+    onBeforeDeleteMapping: function (source, target) {
+        console.log(source, target);
+        return true;
+    },
 
-        //자기 자신 삭제
-        me.removeDataByFilter({id: mappingId});
-
-        //자식들에 대한 매핑 삭제
-        var child = me.selectRecursiveChildById(source);
-        for (var i = 0; i < child.length; i++) {
-            mappingId = child[i].id + '-' + target;
-            me.removeDataByFilter({id: mappingId});
-        }
-
-        //부모에 대한 매핑 삭제
-        var parentsChild;
-        var parents = me.selectRecursiveParentById(source);
-        for (var i = 0; i < parents.length; i++) {
-            var hasChildMapping = false;
-            mappingId = parents[i].id + '-' + target;
-            parentsChild = me.selectChildById(parents[i].id);
-            for (var c = 0; c < parentsChild.length; c++) {
-                var parentChildMapping = me.loadByFilter({id: parentsChild[c].id + '-' + target});
-                if (parentChildMapping && parentChildMapping.length) {
-                    hasChildMapping = true;
-                }
-            }
-            if (!hasChildMapping) {
-                me.removeDataByFilter({id: mappingId});
-            }
-        }
-        me.render();
+    onDeleteMapping: function (source, target) {
+        console.log(source, target);
+        return true;
     }
-
-
     //TODO
     //워크플로우 - 액티비티 관게를 표현할 그리드 창 만들기. OK
     //각 아이템마다, 말풍선은 넘버와 name 이 표기되면 된다. OK.

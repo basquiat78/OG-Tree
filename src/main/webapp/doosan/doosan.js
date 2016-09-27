@@ -34,28 +34,48 @@ Doosan.prototype = {
 
         //var otherData = randomData('other');
         //var myData = randomData('my');
-        //tree.updateOtherData(otherData);
-        //tree.updateMyData(myData);
+        //me.tree.updateOtherData(otherData);
+        //me.tree.updateMyData(myData);
 
         /**
          * GUI 상에서 매핑이 되기 전의 핸들러
-         * @param event
          * @param source
          * @param target
          * @returns {boolean}
          */
-        me.tree.onBeforeMapping = function (event, source, target) {
-            console.log(event, source, target);
-            return true;
+        me.tree.onBeforeMapping = function (source, target) {
+            console.log(source, target);
+
+            //아라스에서는 소스와 타겟이 반대
+            me.aras.addInRel(target, source);
+            return false;
         };
 
         /**
          * GUI 상에서 매핑이 이루어졌을 때 핸들러
-         * @param event
-         * @param mapping
+         * @param source
+         * @param target
          */
-        me.tree.onMapping = function (event, mapping) {
-            console.log(event, mapping);
+        me.tree.onMapping = function (source, target) {
+            console.log(source, target);
+        };
+
+        /**
+         * GUI 상에서 매핑이 삭제되기 전 핸들러
+         * @param source
+         * @param target
+         */
+        me.tree.onBeforeDeleteMapping = function (source, target) {
+            console.log(source, target);
+        };
+
+        /**
+         * GUI 상에서 매핑이 삭제되었을 때의 핸들러
+         * @param source
+         * @param target
+         */
+        me.tree.onDeleteMapping = function (source, target) {
+            console.log(source, target);
         };
 
         /**

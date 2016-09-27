@@ -610,6 +610,36 @@ Aras.prototype = {
             arasWindow.top.commandEventHandlers['afterunlock'].push(EventBottomSave);
         });
     },
+    addInRel: function (source, target) {
+        var me = this;
+        var inn = this.aras.newIOMInnovator();
+        var relType = me.getRelType(source.type, target.type, 'in');
+        var existRelItem;
+        var relItem;
+
+        existRelItem = inn.newItem(relType, "get");
+        existRelItem.setProperty("source_id", source.id);
+        existRelItem.setProperty("related_id", target.id);
+        existRelItem = existRelItem.apply();
+        if (existRelItem.getItemCount() == 0) {
+            try {
+                // parentFolderItem output rel
+                relItem = inn.newItem(relType, "add");
+                relItem.setProperty("source_id", source.id);
+                relItem.setProperty("related_id", target.id);
+                relItem.setProperty("owned_by_id", me.thisItem.getProperty("owned_by_id", ""));
+                relItem = relItem.apply();
+
+                var body = "<source_id>" + source.id + "</source_id>";
+                body += "<related_id>" + target.id + "</related_id>";
+                var result = inn.applyMethod("DHI_WF_CREATE_FD_IN_REL", body);
+            }
+            catch (e) {
+                msgBox('Failed to add ' + relType + ' Relation : ' + source.id + ' to ' + target.id);
+            }
+        }
+        me.refreshMyWorkFlow();
+    },
     refreshOutFolder: function (data, view) {
         //이벤트가 발생한 폴더 (부모폴더)
         var tree = this.tree;
@@ -658,6 +688,11 @@ Aras.prototype = {
             }
         }
 
+        //remove Other Data
+        me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER});
+        me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER_OUT});
+
+        //update Data
         tree.updateData(refreshData);
     },
     createWorkFlowData: function (resultNodeList, who, inout) {
@@ -757,6 +792,11 @@ Aras.prototype = {
         var me = this;
         var inResult = me.getWorkflowStructure(me.wfId, 'IN');
         var outResult = me.getWorkflowStructure(me.wfId, 'OUT');
+
+        //remove My Data
+        me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY});
+        me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_IN});
+        me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_OUT});
 
         // create data
         var myInData = me.createMyWorkFlowData(inResult['nodeList'], 'in');
