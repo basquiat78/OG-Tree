@@ -67,6 +67,10 @@ Doosan.prototype = {
          */
         me.tree.onBeforeDeleteMapping = function (source, target) {
             console.log(source, target);
+
+            //아라스에서는 소스와 타겟이 반대
+            me.aras.deleteInRel(target,source);
+            return false;
         };
 
         /**

@@ -501,7 +501,6 @@ Aras.prototype = {
         var relItem;
         var existRelItem;
 
-
         //액티비티 삭제일 경우
         if (data.type == me.TYPE.ACTIVITY) {
 
@@ -623,7 +622,6 @@ Aras.prototype = {
         existRelItem = existRelItem.apply();
         if (existRelItem.getItemCount() == 0) {
             try {
-                // parentFolderItem output rel
                 relItem = inn.newItem(relType, "add");
                 relItem.setProperty("source_id", source.id);
                 relItem.setProperty("related_id", target.id);
@@ -639,6 +637,32 @@ Aras.prototype = {
             }
         }
         me.refreshMyWorkFlow();
+    },
+    deleteInRel: function (source, target) {
+        var me = this;
+        var inn = this.aras.newIOMInnovator();
+        var relType = me.getRelType(source.type, target.type, 'in');
+        var existRelItem;
+        var relItem;
+
+        //관계 삭제 전 상위 상태 재설정
+        var body = "<source_id>" + source.id + "</source_id>";
+        body += "<related_id>" + target.id + "</related_id>";
+        var result = inn.applyMethod("DHI_WF_DEL_RELATION_ITEM_INPUT", body);
+
+        if (result) {
+            existRelItem = inn.newItem(relType, 'get');
+            existRelItem.setProperty("source_id", source.id);
+            existRelItem.setProperty("related_id", target.id);
+            existRelItem = existRelItem.apply();
+            if (existRelItem.getItemCount() > 0) {
+                relItem = inn.newItem(relType, 'delete');
+                relItem.setProperty("source_id", source.id);
+                relItem.setProperty("related_id", target.id);
+                relItem = relItem.apply();
+            }
+            me.refreshMyWorkFlow();
+        }
     },
     refreshOutFolder: function (data, view) {
         //이벤트가 발생한 폴더 (부모폴더)
