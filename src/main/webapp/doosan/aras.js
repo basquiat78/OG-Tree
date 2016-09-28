@@ -566,6 +566,7 @@ Aras.prototype = {
         //inn.applyMethod("DHI_APPLY_SQL", body);
 
         edItem = inn.newItem(edType, 'edit');
+        edItem.setProperty('id', edId);
         edItem.setProperty("_p_id", data.extData['fs_id']);
 
         edItem.setProperty("_rel_project", parentItem.getProperty('_rel_project', ''));
