@@ -210,10 +210,10 @@ Doosan.prototype = {
             }
 
             var nameClickEvent = function (element, relData) {
+                console.log('relData' , relData);
                 element.unbind('click');
                 element.click(function (event) {
-                    console.log('relData' , relData);
-                    event.stopPropagation();
+                    //event.stopPropagation();
                     me.aras.showPropertyWindow(me.tree.Constants.TYPE.ACTIVITY, relData.id);
                 });
             };
