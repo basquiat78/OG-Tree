@@ -265,8 +265,38 @@ Doosan.prototype = {
          */
         me.tree.onPickEd = function (data, view) {
             console.log('onPickEd', data, view);
-            var pickEd = me.aras.getPickEd();
-            console.log(pickEd);
+            var dataSet = me.aras.getPickEd();
+
+            var gridPanel = $('#pickEdGrid');
+            if (!gridPanel.data('table')) {
+                gridPanel.data('table', true);
+                gridPanel.DataTable({
+                    data: dataSet,
+                    columns: [
+                        {data: 'name', title: 'Name'},
+                        {data: '_rel_project', title: 'Project'},
+                        {data: 'state', title: 'State'}
+                    ]
+                });
+            }
+
+            var dataTable = gridPanel.dataTable().api();
+            dataTable.clear();
+            dataTable.rows.add(dataSet);
+            dataTable.draw();
+
+            var modal = $('#pickEdModal');
+            modal.find('[name=action]').unbind('click');
+            modal.find('[name=close]').unbind('click');
+            modal.find('[name=close]').bind('click', function () {
+                modal.find('.close').click();
+            });
+            modal.find('[name=action]').bind('click', function () {
+                modal.find('.close').click();
+            });
+            modal.modal({
+                show: true
+            })
         };
 
         $('#labelSwitch').click(function () {
