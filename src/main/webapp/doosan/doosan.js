@@ -268,9 +268,10 @@ Doosan.prototype = {
             var dataSet = me.aras.getPickEd();
             for (var i = 0; i < dataSet.length; i++) {
                 dataSet[i]['name'] =
-                    '<input type="checkbox" name="edName" data-data="' +
-                    JSON.stringify(dataSet[i]) + '"/>&nbsp;' +
-                    '<a href="#">' + dataSet[i]['name'] + '</a>'
+                    '<input type="checkbox" name="pickEdObj" data-index="' + i + '"/>&nbsp;' +
+                    '<a href="#">' + dataSet[i]['name'] + '</a>';
+
+                dataSet[i]['detail'] = '<button class="btn btn-xs rounded btn-primary" name="statusBtn">Detail</button>'
             }
 
             var gridPanel = $('#pickEdGrid');
@@ -281,32 +282,54 @@ Doosan.prototype = {
                     columns: [
                         {data: 'name', title: 'Name'},
                         {data: '_rel_project', title: 'Project'},
-                        {data: 'state', title: 'State'}
-                    ],
-                    pageLength: 1
+                        {data: 'state', title: 'State'},
+                        {data: 'detail', title: 'Detail'}
+                    ]
                 });
             }
 
+            var bindStatusEvent = function (btn, data) {
+                btn.click(function (event) {
+                    event.stopPropagation();
+                    console.log(data);
+                    //var modal = $('#statusModal');
+                    //modal.modal({
+                    //    show: true
+                    //});
+                    //modal.find('[name=close]').click(function () {
+                    //    $('#statusModal').find('.close').click();
+                    //});
+                    //
+                    //var str = JSON.stringify(data, null, 2);
+                    //modal.find('[name=body]').val(str);
+                });
+            };
+
+            var trClickEvent = function (tr, data) {
+                tr.click(function () {
+                    var checkbox = tr.find('input:checkbox');
+                    if (checkbox.prop('checked')) {
+                        checkbox.prop('checked', false);
+                    } else {
+                        checkbox.prop('checked', true);
+                    }
+                })
+            };
+
             // page event
             gridPanel.on('draw.dt', function () {
-                console.log('draw');
-                //bindShortcutMove(srcPath);
-                //
-                //var hdfsObjs = $("[name=hdfsobj]");
-                //hdfsObjs.each(function (index, check) {
-                //    var checkbox = $(check);
-                //    var td = checkbox.parent();
-                //    var tr = td.parent();
-                //    var data = drawData[index];
-                //    var statusBtn = tr.find('[name=statusBtn]');
-                //    bindStatusEvent(statusBtn, data);
-                //
-                //    var filenameBtn = td.find('a');
-                //    folderClickEvent(filenameBtn, data);
-                //
-                //    trClickEvent(tr, data);
-                //});
-                //blockStop();
+                var pickEdObj = $("[name=pickEdObj]");
+                pickEdObj.each(function (index, check) {
+                    var checkbox = $(check);
+                    var td = checkbox.parent();
+                    var tr = td.parent();
+                    var dataIndex = checkbox.data('index');
+                    var data = dataSet[parseInt(dataIndex)];
+                    var statusBtn = tr.find('[name=statusBtn]');
+                    bindStatusEvent(statusBtn, data);
+                    trClickEvent(tr, data);
+                });
+                blockStop();
             });
 
             var dataTable = gridPanel.dataTable().api();
