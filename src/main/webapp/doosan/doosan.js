@@ -266,6 +266,12 @@ Doosan.prototype = {
         me.tree.onPickEd = function (data, view) {
             console.log('onPickEd', data, view);
             var dataSet = me.aras.getPickEd();
+            for (var i = 0; i < dataSet.length; i++) {
+                dataSet[i]['name'] =
+                    '<input type="checkbox" name="edName" data-data="' +
+                    JSON.stringify(dataSet[i]) + '"/>&nbsp;' +
+                    '<a href="#">' + dataSet[i]['name'] + '</a>'
+            }
 
             var gridPanel = $('#pickEdGrid');
             if (!gridPanel.data('table')) {
@@ -279,6 +285,28 @@ Doosan.prototype = {
                     ]
                 });
             }
+
+            // page event
+            gridPanel.on('draw.dt', function () {
+                console.log('draw');
+                //bindShortcutMove(srcPath);
+                //
+                //var hdfsObjs = $("[name=hdfsobj]");
+                //hdfsObjs.each(function (index, check) {
+                //    var checkbox = $(check);
+                //    var td = checkbox.parent();
+                //    var tr = td.parent();
+                //    var data = drawData[index];
+                //    var statusBtn = tr.find('[name=statusBtn]');
+                //    bindStatusEvent(statusBtn, data);
+                //
+                //    var filenameBtn = td.find('a');
+                //    folderClickEvent(filenameBtn, data);
+                //
+                //    trClickEvent(tr, data);
+                //});
+                //blockStop();
+            });
 
             var dataTable = gridPanel.dataTable().api();
             dataTable.clear();
