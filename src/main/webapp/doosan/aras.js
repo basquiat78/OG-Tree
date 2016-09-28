@@ -144,22 +144,30 @@ Aras.prototype = {
         };
         var nodeResult = me.applyMethod('DHI_WF_EDITOR_ED_PICK', me.createBody(params));
         var nodeList = nodeResult['nodeList'];
-        if(nodeList && nodeList.length){
+        if (nodeList && nodeList.length) {
             for (var i = 0; i < nodeList.length; i++) {
-                var xmlNode = nodeList[i];
-                var xmlNodeToString = '';
-                var xmlNodeStringToJSON;
-                if (OG.Util.isIE()) {
-                    xmlNodeToString = '<node>' + xmlNode.xml + '</node>';
-                    xmlNodeStringToJSON = me.iExmL2jsobj($.parseXML(xmlNodeToString));
-                } else {
-                    xmlNodeToString = '<node>' + $(xmlNode).html() + '</node>';
-                    xmlNodeStringToJSON = $.xml2json(xmlNodeToString);
-                }
-                data.push(xmlNodeStringToJSON);
+                data.push(me.nodeToJson(nodeList[i]));
             }
         }
         return data;
+    },
+    /**
+     * Aras Item 노드를 Json 으로 변환한다.
+     * @param xmlNode
+     * @returns {*}
+     */
+    nodeToJson: function (xmlNode) {
+        var me = this;
+        var xmlNodeToString = '';
+        var xmlNodeStringToJSON;
+        if (OG.Util.isIE()) {
+            xmlNodeToString = '<node>' + xmlNode.xml + '</node>';
+            xmlNodeStringToJSON = me.iExmL2jsobj($.parseXML(xmlNodeToString));
+        } else {
+            xmlNodeToString = '<node>' + $(xmlNode).html() + '</node>';
+            xmlNodeStringToJSON = $.xml2json(xmlNodeToString);
+        }
+        return xmlNodeStringToJSON;
     },
     /**
      * 스키마 콤보를 구한다.
