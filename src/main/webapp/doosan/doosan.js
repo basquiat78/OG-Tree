@@ -199,9 +199,12 @@ Doosan.prototype = {
                 gridPanel.DataTable({
                     data: dataSet,
                     columns: [
-                        {data: 'label', title: 'Activity'},
-                        {data: 'wf_name', title: 'Workflow'},
-                        {data: 'wf_name1', title: 'Workflow Name'}
+                        {data: 'process_id', title: 'Process ID'},
+                        {data: 'wf_name', title: 'Workflow Name'},
+                        {data: 'item_number', title: 'Activity ID'},
+                        {data: 'label', title: 'Activity Name'},
+                        {data: 'activity_owner', title: 'Activity Owner'},
+                        {data: 'eng_funtion_structure', title: 'Eng Func Struct'}
                     ]
                 });
             }
@@ -231,23 +234,10 @@ Doosan.prototype = {
             dataTable.rows.add(dataSet);
             dataTable.draw();
 
-            var modal = $('#pickEdModal');
-            modal.find('[name=action]').unbind('click');
+            var modal = $('#listRelModal');
             modal.find('[name=close]').unbind('click');
             modal.find('[name=close]').bind('click', function () {
                 modal.find('.close').click();
-            });
-            modal.find('[name=action]').bind('click', function () {
-                modal.find('.close').click();
-                var pickEdObj = $("[name=pickEdObj]");
-                pickEdObj.each(function (index, check) {
-                    var checkbox = $(check);
-                    var dataIndex = checkbox.data('index');
-                    var edData = dataSet[parseInt(dataIndex)];
-                    var edItem = me.aras.getItemById(me.aras.TYPE.ED, edData.id);
-                    var folderItem = me.aras.getItemById(me.aras.TYPE.FOLDER, data.id);
-                    me.aras.addPickEDOutRelation(edItem, folderItem, data, view);
-                });
             });
             modal.modal({
                 show: true
