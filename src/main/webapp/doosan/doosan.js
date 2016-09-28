@@ -282,7 +282,8 @@ Doosan.prototype = {
                         {data: 'name', title: 'Name'},
                         {data: '_rel_project', title: 'Project'},
                         {data: 'state', title: 'State'}
-                    ]
+                    ],
+                    pageLength: 1
                 });
             }
 
