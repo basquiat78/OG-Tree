@@ -562,27 +562,47 @@ Aras.prototype = {
 
         var path = parentItem.getProperty("_path") + '||' + edItem.getProperty("_ed_number", "");
 
-        //body = "<sqlString>UPDATE innovator." + createEDItem.GetType() + " SET _PATH = '" + path + "' WHERE id = '" + createEDItem.getID() + "'</sqlString>";
-        //inn.applyMethod("DHI_APPLY_SQL", body);
-
-        edItem = inn.newItem(edType, 'edit');
-        edItem.setProperty('id', edId);
-        edItem.setProperty("_p_id", data.extData['fs_id']);
-
-        edItem.setProperty("_rel_project", parentItem.getProperty('_rel_project', ''));
-        edItem.setProperty("_rel_ownedteam", parentItem.getProperty('_rel_ownedteam', ''));
-        edItem.setProperty("_path", path);
-
         if (me.stdYN == 'Y') {
-            edItem.setProperty("_rel_wfat", view.root);
-            edItem.setProperty("_rel_wft", parentItem.getProperty('_rel_wft', ''));
-            edItem.setProperty("is_template", "1");
+            body = "<sqlString>UPDATE innovator." + edType +
+                " SET _PATH = '" + path + "'" +
+                ", _P_ID = '" + data.extData['fs_id'] + "'" +
+                ", _REL_PROJECT = '" + parentItem.getProperty('_rel_project', '') + "'" +
+                ", _REL_OWNEDTEAM = '" + parentItem.getProperty('_rel_ownedteam', '') + "'" +
+                ", _REL_WFAT = '" + view.root + "'" +
+                ", _REL_WFT = '" + parentItem.getProperty('_rel_wft', '') + "'" +
+                ", IS_TEMPLATE = '" + 1 + "'" +
+                " WHERE id = '" + edId + "'</sqlString>";
+        }else{
+            body = "<sqlString>UPDATE innovator." + edType +
+                " SET _PATH = '" + path + "'" +
+                ", _P_ID = '" + data.extData['fs_id'] + "'" +
+                ", _REL_PROJECT = '" + parentItem.getProperty('_rel_project', '') + "'" +
+                ", _REL_OWNEDTEAM = '" + parentItem.getProperty('_rel_ownedteam', '') + "'" +
+                ", _REL_WFA = '" + view.root + "'" +
+                ", _REL_WF = '" + parentItem.getProperty('_rel_wf', '') + "'" +
+                ", IS_TEMPLATE = '" + 1 + "'" +
+                " WHERE id = '" + edId + "'</sqlString>";
         }
-        else {
-            edItem.setProperty("_rel_wfa", view.root);
-            edItem.setProperty("_rel_wf", parentItem.getProperty('_rel_wf', ''));
-        }
-        edItem.apply();
+        inn.applyMethod("DHI_APPLY_SQL", body);
+
+        //edItem = inn.newItem(edType, 'edit');
+        //edItem.setProperty('id', edId);
+        //edItem.setProperty("_p_id", data.extData['fs_id']);
+        //
+        //edItem.setProperty("_rel_project", parentItem.getProperty('_rel_project', ''));
+        //edItem.setProperty("_rel_ownedteam", parentItem.getProperty('_rel_ownedteam', ''));
+        //edItem.setProperty("_path", path);
+        //
+        //if (me.stdYN == 'Y') {
+        //    edItem.setProperty("_rel_wfat", view.root);
+        //    edItem.setProperty("_rel_wft", parentItem.getProperty('_rel_wft', ''));
+        //    edItem.setProperty("is_template", "1");
+        //}
+        //else {
+        //    edItem.setProperty("_rel_wfa", view.root);
+        //    edItem.setProperty("_rel_wf", parentItem.getProperty('_rel_wf', ''));
+        //}
+        //edItem.apply();
 
         existRelItem = inn.newItem(relType, "get");
         existRelItem.setProperty("source_id", data.id);
