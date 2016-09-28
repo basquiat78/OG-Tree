@@ -203,7 +203,7 @@ Doosan.prototype = {
                         {data: 'wf_name', title: 'Workflow Name'},
                         {data: 'item_number', title: 'Activity ID'},
                         {data: 'label', title: 'Activity Name'},
-                        {data: 'activity_owner', title: 'Activity Owner'},
+                        {data: 'activity_owner', title: 'Owner'},
                         {data: 'eng_funtion_structure', title: 'Eng Func Struct'}
                     ]
                 });
@@ -212,6 +212,7 @@ Doosan.prototype = {
             var nameClickEvent = function (element, relData) {
                 element.unbind('click');
                 element.click(function (event) {
+                    console.log('relData' , relData);
                     event.stopPropagation();
                     me.aras.showPropertyWindow(me.tree.Constants.TYPE.ACTIVITY, relData.id);
                 });
