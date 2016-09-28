@@ -230,7 +230,6 @@ Aras.prototype = {
         item = item.apply();
 
         this.aras.uiShowItemEx(item.node, undefined, true);
-        //this.aras.uiShowItemEx(itemType, id);
     },
     createFolder: function (data, view) {
         this.data = data;
@@ -650,8 +649,11 @@ Aras.prototype = {
                 relItem.setProperty("owned_by_id", me.thisItem.getProperty("owned_by_id", ""));
                 relItem = relItem.apply();
 
-                var body = "<source_id>" + source.id + "</source_id>";
-                body += "<related_id>" + target.id + "</related_id>";
+                var body = "<_parent_type>" + me.getItemType(me.TYPE.ACTIVITY) + "</_parent_type>";
+                body += "<_parent_id>" + source.id + "</_parent_id>";
+                body += "<_ids>" + target.id + "</_ids>";
+                //var body = "<source_id>" + source.id + "</source_id>";
+                //body += "<related_id>" + target.id + "</related_id>";
                 var result = inn.applyMethod("DHI_WF_CREATE_FD_IN_REL", body);
             }
             catch (e) {
