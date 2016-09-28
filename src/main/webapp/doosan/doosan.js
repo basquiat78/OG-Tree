@@ -75,7 +75,7 @@ Doosan.prototype = {
             console.log(sourceId, sourceType, targetId, targetType);
 
             //아라스에서는 소스와 타겟이 반대
-            me.aras.deleteInRel(targetId, targetType,sourceId, sourceType);
+            me.aras.deleteInRel(targetId, targetType, sourceId, sourceType);
             return false;
         };
 
@@ -117,6 +117,7 @@ Doosan.prototype = {
          * @param view
          */
         me.tree.onShowProperties = function (data, view) {
+            console.log('onShowProperties', data, view);
             var id, type;
             if (data.type == me.tree.Constants.TYPE.MAPPING) {
                 id = data.source;
@@ -125,7 +126,7 @@ Doosan.prototype = {
                 id = data.id;
                 type = data.type;
             }
-            console.log('onShowProperties', data, view);
+            this.aras.showPropertyWindow(type, id);
         };
         /**
          * Ed 생성 콘텍스트 클릭시
@@ -301,7 +302,9 @@ Doosan.prototype = {
 
         $('#targetOtherWorkflow').change(function () {
             var wfId = $('#targetOtherWorkflow').val();
-            var tree = me.tree;
+            var workflowData = me.aras.getWorkflowData(wfId);
+            console.log('workflowData', workflowData.node);
+
             var outResult = me.aras.getWorkflowStructure(wfId, 'OUT');
             var otherWorkFlowData;
             if (outResult) {

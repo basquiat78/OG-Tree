@@ -89,6 +89,18 @@ Aras.prototype = {
         return me.applyMethod('DHI_WF_EDITOR_STRUCTURE', me.createBody(params));
     },
     /**
+     * 워크플로우 데이터를 반환한다.
+     * @param wf_id
+     * @returns {*}
+     */
+    getWorkflowData: function (wf_id) {
+        var me = this;
+        var inn = this.aras.newIOMInnovator();
+        var workflowItem = inn.newItem(me.getItemType(this.TYPE.WORKFLOW), "get");
+        workflowItem.setProperty('id', wf_id);
+        return workflowItem.apply();
+    },
+    /**
      * 하나의 폴더 또는 Activity 를 기준으로 하위 폴더와 ED 조회
      * @param activity_id
      * @param folder_yn Y/N
@@ -209,7 +221,11 @@ Aras.prototype = {
         }
         return relType;
     },
-
+    showPropertyWindow: function (type, id) {
+        var me = this;
+        var itemType = me.getItemType(type);
+        this.aras.uiShowItemEx(itemType, id);
+    },
     createFolder: function (data, view) {
         this.data = data;
         this.view = view;
@@ -798,7 +814,7 @@ Aras.prototype = {
                         //같은 액비티티에 연결된 요소 중에서
                         if (tempData[c]['fs_parent_id'] == node['fs_parent_id']) {
                             //예상되는 parentPath 가 같은 경우
-                            if(tempData[c]['_path'] == parentPath){
+                            if (tempData[c]['_path'] == parentPath) {
                                 parentId = tempData[c]['id']
                             }
                         }
