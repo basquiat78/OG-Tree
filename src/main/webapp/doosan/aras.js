@@ -652,8 +652,6 @@ Aras.prototype = {
                 var body = "<_parent_type>" + me.getItemType(me.TYPE.ACTIVITY) + "</_parent_type>";
                 body += "<_parent_id>" + source.id + "</_parent_id>";
                 body += "<_ids>" + target.id + "</_ids>";
-                //var body = "<source_id>" + source.id + "</source_id>";
-                //body += "<related_id>" + target.id + "</related_id>";
                 var result = inn.applyMethod("DHI_WF_CREATE_FD_IN_REL", body);
             }
             catch (e) {
@@ -680,10 +678,11 @@ Aras.prototype = {
             existRelItem.setProperty("related_id", targetId);
             existRelItem = existRelItem.apply();
             if (existRelItem.getItemCount() > 0) {
-                relItem = inn.newItem(relType, 'delete');
-                relItem.setProperty("source_id", sourceId);
-                relItem.setProperty("related_id", targetId);
-                relItem = relItem.apply();
+                var amlStr = "<AML><Item type=\"" + relType + "\" action=\"delete\" where=\"source_id = '" + sourceId + "' and related_id = '" + targetId + "'\"></Item></AML>"
+                var itmOutRelType = inn.applyAML(amlStr);
+                //relItem.setProperty("source_id", sourceId);
+                //relItem.setProperty("related_id", targetId);
+                //relItem = relItem.apply();
             }
             me.refreshMyWorkFlow();
         }
