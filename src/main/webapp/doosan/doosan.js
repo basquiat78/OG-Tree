@@ -288,7 +288,7 @@ Doosan.prototype = {
                 });
             }
 
-            var bindStatusEvent = function (btn, data) {
+            var bindStatusEvent = function (btn, edData) {
                 btn.unbind('click');
                 btn.click(function (event) {
                     event.stopPropagation();
@@ -296,7 +296,7 @@ Doosan.prototype = {
                 });
             };
 
-            var trClickEvent = function (tr, data) {
+            var trClickEvent = function (tr, edData) {
                 tr.unbind('click');
                 tr.click(function () {
                     var checkbox = tr.find('input:checkbox');
@@ -316,10 +316,10 @@ Doosan.prototype = {
                     var td = checkbox.parent();
                     var tr = td.parent();
                     var dataIndex = checkbox.data('index');
-                    var data = dataSet[parseInt(dataIndex)];
+                    var edData = dataSet[parseInt(dataIndex)];
                     var statusBtn = tr.find('[name=statusBtn]');
-                    bindStatusEvent(statusBtn, data);
-                    trClickEvent(tr, data);
+                    bindStatusEvent(statusBtn, edData);
+                    trClickEvent(tr, edData);
                 });
                 blockStop();
             });
@@ -337,6 +337,15 @@ Doosan.prototype = {
             });
             modal.find('[name=action]').bind('click', function () {
                 modal.find('.close').click();
+                var pickEdObj = $("[name=pickEdObj]");
+                pickEdObj.each(function (index, check) {
+                    var checkbox = $(check);
+                    var dataIndex = checkbox.data('index');
+                    var edData = dataSet[parseInt(dataIndex)];
+                    var edItem = me.aras.getItemById(me.aras.TYPE.ED, edData.id);
+                    var folderItem = me.aras.getItemById(me.aras.TYPE.FOLDER, data.id);
+                    me.aras.addFolderEDOutRelation(edItem, folderItem, data, view);
+                });
             });
             modal.modal({
                 show: true

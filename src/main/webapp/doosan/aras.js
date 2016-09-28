@@ -101,6 +101,19 @@ Aras.prototype = {
         return workflowItem.apply();
     },
     /**
+     * 타입과 아이디와 매칭된 데이터를 반환한다.
+     * @param type
+     * @param id
+     * @returns {*}
+     */
+    getItemById: function (type, id) {
+        var me = this;
+        var inn = this.aras.newIOMInnovator();
+        var item = inn.newItem(me.getItemType(type), "get");
+        item.setProperty('id', id);
+        return item.apply();
+    },
+    /**
      * 하나의 폴더 또는 Activity 를 기준으로 하위 폴더와 ED 조회
      * @param activity_id
      * @param folder_yn Y/N
@@ -399,25 +412,24 @@ Aras.prototype = {
 
         //릴레이션이 존재하지 않을 경우
         if (existRelItem.getItemCount() < 1) {
-            //생성된 폴더의 path 를 업데이트 한다.
-            var sql = "<sqlString>UPDATE innovator." + newItem.GetType() + " SET _PATH = '" + path + "' WHERE id = '" + newItem.getID() + "'</sqlString>";
-            inn.applyMethod('DHI_APPLY_SQL', sql);
+            try {
+                //생성된 폴더의 path 를 업데이트 한다.
+                var sql = "<sqlString>UPDATE innovator." + newItem.GetType() + " SET _PATH = '" + path + "' WHERE id = '" + newItem.getID() + "'</sqlString>";
+                inn.applyMethod('DHI_APPLY_SQL', sql);
 
-            //아웃풋 릴레이션을 생성한다.
-            var relItem = inn.newItem(relType, 'add');
-            relItem.setProperty('source_id', parentId);
-            relItem.setProperty('related_id', newItem.getID());
-            relItem.setProperty('owned_by_id', parentItem.getProperty('owned_by_id', ''));
-            relItem = relItem.apply();
-            console.log('relItem', relItem.node);
+                //아웃풋 릴레이션을 생성한다.
+                var relItem = inn.newItem(relType, 'add');
+                relItem.setProperty('source_id', parentId);
+                relItem.setProperty('related_id', newItem.getID());
+                relItem.setProperty('owned_by_id', parentItem.getProperty('owned_by_id', ''));
+                relItem = relItem.apply();
 
-            var body = '<source_id>' + parentId + '</source_id>';
-            body += '<related_id>' + newItem.getID() + '</related_id>';
-            var result = inn.applyMethod('DHI_WF_RESET_STATE_ITEM', body);
-            console.log(result);
-
-            if (result) {
-                this.refreshOutFolder(parentData, parentView);
+                //스테이터스를 업데이트한다.
+                var body = '<source_id>' + parentId + '</source_id>';
+                body += '<related_id>' + newItem.getID() + '</related_id>';
+                var result = inn.applyMethod('DHI_WF_RESET_STATE_ITEM', body);
+            } catch (e) {
+                msgBox('Failed to create ' + relType + ' Relation : ' + parentId + ' to ' + newItem.getID());
             }
         }
 
@@ -520,15 +532,15 @@ Aras.prototype = {
         existRelItem.setProperty("source_id", data.id);
         existRelItem.setProperty("related_id", edId);
         existRelItem = existRelItem.apply();
-        if (existRelItem.getItemCount() == 0) {
+        if (existRelItem.getItemCount() < 1) {
             try {
-                // parentFolderItem output rel
                 relItem = inn.newItem(relType, "add");
                 relItem.setProperty("source_id", data.id);
                 relItem.setProperty("related_id", edId);
                 relItem.setProperty("owned_by_id", parentItem.getProperty("owned_by_id", ""));
                 relItem = relItem.apply();
 
+                //스테이터스를 업데이트한다.
                 var body = "<source_id>" + data.id + "</source_id>";
                 body += "<related_id>" + edId + "</related_id>";
                 var result = inn.applyMethod("DHI_WF_RESET_STATE_ITEM", body);
