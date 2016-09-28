@@ -224,7 +224,13 @@ Aras.prototype = {
     showPropertyWindow: function (type, id) {
         var me = this;
         var itemType = me.getItemType(type);
-        this.aras.uiShowItemEx(itemType, id);
+        var inn = this.aras.newIOMInnovator();
+        var item = inn.newItem(itemType, "get");
+        item.setProperty('id', id);
+        item = item.apply();
+
+        this.aras.uiShowItemEx(item.node, undefined, true);
+        //this.aras.uiShowItemEx(itemType, id);
     },
     createFolder: function (data, view) {
         this.data = data;
