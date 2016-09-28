@@ -782,9 +782,9 @@ Aras.prototype = {
             } else if (inout == 'in') {
                 // in 일 경우에는 무조건 마이-인 쪽의 매핑 데이터만 온다고 가정
                 var parentId = '';
-                var path = node['_path'];
+                var path = node['_path'] ? node['_path'] : '';
                 var split = path.split('||');
-                var parentPath;
+                var parentPath = '';
                 //부모가 activity 일 경우
                 if (split.length == 2) {
                     parentId = split[0];
