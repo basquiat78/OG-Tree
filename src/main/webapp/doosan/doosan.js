@@ -185,9 +185,6 @@ Doosan.prototype = {
             }
 
             var dataSet = me.aras.getEdParentList(id, me.tree.Constants.TYPE.ED == type ? 'Y' : 'N');
-            //listRelGrid
-            //listRelModal
-            console.log(dataSet);
 
             for (var i = 0; i < dataSet.length; i++) {
                 dataSet[i]['label'] = '<a href="#" name="listRelObj" data-index="' + i + '">' + dataSet[i]['name'] + '</a>';
@@ -210,17 +207,16 @@ Doosan.prototype = {
             }
 
             var nameClickEvent = function (element, relData) {
-                console.log('relData' , relData);
                 element.unbind('click');
                 element.click(function (event) {
-                    //event.stopPropagation();
+                    event.stopPropagation();
                     me.aras.showPropertyWindow(me.tree.Constants.TYPE.ACTIVITY, relData.id);
                 });
             };
 
             // page event
             gridPanel.on('draw.dt', function () {
-                var listRelObj = $("[name=listRelModal]");
+                var listRelObj = $("[name=listRelObj]");
                 listRelObj.each(function (index, aTag) {
                     var element = $(aTag);
                     var dataIndex = element.data('index');
