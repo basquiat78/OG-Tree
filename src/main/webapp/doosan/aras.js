@@ -720,8 +720,22 @@ Aras.prototype = {
         tree.updateData(refreshData);
     },
     createWorkFlowData: function (resultNodeList, who, inout) {
+        //{
+        //    "type": "mapping",
+        //    "sourceType": "folder",
+        //    "id": "another-fd-10-1-my-ac-2",
+        //    "source": "another-fd-10-1",
+        //    "target": "my-ac-2",
+        //    "selected": true,
+        //    "position": "my-in",
+        //    "extData": {},
+        //    "parentId": "another-fd-10",
+        //    "name": "another-fd-10-1-Folder",
+        //    "expand": true
+        //}
         var me = this;
         var data = [];
+        var tempData = [], node, object;
 
         var prev;
         for (var i = 0; i < resultNodeList.length; i++) {
@@ -735,8 +749,11 @@ Aras.prototype = {
                 xmlNodeToString = '<node>' + $(xmlNode).html() + '</node>';
                 xmlNodeStringToJSON = $.xml2json(xmlNodeToString);
             }
-            var node = xmlNodeStringToJSON, object;
+            tempData.push(xmlNodeStringToJSON);
+        }
 
+        for (var i = 0; i < tempData.length; i++) {
+            node = tempData[i];
             if (inout == 'out') {
                 if (node.kind == 'A') {
                     object = {
@@ -777,14 +794,41 @@ Aras.prototype = {
                 }
             } else if (inout == 'in') {
                 // in 일 경우에는 무조건 마이-인 쪽의 매핑 데이터만 온다고 가정
+                var parentId = '';
+                var path = node['_path'];
+                var split = path.split('||');
+                var parentPath;
+                //부모가 activity 일 경우
+                if (split.length == 2) {
+                    parentId = split[0];
+                }
+                //부모가 폴더일 경우
+                else if (split.length > 2) {
+                    split.splice(split.length - 1, 1);
+                    parentPath = split.join('||');
+
+                    for (var c = 0; c < tempData.length; c++) {
+                        //같은 액비티티에 연결된 요소 중에서
+                        if (tempData[c]['fs_parent_id'] == node['fs_parent_id']) {
+                            //예상되는 parentPath 가 같은 경우
+                            if(tempData[c]['_path'] == parentPath){
+                                parentId = tempData[c]['id']
+                            }
+                        }
+                    }
+                }
+
                 object = {
                     type: me.tree.Constants.TYPE.MAPPING,
                     id: node.id + '-' + node.fs_parent_id, //소스 + '-' + 타겟
+                    sourceType: node.kind == 'F' ? me.tree.Constants.TYPE.FOLDER : me.tree.Constants.TYPE.ED,
                     source: node.id,
                     target: node.fs_parent_id,
                     selected: me.tree.emptyString(node.selected) ? false : true,
                     position: me.tree.Constants.POSITION.MY_IN,
-                    extData: JSON.parse(JSON.stringify(node))
+                    extData: JSON.parse(JSON.stringify(node)),
+                    parentId: parentId,
+                    name: node.name
                 };
             }
             data.push(object);
@@ -818,6 +862,7 @@ Aras.prototype = {
         var outResult = me.getWorkflowStructure(me.wfId, 'OUT');
 
         //remove My Data
+        me.tree._INCOLLAPSE = [];
         me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY});
         me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_IN});
         me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_OUT});

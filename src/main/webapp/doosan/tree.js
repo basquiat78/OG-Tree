@@ -98,6 +98,12 @@ var Tree = function (container) {
         }
     };
 
+    /**
+     * 인 데이터 그룹의 가상의 activity 와 targetActivity 사이의 가상 익스팬더 상황 데이터
+     * @type {Array}
+     * @private
+     */
+    this._INCOLLAPSE = [];
     this._STORAGE = {};
     this._VIEWDATA = {};
     this._CONTAINER = $('#' + container);
@@ -259,35 +265,6 @@ Tree.prototype = {
         }
     },
     /**
-     * 스토리지의 MyWorkflow 관련 데이터를 삭제하고, 업데이트 한 후 렌더링을 수행한다.
-     * @param data
-     */
-    updateMyData: function (data) {
-        if (!data) {
-            return;
-        }
-        var me = this;
-        me.removeDataByFilter({position: me.Constants.POSITION.MY});
-        me.removeDataByFilter({position: me.Constants.POSITION.MY_IN});
-        me.removeDataByFilter({position: me.Constants.POSITION.MY_OUT});
-
-        me.updateData(data);
-    },
-    /**
-     * 스토리지의 Other Workflow 관련 데이터를 삭제하고, 업데이트 한 후 렌더링을 수행한다.
-     * @param data
-     */
-    updateOtherData: function (data) {
-        if (!data) {
-            return;
-        }
-        var me = this;
-        me.removeDataByFilter({position: me.Constants.POSITION.OTHER});
-        me.removeDataByFilter({position: me.Constants.POSITION.OTHER_OUT});
-
-        me.updateData(data);
-    },
-    /**
      * 데이터를 업데이트한다.
      * @param data
      * @param preventRender 업데이트 후 렌더링 방지 여부.
@@ -394,6 +371,7 @@ Tree.prototype = {
                 view.id = object['id'];
                 view.expand = object['expand'];
                 view.type = object['type'];
+                view.name = object['name'];
             }
 
             //폴더일 경우
@@ -409,6 +387,7 @@ Tree.prototype = {
                 view.id = object['id'];
                 view.expand = object['expand'];
                 view.type = object['type'];
+                view.name = object['name'];
             }
 
             //ed 일 경우
@@ -424,6 +403,7 @@ Tree.prototype = {
                 view.id = object['id'];
                 view.expand = object['expand'];
                 view.type = object['type'];
+                view.name = object['name'];
             }
 
             //자식이 있을 경우 hasChild true
@@ -451,7 +431,8 @@ Tree.prototype = {
                     type: me.Constants.TYPE.EXPANDER,
                     depth: view.depth,
                     data: view.data,
-                    index: view.index
+                    index: view.index,
+                    name: view.name
                 }
             }
             //자식이 있을 경우 expanderFrom(자신으로부터 expander 까지 연결선) 를 등록한다.
@@ -474,7 +455,8 @@ Tree.prototype = {
                     data: view.data,
                     index: view.index,
                     transparent: true,
-                    parentY: view.y
+                    parentY: view.y,
+                    name: view.name
                 };
             }
             //부모가 있을 경우 expanderTo(부모 expander 로부터 자신 까지 연결선) 를 등록한다.
@@ -498,7 +480,8 @@ Tree.prototype = {
                     data: view.data,
                     index: view.index,
                     transparent: true,
-                    parentY: parentView.y
+                    parentY: parentView.y,
+                    name: view.name
                 };
             }
 
@@ -596,6 +579,17 @@ Tree.prototype = {
         //3. 매핑 데이터 기준 시작
         var mapping, source, target, selected, sourceActivity, targetActivity, sourceActivityView, targetActivityView, sourceView, loaded = [], diffY;
         var mappings = me.selectMappings();
+        var standaloneViewData;
+        var rootMapping;
+        var standaloneView;
+        var totalInHeight;
+        var nextActivity;
+        var nextActivityView;
+        var targetOutDiff;
+        var nextTargetActivities;
+        var nextActivityIds;
+        var isLoad;
+        var currentDiffY;
         for (var i = 0; i < mappings.length; i++) {
             mapping = mappings[i];
             source = mapping['source'];
@@ -603,7 +597,86 @@ Tree.prototype = {
             selected = mapping['selected'];
             sourceActivity = me.selectRootActivityById(source);
             targetActivity = me.selectById(target);
-            if (sourceActivity && targetActivity) {
+
+            //타켓 액티비티(마이 데이터 쪽) 만 존재할 경우
+            if (!sourceActivity && targetActivity) {
+                rootMapping = me.selectRootMapping(source, target);
+                targetActivityView = me.selectViewById(viewData, targetActivity['id']);
+
+                //loaded 에서 타켓 액티비티가 같은 것들의 sourceInHeight 를 높이 차에 더해준다.(타켓 액티비티 쪽에 여러 소스 액티비티가 겹칠 경우를 위함이다.)
+                totalInHeight = 0;
+                diffY = targetActivityView.y;
+                for (var l = 0; l < loaded.length; l++) {
+                    if (loaded[l].targetActivity == targetActivity['id']) {
+                        diffY = diffY + loaded[l].sourceInHeight + me._CONFIG.SHAPE_SIZE.ACTIVITY_HEIGHT + me._CONFIG.SHAPE_SIZE.ACTIVITY_MARGIN;
+                        totalInHeight = totalInHeight + loaded[l].sourceInHeight + me._CONFIG.SHAPE_SIZE.ACTIVITY_HEIGHT + me._CONFIG.SHAPE_SIZE.ACTIVITY_MARGIN;
+                    }
+                }
+
+                isLoad = false;
+                for (var l = 0; l < loaded.length; l++) {
+                    if (loaded[l].sourceActivity == rootMapping['parentId'] &&
+                        loaded[l].targetActivity == targetActivity['id']) {
+                        isLoad = true;
+                    }
+                }
+                //이미 매핑 그룹 뷰 생성을 수행한 매핑 일 경우
+                if (isLoad) {
+                    //Nothing to do
+                }
+                //처음 매핑 그룹 뷰 생성을 수행하는 매핑 일 경우
+                else {
+                    standaloneViewData = me.createStandaloneViewData(mapping, targetActivityView);
+                    for (var s = 0; s < standaloneViewData['views'].length; s++) {
+                        standaloneView = standaloneViewData['views'][s];
+                        standaloneView.y = standaloneView.y + diffY;
+                        if (standaloneView.parentY) {
+                            standaloneView.parentY = standaloneView.parentY + diffY;
+                        }
+                        viewData.views.push(standaloneView);
+                    }
+
+                    //totalInHeight 갱신
+                    totalInHeight = totalInHeight + standaloneViewData.totalHeight + me._CONFIG.SHAPE_SIZE.ACTIVITY_HEIGHT + me._CONFIG.SHAPE_SIZE.ACTIVITY_MARGIN;
+
+                    //targetActivityView 의 y 와 nextActivityView 의 y 차이를 구한다. => currentDiffY
+                    //totalInHeight 와 currentDiffY 의 차이를 구한다. ==> targetOutDiff
+                    //next 액티비티 뷰 및 그에 해당하는 in, out 의 뷰객체의 y 와 bottom 값을 targetOutDiff 만큼 늘린다.
+                    nextActivity = me.selectNextActivity(targetActivity['id']);
+                    if (nextActivity) {
+                        nextActivityView = me.selectViewById(viewData, nextActivity['id']);
+                        currentDiffY = nextActivityView.y - targetActivityView.y;
+                        if (totalInHeight > currentDiffY) {
+                            targetOutDiff = totalInHeight - currentDiffY;
+                            nextTargetActivities = me.selectNextActivities(targetActivity['id']);
+                            if (nextTargetActivities.length) {
+                                nextActivityIds = [];
+                                for (var n = 0; n < nextTargetActivities.length; n++) {
+                                    nextActivityIds.push(nextTargetActivities[n]['id']);
+                                }
+                                for (var n = 0; n < viewData.views.length; n++) {
+                                    if (nextActivityIds.indexOf(viewData.views[n]['root']) != -1) {
+                                        viewData.views[n].y = viewData.views[n].y + targetOutDiff;
+                                        viewData.views[n].bottom = viewData.views[n].bottom + targetOutDiff;
+                                        if (viewData.views[n].parentY) {
+                                            viewData.views[n].parentY = viewData.views[n].parentY + targetOutDiff;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    //sourceInHeight 를 포함하여 읽어들인 리스트에 추가한다.
+                    loaded.push({
+                        sourceActivity: rootMapping['parentId'],
+                        targetActivity: targetActivity['id'],
+                        sourceInHeight: standaloneViewData.totalHeight
+                    });
+                }
+            }
+
+            else if (sourceActivity && targetActivity) {
+                totalInHeight = 0;
                 //소스 액티비티와 타겟 액티비티간의 높이 차를 구한다.
                 //loaded 에서 타켓 액티비티가 같은 것들의 sourceInHeight 를 높이 차에 더해준다.(타켓 액티비티 쪽에 여러 소스 액티비티가 겹칠 경우를 위함이다.)
                 sourceActivityView = me.selectViewById(viewData, sourceActivity['id']);
@@ -613,6 +686,7 @@ Tree.prototype = {
                     if (loaded[l].sourceActivity != sourceActivity['id'] &&
                         loaded[l].targetActivity == targetActivity['id']) {
                         diffY = diffY + loaded[l].sourceInHeight + me._CONFIG.SHAPE_SIZE.ACTIVITY_HEIGHT + me._CONFIG.SHAPE_SIZE.ACTIVITY_MARGIN;
+                        totalInHeight = totalInHeight + loaded[l].sourceInHeight + me._CONFIG.SHAPE_SIZE.ACTIVITY_HEIGHT + me._CONFIG.SHAPE_SIZE.ACTIVITY_MARGIN;
                     }
                 }
 
@@ -621,7 +695,7 @@ Tree.prototype = {
                 targetActivityView.sourceActivityId = sourceActivity['id'];
 
 
-                var isLoad = false;
+                isLoad = false;
                 for (var l = 0; l < loaded.length; l++) {
                     if (loaded[l].sourceActivity == sourceActivity['id'] &&
                         loaded[l].targetActivity == targetActivity['id']) {
@@ -635,6 +709,7 @@ Tree.prototype = {
                         if (viewData.views[v]['id'] == source + '-to-' + targetActivity['id'] + '-mirror') {
                             viewData.views[v].mapping = true;
                             viewData.views[v].selected = selected;
+                            viewData.views[v].data = JSON.parse(JSON.stringify(mapping));
                         }
                     }
                 }
@@ -676,15 +751,17 @@ Tree.prototype = {
                                         targetView.parentY = sourceView.parentY + diffY;
                                     }
                                 }
-                                //매핑 된 대상에는 mapping 과 selected 칼럼을 추가해준다.
+                                //매핑 된 대상에는 mapping 과 selected 칼럼을 추가하고, 데이터를 매핑 데이터로 교체한다.
                                 if (sourceView['data']['id'] == source) {
                                     targetView.mapping = true;
                                     targetView.selected = selected;
+                                    targetView.data = JSON.parse(JSON.stringify(mapping));
                                 }
                                 viewData.views.push(targetView);
                             }
                         }
                     }
+
 
                     //sourceActivityView 자식들 중 y 가 가장큰것을 구한다.
                     //가장 큰 y 와 sourceActivityView 의 y 차이를 구한다. ==> sourceInHeight
@@ -699,34 +776,38 @@ Tree.prototype = {
                     if (sourceInHeight < 0) {
                         sourceInHeight = 0;
                     }
-                    var targetInHeight = sourceInHeight + me._CONFIG.SHAPE_SIZE.ACTIVITY_HEIGHT + me._CONFIG.SHAPE_SIZE.ACTIVITY_MARGIN;
 
-                    var targetRecursiveChild = me.selectRecursiveChildViewsById(viewData, targetActivity['id']);
-                    var targetMaxY = me.selectMaxyFromViews(targetRecursiveChild);
-                    var targetOutHeight = targetMaxY - targetActivityView.y;
-                    if (targetOutHeight < 0) {
-                        targetOutHeight = 0;
-                    }
+                    //totalInHeight 갱신
+                    totalInHeight = totalInHeight + sourceInHeight + me._CONFIG.SHAPE_SIZE.ACTIVITY_HEIGHT + me._CONFIG.SHAPE_SIZE.ACTIVITY_MARGIN;
 
-                    if (targetInHeight > targetOutHeight) {
-                        var targetOutDiff = targetInHeight - targetOutHeight;
-                        var nextTargetActivities = me.selectNextActivities(targetActivity['id']);
-                        if (nextTargetActivities.length) {
-                            var nextActivityIds = [];
-                            for (var n = 0; n < nextTargetActivities.length; n++) {
-                                nextActivityIds.push(nextTargetActivities[n]['id']);
-                            }
-                            for (var n = 0; n < viewData.views.length; n++) {
-                                if (nextActivityIds.indexOf(viewData.views[n]['root']) != -1) {
-                                    viewData.views[n].y = viewData.views[n].y + targetOutDiff;
-                                    viewData.views[n].bottom = viewData.views[n].bottom + targetOutDiff;
-                                    if (viewData.views[n].parentY) {
-                                        viewData.views[n].parentY = viewData.views[n].parentY + targetOutDiff;
+                    //targetActivityView 의 y 와 nextActivityView 의 y 차이를 구한다. => currentDiffY
+                    //totalInHeight 와 currentDiffY 의 차이를 구한다. ==> targetOutDiff
+                    //next 액티비티 뷰 및 그에 해당하는 in, out 의 뷰객체의 y 와 bottom 값을 targetOutDiff 만큼 늘린다.
+                    nextActivity = me.selectNextActivity(targetActivity['id']);
+                    if (nextActivity) {
+                        nextActivityView = me.selectViewById(viewData, nextActivity['id']);
+                        currentDiffY = nextActivityView.y - targetActivityView.y;
+                        if (totalInHeight > currentDiffY) {
+                            targetOutDiff = totalInHeight - currentDiffY;
+                            nextTargetActivities = me.selectNextActivities(targetActivity['id']);
+                            if (nextTargetActivities.length) {
+                                nextActivityIds = [];
+                                for (var n = 0; n < nextTargetActivities.length; n++) {
+                                    nextActivityIds.push(nextTargetActivities[n]['id']);
+                                }
+                                for (var n = 0; n < viewData.views.length; n++) {
+                                    if (nextActivityIds.indexOf(viewData.views[n]['root']) != -1) {
+                                        viewData.views[n].y = viewData.views[n].y + targetOutDiff;
+                                        viewData.views[n].bottom = viewData.views[n].bottom + targetOutDiff;
+                                        if (viewData.views[n].parentY) {
+                                            viewData.views[n].parentY = viewData.views[n].parentY + targetOutDiff;
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+
                     //sourceInHeight 를 포함하여 읽어들인 리스트에 추가한다.
                     loaded.push({
                         sourceActivity: sourceActivity['id'],
@@ -862,6 +943,304 @@ Tree.prototype = {
 
         me._VIEWDATA = viewData;
         return viewData;
+    },
+
+    createStandaloneViewData: function (mapping, tagetActivityView) {
+        //주어진 매핑 데이터에 연관된 매핑으로 이루어진 독립된 공간을 계산하여 리턴한다.
+        var me = this, y,
+            viewData = {
+                totalHeight: 0,
+                views: [],
+                displayViews: []
+            },
+            lastViewBottom = 0,
+            depthMap = {};
+
+        var getViewData = function (object, depth, parentView, childFromParent) {
+            var bottom = 0;
+            var expanderView = null;
+            var expanderFromView = null;
+            var expanderToView = null;
+            //최초 depth 는 0 으로 지정.
+            if (!depth) {
+                depth = 0;
+            }
+            var sourceId = object.source;
+            var targetId = object.target;
+
+            //var child = me.selectChildById(object['id']);
+            var childMapping = me.selectChildMapping(sourceId, targetId);
+            var view = {
+                data: JSON.parse(JSON.stringify(object))
+            };
+            view.depth = depth;
+
+            //자신과 같은 부모를 가지는 데이터들 중 자신이 첫 번째일 경우, 부모의 y 와 나의 y 를 동기화시킨다.
+            //자신과 같은 부모를 가지는 데이터들 중 자신이 인덱스를 등록한다.
+            var firstChild = false;
+            if (childFromParent && childFromParent.length) {
+                for (var i = 0; i < childFromParent.length; i++) {
+                    if (childFromParent[0]['id'] == object['id']) {
+                        view.index = i;
+                        if (i == 0) {
+                            firstChild = true;
+                        }
+                    }
+                }
+            }
+
+            //폴더일 경우
+            if (object['sourceType'] == me.Constants.TYPE.FOLDER) {
+                y = firstChild ? parentView.y : lastViewBottom + (me._CONFIG.SHAPE_SIZE.FOLDER_HEIGHT / 2);
+                bottom = y + (me._CONFIG.SHAPE_SIZE.FOLDER_HEIGHT / 2) + me._CONFIG.SHAPE_SIZE.FOLDER_MARGIN;
+                view.y = y;
+                view.width = me._CONFIG.SHAPE_SIZE.FOLDER_WIDTH;
+                view.height = me._CONFIG.SHAPE_SIZE.FOLDER_HEIGHT;
+                view.bottom = bottom;
+                view.root = targetId;
+                view.position = me.Constants.POSITION.MY_IN;
+                view.id = object['id'];
+                view.expand = object['expand'];
+                view.type = object['sourceType'];
+                view.name = object['name'];
+                view.source = sourceId;
+                view.target = targetId;
+                view.standalone = true;
+                view.mapping = true;
+                view.selected = object['selected'];
+            }
+
+            //ed 일 경우
+            if (object['sourceType'] == me.Constants.TYPE.ED) {
+                y = firstChild ? parentView.y : lastViewBottom + (me._CONFIG.SHAPE_SIZE.ED_HEIGHT / 2);
+                bottom = y + (me._CONFIG.SHAPE_SIZE.ED_HEIGHT / 2) + me._CONFIG.SHAPE_SIZE.ED_MARGIN;
+                view.y = y;
+                view.width = me._CONFIG.SHAPE_SIZE.ED_WIDTH;
+                view.height = me._CONFIG.SHAPE_SIZE.ED_HEIGHT;
+                view.bottom = bottom;
+                view.root = targetId;
+                view.position = me.Constants.POSITION.MY_IN;
+                view.id = object['id'];
+                view.expand = object['expand'];
+                view.type = object['sourceType'];
+                view.name = object['name'];
+                view.source = sourceId;
+                view.target = targetId;
+                view.standalone = true;
+                view.mapping = true;
+                view.selected = object['selected'];
+            }
+
+            //자식이 있을 경우 hasChild true
+            if (childMapping.length) {
+                view.hasChild = true;
+            }
+
+            //자식이 있을 경우 expanderView 를 등록한다.
+            if (childMapping.length) {
+                expanderView = {
+                    id: view.id + me.Constants.PREFIX.EXPANDER,
+                    y: view.y,
+                    width: me._CONFIG.SHAPE_SIZE.EXPANDER_WIDTH,
+                    height: me._CONFIG.SHAPE_SIZE.EXPANDER_HEIGHT,
+                    bottom: view.y + (me._CONFIG.SHAPE_SIZE.EXPANDER_HEIGHT / 2),
+                    root: view.root,
+                    position: me.Constants.POSITION.MY_IN,
+                    type: me.Constants.TYPE.EXPANDER,
+                    depth: view.depth,
+                    data: view.data,
+                    index: view.index,
+                    name: view.name,
+                    source: view.source,
+                    target: view.target,
+                    standalone: true
+                }
+            }
+            //자식이 있을 경우 expanderFrom(자신으로부터 expander 까지 연결선) 를 등록한다.
+            if (childMapping.length) {
+                expanderFromView = {
+                    id: view.id + me.Constants.PREFIX.EXPANDER_FROM,
+                    y: view.y,
+                    bottom: view.y,
+                    root: view.root,
+                    position: me.Constants.POSITION.MY_IN,
+                    type: me.Constants.TYPE.EXPANDER_FROM,
+                    depth: view.depth,
+                    data: view.data,
+                    index: view.index,
+                    transparent: true,
+                    parentY: view.y,
+                    name: view.name,
+                    source: view.source,
+                    target: view.target,
+                    standalone: true
+                };
+            }
+            //부모가 있을 경우 expanderTo(부모 expander 로부터 자신 까지 연결선) 를 등록한다.
+            if (parentView) {
+                expanderToView = {
+                    id: view.id + me.Constants.PREFIX.EXPANDER_TO,
+                    parentId: parentView.id,
+                    y: view.y,
+                    bottom: view.y,
+                    root: view.root,
+                    position: me.Constants.POSITION.MY_IN,
+                    type: me.Constants.TYPE.EXPANDER_TO,
+                    depth: view.depth,
+                    data: view.data,
+                    index: view.index,
+                    transparent: true,
+                    parentY: parentView.y,
+                    name: view.name,
+                    source: view.source,
+                    target: view.target,
+                    standalone: true
+                };
+            }
+            //부모가 없을 경우 가상 expander 로부터 자신 까지 연결선 을 등록한다.
+            else {
+                expanderToView = {
+                    id: view.id + me.Constants.PREFIX.EXPANDER_TO,
+                    parentId: tagetActivityView.id,
+                    y: view.y,
+                    bottom: view.y,
+                    root: view.root,
+                    position: me.Constants.POSITION.MY_IN,
+                    type: me.Constants.TYPE.EXPANDER_TO,
+                    depth: view.depth,
+                    data: view.data,
+                    index: view.index,
+                    transparent: true,
+                    parentY: me._CONFIG.SHAPE_SIZE.FOLDER_HEIGHT / 2,
+                    name: view.name,
+                    source: view.source,
+                    target: view.target,
+                    standalone: true
+                };
+            }
+
+            //depthMap 에 등록한다.
+            if (!depthMap[view.position]) {
+                depthMap[view.position] = {}
+            }
+            if (!depthMap[view.position][view.depth]) {
+                depthMap[view.position][view.depth] = []
+            }
+            depthMap[view.position][view.depth].push(view);
+
+            //자신과 같은 포지션 중 depth 가 같은 리스트를 불러온다.
+            //불러온 리스트중 자신보다 앞선 객체가 있다면, 객체의 bottom 기준으로 가상의 view 를 생성해본다.
+            //가성의 view 의 bottom 이 실제 view bottom 보다 클 경우 가상의 view 의 y 와 bottom 으로 교체한다.
+            var depthList = depthMap[view.position][view.depth];
+            if (depthList.length > 1) {
+                var vy, vBottom;
+                var prevDepthView = depthList[depthList.length - 2];
+
+                //폴더일 경우
+                if (object['type'] == me.Constants.TYPE.FOLDER) {
+                    vy = prevDepthView.bottom + (me._CONFIG.SHAPE_SIZE.FOLDER_HEIGHT / 2);
+                    vBottom = vy + (me._CONFIG.SHAPE_SIZE.FOLDER_HEIGHT / 2) + me._CONFIG.SHAPE_SIZE.FOLDER_MARGIN;
+                }
+
+                //ed 일 경우
+                if (object['type'] == me.Constants.TYPE.ED) {
+                    vy = prevDepthView.bottom + (me._CONFIG.SHAPE_SIZE.ED_HEIGHT / 2);
+                    vBottom = vy + (me._CONFIG.SHAPE_SIZE.ED_HEIGHT / 2) + me._CONFIG.SHAPE_SIZE.ED_MARGIN;
+                }
+
+                //가상 view 의 높이 비교 후 교체.
+                if (vy && vBottom && vBottom > view.bottom) {
+                    view.y = vy;
+                    view.bottom = vBottom;
+                    if (expanderView) {
+                        expanderView.y = vy;
+                        expanderView.bottom = vy + (me._CONFIG.SHAPE_SIZE.EXPANDER_HEIGHT / 2);
+                    }
+                    if (expanderFromView) {
+                        expanderFromView.y = vy;
+                    }
+                    if (expanderToView) {
+                        expanderToView.y = vy;
+                    }
+                }
+            }
+
+            //자신의 bottom 을 lastViewBottom 에 등록한다.
+            if (view.bottom) {
+                lastViewBottom = view.bottom;
+            }
+
+            //뷰 데이터에 등록
+            viewData.views.push(view);
+            if (expanderView) {
+                viewData.views.push(expanderView);
+            }
+            if (expanderFromView) {
+                viewData.views.push(expanderFromView);
+            }
+            if (expanderToView) {
+                viewData.views.push(expanderToView);
+            }
+
+            //expand 상태라면 자식의 수만큼 루프
+            if (childMapping.length && object.expand) {
+                for (var c = 0; c < childMapping.length; c++) {
+                    //parentView 로 보내는 것이 실제 부모가 보내지는 것이 아니라 next 순서로 보내진다.
+                    getViewData(childMapping[c], depth + 1, view, childMapping);
+                }
+            }
+        };
+        lastViewBottom = 0;
+
+        //mapping.parentId 가 _INCOLLAPSE 에서 expand 처리 되어있는지 본다.
+        var rootExpand = true;
+        for (var i = 0; i < me._INCOLLAPSE.length; i++) {
+            var incollapse = me._INCOLLAPSE[i];
+            if (incollapse.sourceActivity == mapping.parentId &&
+                incollapse.targetActivity == mapping.target) {
+                if (incollapse.collapse) {
+                    rootExpand = false;
+                }
+            }
+        }
+        //mapping.parentId 에 해당하는 가상의 expander를 생성한다.
+        var expanderView = {
+            id: mapping.parentId + '-' + mapping.target + me.Constants.PREFIX.EXPANDER,
+            y: me._CONFIG.SHAPE_SIZE.FOLDER_HEIGHT / 2,
+            width: me._CONFIG.SHAPE_SIZE.EXPANDER_WIDTH,
+            height: me._CONFIG.SHAPE_SIZE.EXPANDER_HEIGHT,
+            bottom: tagetActivityView.y + (me._CONFIG.SHAPE_SIZE.EXPANDER_HEIGHT / 2),
+            root: tagetActivityView.id,
+            position: me.Constants.POSITION.MY_IN,
+            type: me.Constants.TYPE.EXPANDER,
+            depth: 0,
+            data: JSON.parse(JSON.stringify(mapping)),
+            index: 0,
+            name: tagetActivityView.name,
+            source: mapping.parentId,
+            target: mapping.target,
+            standalone: true,
+            hasChild: true
+        };
+        expanderView.data.expand = rootExpand;
+        viewData.views.push(expanderView);
+
+        if (rootExpand) {
+            //주어진 루트매핑 과 같은 parentId 를 쓰는 매핑을 구한다.
+            var rootGroup = me.loadByFilter({
+                type: me.Constants.TYPE.MAPPING,
+                target: mapping.target,
+                parentId: mapping.parentId
+            });
+
+            for (var i = 0; i < rootGroup.length; i++) {
+                getViewData(rootGroup[i], 1);
+            }
+            viewData.totalHeight = lastViewBottom;
+        }
+        return viewData;
+
+        //_INCOLLAPSE
     },
     /**
      * viewData 중에서 실제로 화면에 표현되야 할 객체를 선정하고 각 x 좌표를 책정한다.
@@ -1227,7 +1606,7 @@ Tree.prototype = {
     },
     drawActivity: function (view) {
         var me = this;
-        var shape = new OG.Activity(me._CONFIG.SHOW_LABEL ? me.labelSubstring(view.data.name) : undefined);
+        var shape = new OG.Activity(me._CONFIG.SHOW_LABEL ? me.labelSubstring(view.name) : undefined);
         //OTHER_OUT 포지션만 이동이 가능
         if (view.position != me.Constants.POSITION.MY) {
             shape.MOVABLE = false;
@@ -1249,7 +1628,7 @@ Tree.prototype = {
     },
     drawFolder: function (view) {
         var me = this;
-        var shape = new OG.Folder(me._CONFIG.SHOW_LABEL ? me.labelSubstring(view.data.name) : undefined);
+        var shape = new OG.Folder(me._CONFIG.SHOW_LABEL ? me.labelSubstring(view.name) : undefined);
         //OTHER_OUT 포지션만 이동이 가능
         if (view.position != me.Constants.POSITION.OTHER_OUT) {
             shape.MOVABLE = false;
@@ -1275,7 +1654,7 @@ Tree.prototype = {
     },
     drawEd: function (view) {
         var me = this;
-        var shape = new OG.Ed(me._CONFIG.SHOW_LABEL ? me.labelSubstring(view.data.name) : undefined);
+        var shape = new OG.Ed(me._CONFIG.SHOW_LABEL ? me.labelSubstring(view.name) : undefined);
         //OTHER_OUT 포지션만 이동이 가능
         if (view.position != me.Constants.POSITION.OTHER_OUT) {
             shape.MOVABLE = false;
@@ -1383,6 +1762,7 @@ Tree.prototype = {
         var me = this;
         var element = me.canvas.drawShape([view.x, view.y], new OG.Expander(), [view.width, view.height], null, view.id);
         me.canvas.setShapeStyle(element, {cursor: "pointer"});
+
         if (view.data.expand) {
             $(element).find('image').attr('href', 'doosan/shape/collapse.svg');
         } else {
@@ -1390,13 +1770,45 @@ Tree.prototype = {
         }
         $(element).click(function () {
             console.log(element.id);
-            var data = view.data;
-            if (!data.expand) {
-                data.expand = true;
+
+            //가상 expander 일 경우
+            if (view.standalone && view.depth == 0) {
+                var hasHistory = false;
+                var historyIndex = 0;
+                var collapse = false;
+                for (var i = 0; i < me._INCOLLAPSE.length; i++) {
+                    var inCollapse = me._INCOLLAPSE[i];
+                    if (inCollapse.sourceActivity == view.source &&
+                        inCollapse.targetActivity == view.target) {
+                        hasHistory = true;
+                        historyIndex = i;
+                        if (inCollapse.collapse) {
+                            collapse = true;
+                        } else {
+                            collapse = false;
+                        }
+                    }
+                }
+                if (hasHistory) {
+                    me._INCOLLAPSE.splice(historyIndex, 1);
+                }
+                var history = {
+                    sourceActivity: view.source,
+                    targetActivity: view.target,
+                    collapse: collapse ? false : true
+                };
+                me._INCOLLAPSE.push(history);
+
+                me.updateData([]);
             } else {
-                data.expand = false;
+                var data = view.data;
+                if (!data.expand) {
+                    data.expand = true;
+                } else {
+                    data.expand = false;
+                }
+                me.updateData([data]);
             }
-            me.updateData([data]);
         });
     },
     /**
@@ -1760,10 +2172,17 @@ Tree.prototype = {
         if (id) {
             var storage = this._STORAGE;
             for (var key in storage) {
-                if (!this.emptyString(storage[key]['parentId']) && storage[key]['parentId'] == id) {
+                if (!this.emptyString(storage[key]['parentId']) && storage[key]['parentId'] == id && storage[key]['type'] != this.Constants.TYPE.MAPPING) {
                     objects.push(storage[key]);
                 }
             }
+        }
+        return objects;
+    },
+    selectChildMapping: function (sourceId, targetId) {
+        var objects = [];
+        if (!this.emptyString(sourceId)) {
+            objects = this.loadByFilter({parentId: sourceId, target: targetId});
         }
         return objects;
     },
@@ -1781,6 +2200,15 @@ Tree.prototype = {
             }
         }
     },
+    selectParentMapping: function (sourceId, targetId) {
+        var object = this.selectBySourceTarget(sourceId, targetId);
+        if (object) {
+            var parentSourceId = object['parentId'];
+            if (!this.emptyString(parentSourceId)) {
+                return this.selectBySourceTarget(parentSourceId, targetId);
+            }
+        }
+    },
     /**
      * 주어진 아이디의 정보를 반환한다.
      * @param id
@@ -1789,6 +2217,14 @@ Tree.prototype = {
     selectById: function (id) {
         if (id) {
             return this._STORAGE[id];
+        }
+    },
+    selectBySourceTarget: function (sourceId, targetId) {
+        var mappings = this.loadByFilter({source: sourceId, target: targetId});
+        if (!mappings || !mappings.length) {
+            return null;
+        } else {
+            return mappings[0];
         }
     },
     /**
@@ -1826,6 +2262,26 @@ Tree.prototype = {
         };
         findParent(id);
         return root;
+    },
+    /**
+     * 매핑 데이터의 루트를 반환한다.
+     * @param sourceId
+     * @param targetId
+     * @returns {*}
+     */
+    selectRootMapping: function (sourceId, targetId) {
+        var me = this;
+        var rootMapping;
+        var findParent = function (sourceId) {
+            var parent = me.selectParentMapping(sourceId, targetId);
+            if (parent) {
+                findParent(parent['source']);
+            } else {
+                rootMapping = me.selectBySourceTarget(sourceId, targetId);
+            }
+        };
+        findParent(sourceId);
+        return rootMapping;
     },
     /**
      * 주어진 아이디의 부모 일람을 재귀호출하여 반환한다.
@@ -2073,7 +2529,10 @@ Tree.prototype = {
         var me = this;
         var view = me.selectViewById(me._VIEWDATA, element.id);
         if (view) {
-            var text = view.data.id + '-' + view.data.name;
+            var text = view.data.id + '-' + view.name;
+            if (view.mapping) {
+                text = view.source + '-' + view.name;
+            }
             var tooltip =
                 $('<div class="og-tooltip ui-tooltip ui-widget ui-corner-all" id="' + element.id + '-tooltip">' +
                     '<div class="ui-tooltip-content">' + text + '</div>' +
@@ -2244,9 +2703,11 @@ Tree.prototype = {
                     id: source.id + '-' + target.id,
                     type: me.Constants.TYPE.MAPPING,
                     source: source.id,
+                    sourceType: source.type,
                     target: target.id,
                     position: me.Constants.POSITION.MY_IN,
-                    extData: {}
+                    extData: {},
+                    name: source.name
                 };
                 //폴더 드래그일 경우 폴더를 selected 처리.
                 if (source.type == me.Constants.TYPE.FOLDER) {
@@ -2267,9 +2728,11 @@ Tree.prototype = {
                             id: standardFolder.id + '-' + target.id,
                             type: me.Constants.TYPE.MAPPING,
                             source: standardFolder.id,
+                            sourceType: source.type,
                             target: target.id,
                             position: me.Constants.POSITION.MY_IN,
                             extData: {},
+                            name: source.name,
                             selected: true
                         };
                         me.updateData([mappingData], true);
@@ -2289,8 +2752,10 @@ Tree.prototype = {
                                 id: child[i].id + '-' + target.id,
                                 type: me.Constants.TYPE.MAPPING,
                                 source: child[i].id,
+                                sourceType: child[i].type,
                                 target: target.id,
                                 position: me.Constants.POSITION.MY_IN,
+                                name: child[i].name,
                                 extData: {}
                             };
                             if (child[i].type == me.Constants.TYPE.FOLDER) {
@@ -2309,8 +2774,10 @@ Tree.prototype = {
                                 id: parents[i].id + '-' + target.id,
                                 type: me.Constants.TYPE.MAPPING,
                                 source: parents[i].id,
+                                sourceType: parents[i].type,
                                 target: target.id,
                                 position: me.Constants.POSITION.MY_IN,
+                                name: parents[i].name,
                                 extData: {}
                             };
                             existMapping = me.loadByFilter({id: parents[i].id + '-' + target.id});
@@ -2556,16 +3023,22 @@ Tree.prototype = {
         }
     },
     onShowProperties: function (data, view) {
+        console.log(data, view);
     },
     onMakeFolder: function (data, view) {
+        console.log(data, view);
     },
     onMakeEd: function (data, view, edType) {
+        console.log(data, view, edType);
     },
     onPickEd: function (data, view) {
+        console.log(data, view);
     },
     onDelete: function (data, view) {
+        console.log(data, view);
     },
     onListRelation: function (data, view) {
+        console.log(data, view);
     },
     /**
      * GUI 상에서 매핑이 되기 전의 핸들러
@@ -2587,13 +3060,13 @@ Tree.prototype = {
         console.log(source, target);
         return true;
     },
-    onBeforeDeleteMapping: function (source, target) {
-        console.log(source, target);
+    onBeforeDeleteMapping: function (sourceId, targetId) {
+        console.log(sourceId, targetId);
         return true;
     },
 
-    onDeleteMapping: function (source, target) {
-        console.log(source, target);
+    onDeleteMapping: function (sourceId, targetId) {
+        console.log(sourceId, targetId);
         return true;
     }
     //TODO

@@ -25,10 +25,16 @@ Doosan.prototype = {
 
         //$.getJSON("doosan/sample/myData.json", function (myData) {
         //
-        //    me.tree.updateMyData(myData);
+        //    me.tree._INCOLLAPSE = [];
+        //    me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY});
+        //    me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_IN});
+        //    me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_OUT});
+        //    me.tree.updateData(myData);
         //
         //    $.getJSON("doosan/sample/otherData.json", function (otherData) {
-        //        me.tree.updateOtherData(otherData);
+        //        me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER});
+        //        me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER_OUT});
+        //        me.tree.updateData(otherData);
         //    });
         //});
 
@@ -62,24 +68,24 @@ Doosan.prototype = {
 
         /**
          * GUI 상에서 매핑이 삭제되기 전 핸들러
-         * @param source
-         * @param target
+         * @param sourceId
+         * @param targetId
          */
-        me.tree.onBeforeDeleteMapping = function (source, target) {
-            console.log(source, target);
+        me.tree.onBeforeDeleteMapping = function (sourceId, targetId) {
+            console.log(sourceId, targetId);
 
             //아라스에서는 소스와 타겟이 반대
-            me.aras.deleteInRel(target,source);
+            me.aras.deleteInRel(sourceId, targetId);
             return false;
         };
 
         /**
          * GUI 상에서 매핑이 삭제되었을 때의 핸들러
-         * @param source
-         * @param target
+         * @param sourceId
+         * @param targetId
          */
-        me.tree.onDeleteMapping = function (source, target) {
-            console.log(source, target);
+        me.tree.onDeleteMapping = function (sourceId, targetId) {
+            console.log(sourceId, targetId);
         };
 
         /**
@@ -111,6 +117,14 @@ Doosan.prototype = {
          * @param view
          */
         me.tree.onShowProperties = function (data, view) {
+            var id, type;
+            if (data.type == me.tree.Constants.TYPE.MAPPING) {
+                id = data.source;
+                type = data.sourceType;
+            } else {
+                id = data.id;
+                type = data.type;
+            }
             console.log('onShowProperties', data, view);
         };
         /**
@@ -160,7 +174,16 @@ Doosan.prototype = {
         me.tree.onListRelation = function (data, view) {
             console.log('onListRelation', data, view);
 
-            var parentList = me.aras.getEdParentList(data.id, me.tree.Constants.TYPE.ED == data.type ? 'Y' : 'N');
+            var id, type;
+            if (data.type == me.tree.Constants.TYPE.MAPPING) {
+                id = data.source;
+                type = data.sourceType;
+            } else {
+                id = data.id;
+                type = data.type;
+            }
+
+            var parentList = me.aras.getEdParentList(id, me.tree.Constants.TYPE.ED == type ? 'Y' : 'N');
             console.log(parentList);
 
             //1. Workflow - Activity 리스트 칼럼 정보 맞출것.

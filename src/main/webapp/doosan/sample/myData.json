@@ -119,73 +119,159 @@
   },
   {
     "type": "mapping",
+    "sourceType": "folder",
     "id": "other-fd-2-1-2-my-ac-2",
     "source": "other-fd-2-1-2",
     "target": "my-ac-2",
     "selected": true,
     "position": "my-in",
-    "extData": {}
+    "extData": {},
+    "parentId": "other-fd-2-1",
+    "name": "other-fd-2-1-2-Folder"
   },
   {
     "type": "mapping",
+    "sourceType": "folder",
     "id": "other-fd-2-1-2-1-my-ac-2",
     "source": "other-fd-2-1-2-1",
     "target": "my-ac-2",
     "selected": true,
     "position": "my-in",
-    "extData": {}
+    "extData": {},
+    "parentId": "other-fd-2-1-2",
+    "name": "other-fd-2-1-2-1-Folder"
   },
   {
     "type": "mapping",
+    "sourceType": "ed",
     "id": "other-ed-2-1-2-1-1-my-ac-2",
     "source": "other-ed-2-1-2-1-1",
     "target": "my-ac-2",
     "position": "my-in",
-    "extData": {}
+    "extData": {},
+    "parentId": "other-fd-2-1-2-1",
+    "name": "other-ed-2-1-2-1-1-Ed"
   },
   {
     "type": "mapping",
+    "sourceType": "ed",
     "id": "other-ed-2-1-2-1-2-my-ac-2",
     "source": "other-ed-2-1-2-1-2",
     "target": "my-ac-2",
     "position": "my-in",
-    "extData": {}
+    "extData": {},
+    "parentId": "other-fd-2-1-2-1",
+    "name": "other-ed-2-1-2-1-2-Ed"
   },
   {
     "type": "mapping",
+    "sourceType": "folder",
     "id": "other-fd-2-1-my-ac-2",
     "source": "other-fd-2-1",
     "target": "my-ac-2",
     "selected": false,
     "position": "my-in",
-    "extData": {}
+    "extData": {},
+    "parentId": "other-fd-2",
+    "name": "other-fd-2-1-Folder"
   },
   {
     "type": "mapping",
+    "sourceType": "folder",
     "id": "other-fd-2-my-ac-2",
     "source": "other-fd-2",
     "target": "my-ac-2",
     "selected": false,
     "position": "my-in",
-    "extData": {}
+    "extData": {},
+    "parentId": "other-ac-1",
+    "name": "other-fd-2-Folder"
   },
   {
     "type": "mapping",
-    "id": "another-fd-1-my-ac-3",
-    "source": "another-fd-1-1",
-    "target": "my-ac-1",
-    "selected": false,
-    "position": "my-in",
-    "extData": {}
-  },
-  {
-    "type": "mapping",
-    "id": "another-fd-1-1-my-ac-3",
-    "source": "another-fd-1-1",
-    "target": "my-ac-1",
+    "sourceType": "folder",
+    "id": "another-fd-1-my-ac-2",
+    "source": "another-fd-1",
+    "target": "my-ac-2",
     "selected": false,
     "position": "my-in",
     "extData": {},
-    "parentId" : "another-fd-1"
+    "parentId": "another-ac-1",
+    "name": "another-fd-1-Folder",
+    "expand": true
+  },
+  {
+    "type": "mapping",
+    "sourceType": "folder",
+    "id": "another-fd-2-my-ac-2",
+    "source": "another-fd-2",
+    "target": "my-ac-2",
+    "selected": false,
+    "position": "my-in",
+    "extData": {},
+    "parentId": "another-ac-1",
+    "name": "another-fd-2-Folder",
+    "expand": true
+  },
+  {
+    "type": "mapping",
+    "sourceType": "folder",
+    "id": "another-fd-1-1-my-ac-2",
+    "source": "another-fd-1-1",
+    "target": "my-ac-2",
+    "selected": true,
+    "position": "my-in",
+    "extData": {},
+    "parentId": "another-fd-1",
+    "name": "another-fd-1-1-Folder",
+    "expand": true
+  },
+  {
+    "type": "mapping",
+    "sourceType": "ed",
+    "id": "another-ed-1-1-1-my-ac-2",
+    "source": "another-ed-1-1-1",
+    "target": "my-ac-2",
+    "position": "my-in",
+    "extData": {},
+    "parentId": "another-fd-1-1",
+    "name": "another-ed-1-1-1-Ed"
+  },
+  {
+    "type": "mapping",
+    "sourceType": "ed",
+    "id": "another-ed-1-1-2-my-ac-2",
+    "source": "another-ed-1-1-2",
+    "target": "my-ac-2",
+    "position": "my-in",
+    "extData": {},
+    "parentId": "another-fd-1-1",
+    "name": "another-ed-1-1-2-Ed"
+  },
+  {
+    "type": "mapping",
+    "sourceType": "folder",
+    "id": "another-fd-10-my-ac-2",
+    "source": "another-fd-10",
+    "target": "my-ac-2",
+    "selected": false,
+    "position": "my-in",
+    "extData": {},
+    "parentId": "another-ac-2",
+    "name": "another-fd-10-Folder",
+    "expand": true
+  },
+  {
+    "type": "mapping",
+    "sourceType": "folder",
+    "id": "another-fd-10-1-my-ac-2",
+    "source": "another-fd-10-1",
+    "target": "my-ac-2",
+    "selected": true,
+    "position": "my-in",
+    "extData": {},
+    "parentId": "another-fd-10",
+    "name": "another-fd-10-1-Folder",
+    "expand": true
   }
 ]
