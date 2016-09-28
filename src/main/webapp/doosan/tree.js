@@ -2894,7 +2894,7 @@ Tree.prototype = {
                             }
                         }
                     }
-                    if (data.type == me.Constants.TYPE.Ed) {
+                    if (data.type == me.Constants.TYPE.ED) {
                         enableCreateEd = false;
                         enableCreateFolder = false;
                     }
