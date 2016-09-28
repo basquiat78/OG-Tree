@@ -551,6 +551,61 @@ Aras.prototype = {
         }
         this.refreshOutFolder(data, view);
     },
+    addPickEDOutRelation: function (edItem, parentItem, data, view) {
+        var me = this;
+        var inn = this.aras.newIOMInnovator();
+        var edId = edItem.getID();
+        var edType = edItem.getType();
+        var relType = me.getRelType(me.TYPE.FOLDER, me.TYPE.ED, 'out');
+        var existRelItem;
+        var relItem;
+
+        var path = parentItem.getProperty("_path") + '||' + edItem.getProperty("_ed_number", "");
+
+        //body = "<sqlString>UPDATE innovator." + createEDItem.GetType() + " SET _PATH = '" + path + "' WHERE id = '" + createEDItem.getID() + "'</sqlString>";
+        //inn.applyMethod("DHI_APPLY_SQL", body);
+
+        edItem = inn.newItem(edType, 'edit');
+        edItem.setProperty("_p_id", data.extData['fs_id']);
+
+        edItem.setProperty("_rel_project", parentItem.getProperty('_rel_project', ''));
+        edItem.setProperty("_rel_ownedteam", parentItem.getProperty('_rel_ownedteam', ''));
+        edItem.setProperty("_path", path);
+
+        if (me.stdYN == 'Y') {
+            edItem.setProperty("_rel_wfat", view.root);
+            edItem.setProperty("_rel_wft", parentItem.getProperty('_rel_wft', ''));
+            edItem.setProperty("is_template", "1");
+        }
+        else {
+            edItem.setProperty("_rel_wfa", view.root);
+            edItem.setProperty("_rel_wf", parentItem.getProperty('_rel_wf', ''));
+        }
+        edItem.apply();
+
+        existRelItem = inn.newItem(relType, "get");
+        existRelItem.setProperty("source_id", data.id);
+        existRelItem.setProperty("related_id", edId);
+        existRelItem = existRelItem.apply();
+        if (existRelItem.getItemCount() < 1) {
+            try {
+                relItem = inn.newItem(relType, "add");
+                relItem.setProperty("source_id", data.id);
+                relItem.setProperty("related_id", edId);
+                relItem.setProperty("owned_by_id", parentItem.getProperty("owned_by_id", ""));
+                relItem = relItem.apply();
+
+                //스테이터스를 업데이트한다.
+                var body = "<source_id>" + data.id + "</source_id>";
+                body += "<related_id>" + edId + "</related_id>";
+                var result = inn.applyMethod("DHI_WF_RESET_STATE_ITEM", body);
+            }
+            catch (e) {
+                msgBox('Failed to create ' + relType + ' Relation : ' + data.id + ' to ' + edId);
+            }
+        }
+        this.refreshOutFolder(data, view);
+    },
     deleteOutItem: function (data, view) {
         var me = this;
         var inn = this.aras.newIOMInnovator();

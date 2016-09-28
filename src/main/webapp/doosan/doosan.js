@@ -344,7 +344,7 @@ Doosan.prototype = {
                     var edData = dataSet[parseInt(dataIndex)];
                     var edItem = me.aras.getItemById(me.aras.TYPE.ED, edData.id);
                     var folderItem = me.aras.getItemById(me.aras.TYPE.FOLDER, data.id);
-                    me.aras.addFolderEDOutRelation(edItem, folderItem, data, view);
+                    me.aras.addPickEDOutRelation(edItem, folderItem, data, view);
                 });
             });
             modal.modal({
