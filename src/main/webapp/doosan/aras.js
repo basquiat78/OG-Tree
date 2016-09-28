@@ -139,14 +139,21 @@ Aras.prototype = {
      * @returns {*}
      */
     getEdParentList: function (id, ed_yn) {
+        var data = [];
         var me = this, params = {
             id: id,
             std_yn: me.stdYN,
             ed_yn: ed_yn
         };
         var list = me.applyMethod('DHI_WF_EDITOR_ED_PARENTLIST', me.createBody(params));
-        console.log(list.getItemCount());
-        return list;
+        if (list.getItemCount() == 1) {
+            data.push(me.nodeToJson(list.node))
+        } else if (list.getItemCount() > 1) {
+            for (var i = 0; i < list.nodeList; i++) {
+                data.push(me.nodeToJson(list.nodeList[i]));
+            }
+        }
+        return data;
     },
     /**
      * PICK ED 에 대한 조회 리스트(Project 에서만 필요)
