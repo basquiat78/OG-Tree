@@ -638,27 +638,27 @@ Aras.prototype = {
         }
         me.refreshMyWorkFlow();
     },
-    deleteInRel: function (source, target) {
+    deleteInRel: function (sourceId, sourceType, targetId, targetType) {
         var me = this;
         var inn = this.aras.newIOMInnovator();
-        var relType = me.getRelType(source.type, target.type, 'in');
+        var relType = me.getRelType(sourceType, targetType, 'in');
         var existRelItem;
         var relItem;
 
         //관계 삭제 전 상위 상태 재설정
-        var body = "<source_id>" + source.id + "</source_id>";
-        body += "<related_id>" + target.id + "</related_id>";
+        var body = "<source_id>" + sourceId + "</source_id>";
+        body += "<related_id>" + targetId + "</related_id>";
         var result = inn.applyMethod("DHI_WF_DEL_RELATION_ITEM_INPUT", body);
 
         if (result) {
             existRelItem = inn.newItem(relType, 'get');
-            existRelItem.setProperty("source_id", source.id);
-            existRelItem.setProperty("related_id", target.id);
+            existRelItem.setProperty("source_id", sourceId);
+            existRelItem.setProperty("related_id", targetId);
             existRelItem = existRelItem.apply();
             if (existRelItem.getItemCount() > 0) {
                 relItem = inn.newItem(relType, 'delete');
-                relItem.setProperty("source_id", source.id);
-                relItem.setProperty("related_id", target.id);
+                relItem.setProperty("source_id", sourceId);
+                relItem.setProperty("related_id", targetId);
                 relItem = relItem.apply();
             }
             me.refreshMyWorkFlow();
@@ -720,19 +720,6 @@ Aras.prototype = {
         tree.updateData(refreshData);
     },
     createWorkFlowData: function (resultNodeList, who, inout) {
-        //{
-        //    "type": "mapping",
-        //    "sourceType": "folder",
-        //    "id": "another-fd-10-1-my-ac-2",
-        //    "source": "another-fd-10-1",
-        //    "target": "my-ac-2",
-        //    "selected": true,
-        //    "position": "my-in",
-        //    "extData": {},
-        //    "parentId": "another-fd-10",
-        //    "name": "another-fd-10-1-Folder",
-        //    "expand": true
-        //}
         var me = this;
         var data = [];
         var tempData = [], node, object;
@@ -817,7 +804,6 @@ Aras.prototype = {
                         }
                     }
                 }
-
                 object = {
                     type: me.tree.Constants.TYPE.MAPPING,
                     id: node.id + '-' + node.fs_parent_id, //소스 + '-' + 타겟
@@ -828,7 +814,8 @@ Aras.prototype = {
                     position: me.tree.Constants.POSITION.MY_IN,
                     extData: JSON.parse(JSON.stringify(node)),
                     parentId: parentId,
-                    name: node.name
+                    name: node.name,
+                    expand: true
                 };
             }
             data.push(object);

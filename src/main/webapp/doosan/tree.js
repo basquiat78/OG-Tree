@@ -605,7 +605,7 @@ Tree.prototype = {
 
                 //loaded 에서 타켓 액티비티가 같은 것들의 sourceInHeight 를 높이 차에 더해준다.(타켓 액티비티 쪽에 여러 소스 액티비티가 겹칠 경우를 위함이다.)
                 totalInHeight = 0;
-                diffY = targetActivityView.y;
+                diffY = targetActivityView.y - (me._CONFIG.SHAPE_SIZE.FOLDER_HEIGHT / 2);
                 for (var l = 0; l < loaded.length; l++) {
                     if (loaded[l].targetActivity == targetActivity['id']) {
                         diffY = diffY + loaded[l].sourceInHeight + me._CONFIG.SHAPE_SIZE.ACTIVITY_HEIGHT + me._CONFIG.SHAPE_SIZE.ACTIVITY_MARGIN;
@@ -637,7 +637,7 @@ Tree.prototype = {
                     }
 
                     //totalInHeight 갱신
-                    totalInHeight = totalInHeight + standaloneViewData.totalHeight + me._CONFIG.SHAPE_SIZE.ACTIVITY_HEIGHT + me._CONFIG.SHAPE_SIZE.ACTIVITY_MARGIN;
+                    totalInHeight = totalInHeight + standaloneViewData.totalHeight;// + me._CONFIG.SHAPE_SIZE.ACTIVITY_HEIGHT + me._CONFIG.SHAPE_SIZE.ACTIVITY_MARGIN;
 
                     //targetActivityView 의 y 와 nextActivityView 의 y 차이를 구한다. => currentDiffY
                     //totalInHeight 와 currentDiffY 의 차이를 구한다. ==> targetOutDiff
@@ -646,6 +646,7 @@ Tree.prototype = {
                     if (nextActivity) {
                         nextActivityView = me.selectViewById(viewData, nextActivity['id']);
                         currentDiffY = nextActivityView.y - targetActivityView.y;
+                        console.log(totalInHeight, currentDiffY);
                         if (totalInHeight > currentDiffY) {
                             targetOutDiff = totalInHeight - currentDiffY;
                             nextTargetActivities = me.selectNextActivities(targetActivity['id']);
@@ -2798,12 +2799,15 @@ Tree.prototype = {
         //자식들에 대한 매핑을 삭제한다.
         //부모 일람중에, 부모의 자식들 중 매핑요소가 없다면 매핑을 삭제한다.
         var me = this;
-        var source = view.source;
-        var target = view.target;
+        var source = data.source;
+        var target = data.target;
+        console.log(data, view);
+        var sourceType = data.sourceType;
+        var targetType = me.Constants.TYPE.ACTIVITY;
         var mappingId = source + '-' + target;
 
         //onBeforeDeleteMapping 이벤트 발생
-        var beforeDelete = me.onBeforeDeleteMapping(source, target);
+        var beforeDelete = me.onBeforeDeleteMapping(source, sourceType, target, targetType);
         if (typeof beforeDelete == 'boolean') {
             if (!beforeDelete) {
                 return;
@@ -2840,7 +2844,7 @@ Tree.prototype = {
         me.render();
 
         //onDeleteMapping  이벤트 발생
-        me.onDeleteMapping(source, target);
+        me.onDeleteMapping(source, sourceType, target, targetType);
     },
 
     /**
@@ -3060,13 +3064,13 @@ Tree.prototype = {
         console.log(source, target);
         return true;
     },
-    onBeforeDeleteMapping: function (sourceId, targetId) {
-        console.log(sourceId, targetId);
+    onBeforeDeleteMapping: function (sourceId, sourceType, targetId, targetType) {
+        console.log(sourceId, sourceType, targetId, targetType);
         return true;
     },
 
-    onDeleteMapping: function (sourceId, targetId) {
-        console.log(sourceId, targetId);
+    onDeleteMapping: function (sourceId, sourceType, targetId, targetType) {
+        console.log(sourceId, sourceType, targetId, targetType);
         return true;
     }
     //TODO

@@ -71,11 +71,11 @@ Doosan.prototype = {
          * @param sourceId
          * @param targetId
          */
-        me.tree.onBeforeDeleteMapping = function (sourceId, targetId) {
-            console.log(sourceId, targetId);
+        me.tree.onBeforeDeleteMapping = function (sourceId, sourceType, targetId, targetType) {
+            console.log(sourceId, sourceType, targetId, targetType);
 
             //아라스에서는 소스와 타겟이 반대
-            me.aras.deleteInRel(sourceId, targetId);
+            me.aras.deleteInRel(targetId, targetType,sourceId, sourceType);
             return false;
         };
 
@@ -84,8 +84,8 @@ Doosan.prototype = {
          * @param sourceId
          * @param targetId
          */
-        me.tree.onDeleteMapping = function (sourceId, targetId) {
-            console.log(sourceId, targetId);
+        me.tree.onDeleteMapping = function (sourceId, sourceType, targetId, targetType) {
+            console.log(sourceId, sourceType, targetId, targetType);
         };
 
         /**
