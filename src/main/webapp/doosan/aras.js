@@ -149,7 +149,7 @@ Aras.prototype = {
         if (list.getItemCount() == 1) {
             data.push(me.nodeToJson(list.node))
         } else if (list.getItemCount() > 1) {
-            for (var i = 0; i < list.nodeList; i++) {
+            for (var i = 0; i < list.nodeList.length; i++) {
                 data.push(me.nodeToJson(list.nodeList[i]));
             }
         }
