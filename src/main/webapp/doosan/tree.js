@@ -646,7 +646,6 @@ Tree.prototype = {
                     if (nextActivity) {
                         nextActivityView = me.selectViewById(viewData, nextActivity['id']);
                         currentDiffY = nextActivityView.y - targetActivityView.y;
-                        console.log(totalInHeight, currentDiffY);
                         if (totalInHeight > currentDiffY) {
                             targetOutDiff = totalInHeight - currentDiffY;
                             nextTargetActivities = me.selectNextActivities(targetActivity['id']);
@@ -2801,7 +2800,6 @@ Tree.prototype = {
         var me = this;
         var source = data.source;
         var target = data.target;
-        console.log(data, view);
         var sourceType = data.sourceType;
         var targetType = me.Constants.TYPE.ACTIVITY;
         var mappingId = source + '-' + target;

@@ -144,7 +144,9 @@ Aras.prototype = {
             std_yn: me.stdYN,
             ed_yn: ed_yn
         };
-        return me.applyMethod('DHI_WF_EDITOR_ED_PARENTLIST', me.createBody(params));
+        var list = me.applyMethod('DHI_WF_EDITOR_ED_PARENTLIST', me.createBody(params));
+        console.log(list.getItemCount());
+        return list;
     },
     /**
      * PICK ED 에 대한 조회 리스트(Project 에서만 필요)
@@ -572,7 +574,7 @@ Aras.prototype = {
                 ", _REL_WFT = '" + parentItem.getProperty('_rel_wft', '') + "'" +
                 ", IS_TEMPLATE = '" + 1 + "'" +
                 " WHERE id = '" + edId + "'</sqlString>";
-        }else{
+        } else {
             body = "<sqlString>UPDATE innovator." + edType +
                 " SET _PATH = '" + path + "'" +
                 ", _P_ID = '" + data.extData['fs_id'] + "'" +
@@ -585,25 +587,6 @@ Aras.prototype = {
         }
         inn.applyMethod("DHI_APPLY_SQL", body);
 
-        //edItem = inn.newItem(edType, 'edit');
-        //edItem.setProperty('id', edId);
-        //edItem.setProperty("_p_id", data.extData['fs_id']);
-        //
-        //edItem.setProperty("_rel_project", parentItem.getProperty('_rel_project', ''));
-        //edItem.setProperty("_rel_ownedteam", parentItem.getProperty('_rel_ownedteam', ''));
-        //edItem.setProperty("_path", path);
-        //
-        //if (me.stdYN == 'Y') {
-        //    edItem.setProperty("_rel_wfat", view.root);
-        //    edItem.setProperty("_rel_wft", parentItem.getProperty('_rel_wft', ''));
-        //    edItem.setProperty("is_template", "1");
-        //}
-        //else {
-        //    edItem.setProperty("_rel_wfa", view.root);
-        //    edItem.setProperty("_rel_wf", parentItem.getProperty('_rel_wf', ''));
-        //}
-        //edItem.apply();
-
         existRelItem = inn.newItem(relType, "get");
         existRelItem.setProperty("source_id", data.id);
         existRelItem.setProperty("related_id", edId);
@@ -614,12 +597,12 @@ Aras.prototype = {
                 relItem.setProperty("source_id", data.id);
                 relItem.setProperty("related_id", edId);
                 relItem.setProperty("owned_by_id", parentItem.getProperty("owned_by_id", ""));
-                relItem = relItem.apply();
+                relItem.apply();
 
                 //스테이터스를 업데이트한다.
                 var body = "<source_id>" + data.id + "</source_id>";
                 body += "<related_id>" + edId + "</related_id>";
-                var result = inn.applyMethod("DHI_WF_RESET_STATE_ITEM", body);
+                inn.applyMethod("DHI_WF_RESET_STATE_ITEM", body);
             }
             catch (e) {
                 msgBox('Failed to create ' + relType + ' Relation : ' + data.id + ' to ' + edId);
