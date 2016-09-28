@@ -267,7 +267,7 @@ Doosan.prototype = {
             console.log('onPickEd', data, view);
             var dataSet = me.aras.getPickEd();
             for (var i = 0; i < dataSet.length; i++) {
-                dataSet[i]['name'] =
+                dataSet[i]['label'] =
                     '<input type="checkbox" name="pickEdObj" data-index="' + i + '"/>&nbsp;' +
                     '<a href="#">' + dataSet[i]['name'] + '</a>';
 
@@ -280,7 +280,7 @@ Doosan.prototype = {
                 gridPanel.DataTable({
                     data: dataSet,
                     columns: [
-                        {data: 'name', title: 'Name'},
+                        {data: 'label', title: 'Name'},
                         {data: '_rel_project', title: 'Project'},
                         {data: 'state', title: 'State'},
                         {data: 'detail', title: 'Detail'}
@@ -292,17 +292,7 @@ Doosan.prototype = {
                 btn.unbind('click');
                 btn.click(function (event) {
                     event.stopPropagation();
-                    console.log(data);
-                    //var modal = $('#statusModal');
-                    //modal.modal({
-                    //    show: true
-                    //});
-                    //modal.find('[name=close]').click(function () {
-                    //    $('#statusModal').find('.close').click();
-                    //});
-                    //
-                    //var str = JSON.stringify(data, null, 2);
-                    //modal.find('[name=body]').val(str);
+                    me.aras.showPropertyWindow(me.tree.Constants.TYPE.ED, data.id);
                 });
             };
 
