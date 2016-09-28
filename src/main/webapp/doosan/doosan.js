@@ -289,6 +289,7 @@ Doosan.prototype = {
             }
 
             var bindStatusEvent = function (btn, data) {
+                btn.unbind('click');
                 btn.click(function (event) {
                     event.stopPropagation();
                     console.log(data);
@@ -306,6 +307,7 @@ Doosan.prototype = {
             };
 
             var trClickEvent = function (tr, data) {
+                tr.unbind('click');
                 tr.click(function () {
                     var checkbox = tr.find('input:checkbox');
                     if (checkbox.prop('checked')) {
