@@ -265,6 +265,8 @@ Doosan.prototype = {
          */
         me.tree.onPickEd = function (data, view) {
             console.log('onPickEd', data, view);
+            var pickEd = me.aras.getPickEd();
+            console.log(pickEd);
         };
 
         $('#labelSwitch').click(function () {

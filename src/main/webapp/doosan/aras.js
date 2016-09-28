@@ -679,10 +679,7 @@ Aras.prototype = {
             existRelItem = existRelItem.apply();
             if (existRelItem.getItemCount() > 0) {
                 var amlStr = "<AML><Item type=\"" + relType + "\" action=\"delete\" where=\"source_id = '" + sourceId + "' and related_id = '" + targetId + "'\"></Item></AML>"
-                var itmOutRelType = inn.applyAML(amlStr);
-                //relItem.setProperty("source_id", sourceId);
-                //relItem.setProperty("related_id", targetId);
-                //relItem = relItem.apply();
+                inn.applyAML(amlStr);
             }
             me.refreshMyWorkFlow();
         }
