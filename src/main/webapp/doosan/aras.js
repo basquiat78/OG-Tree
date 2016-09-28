@@ -140,6 +140,7 @@ Aras.prototype = {
      */
     getEdParentList: function (id, ed_yn) {
         var me = this, params = {
+            id: id,
             std_yn: me.stdYN,
             ed_yn: ed_yn
         };
@@ -526,7 +527,6 @@ Aras.prototype = {
 
         body = "<sqlString>UPDATE innovator." + createEDItem.GetType() + " SET _PATH = '" + path + "' WHERE id = '" + createEDItem.getID() + "'</sqlString>";
         inn.applyMethod("DHI_APPLY_SQL", body);
-
 
         existRelItem = inn.newItem(relType, "get");
         existRelItem.setProperty("source_id", data.id);
