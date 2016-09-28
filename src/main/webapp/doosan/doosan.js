@@ -126,7 +126,7 @@ Doosan.prototype = {
                 id = data.id;
                 type = data.type;
             }
-            this.aras.showPropertyWindow(type, id);
+            me.aras.showPropertyWindow(type, id);
         };
         /**
          * Ed 생성 콘텍스트 클릭시
