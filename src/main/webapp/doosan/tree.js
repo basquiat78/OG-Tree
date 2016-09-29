@@ -94,7 +94,7 @@ var Tree = function (container) {
         DEFAULT_STYLE: {
             BLUR: "0.3",
             EDGE: "plain", //bezier || plain,
-            MAPPING_EDGE: "bezier" //bezier || plain,
+            MAPPING_EDGE: "plain" //bezier || plain,
         }
     };
 
@@ -585,6 +585,7 @@ Tree.prototype = {
         var totalInHeight;
         var nextActivity;
         var nextActivityView;
+        var activityView, activityRelView;
         var targetOutDiff;
         var nextTargetActivities;
         var nextActivityIds;
@@ -819,7 +820,6 @@ Tree.prototype = {
         }
 
         //액티비티 간의 릴레이션 연결선 제작
-        var activityView, nextActivityView, activityRelView;
         for (var i = 0; i < viewData.views.length; i++) {
             if (viewData.views[i].type == me.Constants.TYPE.ACTIVITY) {
                 activityView = viewData.views[i];
@@ -2606,10 +2606,11 @@ Tree.prototype = {
                 if (!area.shape.geom.getBoundary().isContains([eventX, eventY])) {
                     enableSort = false;
                 }
+                //원래 상태로 원복
+                shapeElement.shape.geom.move(-(offset[0]), -(offset[1]));
+                me._RENDERER.redrawShape(shapeElement);
+
                 if (!enableSort) {
-                    //원래 상태로 원복
-                    shapeElement.shape.geom.move(-(offset[0]), -(offset[1]));
-                    me._RENDERER.redrawShape(shapeElement);
                     return;
                 }
 
@@ -2649,13 +2650,33 @@ Tree.prototype = {
                         activities.push(data);
                     }
                 }
+                //TODO activities 정보를 이벤트로 주고, 리턴값에 따라 다음을 진행.
+                //TODO svg 파일들 메일 보낼 것. done
+                //TODO 모니터 화면 만들 것
+
+                //before 이벤트
+                var beforeActivityMove = me.onBeforeActivityMove(activities);
+                if (typeof beforeActivityMove == 'boolean') {
+                    if (!beforeActivityMove) {
+                        return;
+                    }
+                }
+
                 for (var i = 0; i < activities.length; i++) {
                     me.removeDataByFilter({id: activities[i].id});
                     me.updateData([activities[i]], true);
                 }
                 me.render();
+
+                me.onActivityMove(activities);
             }
         });
+    },
+    onBeforeActivityMove: function (activities) {
+        console.log(activities);
+    },
+    onActivityMove: function (activities) {
+        console.log(activities);
     },
     bindMappingEvent: function () {
         var me = this;

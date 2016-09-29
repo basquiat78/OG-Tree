@@ -15868,9 +15868,12 @@ OG.renderer.RaphaelRenderer.prototype._drawLabel = function (position, text, siz
     text_anchor = _style["text-anchor"] || 'middle';
     _style["text-anchor"] = 'middle';
 
-    //크롬일 때
-    if (navigator.userAgent.toLowerCase().indexOf("mozilla") != -1) {
-        //Text Filter for foreignObject
+    //익스 일때
+    if (OG.Util.isIE()) {
+        element = this._PAPER.text(position[0], position[1], text, size);
+        element.attr(_style);
+    }
+    else {
         if (text) {
             text = text.replace(/\n/g, '<br />');
         }
@@ -15881,11 +15884,6 @@ OG.renderer.RaphaelRenderer.prototype._drawLabel = function (position, text, siz
         } else {
             element = this._PAPER.foreignObject(text, position[0], position[1], size[0], size[1]);
         }
-    } else if (navigator.userAgent.toLowerCase().indexOf("msie") != -1) {
-        //익스플로러일 대
-        // Draw text
-        element = this._PAPER.text(position[0], position[1], text, size);
-        element.attr(_style);
     }
 
     // real size
@@ -17456,7 +17454,7 @@ OG.renderer.RaphaelRenderer.prototype.connect = function (fromTerminal, toTermin
         };
 
     // edge 의 style 도 검색하여 존재한다면 style 에 set
-    if(edge.shape.geom.style instanceof OG.geometry.Style) {
+    if (edge.shape.geom.style instanceof OG.geometry.Style) {
         style = edge.shape.geom.style;
     }
     OG.Util.apply(_style, (style instanceof OG.geometry.Style) ? style.map : style || {}, me._CONFIG.DEFAULT_STYLE.EDGE);
@@ -17523,7 +17521,7 @@ OG.renderer.RaphaelRenderer.prototype.connect = function (fromTerminal, toTermin
     }
     if (!isEssensia) {
         // 디폴트 스타일이 정해져 있지 않다면 화살표로 그린다.
-        if(typeof style == 'undefined' || style == null || style.length == 0 || style == '') {
+        if (typeof style == 'undefined' || style == null || style.length == 0 || style == '') {
             edge.shape.geom.style.map['arrow-start'] = 'none';
             edge.shape.geom.style.map['arrow-end'] = 'block';
         }
@@ -18273,7 +18271,7 @@ OG.renderer.RaphaelRenderer.prototype.drawGuide = function (element) {
  * @param {Object} position
  */
 OG.renderer.RaphaelRenderer.prototype.drawStickGuide = function (position) {
-    if(!this._CONFIG.STICK_GUIDE){
+    if (!this._CONFIG.STICK_GUIDE) {
         return;
     }
     var me = this, path, pathX, pathY;
@@ -18299,7 +18297,7 @@ OG.renderer.RaphaelRenderer.prototype.drawStickGuide = function (position) {
 };
 
 OG.renderer.RaphaelRenderer.prototype.removeStickGuide = function (direction) {
-    if(!this._CONFIG.STICK_GUIDE){
+    if (!this._CONFIG.STICK_GUIDE) {
         return;
     }
     if (!direction) {
@@ -18320,7 +18318,7 @@ OG.renderer.RaphaelRenderer.prototype.removeStickGuide = function (direction) {
 };
 
 OG.renderer.RaphaelRenderer.prototype.removeAllStickGuide = function () {
-    if(!this._CONFIG.STICK_GUIDE){
+    if (!this._CONFIG.STICK_GUIDE) {
         return;
     }
     this.removeStickGuide('vertical');
@@ -22250,7 +22248,7 @@ OG.renderer.RaphaelRenderer.prototype.getRootGroupOfShape = function (element) {
  * @param {Element,String} Element 또는 ID
  */
 OG.renderer.RaphaelRenderer.prototype.checkBridgeEdge = function (element) {
-    if(!this._CONFIG.CHECK_BRIDGE_EDGE){
+    if (!this._CONFIG.CHECK_BRIDGE_EDGE) {
         return;
     }
     var me = this, fromStyleChangable, toStyleChangable;
@@ -22478,7 +22476,7 @@ OG.renderer.RaphaelRenderer.prototype.trimEdgeDirection = function (edge, fromSh
         points.push([fRight + ((tLeft - fRight) / 2), toP.y]);
         points.push([toP.x, toP.y]);
 
-    } else if(fLeft > tRight) {
+    } else if (fLeft > tRight) {
         points.push([fromP.x, fromP.y]);
         points.push([fLeft + ((tRight - fLeft) / 2), fromP.y]);
         points.push([fLeft + ((tRight - fLeft) / 2), toP.y]);

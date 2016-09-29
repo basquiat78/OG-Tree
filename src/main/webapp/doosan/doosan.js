@@ -44,6 +44,27 @@ Doosan.prototype = {
         //me.tree.updateMyData(myData);
 
         /**
+         * GUI 상에서 액티비티가 이동하기 전의 핸들러
+         * @param activities
+         */
+        me.tree.onBeforeActivityMove = function (activities) {
+            console.log(activities);
+            var activityIds = [];
+            for(var i = 0 ; i < activities.length; i++){
+                activityIds.push(activities[i].id);
+            }
+            me.aras.sortActivities(activityIds);
+
+            return false;
+        };
+        /**
+         * GUI 상에서 액티비티가 이동한 후의 핸들러
+         * @param activities
+         */
+        me.tree.onActivityMove = function (activities) {
+            console.log(activities);
+        };
+        /**
          * GUI 상에서 매핑이 되기 전의 핸들러
          * @param source
          * @param target

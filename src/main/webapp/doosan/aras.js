@@ -280,6 +280,37 @@ Aras.prototype = {
 
         this.aras.uiShowItemEx(item.node, undefined, true);
     },
+    sortActivities: function (activityIds) {
+        //1. 해당 워크플로우의 액티비티 릴레이션 들을 불러온다.
+        var me = this;
+        var inn = this.aras.newIOMInnovator();
+        var relType = me.getRelType(me.TYPE.WORKFLOW, me.TYPE.ACTIVITY, 'out');
+        var activityRels = inn.newItem(relType, "get");
+        activityRels = activityRels.setProperty('source_id', me.wfId);
+        var rels = [];
+        if (activityRels.getItemCount() == 1) {
+            rels.push(activityRels.node);
+        } else if (activityRels.getItemCount() > 1) {
+            for (var c = 0; c < activityRels.nodeList.length; c++) {
+                rels.push(activityRels.nodeList[c]);
+            }
+        }
+
+        //2. 릴레이션의 sort 들을 업데이트한다.
+        var relItem;
+        for (var i = 0; i < activityIds.length; i++) {
+            for (var r = 0; r < rels.length; r++) {
+                relItem = rels[r];
+                if (activityIds[i] == relItem.getProperty('related_id', '')) {
+                    var sql = "<sqlString>UPDATE innovator." + relItem.GetType() + " SET SORT_ORDER = '" + i + "' WHERE id = '" + relItem.getID() + "'</sqlString>";
+                    inn.applyMethod('DHI_APPLY_SQL', sql);
+                }
+            }
+        }
+        me.refreshMyWorkFlow();
+    }
+
+    ,
     createFolder: function (data, view) {
         this.data = data;
         this.view = view;
