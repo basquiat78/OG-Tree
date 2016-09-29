@@ -165,6 +165,24 @@ Tree.prototype = {
         me.render();
         me.bindEvent();
     },
+    /**
+     * Scale 을 반환한다. (리얼 사이즈 : Scale = 1)
+     *
+     * @return {Number} 스케일값
+     */
+    getScale: function () {
+        return this.canvas.getScale();
+    },
+
+    /**
+     * Scale 을 설정한다. (리얼 사이즈 : Scale = 1)
+     *
+     * @param {Number} scale 스케일값
+     */
+    setScale: function (scale) {
+        this.canvas.setScale(scale);
+        this.renderViews();
+    },
     setShowLabel: function (show) {
         var me = this;
         var allShapes = me._RENDERER.getAllNotEdges();
@@ -1268,8 +1286,8 @@ Tree.prototype = {
         // 2.y 가 minY 보다 작고 parentY 가 maxY 보다 클 경우
         // 3.parentY 가 minY 보다 작고 y 가 maxY 보다 클 경우
         var displayViews = [];
-        var minY = me._CONTAINER.scrollTop() - me._CONFIG.DISPLAY_MARGIN;
-        var maxY = me._CONTAINER.scrollTop() + me._CONFIG.CONTAINER_HEIGHT + me._CONFIG.DISPLAY_MARGIN;
+        var minY = (me._CONTAINER.scrollTop() - me._CONFIG.DISPLAY_MARGIN) * (1 / me.getScale());
+        var maxY = (me._CONTAINER.scrollTop() + me._CONFIG.CONTAINER_HEIGHT + me._CONFIG.DISPLAY_MARGIN) * (1 / me.getScale());
         for (var i = 0; i < viewData.views.length; i++) {
             if (viewData.views[i].parentY) {
                 var inside = false;
@@ -2650,10 +2668,16 @@ Tree.prototype = {
                         activities.push(data);
                     }
                 }
-                //TODO activities 정보를 이벤트로 주고, 리턴값에 따라 다음을 진행. done
-                //TODO svg 파일들 메일 보낼 것. done
+                //TODO 창 이동시에 사이즈 부모 창 재조절이 필요함.
+
+                //TODO 줌인, 줌아웃에 대한 로직 변경을 수렴 할 것.
+                // => 1. 드랍 이벤트
+                // => 2. 디스플레이 뷰의 Height
+
+
                 //TODO 모니터 화면 만들 것.
-                //TODO 외부 css 창을 손볼 것.
+                //1. 같은 로직, 마이 데이터만 부른다.
+                //2. 에어리어 부분의 디스에이블 처리 과정이 있어야 한다.
 
                 //before 이벤트
                 var beforeActivityMove = me.onBeforeActivityMove(activities);

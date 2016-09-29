@@ -40,8 +40,8 @@ Doosan.prototype = {
 
         //var otherData = randomData('other');
         //var myData = randomData('my');
-        //me.tree.updateOtherData(otherData);
-        //me.tree.updateMyData(myData);
+        //me.tree.updateData(otherData);
+        //me.tree.updateData(myData);
 
         /**
          * GUI 상에서 액티비티가 이동하기 전의 핸들러
@@ -50,7 +50,7 @@ Doosan.prototype = {
         me.tree.onBeforeActivityMove = function (activities) {
             console.log(activities);
             var activityIds = [];
-            for(var i = 0 ; i < activities.length; i++){
+            for (var i = 0; i < activities.length; i++) {
                 activityIds.push(activities[i].id);
             }
             me.aras.sortActivities(activityIds);
@@ -366,6 +366,25 @@ Doosan.prototype = {
             } else {
                 swich.data('data', 'on');
                 me.tree.setShowLabel(true);
+            }
+        });
+
+        $('#zoomIn').click(function () {
+            var scale = me.tree.getScale();
+            var reScale = scale - 0.1;
+            if (reScale < 0.2) {
+                return;
+            } else {
+                me.tree.setScale(reScale);
+            }
+        });
+        $('#zoomOut').click(function () {
+            var scale = me.tree.getScale();
+            var reScale = scale + 0.1;
+            if (reScale > 3) {
+                return;
+            } else {
+                me.tree.setScale(reScale);
             }
         });
     },
