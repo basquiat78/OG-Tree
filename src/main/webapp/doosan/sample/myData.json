@@ -113,6 +113,35 @@
     "parentId": "my-fd-2",
     "extData": {}
   },
+
+
+
+  {
+    "type": "mapping",
+    "sourceType": "folder",
+    "id": "other-fd-2-my-ac-2",
+    "source": "other-fd-2",
+    "target": "my-ac-2",
+    "selected": false,
+    "position": "my-in",
+    "extData": {},
+    "parentId": "other-ac-1",
+    "name": "other-fd-2-Folder",
+    "expand": true
+  },
+  {
+    "type": "mapping",
+    "sourceType": "folder",
+    "id": "other-fd-2-1-my-ac-2",
+    "source": "other-fd-2-1",
+    "target": "my-ac-2",
+    "selected": false,
+    "position": "my-in",
+    "extData": {},
+    "parentId": "other-fd-2",
+    "name": "other-fd-2-1-Folder",
+    "expand": true
+  },
   {
     "type": "mapping",
     "sourceType": "folder",
@@ -123,7 +152,8 @@
     "position": "my-in",
     "extData": {},
     "parentId": "other-fd-2-1",
-    "name": "other-fd-2-1-2-Folder"
+    "name": "other-fd-2-1-2-Folder",
+    "expand": true
   },
   {
     "type": "mapping",
@@ -135,7 +165,8 @@
     "position": "my-in",
     "extData": {},
     "parentId": "other-fd-2-1-2",
-    "name": "other-fd-2-1-2-1-Folder"
+    "name": "other-fd-2-1-2-1-Folder",
+    "expand": true
   },
   {
     "type": "mapping",
@@ -159,30 +190,9 @@
     "parentId": "other-fd-2-1-2-1",
     "name": "other-ed-2-1-2-1-2-Ed"
   },
-  {
-    "type": "mapping",
-    "sourceType": "folder",
-    "id": "other-fd-2-1-my-ac-2",
-    "source": "other-fd-2-1",
-    "target": "my-ac-2",
-    "selected": false,
-    "position": "my-in",
-    "extData": {},
-    "parentId": "other-fd-2",
-    "name": "other-fd-2-1-Folder"
-  },
-  {
-    "type": "mapping",
-    "sourceType": "folder",
-    "id": "other-fd-2-my-ac-2",
-    "source": "other-fd-2",
-    "target": "my-ac-2",
-    "selected": false,
-    "position": "my-in",
-    "extData": {},
-    "parentId": "other-ac-1",
-    "name": "other-fd-2-Folder"
-  },
+
+
+
   {
     "type": "mapping",
     "sourceType": "folder",
