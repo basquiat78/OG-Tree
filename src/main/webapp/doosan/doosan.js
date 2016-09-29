@@ -371,8 +371,8 @@ Doosan.prototype = {
 
         $('#zoomIn').click(function () {
             var scale = me.tree.getScale();
-            var reScale = scale - 0.1;
-            if (reScale < 0.2) {
+            var reScale = scale + 0.1;
+            if (reScale > 3) {
                 return;
             } else {
                 me.tree.setScale(reScale);
@@ -380,8 +380,8 @@ Doosan.prototype = {
         });
         $('#zoomOut').click(function () {
             var scale = me.tree.getScale();
-            var reScale = scale + 0.1;
-            if (reScale > 3) {
+            var reScale = scale - 0.1;
+            if (reScale < 0.2) {
                 return;
             } else {
                 me.tree.setScale(reScale);
