@@ -2650,9 +2650,10 @@ Tree.prototype = {
                         activities.push(data);
                     }
                 }
-                //TODO activities 정보를 이벤트로 주고, 리턴값에 따라 다음을 진행.
+                //TODO activities 정보를 이벤트로 주고, 리턴값에 따라 다음을 진행. done
                 //TODO svg 파일들 메일 보낼 것. done
-                //TODO 모니터 화면 만들 것
+                //TODO 모니터 화면 만들 것.
+                //TODO 외부 css 창을 손볼 것.
 
                 //before 이벤트
                 var beforeActivityMove = me.onBeforeActivityMove(activities);

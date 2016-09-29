@@ -60,6 +60,14 @@ Aras.prototype = {
         this.stdYN = parent.top.thisItem.getType() == 'DHI_WF_WFT' ? 'Y' : 'N';
         this.projectId = parent.top.thisItem.getProperty('_rel_project');
         this.body = '';
+
+
+        //아라츠 팝업창 디자인을 손보도록 한다.
+        var parentDoc = $(window.parent.document);
+        var pane = parentDoc.find('dijitDialogPaneContent');
+        pane.css('width', '100%');
+        pane.find('iframe').css('height', $('body').height() + 'px');
+
     },
     createBody: function (params) {
         var body = '', value;
