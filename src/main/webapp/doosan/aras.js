@@ -775,32 +775,35 @@ Aras.prototype = {
             arasWindow.top.commandEventHandlers['afterunlock'].push(EventBottomSave);
         });
     },
-    addInRel: function (source, target) {
+    addInRel: function (source, target, selectedTargetList) {
         var me = this;
         var inn = this.aras.newIOMInnovator();
         var relType = me.getRelType(source.type, target.type, 'in');
         var existRelItem;
         var relItem;
 
-        existRelItem = inn.newItem(relType, "get");
-        existRelItem.setProperty("source_id", source.id);
-        existRelItem.setProperty("related_id", target.id);
-        existRelItem = existRelItem.apply();
-        if (existRelItem.getItemCount() == 0) {
-            try {
-                relItem = inn.newItem(relType, "add");
-                relItem.setProperty("source_id", source.id);
-                relItem.setProperty("related_id", target.id);
-                relItem.setProperty("owned_by_id", me.thisItem.getProperty("owned_by_id", ""));
-                relItem = relItem.apply();
+        for (var i = 0, leni = selectedTargetList.length; i < leni; i++) {
+            var targetId = selectedTargetList[i];
+            existRelItem = inn.newItem(relType, "get");
+            existRelItem.setProperty("source_id", source.id);
+            existRelItem.setProperty("related_id", targetId);
+            existRelItem = existRelItem.apply();
+            if (existRelItem.getItemCount() == 0) {
+                try {
+                    relItem = inn.newItem(relType, "add");
+                    relItem.setProperty("source_id", source.id);
+                    relItem.setProperty("related_id", targetId);
+                    relItem.setProperty("owned_by_id", me.thisItem.getProperty("owned_by_id", ""));
+                    relItem = relItem.apply();
 
-                var body = "<_parent_type>" + me.getItemType(me.TYPE.ACTIVITY) + "</_parent_type>";
-                body += "<_parent_id>" + source.id + "</_parent_id>";
-                body += "<_ids>" + target.id + "</_ids>";
-                var result = inn.applyMethod("DHI_WF_CREATE_FD_IN_REL", body);
-            }
-            catch (e) {
-                msgBox('Failed to add ' + relType + ' Relation : ' + source.id + ' to ' + target.id);
+                    var body = "<_parent_type>" + me.getItemType(me.TYPE.ACTIVITY) + "</_parent_type>";
+                    body += "<_parent_id>" + source.id + "</_parent_id>";
+                    body += "<_ids>" + targetId + "</_ids>";
+                    var result = inn.applyMethod("DHI_WF_CREATE_FD_IN_REL", body);
+                }
+                catch (e) {
+                    msgBox('Failed to add ' + relType + ' Relation : ' + source.id + ' to ' + targetId);
+                }
             }
         }
         me.refreshMyWorkFlow();

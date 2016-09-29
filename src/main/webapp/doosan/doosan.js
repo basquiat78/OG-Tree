@@ -37,7 +37,7 @@ Doosan.prototype = {
         //        me.tree.updateData(otherData);
         //    });
         //});
-
+        //
         //var otherData = randomData('other');
         //var myData = randomData('my');
         //me.tree.updateData(otherData);
@@ -70,11 +70,11 @@ Doosan.prototype = {
          * @param target
          * @returns {boolean}
          */
-        me.tree.onBeforeMapping = function (source, target) {
-            console.log(source, target);
+        me.tree.onBeforeMapping = function (source, target, selectedTargetList) {
+            console.log(source, target, selectedTargetList);
 
             //아라스에서는 소스와 타겟이 반대
-            me.aras.addInRel(target, source);
+            me.aras.addInRel(target, source, selectedTargetList);
             return false;
         };
 
@@ -83,8 +83,8 @@ Doosan.prototype = {
          * @param source
          * @param target
          */
-        me.tree.onMapping = function (source, target) {
-            console.log(source, target);
+        me.tree.onMapping = function (source, target, selectedTargetList) {
+            console.log(source, target, selectedTargetList);
         };
 
         /**

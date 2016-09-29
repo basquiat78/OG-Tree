@@ -5,7 +5,6 @@
     "name": "my-ac-1-Activity",
     "position": "my",
     "parentId": "",
-    "next": "my-ac-2",
     "expand": true,
     "extData": {}
   },
@@ -15,8 +14,6 @@
     "name": "my-ac-2-Activity",
     "position": "my",
     "parentId": "",
-    "prev": "my-ac-1",
-    "next": "my-ac-3",
     "expand": true,
     "extData": {}
   },
@@ -26,7 +23,6 @@
     "name": "my-ac-3-Activity",
     "position": "my",
     "parentId": "",
-    "prev": "my-ac-2",
     "expand": true,
     "extData": {}
   },

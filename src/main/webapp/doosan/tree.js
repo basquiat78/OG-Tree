@@ -94,7 +94,7 @@ var Tree = function (container) {
         DEFAULT_STYLE: {
             BLUR: "0.3",
             EDGE: "plain", //bezier || plain,
-            MAPPING_EDGE: "plain" //bezier || plain,
+            MAPPING_EDGE: "bezier" //bezier || plain,
         }
     };
 
@@ -104,7 +104,7 @@ var Tree = function (container) {
      * @private
      */
     this._INCOLLAPSE = [];
-    this._STORAGE = {};
+    this._STORAGE = [];
     this._VIEWDATA = {};
     this._CONTAINER = $('#' + container);
     this._CONTAINER.css({
@@ -186,7 +186,7 @@ Tree.prototype = {
     setShowLabel: function (show) {
         var me = this;
         var allShapes = me._RENDERER.getAllNotEdges();
-        for (var i = 0; i < allShapes.length; i++) {
+        for (var i = 0, leni = allShapes.length; i < leni; i++) {
             if (allShapes[i].shape instanceof OG.Area) {
                 //Nothing to do
             } else {
@@ -234,12 +234,7 @@ Tree.prototype = {
      * @returns {Array}
      */
     load: function () {
-        var data = [];
-        var me = this;
-        for (var key in me._STORAGE) {
-            data.push(me._STORAGE[key]);
-        }
-        return data;
+        return this._STORAGE;
     },
     /**
      * 노드 데이터를 필터링하여 불러온다.
@@ -248,17 +243,17 @@ Tree.prototype = {
      */
     loadByFilter: function (filterData) {
         var data = [];
-        var me = this, key;
-        for (key in me._STORAGE) {
+        var me = this;
+        for (var i = 0, leni = me._STORAGE.length; i < leni; i++) {
             var toAdd = true;
             for (var filterKey in filterData) {
                 //하나라도 필터 조건이 맞지 않다면 추가하지 않도록 한다.
-                if (me._STORAGE[key][filterKey] != filterData[filterKey]) {
+                if (me._STORAGE[i][filterKey] != filterData[filterKey]) {
                     toAdd = false;
                 }
             }
             if (toAdd) {
-                data.push(me._STORAGE[key]);
+                data.push(me._STORAGE[i]);
             }
         }
         return data;
@@ -268,17 +263,18 @@ Tree.prototype = {
      * @param filterData
      */
     removeDataByFilter: function (filterData) {
-        var me = this, key;
-        for (key in me._STORAGE) {
+        var me = this;
+        for (var i = 0, leni = me._STORAGE.length; i < leni; i++) {
             var toRemove = true;
             for (var filterKey in filterData) {
                 //하나라도 필터 조건이 맞지 않다면 삭제하지 않도록 한다.
-                if (me._STORAGE[key][filterKey] != filterData[filterKey]) {
+                if (me._STORAGE[i][filterKey] != filterData[filterKey]) {
                     toRemove = false;
                 }
             }
             if (toRemove) {
-                delete me._STORAGE[key];
+                me._STORAGE.splice(i, 1);
+                leni--;
             }
         }
     },
@@ -294,17 +290,37 @@ Tree.prototype = {
         var me = this;
         var copyObj;
         if ($.isArray(data)) {
-            for (var i = 0; i < data.length; i++) {
+            for (var i = 0, leni = data.length; i < leni; i++) {
                 copyObj = JSON.parse(JSON.stringify(data[i]));
                 if (copyObj.id) {
-                    me._STORAGE[copyObj.id] = copyObj;
+                    var removed = false;
+                    for (var c = 0, lenc = me._STORAGE.length; c < lenc; c++) {
+                        if (me._STORAGE[c]['id'] == copyObj.id) {
+                            removed = true;
+                            me._STORAGE[c] = copyObj;
+                            break;
+                        }
+                    }
+                    if (!removed) {
+                        me._STORAGE.push(copyObj);
+                    }
                 }
             }
         } else {
             for (var key in data) {
                 copyObj = JSON.parse(JSON.stringify(data[key]));
                 if (copyObj.id) {
-                    me._STORAGE[copyObj.id] = copyObj;
+                    var removed = false;
+                    for (var c = 0, lenc = me._STORAGE.length; c < lenc; c++) {
+                        if (me._STORAGE[c]['id'] == copyObj.id) {
+                            removed = true;
+                            me._STORAGE[c] = copyObj;
+                            break;
+                        }
+                    }
+                    if (!removed) {
+                        me._STORAGE.push(copyObj);
+                    }
                 }
             }
         }
@@ -366,7 +382,7 @@ Tree.prototype = {
             //자신과 같은 부모를 가지는 데이터들 중 자신이 인덱스를 등록한다.
             var firstChild = false;
             if (childFromParent && childFromParent.length) {
-                for (var i = 0; i < childFromParent.length; i++) {
+                for (var i = 0, leni = childFromParent.length; i < leni; i++) {
                     if (childFromParent[0]['id'] == object['id']) {
                         view.index = i;
                         if (i == 0) {
@@ -573,7 +589,7 @@ Tree.prototype = {
 
             //expand 상태라면 자식의 수만큼 루프
             if (child.length && object.expand) {
-                for (var c = 0; c < child.length; c++) {
+                for (var c = 0, lenc = child.length; c < lenc; c++) {
                     //parentView 로 보내는 것이 실제 부모가 보내지는 것이 아니라 next 순서로 보내진다.
                     getViewData(child[c], depth + 1, view, child);
                 }
@@ -583,14 +599,14 @@ Tree.prototype = {
         //1. 아더 액비티비 기준 시작
         lastViewBottom = 0;
         otherActivities = me.selectActivityByPosition(this.Constants.POSITION.OTHER);
-        for (var i = 0; i < otherActivities.length; i++) {
+        for (var i = 0, leni = otherActivities.length; i < leni; i++) {
             root = otherActivities[i]['id'];
             getViewData(otherActivities[i]);
         }
         //2. 마이 액티비티 기준 시작
         lastViewBottom = 0;
         myActivities = me.selectActivityByPosition(this.Constants.POSITION.MY);
-        for (var i = 0; i < myActivities.length; i++) {
+        for (var i = 0, leni = myActivities.length; i < leni; i++) {
             root = myActivities[i]['id'];
             getViewData(myActivities[i]);
         }
@@ -609,7 +625,7 @@ Tree.prototype = {
         var nextActivityIds;
         var isLoad;
         var currentDiffY;
-        for (var i = 0; i < mappings.length; i++) {
+        for (var i = 0, leni = mappings.length; i < leni; i++) {
             mapping = mappings[i];
             source = mapping['source'];
             target = mapping['target'];
@@ -625,7 +641,7 @@ Tree.prototype = {
                 //loaded 에서 타켓 액티비티가 같은 것들의 sourceInHeight 를 높이 차에 더해준다.(타켓 액티비티 쪽에 여러 소스 액티비티가 겹칠 경우를 위함이다.)
                 totalInHeight = 0;
                 diffY = targetActivityView.y - (me._CONFIG.SHAPE_SIZE.FOLDER_HEIGHT / 2);
-                for (var l = 0; l < loaded.length; l++) {
+                for (var l = 0, lenl = loaded.length; l < lenl; l++) {
                     if (loaded[l].targetActivity == targetActivity['id']) {
                         diffY = diffY + loaded[l].sourceInHeight + me._CONFIG.SHAPE_SIZE.ACTIVITY_HEIGHT + me._CONFIG.SHAPE_SIZE.ACTIVITY_MARGIN;
                         totalInHeight = totalInHeight + loaded[l].sourceInHeight + me._CONFIG.SHAPE_SIZE.ACTIVITY_HEIGHT + me._CONFIG.SHAPE_SIZE.ACTIVITY_MARGIN;
@@ -633,7 +649,7 @@ Tree.prototype = {
                 }
 
                 isLoad = false;
-                for (var l = 0; l < loaded.length; l++) {
+                for (var l = 0, lenl = loaded.length; l < lenl; l++) {
                     if (loaded[l].sourceActivity == rootMapping['parentId'] &&
                         loaded[l].targetActivity == targetActivity['id']) {
                         isLoad = true;
@@ -646,7 +662,7 @@ Tree.prototype = {
                 //처음 매핑 그룹 뷰 생성을 수행하는 매핑 일 경우
                 else {
                     standaloneViewData = me.createStandaloneViewData(mapping, targetActivityView);
-                    for (var s = 0; s < standaloneViewData['views'].length; s++) {
+                    for (var s = 0, lens = standaloneViewData.length; s < lens; s++) {
                         standaloneView = standaloneViewData['views'][s];
                         standaloneView.y = standaloneView.y + diffY;
                         if (standaloneView.parentY) {
@@ -670,10 +686,10 @@ Tree.prototype = {
                             nextTargetActivities = me.selectNextActivities(targetActivity['id']);
                             if (nextTargetActivities.length) {
                                 nextActivityIds = [];
-                                for (var n = 0; n < nextTargetActivities.length; n++) {
+                                for (var n = 0, lenn = nextTargetActivities.length; n < lenn; n++) {
                                     nextActivityIds.push(nextTargetActivities[n]['id']);
                                 }
-                                for (var n = 0; n < viewData.views.length; n++) {
+                                for (var n = 0, lenn = viewData.views.length; n < lenn; n++) {
                                     if (nextActivityIds.indexOf(viewData.views[n]['root']) != -1) {
                                         viewData.views[n].y = viewData.views[n].y + targetOutDiff;
                                         viewData.views[n].bottom = viewData.views[n].bottom + targetOutDiff;
@@ -701,7 +717,7 @@ Tree.prototype = {
                 sourceActivityView = me.selectViewById(viewData, sourceActivity['id']);
                 targetActivityView = me.selectViewById(viewData, targetActivity['id']);
                 diffY = targetActivityView.y - sourceActivityView.y;
-                for (var l = 0; l < loaded.length; l++) {
+                for (var l = 0, lenl = loaded.length; l < lenl; l++) {
                     if (loaded[l].sourceActivity != sourceActivity['id'] &&
                         loaded[l].targetActivity == targetActivity['id']) {
                         diffY = diffY + loaded[l].sourceInHeight + me._CONFIG.SHAPE_SIZE.ACTIVITY_HEIGHT + me._CONFIG.SHAPE_SIZE.ACTIVITY_MARGIN;
@@ -715,7 +731,7 @@ Tree.prototype = {
 
 
                 isLoad = false;
-                for (var l = 0; l < loaded.length; l++) {
+                for (var l = 0, lenl = loaded.length; l < lenl; l++) {
                     if (loaded[l].sourceActivity == sourceActivity['id'] &&
                         loaded[l].targetActivity == targetActivity['id']) {
                         isLoad = true;
@@ -724,7 +740,7 @@ Tree.prototype = {
                 //이미 미러링을 수행한 액티비티 일 경우
                 if (isLoad) {
                     //뷰 데이터에서 id 가 source + '-mirror' 인 것을 찾는다.
-                    for (var v = 0; v < viewData.views.length; v++) {
+                    for (var v = 0, lenv = viewData.views.length; v < lenv; v++) {
                         if (viewData.views[v]['id'] == source + '-to-' + targetActivity['id'] + '-mirror') {
                             viewData.views[v].mapping = true;
                             viewData.views[v].selected = selected;
@@ -735,7 +751,7 @@ Tree.prototype = {
                 //처음 미러링을 수행하는 액티비티 일 경우
                 else {
                     //뷰 데이터에서 root 가 sourceActivity 와 같은 것을 찾는다.
-                    for (var v = 0; v < viewData.views.length; v++) {
+                    for (var v = 0, lenv = viewData.views.length; v < lenv; v++) {
                         if (viewData.views[v]['root'] == sourceActivity['id']) {
                             sourceView = viewData.views[v];
                             //오브젝트를 복사한다.
@@ -811,10 +827,10 @@ Tree.prototype = {
                             nextTargetActivities = me.selectNextActivities(targetActivity['id']);
                             if (nextTargetActivities.length) {
                                 nextActivityIds = [];
-                                for (var n = 0; n < nextTargetActivities.length; n++) {
+                                for (var n = 0, lenn = nextTargetActivities.length; n < lenn; n++) {
                                     nextActivityIds.push(nextTargetActivities[n]['id']);
                                 }
-                                for (var n = 0; n < viewData.views.length; n++) {
+                                for (var n = 0, lenn = viewData.views.length; n < lenn; n++) {
                                     if (nextActivityIds.indexOf(viewData.views[n]['root']) != -1) {
                                         viewData.views[n].y = viewData.views[n].y + targetOutDiff;
                                         viewData.views[n].bottom = viewData.views[n].bottom + targetOutDiff;
@@ -838,11 +854,13 @@ Tree.prototype = {
         }
 
         //액티비티 간의 릴레이션 연결선 제작
-        for (var i = 0; i < viewData.views.length; i++) {
+        var nextActivityData;
+        for (var i = 0, leni = viewData.views.length; i < leni; i++) {
             if (viewData.views[i].type == me.Constants.TYPE.ACTIVITY) {
                 activityView = viewData.views[i];
-                if (activityView.data.next) {
-                    nextActivityView = me.selectViewById(viewData, activityView.data.next);
+                nextActivityData = me.selectNextActivity(activityView.id);
+                if (nextActivityData) {
+                    nextActivityView = me.selectViewById(viewData, nextActivityData.id);
                     activityRelView = {
                         id: activityView.id + me.Constants.PREFIX.ACTIVITY_REL,
                         parentId: nextActivityView.id,
@@ -865,7 +883,7 @@ Tree.prototype = {
         var insertDuplicate = function (list, obj) {
             if (obj.source && obj.target) {
                 var duplicate = false;
-                for (var i = 0; i < list.length; i++) {
+                for (var i = 0, leni = list.length; i < leni; i++) {
                     if (list[i].source == obj.source &&
                         list[i].target == obj.target) {
                         duplicate = true;
@@ -880,7 +898,7 @@ Tree.prototype = {
 
         //매핑 데이터들 중에서 자식이 없거나 expand 가 false 인 것들을 찾는다.
         var mappingConnects = [], mappingsChild, enableConnect, selfData;
-        for (var i = 0; i < mappings.length; i++) {
+        for (var i = 0, leni = mappings.length; i < leni; i++) {
             enableConnect = false;
             mapping = mappings[i];
             source = mapping['source'];
@@ -906,7 +924,7 @@ Tree.prototype = {
 
         //blur 처리를 해제할 view 아이디 리스트를 구한다.
         var mappingHighlights = [];
-        for (var i = 0; i < mappings.length; i++) {
+        for (var i = 0, leni = mappings.length; i < leni; i++) {
             source = mappings[i]['source'];
             target = mappings[i]['target'];
 
@@ -923,13 +941,13 @@ Tree.prototype = {
         //mappingHighlights 에 속한 것에 한하여 blur 처리를 해제한다.
         //mappingConnects 에 해당하는 view 가 있다면 해당 view 의 mirror 와 MAPPING_EDGE 를 생성한다.
         var selfId, expanderFromId, expanderToId, mappingView, parentView;
-        for (var i = 0; i < viewData.views.length; i++) {
+        for (var i = 0, leni = viewData.views.length; i < leni; i++) {
             var view = viewData.views[i];
             if (view.position == me.Constants.POSITION.MY_IN) {
                 if (mappingHighlights.indexOf(view.id) != -1) {
                     view.blur = false;
                 }
-                for (var c = 0; c < mappingConnects.length; c++) {
+                for (var c = 0, lenc = mappingConnects.length; c < lenc; c++) {
                     source = mappingConnects[c]['source'];
                     target = mappingConnects[c]['target'];
 
@@ -997,7 +1015,7 @@ Tree.prototype = {
             //자신과 같은 부모를 가지는 데이터들 중 자신이 인덱스를 등록한다.
             var firstChild = false;
             if (childFromParent && childFromParent.length) {
-                for (var i = 0; i < childFromParent.length; i++) {
+                for (var i = 0, leni = childFromParent.length; i < leni; i++) {
                     if (childFromParent[0]['id'] == object['id']) {
                         view.index = i;
                         if (i == 0) {
@@ -1202,7 +1220,7 @@ Tree.prototype = {
 
             //expand 상태라면 자식의 수만큼 루프
             if (childMapping.length && object.expand) {
-                for (var c = 0; c < childMapping.length; c++) {
+                for (var c = 0, lenc = childMapping.length; c < lenc; c++) {
                     //parentView 로 보내는 것이 실제 부모가 보내지는 것이 아니라 next 순서로 보내진다.
                     getViewData(childMapping[c], depth + 1, view, childMapping);
                 }
@@ -1212,7 +1230,7 @@ Tree.prototype = {
 
         //mapping.parentId 가 _INCOLLAPSE 에서 expand 처리 되어있는지 본다.
         var rootExpand = true;
-        for (var i = 0; i < me._INCOLLAPSE.length; i++) {
+        for (var i = 0, leni = me._INCOLLAPSE.length; i < leni; i++) {
             var incollapse = me._INCOLLAPSE[i];
             if (incollapse.sourceActivity == mapping.parentId &&
                 incollapse.targetActivity == mapping.target) {
@@ -1251,14 +1269,12 @@ Tree.prototype = {
                 parentId: mapping.parentId
             });
 
-            for (var i = 0; i < rootGroup.length; i++) {
+            for (var i = 0, leni = rootGroup.length; i < leni; i++) {
                 getViewData(rootGroup[i], 1);
             }
             viewData.totalHeight = lastViewBottom;
         }
         return viewData;
-
-        //_INCOLLAPSE
     },
     /**
      * viewData 중에서 실제로 화면에 표현되야 할 객체를 선정하고 각 x 좌표를 책정한다.
@@ -1288,7 +1304,7 @@ Tree.prototype = {
         var displayViews = [];
         var minY = (me._CONTAINER.scrollTop() - me._CONFIG.DISPLAY_MARGIN) * (1 / me.getScale());
         var maxY = (me._CONTAINER.scrollTop() + me._CONFIG.CONTAINER_HEIGHT + me._CONFIG.DISPLAY_MARGIN) * (1 / me.getScale());
-        for (var i = 0; i < viewData.views.length; i++) {
+        for (var i = 0, leni = viewData.views.length; i < leni; i++) {
             if (viewData.views[i].parentY) {
                 var inside = false;
                 if (viewData.views[i].y > minY && viewData.views[i].y < maxY) {
@@ -1317,7 +1333,7 @@ Tree.prototype = {
         //캔버스에 현재 존재하는 객체중 y 범위에 해당하는 것을 추리고, 만약 displayViews 에 속해있지 않다면 삭제하도록 한다.
         var currentDisplayShapes = [];
         var allShapes = me._RENDERER.getAllNotEdges();
-        for (var i = 0; i < allShapes.length; i++) {
+        for (var i = 0, leni = allShapes.length; i < leni; i++) {
             if (allShapes[i].shape instanceof OG.Area) {
                 //Nothing to do
             } else {
@@ -1328,18 +1344,21 @@ Tree.prototype = {
             }
         }
         var allEdges = me._RENDERER.getAllEdges();
-        for (var i = 0; i < allEdges.length; i++) {
+        for (var i = 0, leni = allEdges.length; i < leni; i++) {
+            //if (allEdges[i].id.indexOf(me.Constants.PREFIX.MAPPING_EDGE) != -1) {
+            //    console.log(allEdges[i].id, allEdges[i].shape.geom.getVertices()[0].y, minY, maxY);
+            //}
             var y = allEdges[i].shape.geom.getVertices()[0].y;
             if (y > minY && y < maxY) {
                 currentDisplayShapes.push(allEdges[i]);
             }
         }
-        for (var i = 0; i < currentDisplayShapes.length; i++) {
+        for (var i = 0, leni = currentDisplayShapes.length; i < leni; i++) {
             var existId = currentDisplayShapes[i].id;
             var toRemove = true;
             var haMapping = false;
 
-            for (var c = 0; c < displayViews.length; c++) {
+            for (var c = 0, lenc = displayViews.length; c < lenc; c++) {
                 if (displayViews[c].id == existId) {
                     toRemove = false;
                     if (displayViews[c].mapping) {
@@ -1370,13 +1389,13 @@ Tree.prototype = {
         //추려낸 뷰 데이터 각각의 x 좌표를 Area 영역 기준으로 생성한다.
         var viewsByPosition = me.dividedViewsByPosition(displayViews);
         var otherViews = viewsByPosition[me.Constants.POSITION.OTHER];
-        for (var i = 0; i < otherViews.length; i++) {
+        for (var i = 0, leni = otherViews.length; i < leni; i++) {
             otherViews[i].x = me._CONFIG.AREA.ACTIVITY_SIZE / 2;
         }
 
         var otherOutViews = viewsByPosition[me.Constants.POSITION.OTHER_OUT];
         boundary = me._RENDERER.getBoundary(me.AREA.lOut);
-        for (var i = 0; i < otherOutViews.length; i++) {
+        for (var i = 0, leni = otherOutViews.length; i < leni; i++) {
             type = otherOutViews[i].type;
             depth = otherOutViews[i].depth;
             if (type == me.Constants.TYPE.ACTIVITY || type == me.Constants.TYPE.FOLDER || type == me.Constants.TYPE.ED) {
@@ -1401,7 +1420,7 @@ Tree.prototype = {
 
         var myInViews = viewsByPosition[me.Constants.POSITION.MY_IN];
         boundary = me._RENDERER.getBoundary(me.AREA.rIn);
-        for (var i = 0; i < myInViews.length; i++) {
+        for (var i = 0, leni = myInViews.length; i < leni; i++) {
             type = myInViews[i].type;
             depth = myInViews[i].depth;
 
@@ -1423,13 +1442,13 @@ Tree.prototype = {
 
         var myViews = viewsByPosition[me.Constants.POSITION.MY];
         boundary = me._RENDERER.getBoundary(me.AREA.rAc);
-        for (var i = 0; i < myViews.length; i++) {
+        for (var i = 0, leni = myViews.length; i < leni; i++) {
             myViews[i].x = boundary.getLeftCenter().x + me._CONFIG.AREA.ACTIVITY_SIZE / 2;
         }
 
         var myOutViews = viewsByPosition[me.Constants.POSITION.MY_OUT];
         boundary = me._RENDERER.getBoundary(me.AREA.rOut);
-        for (var i = 0; i < myOutViews.length; i++) {
+        for (var i = 0, leni = myOutViews.length; i < leni; i++) {
             type = myOutViews[i].type;
             depth = myOutViews[i].depth;
             if (type == me.Constants.TYPE.ACTIVITY || type == me.Constants.TYPE.FOLDER || type == me.Constants.TYPE.ED) {
@@ -1453,7 +1472,7 @@ Tree.prototype = {
         }
 
         var mappingViews = viewsByPosition[me.Constants.POSITION.OTHER_MY];
-        for (var i = 0; i < mappingViews.length; i++) {
+        for (var i = 0, leni = mappingViews.length; i < leni; i++) {
             type = mappingViews[i].type;
             depth = mappingViews[i].depth;
             mappingViews[i].vertieces = me.getMappingEdgeVertices(
@@ -1470,7 +1489,7 @@ Tree.prototype = {
             moveX, moveY, vertieces, currentVertieces, label;
 
         //화면에 뷰데이터를 그린다.
-        for (var i = 0; i < displayViews.length; i++) {
+        for (var i = 0, leni = displayViews.length; i < leni; i++) {
             //파일구조를 드로잉한다.
             type = displayViews[i].type;
             position = displayViews[i].position;
@@ -1503,7 +1522,7 @@ Tree.prototype = {
                         }
                     }
                 }
-                //선 연결 도형일 경우 vertices 의 0번째 요소를 비교후, x,y 의 차이만큼 이동시킨다.
+                //선 연결 도형일 경우 vertices 의 0번째 요소와 마지막 요소를 비교후, x,y 의 차이만큼 이동시킨다.
                 else {
                     currentVertieces = element.shape.geom.getVertices();
                     currentX = currentVertieces[0].x;
@@ -1794,7 +1813,7 @@ Tree.prototype = {
                 var hasHistory = false;
                 var historyIndex = 0;
                 var collapse = false;
-                for (var i = 0; i < me._INCOLLAPSE.length; i++) {
+                for (var i = 0, leni = me._INCOLLAPSE.length; i < leni; i++) {
                     var inCollapse = me._INCOLLAPSE[i];
                     if (inCollapse.sourceActivity == view.source &&
                         inCollapse.targetActivity == view.target) {
@@ -1825,6 +1844,7 @@ Tree.prototype = {
                 } else {
                     data.expand = false;
                 }
+                console.log(data);
                 me.updateData([data]);
             }
         });
@@ -2005,7 +2025,7 @@ Tree.prototype = {
         dividedViewsByPosition[me.Constants.POSITION.OTHER_OUT] = [];
         dividedViewsByPosition[me.Constants.POSITION.OTHER_MY] = [];
 
-        for (var i = 0; i < displayViews.length; i++) {
+        for (var i = 0, leni = displayViews.length; i < leni; i++) {
             if (displayViews[i]['position']) {
                 if (displayViews[i]['position'] == me.Constants.POSITION.MY) {
                     dividedViewsByPosition[me.Constants.POSITION.MY].push(displayViews[i]);
@@ -2123,10 +2143,10 @@ Tree.prototype = {
         var storage = this._STORAGE;
         var activities = [];
         if (position) {
-            for (var key in storage) {
-                if (storage[key]['type'] == this.Constants.TYPE.ACTIVITY) {
-                    if (storage[key]['position'] == position) {
-                        activities.push(storage[key]);
+            for (var i = 0, leni = storage.length; i < leni; i++) {
+                if (storage[i]['type'] == this.Constants.TYPE.ACTIVITY) {
+                    if (storage[i]['position'] == position) {
+                        activities.push(storage[i]);
                     }
                 }
             }
@@ -2139,11 +2159,16 @@ Tree.prototype = {
      * @returns {*}
      */
     selectNextActivity: function (id) {
-        var me = this, nextActivity;
+        var me = this, nextActivity, activities = [];
         var activity = me.selectById(id);
-        if (activity && activity['type'] == this.Constants.TYPE.ACTIVITY) {
-            if (!me.emptyString(activity['next'])) {
-                nextActivity = me.selectById(activity['next']);
+        if (activity && activity['type'] == me.Constants.TYPE.ACTIVITY) {
+            activities = me.loadByFilter({position: activity['position'], type: me.Constants.TYPE.ACTIVITY});
+            for (var i = 0, leni = activities.length; i < leni; i++) {
+                if (activities[i]['id'] == id) {
+                    if (activities[i + 1]) {
+                        nextActivity = activities[i + 1];
+                    }
+                }
             }
         }
         return nextActivity;
@@ -2170,14 +2195,23 @@ Tree.prototype = {
      */
     selectNextActivities: function (id) {
         var me = this, nextActivities = [];
-        var findNextActivity = function (id) {
-            var nextActivity = me.selectNextActivity(id);
-            if (nextActivity) {
-                nextActivities.push(nextActivity);
-                findNextActivity(nextActivity['id']);
+        var activity = me.selectById(id);
+        if (activity && activity['type'] == me.Constants.TYPE.ACTIVITY) {
+            var activities = me.loadByFilter({position: activity['position'], type: me.Constants.TYPE.ACTIVITY});
+            var myIndex = -1;
+            for (var i = 0, leni = activities.length; i < leni; i++) {
+                if (activities[i].id == activity.id) {
+                    myIndex = i;
+                }
             }
-        };
-        findNextActivity(id);
+            if (myIndex > -1) {
+                for (var i = 0, leni = activities.length; i < leni; i++) {
+                    if (i > myIndex) {
+                        nextActivities.push(activities[i]);
+                    }
+                }
+            }
+        }
         return nextActivities;
     },
     /**
@@ -2189,9 +2223,9 @@ Tree.prototype = {
         var objects = [];
         if (id) {
             var storage = this._STORAGE;
-            for (var key in storage) {
-                if (!this.emptyString(storage[key]['parentId']) && storage[key]['parentId'] == id && storage[key]['type'] != this.Constants.TYPE.MAPPING) {
-                    objects.push(storage[key]);
+            for (var i = 0, leni = storage.length; i < leni; i++) {
+                if (!this.emptyString(storage[i]['parentId']) && storage[i]['parentId'] == id && storage[i]['type'] != this.Constants.TYPE.MAPPING) {
+                    objects.push(storage[i]);
                 }
             }
         }
@@ -2233,9 +2267,14 @@ Tree.prototype = {
      * @returns {*}
      */
     selectById: function (id) {
-        if (id) {
-            return this._STORAGE[id];
+        var returnObj;
+        for (var i = 0, leni = this._STORAGE.length; i < leni; i++) {
+            if (this._STORAGE[i]['id'] == id) {
+                returnObj = this._STORAGE[i];
+                break;
+            }
         }
+        return returnObj;
     },
     selectBySourceTarget: function (sourceId, targetId) {
         var mappings = this.loadByFilter({source: sourceId, target: targetId});
@@ -2252,9 +2291,9 @@ Tree.prototype = {
     selectMappings: function () {
         var storage = this._STORAGE;
         var mappings = [];
-        for (var key in storage) {
-            if (storage[key]['type'] == this.Constants.TYPE.MAPPING) {
-                mappings.push(storage[key]);
+        for (var i = 0, leni = storage.length; i < leni; i++) {
+            if (storage[i]['type'] == this.Constants.TYPE.MAPPING) {
+                mappings.push(storage[i]);
             }
         }
         return mappings;
@@ -2327,7 +2366,7 @@ Tree.prototype = {
         var me = this, list = [];
         var findChild = function (id) {
             var child = me.selectChildById(id);
-            for (var i = 0; i < child.length; i++) {
+            for (var i = 0, leni = child.length; i < leni; i++) {
                 list.push(child[i]);
                 findChild(child[i]['id']);
             }
@@ -2351,7 +2390,7 @@ Tree.prototype = {
                     list.push(self);
                 }
             } else {
-                for (var i = 0; i < child.length; i++) {
+                for (var i = 0, leni = child.length; i < leni; i++) {
                     findChild(child[i]['id']);
                 }
             }
@@ -2369,7 +2408,7 @@ Tree.prototype = {
     selectViewById: function (viewData, id) {
         var view;
         if (viewData && viewData['views'] && id) {
-            for (var i = 0; i < viewData['views'].length; i++) {
+            for (var i = 0, leni = viewData['views'].length; i < leni; i++) {
                 if (viewData['views'][i]['id'] == id) {
                     view = viewData['views'][i];
                     break;
@@ -2388,7 +2427,7 @@ Tree.prototype = {
         var data = [];
         var view;
         if (viewData && viewData['views']) {
-            for (var i = 0; i < viewData['views'].length; i++) {
+            for (var i = 0, leni = viewData['views'].length; i < leni; i++) {
                 var toAdd = true;
                 view = viewData['views'][i];
                 for (var filterKey in filterData) {
@@ -2415,10 +2454,10 @@ Tree.prototype = {
         if (viewData && id) {
             var child = me.selectRecursiveChildById(id);
             if (child && child.length) {
-                for (var c = 0; c < child.length; c++) {
+                for (var c = 0, lenc = child.length; c < lenc; c++) {
                     childIdList.push(child[c]['id']);
                 }
-                for (var i = 0; i < viewData['views'].length; i++) {
+                for (var i = 0, leni = viewData['views'].length; i < leni; i++) {
                     view = viewData['views'][i];
                     if (childIdList.indexOf(view['id']) != -1) {
                         views.push(view);
@@ -2435,7 +2474,7 @@ Tree.prototype = {
      */
     selectMaxyFromViews: function (views) {
         var maxY = 0;
-        for (var i = 0; i < views.length; i++) {
+        for (var i = 0, leni = views.length; i < leni; i++) {
             if (views[i].y) {
                 if (views[i].y > maxY) {
                     maxY = views[i].y;
@@ -2451,7 +2490,7 @@ Tree.prototype = {
      */
     selectMaxDepthFromViews: function (views) {
         var maxDepth = 0;
-        for (var i = 0; i < views.length; i++) {
+        for (var i = 0, leni = views.length; i < leni; i++) {
             if (views[i].depth) {
                 if (views[i].depth > maxDepth) {
                     maxDepth = views[i].depth;
@@ -2462,7 +2501,7 @@ Tree.prototype = {
     },
     selectMaxBottomFromViews: function (views) {
         var maxBottom = 0;
-        for (var i = 0; i < views.length; i++) {
+        for (var i = 0, leni = views.length; i < leni; i++) {
             if (views[i].bottom) {
                 if (views[i].bottom > maxBottom) {
                     maxBottom = views[i].bottom;
@@ -2512,7 +2551,7 @@ Tree.prototype = {
         var me = this;
         var elements = me._RENDERER.getAllNotEdges();
         var element;
-        for (var i = 0; i < elements.length; i++) {
+        for (var i = 0, leni = elements.length; i < leni; i++) {
             if (elements[i].shape.geom.getBoundary().isContains(point)) {
                 element = elements[i];
             }
@@ -2634,14 +2673,14 @@ Tree.prototype = {
 
                 //activityViews 의 인덱스를 재정립한다.
                 var sorted = [];
-                for (var i = 0; i < activityViews.length; i++) {
+                for (var i = 0, leni = activityViews.length; i < leni; i++) {
                     var y = activityViews[i].y;
                     if (activityViews[i].id == view.id) {
                         y = eventY;
                         activityViews[i].y = y;
                     }
                     var pushed = false;
-                    for (var c = 0; c < sorted.length; c++) {
+                    for (var c = 0, lenc = sorted.length; c < lenc; c++) {
                         //sorted 중에서 나의 y 가 더 작다면 중간에 삽입
                         if (sorted[c].y > y) {
                             sorted.splice(c, 0, activityViews[i]);
@@ -2653,27 +2692,14 @@ Tree.prototype = {
                         sorted.push(activityViews[i]);
                     }
                 }
-                var prev;
                 var activities = [];
-                for (var i = 0; i < sorted.length; i++) {
+                for (var i = 0, leni = sorted.length; i < leni; i++) {
                     var data = JSON.parse(JSON.stringify(me.selectById(sorted[i].id)));
                     if (data) {
-                        delete data.prev;
-                        delete data.next;
-                        if (prev) {
-                            data.prev = prev.id;
-                            prev.next = data.id;
-                        }
-                        prev = data;
                         activities.push(data);
                     }
                 }
                 //TODO 창 이동시에 사이즈 부모 창 재조절이 필요함.
-
-                //TODO 줌인, 줌아웃에 대한 로직 변경을 수렴 할 것.
-                // => 1. 드랍 이벤트
-                // => 2. 디스플레이 뷰의 Height
-
 
                 //TODO 모니터 화면 만들 것.
                 //1. 같은 로직, 마이 데이터만 부른다.
@@ -2687,10 +2713,10 @@ Tree.prototype = {
                     }
                 }
 
-                for (var i = 0; i < activities.length; i++) {
+                for (var i = 0, leni = activities.length; i < leni; i++) {
                     me.removeDataByFilter({id: activities[i].id});
-                    me.updateData([activities[i]], true);
                 }
+                me.updateData(activities, true);
                 me.render();
 
                 me.onActivityMove(activities);
@@ -2729,12 +2755,6 @@ Tree.prototype = {
                 if (!target || !source) {
                     return;
                 }
-                var beforeMapping = me.onBeforeMapping(source, target);
-                if (typeof beforeMapping == 'boolean') {
-                    if (!beforeMapping) {
-                        return;
-                    }
-                }
 
                 //  selected 가 실제 사용자가 선택한 매핑요소이고,그 여파로 부모폴더(재귀호출) 과 자식들(재귀호출은) 레코드를 생성한다.
 
@@ -2743,6 +2763,7 @@ Tree.prototype = {
                 //
                 //  Ed 매핑일 경우 ed 의 부모 폴더 하나만 selected S 처리한다.
                 //  Ed 매핑일 경우 나머지 부모 폴더는 selected 빈 스트링 처리한다.
+
 
                 //매핑 데이터 생성
                 var mappingData = {
@@ -2761,7 +2782,6 @@ Tree.prototype = {
                 }
                 //드래그 된 대상 업데이트
                 me.updateData([mappingData], true);
-
 
                 //ED 드래그 일 경우 부모 폴더를 대상으로 선정과 동시에 selected 처리한다.
                 var edDrag = false;
@@ -2787,13 +2807,25 @@ Tree.prototype = {
                     standardFolder = source;
                 }
 
+                // (aras only) 스탠다드 폴더의 하위객체를 모두 담도록 한다.
+                var selectedTargetList = [];
                 if (standardFolder && standardFolder.type == me.Constants.TYPE.FOLDER) {
+
+                    //스탠다드 폴더를 아라스로 보낸다.
+                    //TODO ED 단일 선택일 경우에는 지시에 따르도록 한다.
+                    selectedTargetList.push(standardFolder.id);
+
                     //자식들(재귀호출) 의 매핑데이터를 생성하고, 폴더는 selected 처리한다.
                     //ED 드래그일 경우는 자식들의 매핑데이터를 생성하지 않는다.
                     var child = me.selectRecursiveChildById(standardFolder.id);
                     var childMapping;
                     if (!edDrag) {
-                        for (var i = 0; i < child.length; i++) {
+                        for (var i = 0, leni = child.length; i < leni; i++) {
+                            //폴더일 경우 aras 로 보낸다.
+                            if (child[i].type == me.Constants.TYPE.FOLDER) {
+                                selectedTargetList.push(child[i].id);
+                            }
+
                             childMapping = {
                                 id: child[i].id + '-' + target.id,
                                 type: me.Constants.TYPE.MAPPING,
@@ -2814,7 +2846,7 @@ Tree.prototype = {
                     //부모들(재귀호출) 의 매핑데이터를 생성한다. 매핑데이터가 이미 있다면 추가하지 않는다.(selected 보존을 위해서이다.)
                     var parentMapping, existMapping;
                     var parents = me.selectRecursiveParentById(standardFolder.id);
-                    for (var i = 0; i < parents.length; i++) {
+                    for (var i = 0, leni = parents.length; i < leni; i++) {
                         if (parents[i].type == me.Constants.TYPE.FOLDER) {
                             parentMapping = {
                                 id: parents[i].id + '-' + target.id,
@@ -2833,8 +2865,16 @@ Tree.prototype = {
                         }
                     }
                 }
+
+                var beforeMapping = me.onBeforeMapping(source, target, selectedTargetList);
+                if (typeof beforeMapping == 'boolean') {
+                    if (!beforeMapping) {
+                        return;
+                    }
+                }
+
                 me.render();
-                me.onMapping(source, target);
+                me.onMapping(source, target, selectedTargetList);
             }
         });
     },
@@ -2863,7 +2903,7 @@ Tree.prototype = {
 
         //자식들에 대한 매핑 삭제
         var child = me.selectRecursiveChildById(source);
-        for (var i = 0; i < child.length; i++) {
+        for (var i = 0, leni = child.length; i < leni; i++) {
             mappingId = child[i].id + '-' + target;
             me.removeDataByFilter({id: mappingId});
         }
@@ -2871,11 +2911,11 @@ Tree.prototype = {
         //부모에 대한 매핑 삭제
         var parentsChild;
         var parents = me.selectRecursiveParentById(source);
-        for (var i = 0; i < parents.length; i++) {
+        for (var i = 0, leni = parents.length; i < leni; i++) {
             var hasChildMapping = false;
             mappingId = parents[i].id + '-' + target;
             parentsChild = me.selectChildById(parents[i].id);
-            for (var c = 0; c < parentsChild.length; c++) {
+            for (var c = 0, lenc = parentsChild.length; c < lenc; c++) {
                 var parentChildMapping = me.loadByFilter({id: parentsChild[c].id + '-' + target});
                 if (parentChildMapping && parentChildMapping.length) {
                     hasChildMapping = true;
@@ -2934,7 +2974,7 @@ Tree.prototype = {
                     var enableDelete = true;
                     var child = me.selectChildById(data.id);
                     if (child && child.length) {
-                        for (var i = 0; i < child.length; i++) {
+                        for (var i = 0, leni = child.length; i < leni; i++) {
                             if (child[i].type == me.Constants.TYPE.FOLDER) {
                                 enableCreateEd = false;
                             }
@@ -3095,8 +3135,8 @@ Tree.prototype = {
      * @param target
      * @returns {boolean}
      */
-    onBeforeMapping: function (source, target) {
-        console.log(source, target);
+    onBeforeMapping: function (source, target, selectedTargetList) {
+        console.log(source, target, selectedTargetList);
         return true;
     },
     /**
@@ -3104,8 +3144,8 @@ Tree.prototype = {
      * @param event
      * @param mapping
      */
-    onMapping: function (source, target) {
-        console.log(source, target);
+    onMapping: function (source, target, selectedTargetList) {
+        console.log(source, target, selectedTargetList);
         return true;
     },
     onBeforeDeleteMapping: function (sourceId, sourceType, targetId, targetType) {
