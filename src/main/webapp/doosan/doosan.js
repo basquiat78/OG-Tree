@@ -23,20 +23,20 @@ Doosan.prototype = {
 
         me.aras.refreshMyWorkFlow();
 
-        //$.getJSON("doosan/sample/myData.json", function (myData) {
-        //
-        //    me.tree._INCOLLAPSE = [];
-        //    me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY});
-        //    me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_IN});
-        //    me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_OUT});
-        //    me.tree.updateData(myData);
-        //
-        //    $.getJSON("doosan/sample/otherData.json", function (otherData) {
-        //        me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER});
-        //        me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER_OUT});
-        //        me.tree.updateData(otherData);
-        //    });
-        //});
+        $.getJSON("doosan/sample/myData.json", function (myData) {
+
+            me.tree._INCOLLAPSE = [];
+            me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY});
+            me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_IN});
+            me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_OUT});
+            me.tree.updateData(myData);
+
+            $.getJSON("doosan/sample/otherData.json", function (otherData) {
+                me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER});
+                me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER_OUT});
+                me.tree.updateData(otherData);
+            });
+        });
 
         //var otherData = randomData('other');
         //var myData = randomData('my');

@@ -646,7 +646,7 @@ Tree.prototype = {
                 //처음 매핑 그룹 뷰 생성을 수행하는 매핑 일 경우
                 else {
                     standaloneViewData = me.createStandaloneViewData(mapping, targetActivityView);
-                    for (var s = 0, lens = standaloneViewData.length; s < lens; s++) {
+                    for (var s = 0, lens = standaloneViewData['views'].length; s < lens; s++) {
                         standaloneView = standaloneViewData['views'][s];
                         standaloneView.y = standaloneView.y + diffY;
                         if (standaloneView.parentY) {
