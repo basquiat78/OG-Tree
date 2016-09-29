@@ -64,7 +64,7 @@ Aras.prototype = {
 
         //아라츠 팝업창 디자인을 손보도록 한다.
         var parentDoc = $(window.parent.document);
-        var pane = parentDoc.find('dijitDialogPaneContent');
+        var pane = parentDoc.find('.dijitDialogPaneContent');
         pane.css('width', '100%');
         pane.find('iframe').css('height', $('body').height() + 'px');
 
