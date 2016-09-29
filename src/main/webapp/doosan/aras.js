@@ -312,7 +312,7 @@ Aras.prototype = {
             for (var r = 0; r < rels.length; r++) {
                 relItem = rels[r];
                 if (activityIds[i] == relItem.getProperty('related_id', '')) {
-                    var sql = "<sqlString>UPDATE innovator." + relType + " SET SORT_ORDER = '" + i + "' WHERE id = '" + relItem.getID() + "'</sqlString>";
+                    var sql = "<sqlString>UPDATE innovator." + relType + " SET SORT_ORDER = '" + (i + 1) + "' WHERE id = '" + relItem.getID() + "'</sqlString>";
                     inn.applyMethod('DHI_APPLY_SQL', sql);
                 }
             }
