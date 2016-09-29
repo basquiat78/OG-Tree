@@ -104,7 +104,7 @@ var Tree = function (container) {
      * @private
      */
     this._INCOLLAPSE = [];
-    this._STORAGE = [];
+    this._STORAGE = {};
     this._VIEWDATA = {};
     this._CONTAINER = $('#' + container);
     this._CONTAINER.css({
@@ -234,7 +234,12 @@ Tree.prototype = {
      * @returns {Array}
      */
     load: function () {
-        return this._STORAGE;
+        var data = [];
+        var me = this;
+        for (var key in me._STORAGE) {
+            data.push(me._STORAGE[key]);
+        }
+        return data;
     },
     /**
      * 노드 데이터를 필터링하여 불러온다.
@@ -243,17 +248,17 @@ Tree.prototype = {
      */
     loadByFilter: function (filterData) {
         var data = [];
-        var me = this;
-        for (var i = 0, leni = me._STORAGE.length; i < leni; i++) {
+        var me = this, key;
+        for (key in me._STORAGE) {
             var toAdd = true;
             for (var filterKey in filterData) {
                 //하나라도 필터 조건이 맞지 않다면 추가하지 않도록 한다.
-                if (me._STORAGE[i][filterKey] != filterData[filterKey]) {
+                if (me._STORAGE[key][filterKey] != filterData[filterKey]) {
                     toAdd = false;
                 }
             }
             if (toAdd) {
-                data.push(me._STORAGE[i]);
+                data.push(me._STORAGE[key]);
             }
         }
         return data;
@@ -263,18 +268,17 @@ Tree.prototype = {
      * @param filterData
      */
     removeDataByFilter: function (filterData) {
-        var me = this;
-        for (var i = 0, leni = me._STORAGE.length; i < leni; i++) {
+        var me = this, key;
+        for (key in me._STORAGE) {
             var toRemove = true;
             for (var filterKey in filterData) {
                 //하나라도 필터 조건이 맞지 않다면 삭제하지 않도록 한다.
-                if (me._STORAGE[i][filterKey] != filterData[filterKey]) {
+                if (me._STORAGE[key][filterKey] != filterData[filterKey]) {
                     toRemove = false;
                 }
             }
             if (toRemove) {
-                me._STORAGE.splice(i, 1);
-                leni--;
+                delete me._STORAGE[key];
             }
         }
     },
@@ -290,35 +294,17 @@ Tree.prototype = {
         var me = this;
         var copyObj;
         if ($.isArray(data)) {
-            for (var i = 0, leni = data.length; i < leni; i++) {
+            for (var i = 0; i < data.length; i++) {
                 copyObj = JSON.parse(JSON.stringify(data[i]));
                 if (copyObj.id) {
-                    var removed = false;
-                    for (var c = 0, lenc = me._STORAGE.length; c < lenc; c++) {
-                        if (me._STORAGE[c]['id'] == copyObj.id) {
-                            removed = true;
-                            me._STORAGE[c] = copyObj;
-                        }
-                    }
-                    if (!removed) {
-                        me._STORAGE.push(copyObj);
-                    }
+                    me._STORAGE[copyObj.id] = copyObj;
                 }
             }
         } else {
             for (var key in data) {
                 copyObj = JSON.parse(JSON.stringify(data[key]));
                 if (copyObj.id) {
-                    var removed = false;
-                    for (var c = 0, lenc = me._STORAGE.length; c < lenc; c++) {
-                        if (me._STORAGE[c]['id'] == copyObj.id) {
-                            removed = true;
-                            me._STORAGE[c] = copyObj;
-                        }
-                    }
-                    if (!removed) {
-                        me._STORAGE.push(copyObj);
-                    }
+                    me._STORAGE[copyObj.id] = copyObj;
                 }
             }
         }
@@ -1842,7 +1828,6 @@ Tree.prototype = {
                 } else {
                     data.expand = false;
                 }
-                console.log(data);
                 me.updateData([data]);
             }
         });
@@ -2141,10 +2126,10 @@ Tree.prototype = {
         var storage = this._STORAGE;
         var activities = [];
         if (position) {
-            for (var i = 0, leni = storage.length; i < leni; i++) {
-                if (storage[i]['type'] == this.Constants.TYPE.ACTIVITY) {
-                    if (storage[i]['position'] == position) {
-                        activities.push(storage[i]);
+            for (var key in storage) {
+                if (storage[key]['type'] == this.Constants.TYPE.ACTIVITY) {
+                    if (storage[key]['position'] == position) {
+                        activities.push(storage[key]);
                     }
                 }
             }
@@ -2221,9 +2206,9 @@ Tree.prototype = {
         var objects = [];
         if (id) {
             var storage = this._STORAGE;
-            for (var i = 0, leni = storage.length; i < leni; i++) {
-                if (!this.emptyString(storage[i]['parentId']) && storage[i]['parentId'] == id && storage[i]['type'] != this.Constants.TYPE.MAPPING) {
-                    objects.push(storage[i]);
+            for (var key in storage) {
+                if (!this.emptyString(storage[key]['parentId']) && storage[key]['parentId'] == id && storage[key]['type'] != this.Constants.TYPE.MAPPING) {
+                    objects.push(storage[key]);
                 }
             }
         }
@@ -2265,14 +2250,9 @@ Tree.prototype = {
      * @returns {*}
      */
     selectById: function (id) {
-        var returnObj;
-        for (var i = 0, leni = this._STORAGE.length; i < leni; i++) {
-            if (this._STORAGE[i]['id'] == id) {
-                returnObj = this._STORAGE[i];
-                break;
-            }
+        if (id) {
+            return this._STORAGE[id];
         }
-        return returnObj;
     },
     selectBySourceTarget: function (sourceId, targetId) {
         var mappings = this.loadByFilter({source: sourceId, target: targetId});
@@ -2289,9 +2269,9 @@ Tree.prototype = {
     selectMappings: function () {
         var storage = this._STORAGE;
         var mappings = [];
-        for (var i = 0, leni = storage.length; i < leni; i++) {
-            if (storage[i]['type'] == this.Constants.TYPE.MAPPING) {
-                mappings.push(storage[i]);
+        for (var key in storage) {
+            if (storage[key]['type'] == this.Constants.TYPE.MAPPING) {
+                mappings.push(storage[key]);
             }
         }
         return mappings;
