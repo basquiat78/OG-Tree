@@ -293,18 +293,18 @@ Aras.prototype = {
         if (activityRels.getItemCount() == 1) {
             rels.push(activityRels.node);
         } else if (activityRels.getItemCount() > 1) {
-            for (var c = 0; c < activityRels.nodeList.length; c++) {
-                rels.push(activityRels.nodeList[c]);
+            for (var c = 0; c < activityRels.getItemCount(); c++) {
+                rels.push(activityRels.getItemByIndex(c));
             }
         }
 
         //2. 릴레이션의 sort 들을 업데이트한다.
-        var relJson;
+        var relItem;
         for (var i = 0; i < activityIds.length; i++) {
             for (var r = 0; r < rels.length; r++) {
-                relJson = me.nodeToJson(rels[r]);
-                if (activityIds[i] == relJson['related_id']) {
-                    var sql = "<sqlString>UPDATE innovator." + relType + " SET SORT_ORDER = '" + i + "' WHERE id = '" + relJson['id'] + "'</sqlString>";
+                relItem = rels[r];
+                if (activityIds[i] == relItem.getProperty('related_id', '')) {
+                    var sql = "<sqlString>UPDATE innovator." + relType + " SET SORT_ORDER = '" + i + "' WHERE id = '" + relItem.getID() + "'</sqlString>";
                     inn.applyMethod('DHI_APPLY_SQL', sql);
                 }
             }
