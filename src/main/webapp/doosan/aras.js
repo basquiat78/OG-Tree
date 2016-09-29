@@ -892,7 +892,6 @@ Aras.prototype = {
         var data = [];
         var tempData = [], node, object;
 
-        var prev;
         for (var i = 0; i < resultNodeList.length; i++) {
             var xmlNode = resultNodeList[i];
             var xmlNodeToString = '';
@@ -920,12 +919,6 @@ Aras.prototype = {
                         expand: true,
                         extData: JSON.parse(JSON.stringify(node))
                     };
-                    //전 단계 액티비티가 있다면...
-                    if (prev) {
-                        object.prev = prev.id;
-                        prev.next = object.id;
-                    }
-                    prev = object;
                 } else if (node.kind == 'F') {
                     object = {
                         type: me.tree.Constants.TYPE.FOLDER,

@@ -298,7 +298,6 @@ Tree.prototype = {
                         if (me._STORAGE[c]['id'] == copyObj.id) {
                             removed = true;
                             me._STORAGE[c] = copyObj;
-                            break;
                         }
                     }
                     if (!removed) {
@@ -315,7 +314,6 @@ Tree.prototype = {
                         if (me._STORAGE[c]['id'] == copyObj.id) {
                             removed = true;
                             me._STORAGE[c] = copyObj;
-                            break;
                         }
                     }
                     if (!removed) {
