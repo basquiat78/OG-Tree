@@ -286,7 +286,9 @@ Aras.prototype = {
         var inn = this.aras.newIOMInnovator();
         var relType = me.getRelType(me.TYPE.WORKFLOW, me.TYPE.ACTIVITY, 'out');
         var activityRels = inn.newItem(relType, "get");
-        activityRels = activityRels.setProperty('source_id', me.wfId);
+        activityRels.setProperty('source_id', me.wfId);
+        activityRels = activityRels.apply();
+
         var rels = [];
         if (activityRels.getItemCount() == 1) {
             rels.push(activityRels.node);
