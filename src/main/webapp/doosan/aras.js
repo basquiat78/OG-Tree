@@ -299,12 +299,12 @@ Aras.prototype = {
         }
 
         //2. 릴레이션의 sort 들을 업데이트한다.
-        var relItem;
+        var relJson;
         for (var i = 0; i < activityIds.length; i++) {
             for (var r = 0; r < rels.length; r++) {
-                relItem = rels[r];
-                if (activityIds[i] == relItem.getProperty('related_id', '')) {
-                    var sql = "<sqlString>UPDATE innovator." + relItem.GetType() + " SET SORT_ORDER = '" + i + "' WHERE id = '" + relItem.getID() + "'</sqlString>";
+                relJson = me.nodeToJson(rels[r]);
+                if (activityIds[i] == relJson['related_id']) {
+                    var sql = "<sqlString>UPDATE innovator." + relType + " SET SORT_ORDER = '" + i + "' WHERE id = '" + relJson['id'] + "'</sqlString>";
                     inn.applyMethod('DHI_APPLY_SQL', sql);
                 }
             }
