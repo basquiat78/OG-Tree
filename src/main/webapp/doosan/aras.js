@@ -137,10 +137,12 @@ Aras.prototype = {
                 console.log(innerPane, innerPane.length);
                 if (innerPane) {
                     var height = innerPane.height();
+                    console.log('height' , height);
                     me.tree._CONFIG.CONTAINER_HEIGHT = height;
                     me.tree._CONTAINER.css({
                         height: me.tree._CONFIG.CONTAINER_HEIGHT + 'px'
                     });
+                    me.tree.renderViews();
                 }
             }
         };

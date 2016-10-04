@@ -202,6 +202,7 @@ Doosan.prototype = {
 
                 for (var i = 0; i < dataSet.length; i++) {
                     dataSet[i]['label'] = '<a href="#" name="listRelObj" data-index="' + i + '">' + dataSet[i]['name'] + '</a>';
+                    dataSet[i]['activity_owner'] = dataSet[i]['activity_owner'] ? dataSet[i]['activity_owner'] : ''
                 }
 
                 var gridPanel = $('#listRelGrid');
