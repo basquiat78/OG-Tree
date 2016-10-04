@@ -69,7 +69,6 @@ Aras.prototype = {
         pane.find('iframe').css('height', $('body').height() + 'px');
 
         parentDoc.resize(function() {
-            console.log('resize');
             pane.css('width', '100%');
             pane.find('iframe').css('height', $('body').height() + 'px');
         });
