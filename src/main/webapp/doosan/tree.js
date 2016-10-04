@@ -184,10 +184,6 @@ Tree.prototype = {
         me.drawArea();
         me.render();
         me.bindEvent();
-
-        $(window).resize(function () {
-            me.renderViews();
-        });
     },
     /**
      * Scale 을 반환한다. (리얼 사이즈 : Scale = 1)

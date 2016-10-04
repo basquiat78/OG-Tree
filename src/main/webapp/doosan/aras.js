@@ -120,17 +120,19 @@ Aras.prototype = {
 
         //아라츠 팝업창 디자인을 손보도록 한다.
         var resizeView = function () {
-            var parentDoc = $(window.parent.document);
-            var pane = parentDoc.find('.dijitDialogPaneContent');
-            pane.css('width', '100%');
-            pane.parent().css({
-                'left': '0px',
-                'right': '0px'
-            });
-            pane.find('iframe').css({
-                'height': $('body').height() + 'px',
-                'width': '100%'
-            });
+            if (window && window.parent) {
+                var parentDoc = $(window.parent.document);
+                var pane = parentDoc.find('.dijitDialogPaneContent');
+                pane.css('width', '100%');
+                pane.parent().css({
+                    'left': '0px',
+                    'right': '0px'
+                });
+                pane.find('iframe').css({
+                    'height': $('body').height() + 'px',
+                    'width': '100%'
+                });
+            }
             var innerMode = me.getHtmlParameter('mode');
             if (innerMode) {
                 var parentIframe;
@@ -141,14 +143,13 @@ Aras.prototype = {
                         parentIframe = $(this);
                     }
                 });
-                if(parentIframe){
+                if (parentIframe) {
                     var height = parentIframe.height();
-                    console.log('height', height);
                     me.tree._CONFIG.CONTAINER_HEIGHT = height;
                     me.tree._CONTAINER.css({
                         height: me.tree._CONFIG.CONTAINER_HEIGHT + 'px'
                     });
-                    me.tree.renderViews();
+                    //me.tree.renderViews();
                 }
                 //var innerPane = parentDoc.find('.dijitContentPane .dijitTabPane .dijitContainerTop-child');
                 //console.log(innerPane, innerPane.length);
@@ -162,6 +163,7 @@ Aras.prototype = {
                 //    me.tree.renderViews();
                 //}
             }
+            me.tree.renderViews();
         };
 
         $(window.parent).resize(function () {
