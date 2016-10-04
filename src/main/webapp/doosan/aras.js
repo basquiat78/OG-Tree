@@ -90,13 +90,15 @@ Aras.prototype = {
     getHtmlParameter: function (val) {
         var result = undefined,
             tmp = [];
-        location.search
-            .substr(1)
-            .split("&")
-            .forEach(function (item) {
-                tmp = item.split("=");
-                if (tmp[0] === val) result = decodeURIComponent(tmp[1]);
-            });
+        if (location.search && location.search.length) {
+            location.search
+                .substr(1)
+                .split("&")
+                .forEach(function (item) {
+                    tmp = item.split("=");
+                    if (tmp[0] === val) result = decodeURIComponent(tmp[1]);
+                });
+        }
         return result;
     },
     init: function () {
@@ -111,12 +113,6 @@ Aras.prototype = {
         this.stdYN = parent.top.thisItem.getType() == 'DHI_WF_WFT' ? 'Y' : 'N';
         this.projectId = parent.top.thisItem.getProperty('_rel_project');
         this.body = '';
-
-        //this._CONTAINER.css({
-        //    width: '100%',
-        //    height: this._CONFIG.CONTAINER_HEIGHT + 'px',
-        //    border: '1px solid #555'
-        //});
 
         //아라츠 팝업창 디자인을 손보도록 한다.
         var resizeView = function () {
@@ -145,23 +141,11 @@ Aras.prototype = {
                 });
                 if (parentIframe) {
                     var height = parentIframe.height();
-                    me.tree._CONFIG.CONTAINER_HEIGHT = height;
+                    me.tree._CONFIG.CONTAINER_HEIGHT = height - 50;
                     me.tree._CONTAINER.css({
                         height: me.tree._CONFIG.CONTAINER_HEIGHT + 'px'
                     });
-                    //me.tree.renderViews();
                 }
-                //var innerPane = parentDoc.find('.dijitContentPane .dijitTabPane .dijitContainerTop-child');
-                //console.log(innerPane, innerPane.length);
-                //if (innerPane) {
-                //    var height = innerPane.height();
-                //    console.log('height' , height);
-                //    me.tree._CONFIG.CONTAINER_HEIGHT = height;
-                //    me.tree._CONTAINER.css({
-                //        height: me.tree._CONFIG.CONTAINER_HEIGHT + 'px'
-                //    });
-                //    me.tree.renderViews();
-                //}
             }
             me.tree.renderViews();
         };
