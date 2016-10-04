@@ -185,7 +185,7 @@ Tree.prototype = {
         me.render();
         me.bindEvent();
 
-        $(window).resize(function() {
+        $(window).resize(function () {
             me.renderViews();
         });
     },
@@ -436,6 +436,7 @@ Tree.prototype = {
                 view.expand = object['expand'];
                 view.type = object['type'];
                 view.name = object['name'];
+                view.color = object['color'];
             }
 
             //폴더일 경우
@@ -452,6 +453,7 @@ Tree.prototype = {
                 view.expand = object['expand'];
                 view.type = object['type'];
                 view.name = object['name'];
+                view.color = object['color'];
             }
 
             //ed 일 경우
@@ -468,6 +470,7 @@ Tree.prototype = {
                 view.expand = object['expand'];
                 view.type = object['type'];
                 view.name = object['name'];
+                view.color = object['color'];
             }
 
             //자식이 있을 경우 hasChild true
@@ -1082,6 +1085,7 @@ Tree.prototype = {
                 view.standalone = true;
                 view.mapping = true;
                 view.selected = object['selected'];
+                view.color = object['color'];
             }
 
             //ed 일 경우
@@ -1103,6 +1107,7 @@ Tree.prototype = {
                 view.standalone = true;
                 view.mapping = true;
                 view.selected = object['selected'];
+                view.color = object['color'];
             }
 
             //자식이 있을 경우 hasChild true
@@ -1588,6 +1593,8 @@ Tree.prototype = {
 
                 if (type == me.Constants.TYPE.EXPANDER) {
                     me.updateExpander(displayViews[i], element);
+                } else if (type == me.Constants.TYPE.ACTIVITY) {
+                    me.updateActivity(displayViews[i], element);
                 } else if (type == me.Constants.TYPE.FOLDER) {
                     me.updateFolder(displayViews[i], element);
                 } else if (type == me.Constants.TYPE.ED) {
@@ -1629,6 +1636,54 @@ Tree.prototype = {
                 return label;
             } else {
                 return label.substring(0, length) + '..';
+            }
+        }
+    },
+    updateImageShapeStatus: function (view, element) {
+        var me = this;
+        var color = view['color'];
+        if (color && color != 'none' && color != '') {
+            var $img = $(element).find('image');
+            var imgURL = $img.attr('href');
+            var attributes = $img.prop("attributes");
+            var $svg = $(element).find('svg');
+            if ($svg.length && attributes) {
+                $.each(attributes, function () {
+                    $svg.attr(this.name, this.value);
+                });
+                $svg.find('path').css('fill', color);
+                // Remove IMG
+                var rElement = me._RENDERER._getREleById(element.id);
+                if (rElement) {
+                    var childNodes = rElement.node.childNodes;
+                    for (var i = childNodes.length - 1; i >= 0; i--) {
+                        if (childNodes[i].tagName == 'image') {
+                            me._RENDERER._remove(me._RENDERER._getREleById(childNodes[i].id));
+                        }
+                    }
+                }
+            } else if (attributes) {
+                $.get(imgURL, function (data) {
+                    $svg = $(data).find('svg');
+                    $svg = $svg.removeAttr('xmlns:a');
+
+                    $.each(attributes, function () {
+                        $svg.attr(this.name, this.value);
+                    });
+                    $svg.find('path').css('fill', color);
+
+                    // Replace IMG with SVG
+                    var rElement = me._RENDERER._getREleById(element.id);
+                    if (rElement) {
+                        var childNodes = rElement.node.childNodes;
+                        for (var i = childNodes.length - 1; i >= 0; i--) {
+                            if (childNodes[i].tagName == 'IMAGE') {
+                                me._RENDERER._remove(this._getREleById(childNodes[i].id));
+                            }
+                        }
+                    }
+                    $(element).append($svg);
+                }, 'xml');
             }
         }
     },
@@ -1676,6 +1731,9 @@ Tree.prototype = {
         return label;
         //return this._RENDERER._drawLabel(offset, text, size, style, id, false);
     },
+    updateActivity: function (view, element) {
+        this.updateImageShapeStatus(view, element);
+    },
     drawActivity: function (view) {
         var me = this;
         var shape = new OG.Activity(me._CONFIG.SHOW_LABEL ? me.labelSubstring(view.name) : undefined);
@@ -1688,6 +1746,7 @@ Tree.prototype = {
             shape.MOVABLE = false;
         }
         var element = me.canvas.drawShape([view.x, view.y], shape, [view.width, view.height], null, view.id);
+        me.updateImageShapeStatus(view, element);
         $(element).click(function () {
             console.log(element.id);
         });
@@ -1701,6 +1760,7 @@ Tree.prototype = {
         } else {
             this.canvas.setShapeStyle(element, {"opacity": "1"});
         }
+        this.updateImageShapeStatus(view, element);
         this.drawMappingLabel(view, element);
     },
     drawFolder: function (view) {
@@ -1718,6 +1778,8 @@ Tree.prototype = {
         if (view.blur) {
             this.canvas.setShapeStyle(element, {"opacity": me._CONFIG.DEFAULT_STYLE.BLUR});
         }
+        me.updateImageShapeStatus(view, element);
+
         me.drawMappingLabel(view, element);
         $(element).click(function () {
             console.log(element.id);
@@ -1732,6 +1794,7 @@ Tree.prototype = {
         } else {
             this.canvas.setShapeStyle(element, {"opacity": "1"});
         }
+        this.updateImageShapeStatus(view, element);
         this.drawMappingLabel(view, element);
     },
     drawEd: function (view) {
@@ -1749,6 +1812,7 @@ Tree.prototype = {
         if (view.blur) {
             this.canvas.setShapeStyle(element, {"opacity": me._CONFIG.DEFAULT_STYLE.BLUR});
         }
+        me.updateImageShapeStatus(view, element);
 
         me.drawMappingLabel(view, element);
         $(element).click(function () {
@@ -2940,17 +3004,15 @@ Tree.prototype = {
                 //상단 정보창 접었다 핌 OK.
 
                 //3.전체 크기 늘이기. ok
+                //ed 개별 추가시 메소드 붙이기.ok
+                //TODO 창 이동시에 사이즈 부모 창 재조절이 필요함.ok
 
-
-                //ed 개별 추가시 메소드 붙이기.
-
-                //TODO 스테이터스 범례조건
-                //TODO 창 이동시에 사이즈 부모 창 재조절이 필요함.
 
                 //4.상단 검색 조건 이상하게 보이는 것
-
+                //TODO 스테이터스 범례조건
                 //상단 기본정보창 워크플로우 정보 바인딩.
                 //담당자명 , 명칭, 생성일 재정렬
+                //툴바 아이콘 적용하기
 
 
                 //before 이벤트

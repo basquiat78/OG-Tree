@@ -30,9 +30,48 @@ var Aras = function (tree) {
         FOLDER: "folder",
         ED: "ed",
         MAPPING: "mapping"
-    }
+    };
+
+    var stateJson;
+    $.ajax({
+        type: 'GET',
+        url: 'doosan/state.json',
+        dataType: 'json',
+        async: false,
+        success: function (data) {
+            stateJson = data;
+        }
+    });
+    this.stateJson = stateJson;
+
 };
 Aras.prototype = {
+    getStateColor: function (type, state) {
+        var me = this;
+        var color = 'none';
+        var stateList = [];
+        if (me.stdYN == 'Y') {
+            stateList = me.stateJson['Standard'];
+        } else {
+            if (type == me.TYPE.ACTIVITY) {
+                stateList = me.stateJson['Project']['Activity'];
+            }
+            if (type == me.TYPE.FOLDER) {
+                stateList = me.stateJson['Project']['Folder'];
+            }
+            if (type == me.TYPE.ED) {
+                stateList = me.stateJson['Project']['EDB'];
+            }
+        }
+        if (stateList && stateList.length) {
+            for (var i = 0, leni = stateList.length; i < leni; i++) {
+                if (stateList[i]['name'] == state) {
+                    color = stateList[i]['color'];
+                }
+            }
+        }
+        return color;
+    },
     iExmL2jsobj: function (node) {
         var data = {};
         var item;
@@ -903,7 +942,8 @@ Aras.prototype = {
                     position: tree.Constants.POSITION.MY_OUT,
                     parentId: node.fs_parent_id,
                     expand: true,
-                    extData: JSON.parse(JSON.stringify(node))
+                    extData: JSON.parse(JSON.stringify(node)),
+                    color: me.getStateColor(me.tree.Constants.TYPE.FOLDER, node.state)
                 };
             } else if (node.kind == 'E') {
                 object = {
@@ -913,7 +953,8 @@ Aras.prototype = {
                     position: tree.Constants.POSITION.MY_OUT,
                     parentId: node.fs_parent_id,
                     expand: true,
-                    extData: JSON.parse(JSON.stringify(node))
+                    extData: JSON.parse(JSON.stringify(node)),
+                    color: me.getStateColor(me.tree.Constants.TYPE.ED, node.state)
                 };
             }
             if (object) {
@@ -958,7 +999,8 @@ Aras.prototype = {
                         position: who == 'other' ? me.tree.Constants.POSITION.OTHER : me.tree.Constants.POSITION.MY,
                         parentId: "",
                         expand: true,
-                        extData: JSON.parse(JSON.stringify(node))
+                        extData: JSON.parse(JSON.stringify(node)),
+                        color: me.getStateColor(me.tree.Constants.TYPE.ACTIVITY, node.state)
                     };
                 } else if (node.kind == 'F') {
                     object = {
@@ -968,7 +1010,8 @@ Aras.prototype = {
                         position: who == 'other' ? me.tree.Constants.POSITION.OTHER_OUT : me.tree.Constants.POSITION.MY_OUT,
                         parentId: node.fs_parent_id,
                         expand: true,
-                        extData: JSON.parse(JSON.stringify(node))
+                        extData: JSON.parse(JSON.stringify(node)),
+                        color: me.getStateColor(me.tree.Constants.TYPE.FOLDER, node.state)
                     };
                 } else if (node.kind == 'E') {
                     object = {
@@ -978,7 +1021,8 @@ Aras.prototype = {
                         position: who == 'other' ? me.tree.Constants.POSITION.OTHER_OUT : me.tree.Constants.POSITION.MY_OUT,
                         parentId: node.fs_parent_id,
                         expand: true,
-                        extData: JSON.parse(JSON.stringify(node))
+                        extData: JSON.parse(JSON.stringify(node)),
+                        color: me.getStateColor(me.tree.Constants.TYPE.ED, node.state)
                     };
                 }
             } else if (inout == 'in') {
@@ -1006,10 +1050,11 @@ Aras.prototype = {
                         }
                     }
                 }
+                var sourceType = node.kind == 'F' ? me.tree.Constants.TYPE.FOLDER : me.tree.Constants.TYPE.ED;
                 object = {
                     type: me.tree.Constants.TYPE.MAPPING,
                     id: node.id + '-' + node.fs_parent_id, //소스 + '-' + 타겟
-                    sourceType: node.kind == 'F' ? me.tree.Constants.TYPE.FOLDER : me.tree.Constants.TYPE.ED,
+                    sourceType: sourceType,
                     source: node.id,
                     target: node.fs_parent_id,
                     selected: me.tree.emptyString(node.selected) ? false : true,
@@ -1017,7 +1062,8 @@ Aras.prototype = {
                     extData: JSON.parse(JSON.stringify(node)),
                     parentId: parentId,
                     name: node.name,
-                    expand: true
+                    expand: true,
+                    color: me.getStateColor(sourceType, node.state)
                 };
             }
             data.push(object);

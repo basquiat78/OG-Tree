@@ -6,7 +6,8 @@
     "position": "my",
     "parentId": "",
     "expand": true,
-    "extData": {}
+    "extData": {},
+    "color": "#5bc0de"
   },
   {
     "type": "activity",
@@ -15,7 +16,8 @@
     "position": "my",
     "parentId": "",
     "expand": true,
-    "extData": {}
+    "extData": {},
+    "color": "#5bc0de"
   },
   {
     "type": "activity",
@@ -24,7 +26,8 @@
     "position": "my",
     "parentId": "",
     "expand": true,
-    "extData": {}
+    "extData": {},
+    "color": "#5bc0de"
   },
   {
     "type": "folder",
@@ -33,7 +36,8 @@
     "position": "my-out",
     "parentId": "my-ac-1",
     "expand": true,
-    "extData": {}
+    "extData": {},
+    "color": "#5bc0de"
   },
   {
     "type": "folder",
@@ -42,7 +46,8 @@
     "position": "my-out",
     "parentId": "my-ac-1",
     "expand": true,
-    "extData": {}
+    "extData": {},
+    "color": "#5bc0de"
   },
   {
     "type": "folder",
@@ -60,7 +65,8 @@
     "position": "my-out",
     "parentId": "my-fd-1",
     "expand": true,
-    "extData": {}
+    "extData": {},
+    "color": "#5bc0de"
   },
   {
     "type": "folder",
@@ -69,7 +75,8 @@
     "position": "my-out",
     "parentId": "my-fd-1",
     "expand": true,
-    "extData": {}
+    "extData": {},
+    "color": "#5bc0de"
   },
   {
     "type": "folder",
@@ -78,7 +85,8 @@
     "position": "my-out",
     "parentId": "my-fd-1-1",
     "expand": true,
-    "extData": {}
+    "extData": {},
+    "color": "#5bc0de"
   },
   {
     "type": "folder",
@@ -87,7 +95,8 @@
     "position": "my-out",
     "parentId": "my-fd-1-1",
     "expand": true,
-    "extData": {}
+    "extData": {},
+    "color": "#5bc0de"
   },
   {
     "type": "ed",

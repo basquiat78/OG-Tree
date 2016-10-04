@@ -6,7 +6,8 @@
     "position": "other",
     "parentId": "",
     "expand": true,
-    "extData": {}
+    "extData": {},
+    "color": "#5bc0de"
   },
   {
     "type": "activity",
@@ -15,7 +16,8 @@
     "position": "other",
     "parentId": "",
     "expand": true,
-    "extData": {}
+    "extData": {},
+    "color": "#5bc0de"
   },
   {
     "type": "activity",
@@ -24,7 +26,8 @@
     "position": "other",
     "parentId": "",
     "expand": true,
-    "extData": {}
+    "extData": {},
+    "color": "#5bc0de"
   },
   {
     "type": "folder",
@@ -33,7 +36,8 @@
     "position": "other-out",
     "parentId": "other-ac-1",
     "expand": true,
-    "extData": {}
+    "extData": {},
+    "color": "#5bc0de"
   },
   {
     "type": "folder",
@@ -42,7 +46,8 @@
     "position": "other-out",
     "parentId": "other-ac-1",
     "expand": true,
-    "extData": {}
+    "extData": {},
+    "color": "#5bc0de"
   },
   {
     "type": "folder",
@@ -51,7 +56,8 @@
     "position": "other-out",
     "parentId": "other-ac-2",
     "expand": true,
-    "extData": {}
+    "extData": {},
+    "color": "#5bc0de"
   },
   {
     "type": "folder",
@@ -60,7 +66,8 @@
     "position": "other-out",
     "parentId": "other-ac-2",
     "expand": true,
-    "extData": {}
+    "extData": {},
+    "color": "#5bc0de"
   },
   {
     "type": "folder",
@@ -69,7 +76,8 @@
     "position": "other-out",
     "parentId": "other-ac-3",
     "expand": true,
-    "extData": {}
+    "extData": {},
+    "color": "#5bc0de"
   },
   {
     "type": "folder",
@@ -78,7 +86,8 @@
     "position": "other-out",
     "parentId": "other-ac-3",
     "expand": true,
-    "extData": {}
+    "extData": {},
+    "color": "#5bc0de"
   },
   {
     "type": "folder",
@@ -87,7 +96,8 @@
     "position": "other-out",
     "parentId": "other-fd-2",
     "expand": true,
-    "extData": {}
+    "extData": {},
+    "color": "#5bc0de"
   },
   {
     "type": "folder",

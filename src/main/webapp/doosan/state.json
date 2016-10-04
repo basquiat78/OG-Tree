@@ -1,0 +1,84 @@
+{
+  "Standard": [
+    {
+      "name": "In Work",
+      "color": "none"
+    },
+    {
+      "name": "In Review",
+      "color": "#f2d888"
+    },
+    {
+      "name": "Active",
+      "color": "#5cb85c"
+    },
+    {
+      "name": "Obsolate",
+      "color": "#d9534f"
+    }
+  ],
+  "Project": {
+    "Folder": [
+      {
+        "name": "Open",
+        "color": "#5cb85c"
+      },
+      {
+        "name": "Close",
+        "color": "#d9534f"
+      }
+    ],
+    "Activity": [
+      {
+        "name": "In Planning",
+        "color": "none"
+      },
+      {
+        "name": "Plan Review",
+        "color": "#428bca"
+      },
+      {
+        "name": "Waiting",
+        "color": "#d0aff2"
+      },
+      {
+        "name": "Active",
+        "color": "#5cb85c"
+      },
+      {
+        "name": "Close",
+        "color": "#d9534f"
+      }
+    ],
+    "EDB": [
+      {
+        "name": "In Planning",
+        "color": "none"
+      },
+      {
+        "name": "Plan Review",
+        "color": "#428bca"
+      },
+      {
+        "name": "Inactive",
+        "color": "#d0aff2"
+      },
+      {
+        "name": "In Progress",
+        "color": "#5cb85c"
+      },
+      {
+        "name": "Cross Review",
+        "color": "#5cb85c"
+      },
+      {
+        "name": "In Review",
+        "color": "#f2d888"
+      },
+      {
+        "name": "Approved",
+        "color": "#d9534f"
+      }
+    ]
+  }
+}
