@@ -66,11 +66,25 @@ Aras.prototype = {
         var parentDoc = $(window.parent.document);
         var pane = parentDoc.find('.dijitDialogPaneContent');
         pane.css('width', '100%');
-        pane.find('iframe').css('height', $('body').height() + 'px');
+        pane.parent().css({
+            'left': '0px',
+            'right': '0px'
+        });
+        pane.find('iframe').css({
+            'height': $('body').height() + 'px',
+            'width': '100%'
+        });
 
-        $(window.parent).resize(function() {
+        $(window.parent).resize(function () {
             pane.css('width', '100%');
-            pane.find('iframe').css('height', $('body').height() + 'px');
+            pane.parent().css({
+                'left': '0px',
+                'right': '0px'
+            });
+            pane.find('iframe').css({
+                'height': $('body').height() + 'px',
+                'width': '100%'
+            });
         });
     },
     createBody: function (params) {
@@ -786,7 +800,7 @@ Aras.prototype = {
         var existRelItem;
         var relItem;
 
-        if(target.type == me.TYPE.ED){
+        if (target.type == me.TYPE.ED) {
             existRelItem = inn.newItem(relType, "get");
             existRelItem.setProperty("source_id", source.id);
             existRelItem.setProperty("related_id", target.id);
@@ -807,7 +821,7 @@ Aras.prototype = {
                     msgBox('Failed to add ' + relType + ' Relation : ' + source.id + ' to ' + target.id);
                 }
             }
-        }else{
+        } else {
             for (var i = 0, leni = selectedTargetList.length; i < leni; i++) {
                 var targetId = selectedTargetList[i];
                 existRelItem = inn.newItem(relType, "get");
