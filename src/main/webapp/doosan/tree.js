@@ -1748,7 +1748,7 @@ Tree.prototype = {
         var element = me.canvas.drawShape([view.x, view.y], shape, [view.width, view.height], null, view.id);
         me.updateImageShapeStatus(view, element);
         $(element).click(function () {
-            console.log(element.id);
+
         });
         me.bindDblClickEvent(element);
         me.bindTooltip(element);
@@ -1782,7 +1782,7 @@ Tree.prototype = {
 
         me.drawMappingLabel(view, element);
         $(element).click(function () {
-            console.log(element.id);
+
         });
         me.bindDblClickEvent(element);
         me.bindTooltip(element);
@@ -1816,7 +1816,7 @@ Tree.prototype = {
 
         me.drawMappingLabel(view, element);
         $(element).click(function () {
-            console.log(element.id);
+
         });
         me.bindDblClickEvent(element);
         me.bindTooltip(element);
@@ -1924,7 +1924,6 @@ Tree.prototype = {
             $(element).find('image').attr('href', 'doosan/shape/expand.svg');
         }
         $(element).click(function () {
-            console.log(element.id);
 
             //매핑 객체이면서 매핑 타켓이 아더에 존재하는 않는 경우 (가상 expander 일 경우)
             if (view.depth == 0 && view.data.type == 'mapping' && !me.selectById(view.data.source)) {
@@ -2990,30 +2989,31 @@ Tree.prototype = {
                 }
                 //1.선 중복 버그 => 이것은.... 스탠드어론 객체 디스플레이가 남아있어서 일어나는 문제이다. ==> ok.
                 //2.expander 미러된 쪽에서 안움직임. ==> ok.
-                //TODO 부모 창 제어.done
-                //TODO 선 하이라이트. done.
+                //부모 창 제어.done
+                //선 하이라이트. done.
 
-                //TODO 모니터 화면 만들 것. ok.
+                //모니터 화면 만들 것. ok.
                 //1. 같은 로직, 마이 데이터만 부른다.ok
                 //2. 에어리어 부분의 디스에이블 처리 과정이 있어야 한다.ok
 
-                //TODO
                 //워크플로우 - 액티비티 관게를 표현할 그리드 창 만들기. OK
                 //각 아이템마다, 말풍선은 넘버와 name 이 표기되면 된다. OK.
                 //라벨 on / off 옵션 OK.
                 //상단 정보창 접었다 핌 OK.
 
                 //3.전체 크기 늘이기. ok
+                //스테이터스 범례조건. ok
+
                 //ed 개별 추가시 메소드 붙이기.ok
-                //TODO 창 이동시에 사이즈 부모 창 재조절이 필요함.ok
+                //창 이동시에 사이즈 부모 창 재조절이 필요함.ok
 
-
+                //모니터 팝업이 다이렉트로 뜰 경우 창 크기 제어하기.
                 //4.상단 검색 조건 이상하게 보이는 것
-                //TODO 스테이터스 범례조건
                 //상단 기본정보창 워크플로우 정보 바인딩.
                 //담당자명 , 명칭, 생성일 재정렬
                 //툴바 아이콘 적용하기
 
+                //선 중복 버그 다시 한번 보기
 
                 //before 이벤트
                 var beforeActivityMove = me.onBeforeActivityMove(activities);

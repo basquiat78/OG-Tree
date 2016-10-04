@@ -14,3 +14,20 @@ div.tooltip-inner {
     margin-right: 5px;
     border: 1px solid darkgrey;
 }
+
+.workflow-table {
+    font-size: 12px;
+    margin-bottom: 0px;
+}
+
+.toolbar {
+    margin-bottom: 10px;
+}
+
+.tag-box {
+    margin-bottom: 10px;
+}
+
+.form-control {
+    height: 24px;
+}

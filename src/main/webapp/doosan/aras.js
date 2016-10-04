@@ -91,15 +91,13 @@ Aras.prototype = {
         this.aras = parent.top.aras;
         this.thisItem = parent.top.thisItem;
         if (!this.aras || !this.thisItem) {
-            console.log('Not found Aras or Item.');
+            msgBox('Failed to load workflow.');
             return;
         }
-        console.log('thisItem', this.thisItem);
         this.wfId = parent.top.thisItem.getID();
         this.stdYN = parent.top.thisItem.getType() == 'DHI_WF_WFT' ? 'Y' : 'N';
         this.projectId = parent.top.thisItem.getProperty('_rel_project');
         this.body = '';
-
 
         //아라츠 팝업창 디자인을 손보도록 한다.
         var parentDoc = $(window.parent.document);
