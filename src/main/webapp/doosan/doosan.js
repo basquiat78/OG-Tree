@@ -479,7 +479,6 @@ Doosan.prototype = {
         element.append('<option value="' + value + '">' + label + '</option>');
     },
     renderHeaders: function (headerItem, myOther) {
-        console.log(headerItem, myOther);
         var targetTableClass = myOther == 'other' ? 'other-table' : 'my-table';
         var targetTable = $('.' + targetTableClass);
 
