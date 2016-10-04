@@ -789,11 +789,11 @@ Aras.prototype = {
             existRelItem = existRelItem.apply();
             if (existRelItem.getItemCount() == 0) {
                 try {
-                    //relItem = inn.newItem(relType, "add");
-                    //relItem.setProperty("source_id", source.id);
-                    //relItem.setProperty("related_id", target.id);
-                    //relItem.setProperty("owned_by_id", me.thisItem.getProperty("owned_by_id", ""));
-                    //relItem = relItem.apply();
+                    relItem = inn.newItem(relType, "add");
+                    relItem.setProperty("source_id", source.id);
+                    relItem.setProperty("related_id", target.id);
+                    relItem.setProperty("owned_by_id", me.thisItem.getProperty("owned_by_id", ""));
+                    relItem = relItem.apply();
 
                     var body = "<source_id>" + source.id + "</source_id>";
                     body += "<related_id>" + target.id + "</related_id>";
