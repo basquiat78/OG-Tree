@@ -479,10 +479,11 @@ Doosan.prototype = {
         }
     },
     appendSelectBoxElement: function (element, label, value) {
-        element.append($('<option>', {
-            value: value,
-            text: label
-        }));
+        //element.append($('<option>', {
+        //    value: value,
+        //    text: label
+        //}));
+        element.append('<option value="' + value + '">' + label + '</option>>');
     },
     renderHeaders: function (workflowItem, myOther) {
 
