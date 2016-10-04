@@ -133,7 +133,7 @@ Aras.prototype = {
             });
             var innerMode = me.getHtmlParameter('mode');
             if (innerMode) {
-                var innerPane = parentDoc.find('dijitContentPane');
+                var innerPane = parentDoc.find('.dijitContentPane .dijitTabPane .dijitContainerTop-child');
                 console.log(innerPane, innerPane.length);
                 if (innerPane) {
                     var height = innerPane.height();
