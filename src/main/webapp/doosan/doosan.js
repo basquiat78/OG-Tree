@@ -49,6 +49,7 @@ Doosan.prototype = {
                 me.aras.getSchCombo('Init', null, null, null, null, function (err, res) {
                     if (res) {
                         me.renderSelectBox(res);
+                        $('#bg').click();
                     }
                 });
             }
