@@ -480,6 +480,19 @@ Doosan.prototype = {
     },
     renderHeaders: function (headerItem, myOther) {
         console.log(headerItem, myOther);
+        var targetTableClass = myOther == 'other' ? 'other-table' : 'my-table';
+        var targetTable = $('.' + targetTableClass);
+
+        var project_code = headerItem.getProperty('project_code', '');
+        var process_id = headerItem.getProperty('process_id', '');
+        var pjt_name = headerItem.getProperty('pjt_name', '');
+        var processname = headerItem.getProperty('processname', '');
+        var sub_processname = headerItem.getProperty('sub_processname', '');
+        targetTable.find('[name=project_code]').html(project_code);
+        targetTable.find('[name=process_id]').html(process_id);
+        targetTable.find('[name=pjt_name]').html(pjt_name);
+        targetTable.find('[name=processname]').html(processname);
+        targetTable.find('[name=sub_processname]').html(sub_processname);
     },
     renderStateBox: function () {
         var me = this;
