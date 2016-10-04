@@ -6,6 +6,18 @@ var Doosan = function () {
     this.aras = null;
 };
 Doosan.prototype = {
+    getHtmlParameter: function (val) {
+        var result = "Not found",
+            tmp = [];
+        location.search
+            .substr(1)
+            .split("&")
+            .forEach(function (item) {
+                tmp = item.split("=");
+                if (tmp[0] === val) result = decodeURIComponent(tmp[1]);
+            });
+        return result;
+    },
     init: function () {
         var me = this;
         me.tree = new Tree('canvas');
@@ -33,6 +45,9 @@ Doosan.prototype = {
             me.tree._CONFIG.AREA.rOut.display = true;
         }
         me.tree.init();
+
+        var mode = me.getHtmlParameter('mode');
+        alert(mode);
 
         if (parent.top.aras) {
             me.aras = new Aras(me.tree);
