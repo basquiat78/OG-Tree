@@ -1647,7 +1647,18 @@ Tree.prototype = {
                 $.each(attributes, function () {
                     $svg.attr(this.name, this.value);
                 });
-                $svg.find('path').css('fill', color);
+                //ignore
+                $svg.find('path').each(function(){
+                    var ignore = false;
+                    if($(this).attr('class')){
+                        if($(this).attr('class').indexOf('ignore') != -1){
+                            ignore = true;
+                        }
+                    }
+                    if(!ignore){
+                        $(this).css('fill', color);
+                    }
+                });
                 // Remove IMG
                 var rElement = me._RENDERER._getREleById(element.id);
                 if (rElement) {
@@ -1666,7 +1677,17 @@ Tree.prototype = {
                     $.each(attributes, function () {
                         $svg.attr(this.name, this.value);
                     });
-                    $svg.find('path').css('fill', color);
+                    $svg.find('path').each(function(){
+                        var ignore = false;
+                        if($(this).attr('class')){
+                            if($(this).attr('class').indexOf('ignore') != -1){
+                                ignore = true;
+                            }
+                        }
+                        if(!ignore){
+                            $(this).css('fill', color);
+                        }
+                    });
 
                     // Replace IMG with SVG
                     var rElement = me._RENDERER._getREleById(element.id);
@@ -3004,6 +3025,8 @@ Tree.prototype = {
                 //창 이동시에 사이즈 부모 창 재조절이 필요함.ok
 
                 //모니터 팝업이 다이렉트로 뜰 경우 창 크기 제어하기.ok
+
+                //액티비티 생성 체크 로직
 
                 //TODO
                 //4.상단 검색 조건 이상하게 보이는 것

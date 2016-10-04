@@ -49,14 +49,13 @@ Doosan.prototype = {
                 me.aras.getSchCombo('Init', null, null, null, null, function (err, res) {
                     if (res) {
                         me.renderSelectBox(res);
-                        $('#bg').click();
                     }
                 });
             }
 
-            var workflowItem = me.aras.getWorkflowData(me.aras.wfId);
-            if (workflowItem.getItemCount() == 1) {
-                me.renderHeaders(workflowItem, 'my');
+            var headerItem = me.aras.getWorkflowHeader(me.aras.wfId);
+            if (headerItem.getItemCount() == 1) {
+                me.renderHeaders(headerItem, 'my');
             }
             me.aras.refreshMyWorkFlow();
 
@@ -430,12 +429,9 @@ Doosan.prototype = {
 
         $('#targetOtherWorkflow').change(function () {
             var wfId = $('#targetOtherWorkflow').val();
-            var workflowData = me.aras.getWorkflowData(wfId);
-            console.log('workflowData', workflowData.node);
-
-            var workflowItem = me.aras.getWorkflowData(wfId);
-            if (workflowItem.getItemCount() == 1) {
-                me.renderHeaders(workflowItem, 'other');
+            var headerItem = me.aras.getWorkflowHeader(wfId);
+            if (headerItem.getItemCount() == 1) {
+                me.renderHeaders(headerItem, 'other');
             }
             var outResult = me.aras.getWorkflowStructure(wfId, 'OUT');
             var otherWorkFlowData;
@@ -482,8 +478,8 @@ Doosan.prototype = {
     appendSelectBoxElement: function (element, label, value) {
         element.append('<option value="' + value + '">' + label + '</option>');
     },
-    renderHeaders: function (workflowItem, myOther) {
-
+    renderHeaders: function (headerItem, myOther) {
+        console.log(headerItem, myOther);
     },
     renderStateBox: function () {
         var me = this;

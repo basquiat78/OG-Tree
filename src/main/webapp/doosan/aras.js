@@ -194,6 +194,13 @@ Aras.prototype = {
         workflowItem.setProperty('id', wf_id);
         return workflowItem.apply();
     },
+    getWorkflowHeader: function (wf_id) {
+        var me = this, params = {
+            stype: me.getItemType(me.TYPE.WORKFLOW),
+            sid: wf_id
+        };
+        return me.applyMethod('DHI_getEditorHederInfo', me.createBody(params));
+    },
     /**
      * 타입과 아이디와 매칭된 데이터를 반환한다.
      * @param type
@@ -811,6 +818,16 @@ Aras.prototype = {
     },
     createActivity: function () {
         var me = this;
+
+        //체크 로직
+        if (me.stdYN == 'Y' && me.thisItem.getProperty('state', '') != 'In Work') {
+            msgBox('This action is only available in "In Work" state.');
+            return;
+        } else if (me.stdYN == 'N' && me.thisItem.getProperty('state', '') != 'In Planning') {
+            msgBox('This action is only available in "In Planning" state.');
+            return;
+        }
+
         var inn = this.aras.newIOMInnovator();
         var target_rel_wf_com = '_rel_wf';
 
