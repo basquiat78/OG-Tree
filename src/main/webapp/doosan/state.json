@@ -10,7 +10,7 @@
     },
     {
       "name": "Active",
-      "color": "#5cb85c"
+      "color": "#b4eabd"
     },
     {
       "name": "Obsolate",
@@ -18,16 +18,6 @@
     }
   ],
   "Project": {
-    "Folder": [
-      {
-        "name": "Open",
-        "color": "#5cb85c"
-      },
-      {
-        "name": "Close",
-        "color": "#d9534f"
-      }
-    ],
     "Activity": [
       {
         "name": "In Planning",
@@ -43,7 +33,17 @@
       },
       {
         "name": "Active",
-        "color": "#5cb85c"
+        "color": "#b4eabd"
+      },
+      {
+        "name": "Close",
+        "color": "#d9534f"
+      }
+    ],
+    "Folder": [
+      {
+        "name": "Open",
+        "color": "#b4eabd"
       },
       {
         "name": "Close",
@@ -65,11 +65,11 @@
       },
       {
         "name": "In Progress",
-        "color": "#5cb85c"
+        "color": "#b4eabd"
       },
       {
         "name": "Cross Review",
-        "color": "#5cb85c"
+        "color": "#b4eabd"
       },
       {
         "name": "In Review",

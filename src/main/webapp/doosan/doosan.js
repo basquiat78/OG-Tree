@@ -20,7 +20,7 @@ Doosan.prototype = {
             me.tree._CONFIG.AREA.rIn.display = true;
             me.tree._CONFIG.AREA.rAc.display = true;
             me.tree._CONFIG.AREA.rOut.display = true;
-        }else{
+        } else {
             me.tree._CONFIG.MOVE_SORTABLE = false;
             me.tree._CONFIG.MAPPING_ENABLE = false;
             me.tree._CONFIG.CREATE_FOLDER = false;
@@ -45,6 +45,8 @@ Doosan.prototype = {
                 }
             });
         }
+
+        me.renderStateBox();
 
         me.aras.refreshMyWorkFlow();
 
@@ -464,6 +466,65 @@ Doosan.prototype = {
             value: value,
             text: label
         }));
+    },
+    renderStateBox: function () {
+        var me = this;
+        var stdYN = 'N';
+        var stateJson;
+        if (me.aras && me.aras.stdYN) {
+            stdYN = me.aras.stdYN;
+        }
+        $.ajax({
+            type: 'GET',
+            url: 'doosan/state.json',
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                stateJson = data;
+            }
+        });
+        var stateColorBox = $('.state-color');
+        var renderState = function (name, color) {
+            stateColorBox.append('<li><a href="Javascript:void(0)"><div class="state-bar"' +
+                'style="background-color:' + color + '">&nbsp;</div>' + name + '</a></li>');
+        };
+        var renderSeparator = function () {
+            stateColorBox.append('<li role="separator" class="divider"></li>');
+        };
+        var renderTitle = function (title) {
+            stateColorBox.append('<li><a href="Javascript:void(0)">---' + title + '---</a></li>');
+        };
+        if (stateJson) {
+            stateColorBox.html('');
+            var stateList = [];
+            if (stdYN == 'Y') {
+                stateList = stateJson['Standard'];
+                for (var i = 0; i < stateList.length; i++) {
+                    renderState(stateList[i]['name'], stateList[i]['color']);
+                }
+            } else {
+                renderTitle('Activity');
+                stateList = stateJson['Project']['Activity'];
+                for (var i = 0; i < stateList.length; i++) {
+                    renderState(stateList[i]['name'], stateList[i]['color']);
+                }
+                renderSeparator();
+
+                renderTitle('Folder');
+                stateList = stateJson['Project']['Folder'];
+                for (var i = 0; i < stateList.length; i++) {
+                    renderState(stateList[i]['name'], stateList[i]['color']);
+                }
+                renderSeparator();
+
+                renderTitle('EDB');
+                stateList = stateJson['Project']['EDB'];
+                for (var i = 0; i < stateList.length; i++) {
+                    renderState(stateList[i]['name'], stateList[i]['color']);
+                }
+                renderSeparator();
+            }
+        }
     }
 }
 ;

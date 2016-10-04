@@ -5,3 +5,12 @@ div.tooltip-inner {
 .job-status {
     display: none;
 }
+
+.state-bar {
+    width: 50px;
+    height: 5px;
+    float: left;
+    margin-top: 7px;
+    margin-right: 5px;
+    border: 1px solid darkgrey;
+}
