@@ -389,6 +389,9 @@ Doosan.prototype = {
                 me.tree.setScale(reScale);
             }
         });
+        $('#zoomFit').click(function () {
+            me.tree.setScale(1);
+        });
     },
     bindSelectBoxEvent: function () {
         var me = this;

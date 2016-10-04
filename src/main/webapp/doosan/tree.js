@@ -2925,16 +2925,26 @@ Tree.prototype = {
                 //2.expander 미러된 쪽에서 안움직임. ==> ok.
                 //TODO 부모 창 제어.done
                 //TODO 선 하이라이트. done.
+
+                //TODO 모니터 화면 만들 것. ok.
+                //1. 같은 로직, 마이 데이터만 부른다.ok
+                //2. 에어리어 부분의 디스에이블 처리 과정이 있어야 한다.ok
+
+                //TODO
+                //워크플로우 - 액티비티 관게를 표현할 그리드 창 만들기. OK
+                //각 아이템마다, 말풍선은 넘버와 name 이 표기되면 된다. OK.
+                //라벨 on / off 옵션 OK.
+                //상단 정보창 접었다 핌 OK.
+
+
                 //TODO 스테이터스 범례조건
                 //TODO 창 이동시에 사이즈 부모 창 재조절이 필요함.
-
 
                 //3.전체 크기 늘이기
                 //4.상단 검색 조건 이상하게 보이는 것
 
-                //TODO 모니터 화면 만들 것.
-                //1. 같은 로직, 마이 데이터만 부른다.
-                //2. 에어리어 부분의 디스에이블 처리 과정이 있어야 한다.
+                //상단 기본정보창 워크플로우 정보 바인딩.
+                //담당자명 , 명칭, 생성일 재정렬
 
                 //before 이벤트
                 var beforeActivityMove = me.onBeforeActivityMove(activities);
@@ -3245,11 +3255,11 @@ Tree.prototype = {
                     }
                 }
 
-                //선택한 Folder or ED를 Input 으로 쓰는 Workflow - Activity정보 표현
+                //선택한 ED를 Input 으로 쓰는 Workflow - Activity정보 표현
                 if (view.position == me.Constants.POSITION.MY_OUT ||
                     view.position == me.Constants.POSITION.OTHER_OUT ||
                     view.position == me.Constants.POSITION.MY_IN) {
-                    if (data.type != me.Constants.TYPE.ACTIVITY) {
+                    if (data.type == me.Constants.TYPE.ED) {
                         items.makeListRelation = me.makeListRelation();
                     }
                 }
@@ -3423,15 +3433,6 @@ Tree.prototype = {
         console.log(sourceId, sourceType, targetId, targetType);
         return true;
     }
-    //TODO
-    //워크플로우 - 액티비티 관게를 표현할 그리드 창 만들기. OK
-    //각 아이템마다, 말풍선은 넘버와 name 이 표기되면 된다. OK.
-    //라벨 on / off 옵션 OK.
-    //상단 정보창 접었다 핌 OK.
-    //상단 기본정보창 워크플로우 정보 바인딩.
-    //담당자명 , 명칭, 생성일 재정렬
-
-    //======모니터 창=======
 
 };
 Tree.prototype.constructor = Tree;
