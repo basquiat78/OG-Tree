@@ -1681,7 +1681,7 @@ Tree.prototype = {
             shape.MOVABLE = false;
         }
         //MOVE_SORTABLE false 일경우 이동 불가
-        if(!me._CONFIG.MOVE_SORTABLE){
+        if (!me._CONFIG.MOVE_SORTABLE) {
             shape.MOVABLE = false;
         }
         var element = me.canvas.drawShape([view.x, view.y], shape, [view.width, view.height], null, view.id);
@@ -1708,7 +1708,7 @@ Tree.prototype = {
             shape.MOVABLE = false;
         }
         //MAPPING_ENABLE false 일경우 이동 불가
-        if(!me._CONFIG.MAPPING_ENABLE){
+        if (!me._CONFIG.MAPPING_ENABLE) {
             shape.MOVABLE = false;
         }
         var element = me.canvas.drawShape([view.x, view.y], shape, [view.width, view.height], null, view.id);
@@ -1739,7 +1739,7 @@ Tree.prototype = {
             shape.MOVABLE = false;
         }
         //MAPPING_ENABLE false 일경우 이동 불가
-        if(!me._CONFIG.MAPPING_ENABLE){
+        if (!me._CONFIG.MAPPING_ENABLE) {
             shape.MOVABLE = false;
         }
         var element = me.canvas.drawShape([view.x, view.y], shape, [view.width, view.height], null, view.id);
@@ -2936,15 +2936,18 @@ Tree.prototype = {
                 //라벨 on / off 옵션 OK.
                 //상단 정보창 접었다 핌 OK.
 
+                //3.전체 크기 늘이기. ok
+
 
                 //TODO 스테이터스 범례조건
                 //TODO 창 이동시에 사이즈 부모 창 재조절이 필요함.
 
-                //3.전체 크기 늘이기
                 //4.상단 검색 조건 이상하게 보이는 것
 
                 //상단 기본정보창 워크플로우 정보 바인딩.
                 //담당자명 , 명칭, 생성일 재정렬
+
+                //ed 개별 추가시 메소드 붙이기.
 
                 //before 이벤트
                 var beforeActivityMove = me.onBeforeActivityMove(activities);
@@ -3055,12 +3058,10 @@ Tree.prototype = {
                     standardFolder = source;
                 }
 
-                // (aras only) 스탠다드 폴더의 하위객체를 모두 담도록 한다.
+                //스탠다드 폴더의 하위객체를 모두 담도록 한다.
                 var selectedTargetList = [];
                 if (standardFolder && standardFolder.type == me.Constants.TYPE.FOLDER) {
 
-                    //스탠다드 폴더를 아라스로 보낸다.
-                    //TODO ED 단일 선택일 경우에는 지시에 따르도록 한다.
                     selectedTargetList.push(standardFolder.id);
 
                     //자식들(재귀호출) 의 매핑데이터를 생성하고, 폴더는 selected 처리한다.
@@ -3259,7 +3260,7 @@ Tree.prototype = {
                 if (view.position == me.Constants.POSITION.MY_OUT ||
                     view.position == me.Constants.POSITION.OTHER_OUT ||
                     view.position == me.Constants.POSITION.MY_IN) {
-                    if (data.type == me.Constants.TYPE.ED) {
+                    if (view.type == me.Constants.TYPE.ED) {
                         items.makeListRelation = me.makeListRelation();
                     }
                 }

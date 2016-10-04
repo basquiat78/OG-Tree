@@ -68,71 +68,71 @@ Doosan.prototype = {
         //me.tree.updateData(otherData);
         //me.tree.updateData(myData);
 
-        ///**
-        // * GUI 상에서 액티비티가 이동하기 전의 핸들러
-        // * @param activities
-        // */
-        //me.tree.onBeforeActivityMove = function (activities) {
-        //    console.log(activities);
-        //    var activityIds = [];
-        //    for (var i = 0; i < activities.length; i++) {
-        //        activityIds.push(activities[i].id);
-        //    }
-        //    me.aras.sortActivities(activityIds);
-        //
-        //    return false;
-        //};
-        ///**
-        // * GUI 상에서 액티비티가 이동한 후의 핸들러
-        // * @param activities
-        // */
-        //me.tree.onActivityMove = function (activities) {
-        //    console.log(activities);
-        //};
-        ///**
-        // * GUI 상에서 매핑이 되기 전의 핸들러
-        // * @param source
-        // * @param target
-        // * @returns {boolean}
-        // */
-        //me.tree.onBeforeMapping = function (source, target, selectedTargetList) {
-        //    console.log(source, target, selectedTargetList);
-        //
-        //    //아라스에서는 소스와 타겟이 반대
-        //    me.aras.addInRel(target, source, selectedTargetList);
-        //    return false;
-        //};
-        //
-        ///**
-        // * GUI 상에서 매핑이 이루어졌을 때 핸들러
-        // * @param source
-        // * @param target
-        // */
-        //me.tree.onMapping = function (source, target, selectedTargetList) {
-        //    console.log(source, target, selectedTargetList);
-        //};
-        //
-        ///**
-        // * GUI 상에서 매핑이 삭제되기 전 핸들러
-        // * @param sourceId
-        // * @param targetId
-        // */
-        //me.tree.onBeforeDeleteMapping = function (sourceId, sourceType, targetId, targetType) {
-        //    console.log(sourceId, sourceType, targetId, targetType);
-        //
-        //    //아라스에서는 소스와 타겟이 반대
-        //    me.aras.deleteInRel(targetId, targetType, sourceId, sourceType);
-        //    return false;
-        //};
-        //
-        ///**
-        // * GUI 상에서 매핑이 삭제되었을 때의 핸들러
-        // * @param sourceId
-        // * @param targetId
-        // */
-        //me.tree.onDeleteMapping = function (sourceId, sourceType, targetId, targetType) {
-        //    console.log(sourceId, sourceType, targetId, targetType);
-        //};
+        /**
+         * GUI 상에서 액티비티가 이동하기 전의 핸들러
+         * @param activities
+         */
+        me.tree.onBeforeActivityMove = function (activities) {
+            console.log(activities);
+            var activityIds = [];
+            for (var i = 0; i < activities.length; i++) {
+                activityIds.push(activities[i].id);
+            }
+            me.aras.sortActivities(activityIds);
+
+            return false;
+        };
+        /**
+         * GUI 상에서 액티비티가 이동한 후의 핸들러
+         * @param activities
+         */
+        me.tree.onActivityMove = function (activities) {
+            console.log(activities);
+        };
+        /**
+         * GUI 상에서 매핑이 되기 전의 핸들러
+         * @param source
+         * @param target
+         * @returns {boolean}
+         */
+        me.tree.onBeforeMapping = function (source, target, selectedTargetList) {
+            console.log(source, target, selectedTargetList);
+
+            //아라스에서는 소스와 타겟이 반대
+            me.aras.addInRel(target, source, selectedTargetList);
+            return false;
+        };
+
+        /**
+         * GUI 상에서 매핑이 이루어졌을 때 핸들러
+         * @param source
+         * @param target
+         */
+        me.tree.onMapping = function (source, target, selectedTargetList) {
+            console.log(source, target, selectedTargetList);
+        };
+
+        /**
+         * GUI 상에서 매핑이 삭제되기 전 핸들러
+         * @param sourceId
+         * @param targetId
+         */
+        me.tree.onBeforeDeleteMapping = function (sourceId, sourceType, targetId, targetType) {
+            console.log(sourceId, sourceType, targetId, targetType);
+
+            //아라스에서는 소스와 타겟이 반대
+            me.aras.deleteInRel(targetId, targetType, sourceId, sourceType);
+            return false;
+        };
+
+        /**
+         * GUI 상에서 매핑이 삭제되었을 때의 핸들러
+         * @param sourceId
+         * @param targetId
+         */
+        me.tree.onDeleteMapping = function (sourceId, sourceType, targetId, targetType) {
+            console.log(sourceId, sourceType, targetId, targetType);
+        };
 
         /**
          * 프로퍼티 보기 콘텍스트 클릭시
