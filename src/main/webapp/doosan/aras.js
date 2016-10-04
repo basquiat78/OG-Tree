@@ -782,7 +782,7 @@ Aras.prototype = {
         var existRelItem;
         var relItem;
 
-        if(source.type == me.TYPE.ED){
+        if(target.type == me.TYPE.ED){
             existRelItem = inn.newItem(relType, "get");
             existRelItem.setProperty("source_id", source.id);
             existRelItem.setProperty("related_id", target.id);
@@ -800,7 +800,7 @@ Aras.prototype = {
                     var result = inn.applyMethod("DHI_WF_PROCESS_AFTER_ED_COPY", body);
                 }
                 catch (e) {
-                    msgBox('Failed to add ' + relType + ' Relation : ' + source.id + ' to ' + targetId);
+                    msgBox('Failed to add ' + relType + ' Relation : ' + source.id + ' to ' + target.id);
                 }
             }
         }else{
