@@ -3026,15 +3026,19 @@ Tree.prototype = {
 
                 //모니터 팝업이 다이렉트로 뜰 경우 창 크기 제어하기.ok
 
-                //액티비티 생성 체크 로직
+                //액티비티 생성 체크 로직.ok
+                //properties => details.ok
+
+                //상단 기본정보창 워크플로우 정보 바인딩.ok
 
                 //TODO
                 //4.상단 검색 조건 이상하게 보이는 것
-                //상단 기본정보창 워크플로우 정보 바인딩.
                 //담당자명 , 명칭, 생성일 재정렬
                 //툴바 아이콘 적용하기
 
+                //접을때 툴바 버튼 살리기
                 //선 중복 버그 다시 한번 보기
+                //IE 전환 살펴보기.
 
                 //before 이벤트
                 var beforeActivityMove = me.onBeforeActivityMove(activities);
@@ -3369,7 +3373,7 @@ Tree.prototype = {
     makeShowProperties: function () {
         var me = this;
         return {
-            name: 'properties',
+            name: 'details',
             callback: function () {
                 me.onShowProperties(me.selectedData, me.selectedView);
             }
