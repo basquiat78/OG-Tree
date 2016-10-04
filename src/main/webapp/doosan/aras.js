@@ -782,27 +782,50 @@ Aras.prototype = {
         var existRelItem;
         var relItem;
 
-        for (var i = 0, leni = selectedTargetList.length; i < leni; i++) {
-            var targetId = selectedTargetList[i];
+        if(source.type == me.TYPE.ED){
             existRelItem = inn.newItem(relType, "get");
             existRelItem.setProperty("source_id", source.id);
-            existRelItem.setProperty("related_id", targetId);
+            existRelItem.setProperty("related_id", target.id);
             existRelItem = existRelItem.apply();
             if (existRelItem.getItemCount() == 0) {
                 try {
                     relItem = inn.newItem(relType, "add");
                     relItem.setProperty("source_id", source.id);
-                    relItem.setProperty("related_id", targetId);
+                    relItem.setProperty("related_id", target.id);
                     relItem.setProperty("owned_by_id", me.thisItem.getProperty("owned_by_id", ""));
                     relItem = relItem.apply();
 
-                    var body = "<_parent_type>" + me.getItemType(me.TYPE.ACTIVITY) + "</_parent_type>";
-                    body += "<_parent_id>" + source.id + "</_parent_id>";
-                    body += "<_ids>" + targetId + "</_ids>";
-                    var result = inn.applyMethod("DHI_WF_CREATE_FD_IN_REL", body);
+                    var body = "<source_id>" + source.id + "</source_id>";
+                    body += "<related_id>" + target.id + "</related_id>";
+                    var result = inn.applyMethod("DHI_WF_PROCESS_AFTER_ED_COPY", body);
                 }
                 catch (e) {
                     msgBox('Failed to add ' + relType + ' Relation : ' + source.id + ' to ' + targetId);
+                }
+            }
+        }else{
+            for (var i = 0, leni = selectedTargetList.length; i < leni; i++) {
+                var targetId = selectedTargetList[i];
+                existRelItem = inn.newItem(relType, "get");
+                existRelItem.setProperty("source_id", source.id);
+                existRelItem.setProperty("related_id", targetId);
+                existRelItem = existRelItem.apply();
+                if (existRelItem.getItemCount() == 0) {
+                    try {
+                        relItem = inn.newItem(relType, "add");
+                        relItem.setProperty("source_id", source.id);
+                        relItem.setProperty("related_id", targetId);
+                        relItem.setProperty("owned_by_id", me.thisItem.getProperty("owned_by_id", ""));
+                        relItem = relItem.apply();
+
+                        var body = "<_parent_type>" + me.getItemType(me.TYPE.ACTIVITY) + "</_parent_type>";
+                        body += "<_parent_id>" + source.id + "</_parent_id>";
+                        body += "<_ids>" + targetId + "</_ids>";
+                        var result = inn.applyMethod("DHI_WF_CREATE_FD_IN_REL", body);
+                    }
+                    catch (e) {
+                        msgBox('Failed to add ' + relType + ' Relation : ' + source.id + ' to ' + targetId);
+                    }
                 }
             }
         }
