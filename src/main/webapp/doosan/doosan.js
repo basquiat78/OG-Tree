@@ -9,17 +9,42 @@ Doosan.prototype = {
     init: function () {
         var me = this;
         me.tree = new Tree('canvas');
+        if (editorMode) {
+            me.tree._CONFIG.MOVE_SORTABLE = true;
+            me.tree._CONFIG.MAPPING_ENABLE = true;
+            me.tree._CONFIG.CREATE_FOLDER = true;
+            me.tree._CONFIG.CREATE_ED = true;
+            me.tree._CONFIG.DELETABLE = true;
+            me.tree._CONFIG.AREA.lAc.display = true;
+            me.tree._CONFIG.AREA.lOut.display = true;
+            me.tree._CONFIG.AREA.rIn.display = true;
+            me.tree._CONFIG.AREA.rAc.display = true;
+            me.tree._CONFIG.AREA.rOut.display = true;
+        }else{
+            me.tree._CONFIG.MOVE_SORTABLE = false;
+            me.tree._CONFIG.MAPPING_ENABLE = false;
+            me.tree._CONFIG.CREATE_FOLDER = false;
+            me.tree._CONFIG.CREATE_ED = false;
+            me.tree._CONFIG.DELETABLE = false;
+            me.tree._CONFIG.AREA.lAc.display = false;
+            me.tree._CONFIG.AREA.lOut.display = false;
+            me.tree._CONFIG.AREA.rIn.display = true;
+            me.tree._CONFIG.AREA.rAc.display = true;
+            me.tree._CONFIG.AREA.rOut.display = true;
+        }
         me.tree.init();
         me.aras = new Aras(me.tree);
         me.aras.init();
 
-        //셀렉트 박스 이벤트를 걸고 초기데이터를 불러온다.
-        me.bindSelectBoxEvent();
-        me.aras.getSchCombo('Init', null, null, null, null, function (err, res) {
-            if (res) {
-                me.renderSelectBox(res);
-            }
-        });
+        if (editorMode) {
+            //셀렉트 박스 이벤트를 걸고 초기데이터를 불러온다.
+            me.bindSelectBoxEvent();
+            me.aras.getSchCombo('Init', null, null, null, null, function (err, res) {
+                if (res) {
+                    me.renderSelectBox(res);
+                }
+            });
+        }
 
         me.aras.refreshMyWorkFlow();
 
@@ -43,94 +68,71 @@ Doosan.prototype = {
         //me.tree.updateData(otherData);
         //me.tree.updateData(myData);
 
-        /**
-         * GUI 상에서 액티비티가 이동하기 전의 핸들러
-         * @param activities
-         */
-        me.tree.onBeforeActivityMove = function (activities) {
-            console.log(activities);
-            var activityIds = [];
-            for (var i = 0; i < activities.length; i++) {
-                activityIds.push(activities[i].id);
-            }
-            me.aras.sortActivities(activityIds);
-
-            return false;
-        };
-        /**
-         * GUI 상에서 액티비티가 이동한 후의 핸들러
-         * @param activities
-         */
-        me.tree.onActivityMove = function (activities) {
-            console.log(activities);
-        };
-        /**
-         * GUI 상에서 매핑이 되기 전의 핸들러
-         * @param source
-         * @param target
-         * @returns {boolean}
-         */
-        me.tree.onBeforeMapping = function (source, target, selectedTargetList) {
-            console.log(source, target, selectedTargetList);
-
-            //아라스에서는 소스와 타겟이 반대
-            me.aras.addInRel(target, source, selectedTargetList);
-            return false;
-        };
-
-        /**
-         * GUI 상에서 매핑이 이루어졌을 때 핸들러
-         * @param source
-         * @param target
-         */
-        me.tree.onMapping = function (source, target, selectedTargetList) {
-            console.log(source, target, selectedTargetList);
-        };
-
-        /**
-         * GUI 상에서 매핑이 삭제되기 전 핸들러
-         * @param sourceId
-         * @param targetId
-         */
-        me.tree.onBeforeDeleteMapping = function (sourceId, sourceType, targetId, targetType) {
-            console.log(sourceId, sourceType, targetId, targetType);
-
-            //아라스에서는 소스와 타겟이 반대
-            me.aras.deleteInRel(targetId, targetType, sourceId, sourceType);
-            return false;
-        };
-
-        /**
-         * GUI 상에서 매핑이 삭제되었을 때의 핸들러
-         * @param sourceId
-         * @param targetId
-         */
-        me.tree.onDeleteMapping = function (sourceId, sourceType, targetId, targetType) {
-            console.log(sourceId, sourceType, targetId, targetType);
-        };
-
-        /**
-         * 세이브 버튼 클릭시
-         */
-        $('#saveBtn').click(function () {
-            //전체 데이터 불러오기
-            me.tree.load();
-
-            //매핑 데이터 불러오기
-            me.tree.loadByFilter({type: me.tree.Constants.TYPE.MAPPING});
-
-            //아더 액티비티 불러오기
-            me.tree.loadByFilter({type: me.tree.Constants.POSITION.OTHER});
-
-            //아더 폴더,ED 불러오기
-            me.tree.loadByFilter({type: me.tree.Constants.POSITION.OTHER_OUT});
-
-            //마이 액티비티 불러오기
-            me.tree.loadByFilter({type: me.tree.Constants.POSITION.MY});
-
-            //마이 폴더,ED 불러오기
-            me.tree.loadByFilter({type: me.tree.Constants.POSITION.MY_OUT});
-        });
+        ///**
+        // * GUI 상에서 액티비티가 이동하기 전의 핸들러
+        // * @param activities
+        // */
+        //me.tree.onBeforeActivityMove = function (activities) {
+        //    console.log(activities);
+        //    var activityIds = [];
+        //    for (var i = 0; i < activities.length; i++) {
+        //        activityIds.push(activities[i].id);
+        //    }
+        //    me.aras.sortActivities(activityIds);
+        //
+        //    return false;
+        //};
+        ///**
+        // * GUI 상에서 액티비티가 이동한 후의 핸들러
+        // * @param activities
+        // */
+        //me.tree.onActivityMove = function (activities) {
+        //    console.log(activities);
+        //};
+        ///**
+        // * GUI 상에서 매핑이 되기 전의 핸들러
+        // * @param source
+        // * @param target
+        // * @returns {boolean}
+        // */
+        //me.tree.onBeforeMapping = function (source, target, selectedTargetList) {
+        //    console.log(source, target, selectedTargetList);
+        //
+        //    //아라스에서는 소스와 타겟이 반대
+        //    me.aras.addInRel(target, source, selectedTargetList);
+        //    return false;
+        //};
+        //
+        ///**
+        // * GUI 상에서 매핑이 이루어졌을 때 핸들러
+        // * @param source
+        // * @param target
+        // */
+        //me.tree.onMapping = function (source, target, selectedTargetList) {
+        //    console.log(source, target, selectedTargetList);
+        //};
+        //
+        ///**
+        // * GUI 상에서 매핑이 삭제되기 전 핸들러
+        // * @param sourceId
+        // * @param targetId
+        // */
+        //me.tree.onBeforeDeleteMapping = function (sourceId, sourceType, targetId, targetType) {
+        //    console.log(sourceId, sourceType, targetId, targetType);
+        //
+        //    //아라스에서는 소스와 타겟이 반대
+        //    me.aras.deleteInRel(targetId, targetType, sourceId, sourceType);
+        //    return false;
+        //};
+        //
+        ///**
+        // * GUI 상에서 매핑이 삭제되었을 때의 핸들러
+        // * @param sourceId
+        // * @param targetId
+        // */
+        //me.tree.onDeleteMapping = function (sourceId, sourceType, targetId, targetType) {
+        //    console.log(sourceId, sourceType, targetId, targetType);
+        //};
 
         /**
          * 프로퍼티 보기 콘텍스트 클릭시

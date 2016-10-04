@@ -82,6 +82,7 @@
     <script type="text/javascript" src="doosan/aras.js"></script>
     <script type="text/javascript" src="doosan/doosan.js"></script>
 
+    
 </head>
 
 <div class="wrapper">
@@ -123,7 +124,7 @@
 
     <div class="breadcrumbs">
         <div class="container">
-            <h1 class="pull-left">Doosan Workflow Editor <i class="header-angle fa fa-angle-down" style="cursor: pointer"></i></h1>
+            <h1 class="pull-left">Doosan Workflow Monitor <i class="header-angle fa fa-angle-down" style="cursor: pointer"></i></h1>
             <script>
                 $(function () {
                     $('.header-angle').click(function () {
@@ -146,83 +147,12 @@
     <!--=== Content Part ===-->
     <div class="container" style="padding-top: 30px;padding-bottom: 30px;">
         <div class="row header-info">
-            <div class="col-md-5" style="border-right: 1px solid grey">
-                <h4>Other Workflow</h4>
-
-                <div class="form-group col-md-4">
-                    <label class="control-label">Discipline</label>
-
-                    <select id="discipline" name="discipline" class="form-control">
-                        <option value="" selected>--select--</option>
-                    </select>
-                </div>
-
-                <div class="form-group col-md-4">
-                    <label class="control-label">Discipline Spec</label>
-
-                    <select id="disciplineSpec" name="spec" class="form-control">
-                        <option value="" selected>--select--</option>
-                    </select>
-                </div>
-
-                <div class="form-group col-md-4">
-                    <label class="control-label">BG</label>
-
-                    <select id="bg" name="bg" class="form-control">
-                        <option value="" selected>--select--</option>
-                    </select>
-                </div>
-
-                <div class="form-group col-md-12">
-                    <label class="control-label">Workflow</label>
-
-                    <select id="targetOtherWorkflow" name="targetOtherWorkflow" class="form-control">
-                        <option value="" selected>--select--</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-7">
+            <div class="col-md-12">
                 <h4>My Workflow</h4>
             </div>
         </div>
         <div class="row header-info">
-            <div class="col-md-5" style="border-right: 1px solid grey">
-                <div class="tag-box tag-box-v2" style="padding: 5px;">
-                    <table class="table margin-bottom-10">
-                        <thead>
-                        <tr>
-                            <th>PROJECT CODE</th>
-                            <th>PROCESS ID</th>
-                            <th>STATE COLOR</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>Y05A4U</td>
-                            <td>Y054AU-S-SY-0012-00</td>
-                            <td>BLUE</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <table class="table margin-bottom-10">
-                        <thead>
-                        <tr>
-                            <th>PROJECT NAME</th>
-                            <th>PROCESS NAME</th>
-                            <th>SUB PROCESS NAME</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>주조 Handling Jig 제작</td>
-                            <td>Compressed air system</td>
-                            <td>Compressed air system</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="col-md-7">
+            <div class="col-md-12">
                 <div class="tag-box tag-box-v2" style="padding: 5px;">
                     <table class="table margin-bottom-10">
                         <thead>
@@ -258,7 +188,6 @@
                     </table>
                 </div>
                 <div class="toolbar">
-                    <button class="btn btn-default" id="newActivity" type="button">New Activity</button>
                     <button class="btn btn-default" id="refresh" type="button">Refresh</button>
                     <button class="btn btn-default" id="zoomIn" type="button">Zoom | IN</button>
                     <button class="btn btn-default" id="zoomFit" type="button">Zoom | FIT</button>
@@ -343,7 +272,7 @@
 <script type="text/javascript" src="resources/assets/js/forms/reg.js"></script>
 <script type="text/javascript" src="resources/assets/js/forms/checkout.js"></script>
 <script type="text/javascript">
-    var editorMode = true;
+    var editorMode = false;
     jQuery(document).ready(function () {
         App.init();
     });

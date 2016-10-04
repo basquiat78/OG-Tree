@@ -46,6 +46,11 @@ var Tree = function (container) {
         }
     };
     this._CONFIG = {
+        MOVE_SORTABLE: false,
+        MAPPING_ENABLE: false,
+        CREATE_FOLDER: false,
+        CREATE_ED: false,
+        DELETABLE: false,
         SHOW_LABEL: true,
         DISPLAY_MARGIN: 50,
         CONTAINER_HEIGHT: 600,
@@ -53,7 +58,23 @@ var Tree = function (container) {
             LEFT_SIZE_RATE: (5 / 12) - 0.002,
             RIGHT_SIZE_RATE: (7 / 12) + 0.002,
             ACTIVITY_SIZE: 100,
-            BOTTOM_MARGIN: 50
+            BOTTOM_MARGIN: 50,
+            lAc: {
+                display: false
+            },
+            lOut: {
+                display: false
+            },
+            rIn: {
+                display: true
+            },
+            rAc: {
+                center: true,
+                display: true
+            },
+            rOut: {
+                display: true
+            }
         },
         AREA_STYLE: {
             lAc: {
@@ -293,18 +314,40 @@ Tree.prototype = {
         }
         var me = this;
         var copyObj;
+        var checkEnablePosition = function (item) {
+            if (me.Constants.POSITION.OTHER == item['position']) {
+                return me._CONFIG.AREA.lAc.display;
+            }
+            if (me.Constants.POSITION.OTHER_OUT == item['position']) {
+                return me._CONFIG.AREA.lOut.display;
+            }
+            if (me.Constants.POSITION.MY_IN == item['position']) {
+                return me._CONFIG.AREA.rIn.display;
+            }
+            if (me.Constants.POSITION.MY == item['position']) {
+                return me._CONFIG.AREA.rAc.display;
+            }
+            if (me.Constants.POSITION.MY_OUT == item['position']) {
+                return me._CONFIG.AREA.rOut.display;
+            }
+            return false;
+        };
         if ($.isArray(data)) {
             for (var i = 0; i < data.length; i++) {
-                copyObj = JSON.parse(JSON.stringify(data[i]));
-                if (copyObj.id) {
-                    me._STORAGE[copyObj.id] = copyObj;
+                if (checkEnablePosition(data[i])) {
+                    copyObj = JSON.parse(JSON.stringify(data[i]));
+                    if (copyObj.id) {
+                        me._STORAGE[copyObj.id] = copyObj;
+                    }
                 }
             }
         } else {
             for (var key in data) {
-                copyObj = JSON.parse(JSON.stringify(data[key]));
-                if (copyObj.id) {
-                    me._STORAGE[copyObj.id] = copyObj;
+                if (checkEnablePosition(data[i])) {
+                    copyObj = JSON.parse(JSON.stringify(data[key]));
+                    if (copyObj.id) {
+                        me._STORAGE[copyObj.id] = copyObj;
+                    }
                 }
             }
         }
@@ -1637,6 +1680,10 @@ Tree.prototype = {
         if (view.position != me.Constants.POSITION.MY) {
             shape.MOVABLE = false;
         }
+        //MOVE_SORTABLE false 일경우 이동 불가
+        if(!me._CONFIG.MOVE_SORTABLE){
+            shape.MOVABLE = false;
+        }
         var element = me.canvas.drawShape([view.x, view.y], shape, [view.width, view.height], null, view.id);
         $(element).click(function () {
             console.log(element.id);
@@ -1658,6 +1705,10 @@ Tree.prototype = {
         var shape = new OG.Folder(me._CONFIG.SHOW_LABEL ? me.labelSubstring(view.name) : undefined);
         //OTHER_OUT 포지션만 이동이 가능
         if (view.position != me.Constants.POSITION.OTHER_OUT) {
+            shape.MOVABLE = false;
+        }
+        //MAPPING_ENABLE false 일경우 이동 불가
+        if(!me._CONFIG.MAPPING_ENABLE){
             shape.MOVABLE = false;
         }
         var element = me.canvas.drawShape([view.x, view.y], shape, [view.width, view.height], null, view.id);
@@ -1685,6 +1736,10 @@ Tree.prototype = {
         var shape = new OG.Ed(me._CONFIG.SHOW_LABEL ? me.labelSubstring(view.name) : undefined);
         //OTHER_OUT 포지션만 이동이 가능
         if (view.position != me.Constants.POSITION.OTHER_OUT) {
+            shape.MOVABLE = false;
+        }
+        //MAPPING_ENABLE false 일경우 이동 불가
+        if(!me._CONFIG.MAPPING_ENABLE){
             shape.MOVABLE = false;
         }
         var element = me.canvas.drawShape([view.x, view.y], shape, [view.width, view.height], null, view.id);
@@ -2089,13 +2144,14 @@ Tree.prototype = {
         upper = 0;
         low = totalHeight;
         left = 0;
-        right = me._CONFIG.AREA.ACTIVITY_SIZE;
+        right = me._CONFIG.AREA.lAc.display ? me._CONFIG.AREA.ACTIVITY_SIZE : 0;
         me.fitToBoundary(me.AREA.lAc, [upper, low, left, right]);
 
         boundary = me._RENDERER.getBoundary(me.AREA.lAc);
         left = left + boundary.getWidth();
         width = (containerWidth * me._CONFIG.AREA.LEFT_SIZE_RATE) - me._CONFIG.AREA.ACTIVITY_SIZE;
         width = width < otherOutAreaWidth ? otherOutAreaWidth : width;
+        width = me._CONFIG.AREA.lOut.display ? width : 0;
         right = left + width;
         me.fitToBoundary(me.AREA.lOut, [upper, low, left, right]);
 
@@ -2103,24 +2159,61 @@ Tree.prototype = {
         left = left + boundary.getWidth();
         width = (containerWidth * me._CONFIG.AREA.LEFT_SIZE_RATE) - me._CONFIG.AREA.ACTIVITY_SIZE;
         width = width < myInAreaWidth ? myInAreaWidth : width;
+        width = me._CONFIG.AREA.rIn.display ? width : 0;
         right = left + width;
         me.fitToBoundary(me.AREA.rIn, [upper, low, left, right]);
 
         boundary = me._RENDERER.getBoundary(me.AREA.rIn);
         left = left + boundary.getWidth();
         right = left + me._CONFIG.AREA.ACTIVITY_SIZE;
+        right = me._CONFIG.AREA.rAc.display ? right : left;
         me.fitToBoundary(me.AREA.rAc, [upper, low, left, right]);
 
         boundary = me._RENDERER.getBoundary(me.AREA.rAc);
         left = left + boundary.getWidth();
         width = containerWidth - ((containerWidth * me._CONFIG.AREA.LEFT_SIZE_RATE) * 2);
         width = width < myOutAreaWidth ? myOutAreaWidth : width;
+        width = me._CONFIG.AREA.rOut.display ? width : 0;
         right = left + width;
         me.fitToBoundary(me.AREA.rOut, [upper, low, left, right]);
 
+        //센터 프로퍼티를 가진 Area 를 기준으로 재정렬한다.
+        var areaList = [
+            {area: me.AREA.lAc, center: me._CONFIG.AREA.lAc.center},
+            {area: me.AREA.lOut, center: me._CONFIG.AREA.lOut.center},
+            {area: me.AREA.rIn, center: me._CONFIG.AREA.rIn.center},
+            {area: me.AREA.rAc, center: me._CONFIG.AREA.rAc.center},
+            {area: me.AREA.rOut, center: me._CONFIG.AREA.rOut.center}
+        ];
+        var centerArea = null;
+        for (var i = 0, leni = areaList.length; i < leni; i++) {
+            if (areaList[i].center) {
+                centerArea = areaList[i];
+            }
+        }
+        if (centerArea) {
+            boundary = me._RENDERER.getBoundary(centerArea.area);
+            var moveX = 0;
+            var leftX;
+            var rightX;
+            var centerX = boundary.getCentroid().x;
+            if (centerX < containerWidth / 2) {
+                moveX = containerWidth / 2 - centerX;
+                for (var c = 0, lenc = areaList.length; c < lenc; c++) {
+                    boundary = me._RENDERER.getBoundary(areaList[c].area);
+                    leftX = boundary.getLeftCenter().x + moveX;
+                    rightX = boundary.getRightCenter().x + moveX;
+                    me.fitToBoundary(areaList[c].area, [upper, low, leftX, rightX]);
+                }
+                //캔버스 사이즈 조정
+                right = right + moveX;
+            }
+        }
+
         //캔버스의 사이즈를 재조정한다.
         me.canvas.setCanvasSize([right, totalHeight]);
-    },
+    }
+    ,
     /**
      * 주어진 Boundary 영역 안으로 공간 기하 객체를 적용한다.(이동 & 리사이즈)
      *
@@ -2136,7 +2229,8 @@ Tree.prototype = {
             newRight = offset[3] - boundary.getRightCenter().x;
         this._RENDERER.resize(element, [newUpper, newLower, newLeft, newRight]);
         return element;
-    },
+    }
+    ,
     //========================================================================//
     //=========================Start Storage Query============================//
     //========================================================================//
@@ -2159,7 +2253,8 @@ Tree.prototype = {
             }
         }
         return activities;
-    },
+    }
+    ,
     /**
      * 주어진 id 의 액티비티의 next 액티비티를 구한다.
      * @param id
@@ -2179,7 +2274,8 @@ Tree.prototype = {
             }
         }
         return nextActivity;
-    },
+    }
+    ,
     /**
      * 주어진 id 의 prev 액티비티를 구한다.
      * @param id
@@ -2194,7 +2290,8 @@ Tree.prototype = {
             }
         }
         return prevActivity;
-    },
+    }
+    ,
     /**
      * 주어진 id 의 next 액티비티들을 구한다.
      * @param id
@@ -2220,7 +2317,8 @@ Tree.prototype = {
             }
         }
         return nextActivities;
-    },
+    }
+    ,
     /**
      * 주어진 아이디의 자식 데이터를 반환한다.
      * @param id
@@ -2237,7 +2335,8 @@ Tree.prototype = {
             }
         }
         return objects;
-    },
+    }
+    ,
     /**
      * 주어진 소스와 타켓 아이디를 가지는 매핑 데이터의 자식을 반환한다.
      * @param sourceId
@@ -2250,7 +2349,8 @@ Tree.prototype = {
             objects = this.loadByFilter({parentId: sourceId, target: targetId});
         }
         return objects;
-    },
+    }
+    ,
     /**
      * 주어진 소스와 타겟 아이디를 가지는 매핑 데이터의 자식을 재귀호출하여 반환한다.
      * @param sourceId
@@ -2268,7 +2368,8 @@ Tree.prototype = {
         };
         findChild(sourceId, targetId);
         return list;
-    },
+    }
+    ,
     /**
      * 주어진 아이디의 부모정보를 반환한다.
      * @param id
@@ -2282,7 +2383,8 @@ Tree.prototype = {
                 return this.selectById(parentId);
             }
         }
-    },
+    }
+    ,
     selectParentMapping: function (sourceId, targetId) {
         var object = this.selectBySourceTarget(sourceId, targetId);
         if (object) {
@@ -2291,7 +2393,8 @@ Tree.prototype = {
                 return this.selectBySourceTarget(parentSourceId, targetId);
             }
         }
-    },
+    }
+    ,
     /**
      * 주어진 아이디의 정보를 반환한다.
      * @param id
@@ -2301,7 +2404,8 @@ Tree.prototype = {
         if (id) {
             return this._STORAGE[id];
         }
-    },
+    }
+    ,
     selectBySourceTarget: function (sourceId, targetId) {
         var mappings = this.loadByFilter({source: sourceId, target: targetId});
         if (!mappings || !mappings.length) {
@@ -2309,7 +2413,8 @@ Tree.prototype = {
         } else {
             return mappings[0];
         }
-    },
+    }
+    ,
     /**
      * 매핑 데이터를 반환한다.
      * @returns {Array}
@@ -2323,7 +2428,8 @@ Tree.prototype = {
             }
         }
         return mappings;
-    },
+    }
+    ,
     /**
      * 주어진 아이디의 루트 액티비티 정보를 반환한다.
      * @param id
@@ -2345,7 +2451,8 @@ Tree.prototype = {
         };
         findParent(id);
         return root;
-    },
+    }
+    ,
     /**
      * 매핑 데이터의 루트를 반환한다.
      * @param sourceId
@@ -2365,7 +2472,8 @@ Tree.prototype = {
         };
         findParent(sourceId);
         return rootMapping;
-    },
+    }
+    ,
     /**
      * 주어진 아이디의 부모 일람을 재귀호출하여 반환한다.
      * @param id
@@ -2382,7 +2490,8 @@ Tree.prototype = {
         };
         findParent(id);
         return list;
-    },
+    }
+    ,
     /**
      * 주어진 아이디의 자식 데이터를 재귀호출하여 반환한다.
      * @param id
@@ -2399,7 +2508,8 @@ Tree.prototype = {
         };
         findChild(id);
         return list;
-    },
+    }
+    ,
     /**
      * 주어진 아이디의 자식 데이터를 재귀호출하여, 더이상 자식이 없는 마지막 데이터일 경우의 리스트를 반환한다.
      * (자기 자신이 마지막 데이터일 경우 자기 자신을 포함하여)
@@ -2423,7 +2533,8 @@ Tree.prototype = {
         };
         findChild(id);
         return list;
-    },
+    }
+    ,
 
     /**
      * 주어진 아이디에 해당하는 뷰 데이터를 반환한다.
@@ -2442,7 +2553,8 @@ Tree.prototype = {
             }
         }
         return view;
-    },
+    }
+    ,
     /**
      * 주어진 필터 조건에 따라 뷰데이터를 반환한다.
      * @param viewData
@@ -2468,7 +2580,8 @@ Tree.prototype = {
             }
         }
         return data;
-    },
+    }
+    ,
     /**
      * 주어진 아이디의 자식 뷰 데이터를 재귀호출하여 반환한다.
      * @param viewData
@@ -2492,7 +2605,8 @@ Tree.prototype = {
             }
         }
         return views;
-    },
+    }
+    ,
     /**
      * 주어진 views 중 가장 큰 y 를 반환한다.
      * @param views
@@ -2508,7 +2622,8 @@ Tree.prototype = {
             }
         }
         return maxY;
-    },
+    }
+    ,
     /**
      * 주어진 views 중 가장 큰 depth 를 반환한다.
      * @param views
@@ -2524,7 +2639,8 @@ Tree.prototype = {
             }
         }
         return maxDepth;
-    },
+    }
+    ,
     selectMaxBottomFromViews: function (views) {
         var maxBottom = 0;
         for (var i = 0, leni = views.length; i < leni; i++) {
@@ -2567,7 +2683,8 @@ Tree.prototype = {
             return true;
         }
         return false;
-    },
+    }
+    ,
     /**
      * 좌표값을 포함하는 가장 앞단의 엘리먼트를 반환한다.
      * @param point
@@ -2583,7 +2700,8 @@ Tree.prototype = {
             }
         }
         return element;
-    },
+    }
+    ,
     /**
      * 무작위 랜덤 아이디 생성
      * @returns {string}
@@ -2597,17 +2715,23 @@ Tree.prototype = {
 
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
             s4() + '-' + s4() + s4() + s4();
-    },
+    }
+    ,
 
     //========================================================================//
     //=================================Event==================================//
     //========================================================================//
     bindEvent: function () {
         var me = this;
-        me.bindMappingEvent();
-        me.bindActivityMove();
+        if (me._CONFIG.MAPPING_ENABLE) {
+            me.bindMappingEvent();
+        }
+        if (me._CONFIG.MOVE_SORTABLE) {
+            me.bindActivityMove();
+        }
         me.enableShapeContextMenu();
-    },
+    }
+    ,
     bindTooltip: function (element) {
         var me = this;
         var view = me.selectViewById(me._VIEWDATA, element.id);
@@ -2640,7 +2764,8 @@ Tree.prototype = {
                 }
             });
         }
-    },
+    }
+    ,
     bindDblClickEvent: function (element) {
         var me = this;
         $(element).unbind('dblclick');
@@ -2664,12 +2789,15 @@ Tree.prototype = {
                 me.onShowProperties(data, view);
             }
         });
-    },
+    }
+    ,
     bindMappingHighLight: function (element) {
+        //나를 매핑으로 가져다 쓰는 것이 있는지 검색
         //매핑 자식들을 찾는다.
         var me = this;
         var edge;
         var allEdges;
+        var mappings;
         var getChildMapping = function (elementId) {
             var childMapping = [];
             var highLightEdgeIds = [];
@@ -2682,6 +2810,24 @@ Tree.prototype = {
                 childMapping.push(view.data);
                 for (var i = 0, leni = childMapping.length; i < leni; i++) {
                     highLightEdgeIds.push(childMapping[i].id + me.Constants.PREFIX.MAPPING_EDGE);
+                }
+            }
+            //나를 가져다 쓰는 매핑요소의 검색
+            else if (view && view.data) {
+                if (view.type == me.Constants.TYPE.ACTIVITY ||
+                    view.type == me.Constants.TYPE.FOLDER ||
+                    view.type == me.Constants.TYPE.ED) {
+                    mappings = me.loadByFilter({source: view.data.id});
+                    for (var c = 0, lenc = mappings.length; c < lenc; c++) {
+                        childMapping = me.selectRecursiveChildMapping(mappings[c]['source'], mappings[c]['target']);
+
+                        //자기자신도 추가한다.
+                        childMapping.push(mappings[c]);
+                        for (var i = 0, leni = childMapping.length; i < leni; i++) {
+                            highLightEdgeIds.push(childMapping[i].id + me.Constants.PREFIX.MAPPING_EDGE);
+                        }
+                    }
+
                 }
             }
             return highLightEdgeIds;
@@ -2703,7 +2849,7 @@ Tree.prototype = {
         $(element).bind('mouseout', function () {
             allEdges = me._RENDERER.getAllEdges();
             for (var c = 0, lenc = allEdges.length; c < lenc; c++) {
-                if(allEdges[c].id.indexOf(me.Constants.PREFIX.MAPPING_EDGE) != -1){
+                if (allEdges[c].id.indexOf(me.Constants.PREFIX.MAPPING_EDGE) != -1) {
                     me.canvas.setShapeStyle(allEdges[c], {
                         "stroke": "black",
                         "stroke-width": "1.5",
@@ -2711,17 +2857,10 @@ Tree.prototype = {
                         "opacity": "0.3"
                     });
                 }
-                //if (edge) {
-                //    me.canvas.setShapeStyle(edge, {
-                //        "stroke": "black",
-                //        "stroke-width": "1.5",
-                //        "stroke-dasharray": "-",
-                //        "opacity": "0.3"
-                //    });
-                //}
             }
         });
-    },
+    }
+    ,
     bindActivityMove: function () {
         var me = this;
         var eventX, eventY, targetEle, targetView, source, target, position, activityViews, area;
@@ -2782,16 +2921,16 @@ Tree.prototype = {
                         activities.push(data);
                     }
                 }
-                //TODO 스테이터스 범례조건
-                //TODO 선 하이라이트
-
-                //TODO 창 이동시에 사이즈 부모 창 재조절이 필요함.
-
                 //1.선 중복 버그 => 이것은.... 스탠드어론 객체 디스플레이가 남아있어서 일어나는 문제이다. ==> ok.
                 //2.expander 미러된 쪽에서 안움직임. ==> ok.
+                //TODO 부모 창 제어.done
+                //TODO 선 하이라이트. done.
+                //TODO 스테이터스 범례조건
+                //TODO 창 이동시에 사이즈 부모 창 재조절이 필요함.
+
+
                 //3.전체 크기 늘이기
                 //4.상단 검색 조건 이상하게 보이는 것
-
 
                 //TODO 모니터 화면 만들 것.
                 //1. 같은 로직, 마이 데이터만 부른다.
@@ -2814,13 +2953,16 @@ Tree.prototype = {
                 me.onActivityMove(activities);
             }
         });
-    },
+    }
+    ,
     onBeforeActivityMove: function (activities) {
         console.log(activities);
-    },
+    }
+    ,
     onActivityMove: function (activities) {
         console.log(activities);
-    },
+    }
+    ,
     bindMappingEvent: function () {
         var me = this;
         var eventX, eventY, targetEle, targetView, source, target;
@@ -2976,7 +3118,8 @@ Tree.prototype = {
                 me.onMapping(source, target, selectedTargetList);
             }
         });
-    },
+    }
+    ,
     deleteMapping: function (data, view) {
         //매핑 삭제 로직을 만든다.
         //자기자신을 삭제한다.
@@ -3028,7 +3171,8 @@ Tree.prototype = {
 
         //onDeleteMapping  이벤트 발생
         me.onDeleteMapping(source, sourceType, target, targetType);
-    },
+    }
+    ,
 
     /**
      * Shape 에 마우스 우클릭 메뉴를 가능하게 한다.
@@ -3083,14 +3227,20 @@ Tree.prototype = {
                         enableCreateEd = false;
                         enableCreateFolder = false;
                     }
-                    if (enableCreateEd) {
+                    //MOVE_SORTABLE: false,
+                    //    MAPPING_ENABLE: false,
+                    //    CREATE_FOLDER: false,
+                    //    CREATE_ED: false,
+                    //    PICK_ED: false,
+                    //    DELETABLE: false,
+                    if (enableCreateEd && me._CONFIG.CREATE_ED) {
                         items.makeEd = me.makeEd();
                         items.makePickEd = me.makePickEd();
                     }
-                    if (enableCreateFolder) {
+                    if (enableCreateFolder && me._CONFIG.CREATE_FOLDER) {
                         items.makeFolder = me.makeFolder();
                     }
-                    if (enableDelete) {
+                    if (enableDelete && me._CONFIG.DELETABLE) {
                         items.makeDelete = me.makeDelete();
                     }
                 }
@@ -3105,7 +3255,7 @@ Tree.prototype = {
                 }
 
                 //매핑 삭제
-                if (view.position == me.Constants.POSITION.MY_IN && view.mapping) {
+                if (view.position == me.Constants.POSITION.MY_IN && view.mapping && me._CONFIG.MAPPING_ENABLE) {
                     items.makeDeleteRelation = me.makeDeleteRelation();
                 }
 
@@ -3116,7 +3266,8 @@ Tree.prototype = {
                 };
             }
         });
-    },
+    }
+    ,
     makeShowProperties: function () {
         var me = this;
         return {
@@ -3125,7 +3276,8 @@ Tree.prototype = {
                 me.onShowProperties(me.selectedData, me.selectedView);
             }
         }
-    },
+    }
+    ,
     makeFolder: function () {
         var me = this;
         return {
@@ -3134,7 +3286,8 @@ Tree.prototype = {
                 me.onMakeFolder(me.selectedData, me.selectedView);
             }
         }
-    },
+    }
+    ,
     makeEd: function () {
         var me = this;
         return {
@@ -3172,7 +3325,8 @@ Tree.prototype = {
                 }
             }
         }
-    },
+    }
+    ,
     makePickEd: function () {
         var me = this;
         return {
@@ -3181,7 +3335,8 @@ Tree.prototype = {
                 me.onPickEd(me.selectedData, me.selectedView);
             }
         }
-    },
+    }
+    ,
     makeDelete: function () {
         var me = this;
         return {
@@ -3190,7 +3345,8 @@ Tree.prototype = {
                 me.onDelete(me.selectedData, me.selectedView);
             }
         }
-    },
+    }
+    ,
     makeListRelation: function () {
         var me = this;
         return {
@@ -3199,7 +3355,8 @@ Tree.prototype = {
                 me.onListRelation(me.selectedData, me.selectedView);
             }
         }
-    },
+    }
+    ,
     makeDeleteRelation: function () {
         var me = this;
         return {
@@ -3208,25 +3365,32 @@ Tree.prototype = {
                 me.deleteMapping(me.selectedData, me.selectedView);
             }
         }
-    },
+    }
+    ,
     onShowProperties: function (data, view) {
         console.log(data, view);
-    },
+    }
+    ,
     onMakeFolder: function (data, view) {
         console.log(data, view);
-    },
+    }
+    ,
     onMakeEd: function (data, view, edType) {
         console.log(data, view, edType);
-    },
+    }
+    ,
     onPickEd: function (data, view) {
         console.log(data, view);
-    },
+    }
+    ,
     onDelete: function (data, view) {
         console.log(data, view);
-    },
+    }
+    ,
     onListRelation: function (data, view) {
         console.log(data, view);
-    },
+    }
+    ,
     /**
      * GUI 상에서 매핑이 되기 전의 핸들러
      * @param event
@@ -3237,7 +3401,8 @@ Tree.prototype = {
     onBeforeMapping: function (source, target, selectedTargetList) {
         console.log(source, target, selectedTargetList);
         return true;
-    },
+    }
+    ,
     /**
      * GUI 상에서 매핑이 이루어졌을 때 핸들러
      * @param event
@@ -3246,11 +3411,13 @@ Tree.prototype = {
     onMapping: function (source, target, selectedTargetList) {
         console.log(source, target, selectedTargetList);
         return true;
-    },
+    }
+    ,
     onBeforeDeleteMapping: function (sourceId, sourceType, targetId, targetType) {
         console.log(sourceId, sourceType, targetId, targetType);
         return true;
-    },
+    }
+    ,
 
     onDeleteMapping: function (sourceId, sourceType, targetId, targetType) {
         console.log(sourceId, sourceType, targetId, targetType);
