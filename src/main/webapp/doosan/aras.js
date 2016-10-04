@@ -87,7 +87,20 @@ Aras.prototype = {
         }
         return data;
     },
+    getHtmlParameter: function (val) {
+        var result = undefined,
+            tmp = [];
+        location.search
+            .substr(1)
+            .split("&")
+            .forEach(function (item) {
+                tmp = item.split("=");
+                if (tmp[0] === val) result = decodeURIComponent(tmp[1]);
+            });
+        return result;
+    },
     init: function () {
+        var me = this;
         this.aras = parent.top.aras;
         this.thisItem = parent.top.thisItem;
         if (!this.aras || !this.thisItem) {
@@ -99,20 +112,16 @@ Aras.prototype = {
         this.projectId = parent.top.thisItem.getProperty('_rel_project');
         this.body = '';
 
-        //아라츠 팝업창 디자인을 손보도록 한다.
-        var parentDoc = $(window.parent.document);
-        var pane = parentDoc.find('.dijitDialogPaneContent');
-        pane.css('width', '100%');
-        pane.parent().css({
-            'left': '0px',
-            'right': '0px'
-        });
-        pane.find('iframe').css({
-            'height': $('body').height() + 'px',
-            'width': '100%'
-        });
+        //this._CONTAINER.css({
+        //    width: '100%',
+        //    height: this._CONFIG.CONTAINER_HEIGHT + 'px',
+        //    border: '1px solid #555'
+        //});
 
-        $(window.parent).resize(function () {
+        //아라츠 팝업창 디자인을 손보도록 한다.
+        var resizeView = function () {
+            var parentDoc = $(window.parent.document);
+            var pane = parentDoc.find('.dijitDialogPaneContent');
             pane.css('width', '100%');
             pane.parent().css({
                 'left': '0px',
@@ -122,7 +131,24 @@ Aras.prototype = {
                 'height': $('body').height() + 'px',
                 'width': '100%'
             });
+            var innerMode = me.getHtmlParameter('mode');
+            if (innerMode) {
+                var innerPane = parentDoc.find('dijitContentPane');
+                console.log(innerPane, innerPane.length);
+                if (innerPane) {
+                    var height = innerPane.height();
+                    me.tree._CONFIG.CONTAINER_HEIGHT = height;
+                    me.tree._CONTAINER.css({
+                        height: me.tree._CONFIG.CONTAINER_HEIGHT + 'px'
+                    });
+                }
+            }
+        };
+
+        $(window.parent).resize(function () {
+            resizeView();
         });
+        resizeView();
     },
     createBody: function (params) {
         var body = '', value;

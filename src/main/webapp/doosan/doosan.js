@@ -6,18 +6,6 @@ var Doosan = function () {
     this.aras = null;
 };
 Doosan.prototype = {
-    getHtmlParameter: function (val) {
-        var result = "Not found",
-            tmp = [];
-        location.search
-            .substr(1)
-            .split("&")
-            .forEach(function (item) {
-                tmp = item.split("=");
-                if (tmp[0] === val) result = decodeURIComponent(tmp[1]);
-            });
-        return result;
-    },
     init: function () {
         var me = this;
         me.tree = new Tree('canvas');
@@ -46,12 +34,15 @@ Doosan.prototype = {
         }
         me.tree.init();
 
-        var mode = me.getHtmlParameter('mode');
-        alert(mode);
-
         if (parent.top.aras) {
             me.aras = new Aras(me.tree);
             me.aras.init();
+            var innerMode = me.aras.getHtmlParameter('mode');
+            if (innerMode) {
+                $('.header-info').hide();
+                $('.breadcrumbs').hide();
+            }
+
             if (editorMode) {
                 //셀렉트 박스 이벤트를 걸고 초기데이터를 불러온다.
                 me.bindSelectBoxEvent();
