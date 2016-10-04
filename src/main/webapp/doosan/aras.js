@@ -133,17 +133,34 @@ Aras.prototype = {
             });
             var innerMode = me.getHtmlParameter('mode');
             if (innerMode) {
-                var innerPane = parentDoc.find('.dijitContentPane .dijitTabPane .dijitContainerTop-child');
-                console.log(innerPane, innerPane.length);
-                if (innerPane) {
-                    var height = innerPane.height();
-                    console.log('height' , height);
+                var parentIframe;
+                var iframes = parentDoc.find('iframe');
+                iframes.each(function () {
+                    var src = $(this).attr('src');
+                    if (src && src.indexOf('doosanMonitor') != -1) {
+                        parentIframe = $(this);
+                    }
+                });
+                if(parentIframe){
+                    var height = parentIframe.height();
+                    console.log('height', height);
                     me.tree._CONFIG.CONTAINER_HEIGHT = height;
                     me.tree._CONTAINER.css({
                         height: me.tree._CONFIG.CONTAINER_HEIGHT + 'px'
                     });
                     me.tree.renderViews();
                 }
+                //var innerPane = parentDoc.find('.dijitContentPane .dijitTabPane .dijitContainerTop-child');
+                //console.log(innerPane, innerPane.length);
+                //if (innerPane) {
+                //    var height = innerPane.height();
+                //    console.log('height' , height);
+                //    me.tree._CONFIG.CONTAINER_HEIGHT = height;
+                //    me.tree._CONTAINER.css({
+                //        height: me.tree._CONFIG.CONTAINER_HEIGHT + 'px'
+                //    });
+                //    me.tree.renderViews();
+                //}
             }
         };
 
