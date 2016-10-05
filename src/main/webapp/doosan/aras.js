@@ -760,8 +760,20 @@ Aras.prototype = {
         var relItem;
         var existRelItem;
 
+        //관계 삭제 전 삭제 가능 여부 체크
+        var checkEnableDelete = function (sourceId, relatedId) {
+            var body = "<source_id>" + sourceId + "</source_id>";
+            body += "<related_id>" + relatedId + "</related_id>";
+            return inn.applyMethod("DHI_WF_PARENT_OWNER_CHECK", body);
+        };
+
         //액티비티 삭제일 경우
         if (data.type == me.TYPE.ACTIVITY) {
+
+            if (!checkEnableDelete(me.wfId, data.id)) {
+                msgBox('You do not have permission.');
+                return;
+            }
 
             //관계 삭제 전 상위 상태 재설정
             var body = "<source_id>" + me.wfId + "</source_id>";
@@ -795,6 +807,12 @@ Aras.prototype = {
             if (!parentView) {
                 msgBox('Failed to delete selected Item.');
             }
+
+            if (!checkEnableDelete(parentData.id, data.id)) {
+                msgBox('You do not have permission.');
+                return;
+            }
+
             //관계 삭제 전 상위 상태 재설정
             var body = "<source_id>" + parentData.id + "</source_id>";
             body += "<related_id>" + data.id + "</related_id>";
