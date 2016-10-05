@@ -370,7 +370,9 @@ Doosan.prototype = {
                         var edData = dataSet[parseInt(dataIndex)];
                         var edItem = me.aras.getItemById(me.aras.TYPE.ED, edData.id);
                         var folderItem = me.aras.getItemById(me.aras.TYPE.FOLDER, data.id);
-                        me.aras.addPickEDOutRelation(edItem, folderItem, data, view);
+                        if (checkbox.prop('checked')) {
+                            me.aras.addPickEDOutRelation(edItem, folderItem, data, view);
+                        }
                     });
                 });
                 modal.find('[name=search]').bind('click', function () {
