@@ -3055,14 +3055,14 @@ Tree.prototype = {
                 //접을때 툴바 버튼 살리기.ok
                 //매핑 또는 리프레쉬 시에 선 스타일 변경.ok
                 //가상 expanderFrom 생성하기.ok
+                //상단 검색 조건 이상하게 보이는 것.ok
+                //툴바 아이콘 적용하기.ok
 
                 //TODO
                 //담당자명 , 명칭, 생성일 재정렬
-
-                //상단 검색 조건 이상하게 보이는 것
-                //툴바 아이콘 적용하기
-
                 //IE 전환 살펴보기.
+                //검증 메소드 추가하기
+                //pick ed 화면 ed number, ed name 필드 추가하기 ? 보류
 
                 //before 이벤트
                 var beforeActivityMove = me.onBeforeActivityMove(activities);
@@ -3342,10 +3342,16 @@ Tree.prototype = {
                     var enableCreateFolder = true;
                     var enableDelete = true;
                     var child = me.selectChildById(data.id);
+
+                    //하위에 폴더가 있으면 ED 를 만들 수 없다.
+                    //하위에 ED 가 있으면 폴더를 만들 수 없다.
                     if (child && child.length) {
                         for (var i = 0, leni = child.length; i < leni; i++) {
                             if (child[i].type == me.Constants.TYPE.FOLDER) {
                                 enableCreateEd = false;
+                            }
+                            if (child[i].type == me.Constants.TYPE.ED) {
+                                enableCreateFolder = false;
                             }
                         }
                     }

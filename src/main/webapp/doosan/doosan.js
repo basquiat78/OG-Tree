@@ -110,9 +110,20 @@ Doosan.prototype = {
              */
             me.tree.onBeforeDeleteMapping = function (sourceId, sourceType, targetId, targetType) {
                 console.log(sourceId, sourceType, targetId, targetType);
-
-                //아라스에서는 소스와 타겟이 반대
-                me.aras.deleteInRel(targetId, targetType, sourceId, sourceType);
+                var modal = $('#deleteConfirm');
+                modal.find('[name=action]').unbind('click');
+                modal.find('[name=close]').unbind('click');
+                modal.find('[name=close]').bind('click', function () {
+                    modal.find('.close').click();
+                });
+                modal.find('[name=action]').bind('click', function () {
+                    modal.find('.close').click();
+                    //아라스에서는 소스와 타겟이 반대
+                    me.aras.deleteInRel(targetId, targetType, sourceId, sourceType);
+                });
+                modal.modal({
+                    show: true
+                });
                 return false;
             };
 
@@ -179,7 +190,19 @@ Doosan.prototype = {
              * @param view
              */
             me.tree.onDelete = function (data, view) {
-                me.aras.deleteOutItem(data, view);
+                var modal = $('#deleteConfirm');
+                modal.find('[name=action]').unbind('click');
+                modal.find('[name=close]').unbind('click');
+                modal.find('[name=close]').bind('click', function () {
+                    modal.find('.close').click();
+                });
+                modal.find('[name=action]').bind('click', function () {
+                    modal.find('.close').click();
+                    me.aras.deleteOutItem(data, view);
+                });
+                modal.modal({
+                    show: true
+                });
             };
             /**
              * 폴더 또는 ED 를 input 으로 쓰는 모든 Workflow - Activity 리스트를 보여주기
@@ -266,9 +289,9 @@ Doosan.prototype = {
                 for (var i = 0; i < dataSet.length; i++) {
                     dataSet[i]['label'] =
                         '<input type="checkbox" name="pickEdObj" data-index="' + i + '"/>&nbsp;' +
-                        '<a href="#">' + dataSet[i]['name'] + '</a>';
+                        '<i class="fa fa-search-plus"></i>&nbsp;<a href="Javascript:void(0)" name="statusBtn">' + dataSet[i]['name'] + '</a>';
 
-                    dataSet[i]['detail'] = '<button class="btn btn-xs rounded btn-primary" name="statusBtn">Detail</button>'
+                    //dataSet[i]['detail'] = '<button class="btn btn-xs rounded btn-primary" name="statusBtn">Detail</button>'
                 }
 
                 var gridPanel = $('#pickEdGrid');
@@ -279,8 +302,8 @@ Doosan.prototype = {
                         columns: [
                             {data: 'label', title: 'Name'},
                             {data: '_rel_project', title: 'Project'},
-                            {data: 'state', title: 'State'},
-                            {data: 'detail', title: 'Detail'}
+                            {data: 'state', title: 'State'}
+                            //{data: 'detail', title: 'Detail'}
                         ]
                     });
                 }
@@ -470,6 +493,7 @@ Doosan.prototype = {
         var json = JSON.parse(data.d);
         if (json['rtn']) {
             var otherWorkFlows = JSON.parse(json['data']);
+            $('#targetOtherWorkflow').find('option').remove();
             for (var key in otherWorkFlows.data) {
                 me.appendSelectBoxElement($('#targetOtherWorkflow'), otherWorkFlows.data[key]['LABEL'], otherWorkFlows.data[key]['VALUE']);
             }
