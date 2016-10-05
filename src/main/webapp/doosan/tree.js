@@ -3082,11 +3082,13 @@ Tree.prototype = {
                 //상단 검색 조건 이상하게 보이는 것.ok
                 //툴바 아이콘 적용하기.ok
                 //검증 메소드 추가하기.ok
+                //IE 전환 살펴보기.ok
+                //pick ed 화면 ed number, ed name 필드 추가하기.ok
 
                 //TODO
                 //담당자명 , 명칭, 생성일 재정렬
-                //IE 전환 살펴보기.
-                //pick ed 화면 ed number, ed name 필드 추가하기 ? 보류
+                //IE 라벨 살펴보기
+
 
                 //before 이벤트
                 var beforeActivityMove = me.onBeforeActivityMove(activities);

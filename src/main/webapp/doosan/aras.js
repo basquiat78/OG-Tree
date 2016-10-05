@@ -949,6 +949,14 @@ Aras.prototype = {
                     catch (e) {
                         msgBox('Failed to add ' + relType + ' Relation : ' + source.id + ' to ' + targetId);
                     }
+                } else {
+                    //선택한 타겟일 경우 릴레이션이 없어도 메소드 실행
+                    if (target.id == targetId) {
+                        var body = "<_parent_type>" + me.getItemType(me.TYPE.ACTIVITY) + "</_parent_type>";
+                        body += "<_parent_id>" + source.id + "</_parent_id>";
+                        body += "<_ids>" + targetId + "</_ids>";
+                        var result = inn.applyMethod("DHI_WF_CREATE_FD_IN_REL", body);
+                    }
                 }
             }
         }
