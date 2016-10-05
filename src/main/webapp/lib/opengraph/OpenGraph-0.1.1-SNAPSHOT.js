@@ -15898,7 +15898,7 @@ OG.renderer.RaphaelRenderer.prototype._drawLabel = function (position, text, siz
     // Boundary Box
     geom = new OG.Rectangle([left, top], width, height);
 
-    if (navigator.userAgent.toLowerCase().indexOf("mozilla") != -1) {
+    if (!OG.Util.isIE()) {
         if (_style["label-direction"] === 'vertical') {
             // Text Horizontal Align
             switch (text_anchor) {
@@ -15967,7 +15967,7 @@ OG.renderer.RaphaelRenderer.prototype._drawLabel = function (position, text, siz
             }
         }
     }
-    else if (navigator.userAgent.toLowerCase().indexOf("msie") != -1) {
+    else if (OG.Util.isIE()) {
         if (_style["label-direction"] === 'vertical') {
             // Text Horizontal Align
             switch (text_anchor) {

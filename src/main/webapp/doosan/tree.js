@@ -1430,7 +1430,11 @@ Tree.prototype = {
                 }
             }
             if (toRemove) {
-                me.canvas.removeShape(currentDisplayShapes[i]);
+                try {
+                    me.canvas.removeShape(currentDisplayShapes[i]);
+                } catch (e) {
+                    //Nothing to do.
+                }
             }
 
             //매핑이 아닐 경우 라벨이 있다면 지운다.
@@ -1669,40 +1673,12 @@ Tree.prototype = {
             var imgURL = $img.attr('href');
             var attributes = $img.prop("attributes");
             var $svg = $(element).find('svg');
-            if ($svg.length && attributes) {
-                $.each(attributes, function () {
-                    $svg.attr(this.name, this.value);
-                });
-                //ignore
-                $svg.find('path').each(function () {
-                    var ignore = false;
-                    if ($(this).attr('class')) {
-                        if ($(this).attr('class').indexOf('ignore') != -1) {
-                            ignore = true;
-                        }
-                    }
-                    if (!ignore) {
-                        $(this).css('fill', color);
-                    }
-                });
-                // Remove IMG
-                var rElement = me._RENDERER._getREleById(element.id);
-                if (rElement) {
-                    var childNodes = rElement.node.childNodes;
-                    for (var i = childNodes.length - 1; i >= 0; i--) {
-                        if (childNodes[i].tagName == 'image') {
-                            me._RENDERER._remove(me._RENDERER._getREleById(childNodes[i].id));
-                        }
-                    }
-                }
-            } else if (attributes) {
-                $.get(imgURL, function (data) {
-                    $svg = $(data).find('svg');
-                    $svg = $svg.removeAttr('xmlns:a');
-
+            if (imgURL) {
+                if ($svg.length && attributes) {
                     $.each(attributes, function () {
                         $svg.attr(this.name, this.value);
                     });
+                    //ignore
                     $svg.find('path').each(function () {
                         var ignore = false;
                         if ($(this).attr('class')) {
@@ -1714,65 +1690,67 @@ Tree.prototype = {
                             $(this).css('fill', color);
                         }
                     });
-
-                    // Replace IMG with SVG
+                    // Remove IMG
                     var rElement = me._RENDERER._getREleById(element.id);
                     if (rElement) {
                         var childNodes = rElement.node.childNodes;
                         for (var i = childNodes.length - 1; i >= 0; i--) {
-                            if (childNodes[i].tagName == 'IMAGE') {
-                                me._RENDERER._remove(this._getREleById(childNodes[i].id));
+                            if (childNodes[i].tagName == 'image') {
+                                me._RENDERER._remove(me._RENDERER._getREleById(childNodes[i].id));
                             }
                         }
                     }
-                    $(element).append($svg);
-                }, 'xml');
+                } else if (attributes) {
+                    $.get(imgURL, function (data) {
+                        $svg = $(data).find('svg');
+                        $svg = $svg.removeAttr('xmlns:a');
+
+                        $.each(attributes, function () {
+                            $svg.attr(this.name, this.value);
+                        });
+                        $svg.find('path').each(function () {
+                            var ignore = false;
+                            if ($(this).attr('class')) {
+                                if ($(this).attr('class').indexOf('ignore') != -1) {
+                                    ignore = true;
+                                }
+                            }
+                            if (!ignore) {
+                                $(this).css('fill', color);
+                            }
+                        });
+
+                        // Replace IMG with SVG
+                        var rElement = me._RENDERER._getREleById(element.id);
+                        if (rElement) {
+                            var childNodes = rElement.node.childNodes;
+                            for (var i = childNodes.length - 1; i >= 0; i--) {
+                                if (childNodes[i].tagName == 'IMAGE') {
+                                    me._RENDERER._remove(this._getREleById(childNodes[i].id));
+                                }
+                            }
+                        }
+                        $(element).append($svg);
+                    }, 'xml');
+                }
             }
         }
     },
     drawMappingLabel: function (view, element) {
         if (view.mapping) {
             var id = view.id + this.Constants.PREFIX.MAPPING_LABEL;
-            var size = [11, 12];
-            var offset = [view.x + 10, view.y - 16];
-            var style = {
-                '-webkit-tap-highlight-color': 'rgba(0, 0, 0, 0)',
-                'font-size': '11px',
-                'background-color': 'RGB(66,139,202)',
-                'color': 'whitesmoke',
-                'line-height': '11px',
-                'padding': '2px',
-                'border': '1px solid gray',
-                'width': '15px'
-            };
-            var text = 'm';
-            var label = this.drawLabel(id, style, element, text, offset, size);
-            $(label).find('foreignObject').css(style);
+            var size = [10, 12];
+            var offset = [view.x + 10, view.y - 17];
+            var shape = new OG.MLabel();
+            this.canvas.drawShape(offset, shape, size, null, id);
         }
         if (view.selected) {
             var id = view.id + this.Constants.PREFIX.SELECTED_LABEL;
-            var size = [11, 12];
-            var offset = [view.x - 5, view.y - 16];
-            var style = {
-                '-webkit-tap-highlight-color': 'rgba(0, 0, 0, 0)',
-                'font-size': '11px',
-                'background-color': '#5cb85c',
-                'color': 'whitesmoke',
-                'line-height': '10px',
-                'padding': '3px',
-                'border': '1px solid gray',
-                'width': '13px'
-            };
-            var text = 's';
-            var label = this.drawLabel(id, style, element, text, offset, size);
-            $(label).find('foreignObject').css(style);
+            var size = [10, 12];
+            var offset = [view.x - 2, view.y - 17];
+            var shape = new OG.SLabel();
+            this.canvas.drawShape(offset, shape, size, null, id);
         }
-    },
-    drawLabel: function (id, style, element, text, offset, size) {
-        var label = this._RENDERER._drawLabel(offset, text, size, style, id, false);
-        this._RENDERER.getRootGroup().appendChild(label);
-        return label;
-        //return this._RENDERER._drawLabel(offset, text, size, style, id, false);
     },
     updateActivity: function (view, element) {
         this.updateImageShapeStatus(view, element);
@@ -1790,9 +1768,6 @@ Tree.prototype = {
         }
         var element = me.canvas.drawShape([view.x, view.y], shape, [view.width, view.height], null, view.id);
         me.updateImageShapeStatus(view, element);
-        $(element).click(function () {
-
-        });
         me.bindDblClickEvent(element);
         me.bindTooltip(element);
         me.bindMappingHighLight(element);
@@ -1824,9 +1799,6 @@ Tree.prototype = {
         me.updateImageShapeStatus(view, element);
 
         me.drawMappingLabel(view, element);
-        $(element).click(function () {
-
-        });
         me.bindDblClickEvent(element);
         me.bindTooltip(element);
         me.bindMappingHighLight(element);
@@ -1858,9 +1830,6 @@ Tree.prototype = {
         me.updateImageShapeStatus(view, element);
 
         me.drawMappingLabel(view, element);
-        $(element).click(function () {
-
-        });
         me.bindDblClickEvent(element);
         me.bindTooltip(element);
         me.bindMappingHighLight(element);
@@ -1883,9 +1852,6 @@ Tree.prototype = {
 
             me.canvas.setShapeStyle(element, {"stroke-dasharray": "-"});
             me.canvas.setShapeStyle(element, {"opacity": "0.3"});
-
-            //me.canvas.setShapeStyle(element, {"stroke": "RGB(66,139,202)"});
-            //me.canvas.setShapeStyle(element, {"stroke-width": "3"});
         }
     },
     /**
@@ -3057,11 +3023,11 @@ Tree.prototype = {
                 //가상 expanderFrom 생성하기.ok
                 //상단 검색 조건 이상하게 보이는 것.ok
                 //툴바 아이콘 적용하기.ok
+                //검증 메소드 추가하기.ok
 
                 //TODO
                 //담당자명 , 명칭, 생성일 재정렬
                 //IE 전환 살펴보기.
-                //검증 메소드 추가하기
                 //pick ed 화면 ed number, ed name 필드 추가하기 ? 보류
 
                 //before 이벤트
