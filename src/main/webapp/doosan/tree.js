@@ -695,13 +695,17 @@ Tree.prototype = {
                         standaloneView = standaloneViewData['views'][s];
                         standaloneView.y = standaloneView.y + diffY;
                         if (standaloneView.parentY) {
-                            standaloneView.parentY = standaloneView.parentY + diffY;
+                            if (standaloneView.type == me.Constants.TYPE.EXPANDER_FROM && standaloneView.depth == 0) {
+                                standaloneView.parentY = targetActivityView.y;
+                            } else {
+                                standaloneView.parentY = standaloneView.parentY + diffY;
+                            }
                         }
                         viewData.views.push(standaloneView);
                     }
 
                     //totalInHeight 갱신
-                    totalInHeight = totalInHeight + standaloneViewData.totalHeight;// + me._CONFIG.SHAPE_SIZE.ACTIVITY_HEIGHT + me._CONFIG.SHAPE_SIZE.ACTIVITY_MARGIN;
+                    totalInHeight = totalInHeight + standaloneViewData.totalHeight;
 
                     //targetActivityView 의 y 와 nextActivityView 의 y 차이를 구한다. => currentDiffY
                     //totalInHeight 와 currentDiffY 의 차이를 구한다. ==> targetOutDiff
@@ -1018,7 +1022,7 @@ Tree.prototype = {
         return viewData;
     },
 
-    createStandaloneViewData: function (mapping, tagetActivityView) {
+    createStandaloneViewData: function (mapping, targetActivityView) {
         //주어진 매핑 데이터에 연관된 매핑으로 이루어진 독립된 공간을 계산하여 리턴한다.
         var me = this, y,
             viewData = {
@@ -1172,11 +1176,11 @@ Tree.prototype = {
                     standalone: true
                 };
             }
-            //부모가 없을 경우 가상 expander 로부터 자신 까지 연결선 을 등록한다.
+            //부모가 없을 경우 가상 expander 로부터 자신 까지 연결선을 등록한다.
             else {
                 expanderToView = {
                     id: view.id + me.Constants.PREFIX.EXPANDER_TO,
-                    parentId: tagetActivityView.id,
+                    parentId: targetActivityView.id,
                     y: view.y,
                     bottom: view.y,
                     root: view.root,
@@ -1284,14 +1288,14 @@ Tree.prototype = {
             y: me._CONFIG.SHAPE_SIZE.FOLDER_HEIGHT / 2,
             width: me._CONFIG.SHAPE_SIZE.EXPANDER_WIDTH,
             height: me._CONFIG.SHAPE_SIZE.EXPANDER_HEIGHT,
-            bottom: tagetActivityView.y + (me._CONFIG.SHAPE_SIZE.EXPANDER_HEIGHT / 2),
-            root: tagetActivityView.id,
+            bottom: targetActivityView.y + (me._CONFIG.SHAPE_SIZE.EXPANDER_HEIGHT / 2),
+            root: targetActivityView.id,
             position: me.Constants.POSITION.MY_IN,
             type: me.Constants.TYPE.EXPANDER,
             depth: 0,
             data: JSON.parse(JSON.stringify(mapping)),
             index: 0,
-            name: tagetActivityView.name,
+            name: targetActivityView.name,
             source: mapping.parentId,
             target: mapping.target,
             standalone: true,
@@ -1299,6 +1303,28 @@ Tree.prototype = {
         };
         expanderView.data.expand = rootExpand;
         viewData.views.push(expanderView);
+
+        //mapping.parentId 에 해당하는 가상의 expanderFrom을 생성한다.
+        var expanderFromView = {
+            id: mapping.parentId + '-' + mapping.target + me.Constants.PREFIX.EXPANDER_FROM,
+            y: expanderView.y,
+            bottom: expanderView.y,
+            root: targetActivityView.id,
+            position: me.Constants.POSITION.MY_IN,
+            type: me.Constants.TYPE.EXPANDER_FROM,
+            depth: 0,
+            data: JSON.parse(JSON.stringify(mapping)),
+            index: 0,
+            transparent: true,
+            parentY: expanderView.y,
+            name: targetActivityView.name,
+            source: mapping.parentId,
+            target: mapping.target,
+            standalone: true,
+            hasChild: true
+        };
+        expanderFromView.data.expand = rootExpand;
+        viewData.views.push(expanderFromView);
 
         if (rootExpand) {
             //주어진 루트매핑 과 같은 parentId 를 쓰는 매핑을 구한다.
@@ -1596,9 +1622,9 @@ Tree.prototype = {
                 } else if (type == me.Constants.TYPE.ED) {
                     me.updateEd(displayViews[i], element);
                 } else if (type == me.Constants.TYPE.EXPANDER_FROM) {
-                    me.updateExpanderLine(displayViews[i]);
+                    me.updateExpanderLine(displayViews[i], element);
                 } else if (type == me.Constants.TYPE.EXPANDER_TO) {
-                    me.updateExpanderLine(displayViews[i]);
+                    me.updateExpanderLine(displayViews[i], element);
                 } else if (type == me.Constants.TYPE.ACTIVITY_REL) {
                     me.updateActivityRelLien(displayViews[i]);
                 }
@@ -1648,14 +1674,14 @@ Tree.prototype = {
                     $svg.attr(this.name, this.value);
                 });
                 //ignore
-                $svg.find('path').each(function(){
+                $svg.find('path').each(function () {
                     var ignore = false;
-                    if($(this).attr('class')){
-                        if($(this).attr('class').indexOf('ignore') != -1){
+                    if ($(this).attr('class')) {
+                        if ($(this).attr('class').indexOf('ignore') != -1) {
                             ignore = true;
                         }
                     }
-                    if(!ignore){
+                    if (!ignore) {
                         $(this).css('fill', color);
                     }
                 });
@@ -1677,14 +1703,14 @@ Tree.prototype = {
                     $.each(attributes, function () {
                         $svg.attr(this.name, this.value);
                     });
-                    $svg.find('path').each(function(){
+                    $svg.find('path').each(function () {
                         var ignore = false;
-                        if($(this).attr('class')){
-                            if($(this).attr('class').indexOf('ignore') != -1){
+                        if ($(this).attr('class')) {
+                            if ($(this).attr('class').indexOf('ignore') != -1) {
                                 ignore = true;
                             }
                         }
-                        if(!ignore){
+                        if (!ignore) {
                             $(this).css('fill', color);
                         }
                     });
@@ -1898,11 +1924,7 @@ Tree.prototype = {
         }
     },
     updateActivityRelLien: function (view, element) {
-        //if (view.blur) {
-        //    this.canvas.setShapeStyle(element, {"stroke-dasharray": "-"});
-        //} else {
-        //    this.canvas.setShapeStyle(element, {"stroke-dasharray": "none"});
-        //}
+
     },
     drawActivityRelLine: function (view) {
         if (view.vertieces) {
@@ -2120,7 +2142,7 @@ Tree.prototype = {
      */
     getExpanderFromVertices: function (position, depth, standardX, parentY, myY) {
         if (parentY != myY) {
-            myY = parentY;
+            //myY = parentY;
         }
         var me = this;
         var distance = 0;
@@ -3030,14 +3052,16 @@ Tree.prototype = {
                 //properties => details.ok
 
                 //상단 기본정보창 워크플로우 정보 바인딩.ok
+                //접을때 툴바 버튼 살리기.ok
+                //매핑 또는 리프레쉬 시에 선 스타일 변경.ok
+                //가상 expanderFrom 생성하기.ok
 
                 //TODO
-                //4.상단 검색 조건 이상하게 보이는 것
                 //담당자명 , 명칭, 생성일 재정렬
+
+                //상단 검색 조건 이상하게 보이는 것
                 //툴바 아이콘 적용하기
 
-                //접을때 툴바 버튼 살리기
-                //선 중복 버그 다시 한번 보기
                 //IE 전환 살펴보기.
 
                 //before 이벤트
@@ -3329,12 +3353,7 @@ Tree.prototype = {
                         enableCreateEd = false;
                         enableCreateFolder = false;
                     }
-                    //MOVE_SORTABLE: false,
-                    //    MAPPING_ENABLE: false,
-                    //    CREATE_FOLDER: false,
-                    //    CREATE_ED: false,
-                    //    PICK_ED: false,
-                    //    DELETABLE: false,
+
                     if (enableCreateEd && me._CONFIG.CREATE_ED) {
                         items.makeEd = me.makeEd();
                         items.makePickEd = me.makePickEd();
@@ -3374,6 +3393,7 @@ Tree.prototype = {
         var me = this;
         return {
             name: 'details',
+            icon: 'pick-ed',
             callback: function () {
                 me.onShowProperties(me.selectedData, me.selectedView);
             }
@@ -3384,6 +3404,7 @@ Tree.prototype = {
         var me = this;
         return {
             name: 'create folder',
+            icon: 'create-folder',
             callback: function () {
                 me.onMakeFolder(me.selectedData, me.selectedView);
             }
@@ -3394,33 +3415,39 @@ Tree.prototype = {
         var me = this;
         return {
             name: 'create ed',
+            icon: 'create-ed',
             items: {
                 cad: {
                     name: '2D & 3D Drawing',
+                    icon: 'create-ed',
                     callback: function () {
                         me.onMakeEd(me.selectedData, me.selectedView, 'CAD');
                     }
                 },
                 dhi_c3d_output: {
                     name: '3D BOM',
+                    icon: 'create-ed',
                     callback: function () {
                         me.onMakeEd(me.selectedData, me.selectedView, 'DHI_C3D_OUTPUT');
                     }
                 },
                 document: {
                     name: 'Document',
+                    icon: 'create-ed',
                     callback: function () {
                         me.onMakeEd(me.selectedData, me.selectedView, 'Document');
                     }
                 },
                 dhi_intellisheet: {
                     name: 'Engineering Data',
+                    icon: 'create-ed',
                     callback: function () {
                         me.onMakeEd(me.selectedData, me.selectedView, 'DHI_IntelliSheet');
                     }
                 },
                 dhi_ed_kdm: {
                     name: 'Key Data',
+                    icon: 'create-ed',
                     callback: function () {
                         me.onMakeEd(me.selectedData, me.selectedView, 'DHI_ED_KDM');
                     }
@@ -3433,6 +3460,7 @@ Tree.prototype = {
         var me = this;
         return {
             name: 'pick ed',
+            icon: 'pick-ed',
             callback: function () {
                 me.onPickEd(me.selectedData, me.selectedView);
             }
@@ -3443,6 +3471,7 @@ Tree.prototype = {
         var me = this;
         return {
             name: 'delete',
+            icon: 'delete-item',
             callback: function () {
                 me.onDelete(me.selectedData, me.selectedView);
             }
@@ -3453,6 +3482,7 @@ Tree.prototype = {
         var me = this;
         return {
             name: 'list relation',
+            icon: 'pick-ed',
             callback: function () {
                 me.onListRelation(me.selectedData, me.selectedView);
             }
@@ -3463,6 +3493,7 @@ Tree.prototype = {
         var me = this;
         return {
             name: 'delete relation',
+            icon: 'delete-item',
             callback: function () {
                 me.deleteMapping(me.selectedData, me.selectedView);
             }

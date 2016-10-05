@@ -27,3 +27,30 @@ div.tooltip-inner {
 .tag-box {
     margin-bottom: 10px;
 }
+
+.context-menu-item.icon {
+    min-height: 18px;
+    background-repeat: no-repeat;
+    background-position: 4px 2px;
+    background-size: 16px;
+}
+
+.context-menu-item.icon-create-ed {
+    background-image: url('../../../doosan/icons/create-ed.svg');
+    background-size: 18px;
+}
+
+.context-menu-item.icon-create-folder {
+    background-image: url('../../../doosan/icons/create-folder.svg');
+    background-size: 14px;
+}
+
+.context-menu-item.icon-delete-item {
+    background-image: url('../../../doosan/icons/delete-item.svg');
+    background-size: 12px;
+}
+
+.context-menu-item.icon-pick-ed {
+    background-image: url('../../../doosan/icons/pick-ed.svg');
+    background-size: 18px;
+}

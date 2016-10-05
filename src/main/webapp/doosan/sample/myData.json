@@ -122,9 +122,6 @@
     "parentId": "my-fd-2",
     "extData": {}
   },
-
-
-
   {
     "type": "mapping",
     "sourceType": "folder",
@@ -199,9 +196,6 @@
     "parentId": "other-fd-2-1-2-1",
     "name": "other-ed-2-1-2-1-2-Ed"
   },
-
-
-
   {
     "type": "mapping",
     "sourceType": "folder",
