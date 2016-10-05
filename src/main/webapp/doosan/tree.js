@@ -314,20 +314,22 @@ Tree.prototype = {
         var me = this;
         var copyObj;
         var checkEnablePosition = function (item) {
-            if (me.Constants.POSITION.OTHER == item['position']) {
-                return me._CONFIG.AREA.lAc.display;
-            }
-            if (me.Constants.POSITION.OTHER_OUT == item['position']) {
-                return me._CONFIG.AREA.lOut.display;
-            }
-            if (me.Constants.POSITION.MY_IN == item['position']) {
-                return me._CONFIG.AREA.rIn.display;
-            }
-            if (me.Constants.POSITION.MY == item['position']) {
-                return me._CONFIG.AREA.rAc.display;
-            }
-            if (me.Constants.POSITION.MY_OUT == item['position']) {
-                return me._CONFIG.AREA.rOut.display;
+            if (item) {
+                if (me.Constants.POSITION.OTHER == item['position']) {
+                    return me._CONFIG.AREA.lAc.display;
+                }
+                if (me.Constants.POSITION.OTHER_OUT == item['position']) {
+                    return me._CONFIG.AREA.lOut.display;
+                }
+                if (me.Constants.POSITION.MY_IN == item['position']) {
+                    return me._CONFIG.AREA.rIn.display;
+                }
+                if (me.Constants.POSITION.MY == item['position']) {
+                    return me._CONFIG.AREA.rAc.display;
+                }
+                if (me.Constants.POSITION.MY_OUT == item['position']) {
+                    return me._CONFIG.AREA.rOut.display;
+                }
             }
             return false;
         };
@@ -342,7 +344,7 @@ Tree.prototype = {
             }
         } else {
             for (var key in data) {
-                if (checkEnablePosition(data[i])) {
+                if (checkEnablePosition(data[key])) {
                     copyObj = JSON.parse(JSON.stringify(data[key]));
                     if (copyObj.id) {
                         me._STORAGE[copyObj.id] = copyObj;
@@ -1431,19 +1433,21 @@ Tree.prototype = {
             }
             if (toRemove) {
                 try {
-                    me.canvas.removeShape(currentDisplayShapes[i]);
+                    //매핑 관련 라벨은 각 draw메소드에서 실행하도록 하기에 여기서는 삭제하지 않는다.
+                    if (currentDisplayShapes[i].id.indexOf(me.Constants.PREFIX.MAPPING_LABEL) == -1 &&
+                        currentDisplayShapes[i].id.indexOf(me.Constants.PREFIX.SELECTED_LABEL) == -1) {
+
+                        //삭제할 엘리먼트의 매핑 라벨 엘리먼트가 있다면 함께 삭제한다.
+                        me.canvas.removeShape(currentDisplayShapes[i]);
+                        if (me.canvas.getElementById(currentDisplayShapes[i].id + me.Constants.PREFIX.MAPPING_LABEL)) {
+                            me.canvas.removeShape(currentDisplayShapes[i].id + me.Constants.PREFIX.MAPPING_LABEL);
+                        }
+                        if (me.canvas.getElementById(currentDisplayShapes[i].id + me.Constants.PREFIX.SELECTED_LABEL)) {
+                            me.canvas.removeShape(currentDisplayShapes[i].id + me.Constants.PREFIX.SELECTED_LABEL);
+                        }
+                    }
                 } catch (e) {
                     //Nothing to do.
-                }
-            }
-
-            //매핑이 아닐 경우 라벨이 있다면 지운다.
-            if (!haMapping) {
-                if (me.canvas.getElementById(currentDisplayShapes[i].id + me.Constants.PREFIX.MAPPING_LABEL)) {
-                    me.canvas.removeShape(currentDisplayShapes[i].id + me.Constants.PREFIX.MAPPING_LABEL);
-                }
-                if (me.canvas.getElementById(currentDisplayShapes[i].id + me.Constants.PREFIX.SELECTED_LABEL)) {
-                    me.canvas.removeShape(currentDisplayShapes[i].id + me.Constants.PREFIX.SELECTED_LABEL);
                 }
             }
         }
@@ -1456,7 +1460,7 @@ Tree.prototype = {
         var viewsByPosition = me.dividedViewsByPosition(displayViews);
         var otherViews = viewsByPosition[me.Constants.POSITION.OTHER];
         for (var i = 0, leni = otherViews.length; i < leni; i++) {
-            otherViews[i].x = me._CONFIG.AREA.ACTIVITY_SIZE / 2;
+            otherViews[i].x = Math.round(me._CONFIG.AREA.ACTIVITY_SIZE / 2);
         }
 
         var otherOutViews = viewsByPosition[me.Constants.POSITION.OTHER_OUT];
@@ -1509,7 +1513,7 @@ Tree.prototype = {
         var myViews = viewsByPosition[me.Constants.POSITION.MY];
         boundary = me._RENDERER.getBoundary(me.AREA.rAc);
         for (var i = 0, leni = myViews.length; i < leni; i++) {
-            myViews[i].x = boundary.getLeftCenter().x + me._CONFIG.AREA.ACTIVITY_SIZE / 2;
+            myViews[i].x = Math.round(boundary.getLeftCenter().x + (me._CONFIG.AREA.ACTIVITY_SIZE / 2));
         }
 
         var myOutViews = viewsByPosition[me.Constants.POSITION.MY_OUT];
@@ -1576,16 +1580,8 @@ Tree.prototype = {
                         moveX = displayViews[i].x - envelope.getCentroid().x;
                         moveY = displayViews[i].y - envelope.getCentroid().y;
 
-                        //액티비티일 경우 connect 연결선을 위한 무브 처리
-                        if (type == me.Constants.TYPE.ACTIVITY) {
-                            element.shape.geom.move(moveX, moveY);
-                            me._RENDERER.redrawShape(element);
-                        }
-                        //그 밖의 경우는 퍼포먼스를 위한 geom 이동
-                        else {
-                            element.shape.geom.move(moveX, moveY);
-                            me._RENDERER.redrawShape(element);
-                        }
+                        element.shape.geom.move(moveX, moveY);
+                        me._RENDERER.redrawShape(element);
                     }
                 }
                 //선 연결 도형일 경우 vertices 의 0번째 요소와 마지막 요소를 비교후, x,y 의 차이만큼 이동시킨다.
@@ -1736,20 +1732,54 @@ Tree.prototype = {
             }
         }
     },
-    drawMappingLabel: function (view, element) {
+    drawMappingLabel: function (view) {
+        var id = view.id + this.Constants.PREFIX.MAPPING_LABEL, size, offset, shape;
         if (view.mapping) {
-            var id = view.id + this.Constants.PREFIX.MAPPING_LABEL;
-            var size = [12, 14];
-            var offset = [view.x + 10, view.y - 19];
-            var shape = new OG.MLabel();
+            size = [12, 14];
+            offset = [view.x + 10, view.y - 19];
+            shape = new OG.MLabel();
             this.canvas.drawShape(offset, shape, size, null, id);
         }
+
+        id = view.id + this.Constants.PREFIX.SELECTED_LABEL;
         if (view.selected) {
-            var id = view.id + this.Constants.PREFIX.SELECTED_LABEL;
-            var size = [12, 14];
-            var offset = [view.x - 2, view.y - 19];
-            var shape = new OG.SLabel();
+            size = [12, 14];
+            offset = [view.x - 2, view.y - 19];
+            shape = new OG.SLabel();
             this.canvas.drawShape(offset, shape, size, null, id);
+        }
+    },
+    updateMappingLabel: function (view, element, customData) {
+        //엘리먼트와 뷰의 위치가 바뀌었을 경우
+        //엘리먼트와 뷰의 매핑이 틀릴경우
+        //엘리먼트와 뷰의 셀렉트가 틀릴경우 매핑 라벨을 새로 그리도록 한다.
+        var enableDraw = false;
+        if (customData.x != view.x || customData.y != view.y) {
+            enableDraw = true;
+        }
+        if (customData.mapping != view.mapping) {
+            enableDraw = true;
+        }
+        if (customData.selected != view.selected) {
+            enableDraw = true;
+        }
+        if (enableDraw) {
+            this.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
+
+            var id = view.id + this.Constants.PREFIX.MAPPING_LABEL, size, offset, shape;
+            if (!view.mapping) {
+                if (this.canvas.getElementById(id)) {
+                    this.canvas.removeShape(id);
+                }
+            }
+
+            id = view.id + this.Constants.PREFIX.SELECTED_LABEL;
+            if (!view.selected) {
+                if (this.canvas.getElementById(id)) {
+                    this.canvas.removeShape(id);
+                }
+            }
+            this.drawMappingLabel(view);
         }
     },
     updateActivity: function (view, element) {
@@ -1767,19 +1797,24 @@ Tree.prototype = {
             shape.MOVABLE = false;
         }
         var element = me.canvas.drawShape([view.x, view.y], shape, [view.width, view.height], null, view.id);
+        me.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
         me.updateImageShapeStatus(view, element);
         me.bindDblClickEvent(element);
         me.bindTooltip(element);
         me.bindMappingHighLight(element);
     },
     updateFolder: function (view, element) {
-        if (view.blur) {
-            this.canvas.setShapeStyle(element, {"opacity": this._CONFIG.DEFAULT_STYLE.BLUR});
-        } else {
-            this.canvas.setShapeStyle(element, {"opacity": "1"});
+        var customData = this.canvas.getCustomData(element);
+        if (customData.blur != view.blur) {
+            if (view.blur) {
+                this.canvas.setShapeStyle(element, {"opacity": this._CONFIG.DEFAULT_STYLE.BLUR});
+            } else {
+                this.canvas.setShapeStyle(element, {"opacity": "1"});
+            }
+            this.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
         }
         this.updateImageShapeStatus(view, element);
-        this.drawMappingLabel(view, element);
+        this.updateMappingLabel(view, element, customData);
     },
     drawFolder: function (view) {
         var me = this;
@@ -1793,6 +1828,7 @@ Tree.prototype = {
             shape.MOVABLE = false;
         }
         var element = me.canvas.drawShape([view.x, view.y], shape, [view.width, view.height], null, view.id);
+        me.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
         if (view.blur) {
             this.canvas.setShapeStyle(element, {"opacity": me._CONFIG.DEFAULT_STYLE.BLUR});
         }
@@ -1804,13 +1840,17 @@ Tree.prototype = {
         me.bindMappingHighLight(element);
     },
     updateEd: function (view, element) {
-        if (view.blur) {
-            this.canvas.setShapeStyle(element, {"opacity": this._CONFIG.DEFAULT_STYLE.BLUR});
-        } else {
-            this.canvas.setShapeStyle(element, {"opacity": "1"});
+        var customData = this.canvas.getCustomData(element);
+        if (customData.blur != view.blur) {
+            if (view.blur) {
+                this.canvas.setShapeStyle(element, {"opacity": this._CONFIG.DEFAULT_STYLE.BLUR});
+            } else {
+                this.canvas.setShapeStyle(element, {"opacity": "1"});
+            }
+            this.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
         }
         this.updateImageShapeStatus(view, element);
-        this.drawMappingLabel(view, element);
+        this.updateMappingLabel(view, element, customData);
     },
     drawEd: function (view) {
         var me = this;
@@ -1824,6 +1864,7 @@ Tree.prototype = {
             shape.MOVABLE = false;
         }
         var element = me.canvas.drawShape([view.x, view.y], shape, [view.width, view.height], null, view.id);
+        me.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
         if (view.blur) {
             this.canvas.setShapeStyle(element, {"opacity": me._CONFIG.DEFAULT_STYLE.BLUR});
         }
@@ -1839,11 +1880,10 @@ Tree.prototype = {
             var me = this;
             var edgeShape = new OG.EdgeShape([0, 0], [0, 0]);
             edgeShape.SELECTABLE = false;
-            if (me._CONFIG.DEFAULT_STYLE.EDGE == "bezier") {
+            if (me._CONFIG.DEFAULT_STYLE.MAPPING_EDGE == "bezier") {
                 edgeShape.geom = new OG.BezierCurve(view.vertieces);
             } else {
-                edgeShape.geom = new OG.BezierCurve(view.vertieces);
-                //edgeShape.geom = new OG.PolyLine(view.vertieces);
+                edgeShape.geom = new OG.PolyLine(view.vertieces);
             }
             var element = me.canvas.drawShape(null, edgeShape, null, null, view.id);
             element.shape.CONNECTABLE = false;
@@ -1860,10 +1900,14 @@ Tree.prototype = {
      * @param element
      */
     updateExpanderLine: function (view, element) {
-        if (view.blur) {
-            this.canvas.setShapeStyle(element, {"stroke-dasharray": "-"});
-        } else {
-            this.canvas.setShapeStyle(element, {"stroke-dasharray": "none"});
+        var customData = this.canvas.getCustomData(element);
+        if (customData.blur != view.blur) {
+            if (view.blur) {
+                this.canvas.setShapeStyle(element, {"stroke-dasharray": "-"});
+            } else {
+                this.canvas.setShapeStyle(element, {"stroke-dasharray": "none"});
+            }
+            this.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
         }
     },
     /**
@@ -1880,10 +1924,11 @@ Tree.prototype = {
                 edgeShape.geom = new OG.PolyLine(view.vertieces);
             }
             var element = me.canvas.drawShape(null, edgeShape, null, null, view.id);
+            me.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
             element.shape.CONNECTABLE = false;
             element.shape.DELETABLE = false;
-            me.canvas.setShapeStyle(element, {"arrow-end": "none"});
 
+            me.canvas.setShapeStyle(element, {"arrow-end": "none"});
             if (view.blur) {
                 me.canvas.setShapeStyle(element, {"stroke-dasharray": "-"});
             }
@@ -1898,6 +1943,7 @@ Tree.prototype = {
             var edgeShape = new OG.EdgeShape([0, 0], [0, 0]);
             edgeShape.geom = new OG.PolyLine(view.vertieces);
             var element = me.canvas.drawShape(null, edgeShape, null, null, view.id);
+            me.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
             element.shape.CONNECTABLE = false;
             element.shape.DELETABLE = false;
         }
@@ -1908,10 +1954,14 @@ Tree.prototype = {
      * @param element
      */
     updateExpander: function (view, element) {
-        if (view.data.expand) {
-            $(element).find('image').attr('href', 'doosan/shape/collapse.svg');
-        } else {
-            $(element).find('image').attr('href', 'doosan/shape/expand.svg');
+        var customData = this.canvas.getCustomData(element);
+        if (customData.data.expand != view.data.expand) {
+            if (view.data.expand) {
+                $(element).find('image').attr('href', 'doosan/shape/collapse.svg');
+            } else {
+                $(element).find('image').attr('href', 'doosan/shape/expand.svg');
+            }
+            this.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
         }
     },
     /**
@@ -1921,6 +1971,7 @@ Tree.prototype = {
     drawExpander: function (view) {
         var me = this;
         var element = me.canvas.drawShape([view.x, view.y], new OG.Expander(), [view.width, view.height], null, view.id);
+        me.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
         me.canvas.setShapeStyle(element, {cursor: "pointer"});
 
         if (view.data.expand) {
@@ -2003,7 +2054,7 @@ Tree.prototype = {
                 centerX = centerX - distance;
             }
         }
-        return centerX;
+        return Math.round(centerX);
     },
     /**
      * 액티비티, 폴더, Ed 의 센터를 구한다.
@@ -2027,7 +2078,7 @@ Tree.prototype = {
         } else {
             centerX = standardX - distance;
         }
-        return centerX;
+        return Math.round(centerX);
     },
     getMappingEdgeVertices: function (depth, parentY, myY, pStandardX, myStandardX, hasChild) {
         var me = this;
@@ -2042,10 +2093,11 @@ Tree.prototype = {
             start = [me.getShapeCenterX(me.Constants.POSITION.OTHER_OUT, depth, pStandardX) + (me._CONFIG.SHAPE_SIZE.FOLDER_WIDTH / 2), parentY];
             end = [me.getShapeCenterX(me.Constants.POSITION.MY_IN, depth, myStandardX) - (me._CONFIG.SHAPE_SIZE.FOLDER_WIDTH / 2), myY];
         }
-        vertieces = [start,
-            [(start[0] + end[0]) / 2, start[1]],
-            [(start[0] + end[0]) / 2, end[1]],
-            end
+        vertieces = [
+            [Math.round(start[0]), Math.round(start[1])],
+            [Math.round((start[0] + end[0]) / 2), Math.round(start[1])],
+            [Math.round((start[0] + end[0]) / 2), Math.round(end[1])],
+            [Math.round(end[0]), Math.round(end[1])]
         ];
         return vertieces;
     },
@@ -2056,7 +2108,10 @@ Tree.prototype = {
         var start = [centerX, myY + (me._CONFIG.SHAPE_SIZE.ACTIVITY_HEIGHT / 2) + me._CONFIG.SHAPE_SIZE.ACTIVITY_MARGIN];
         var end = [centerX, parentY - 15];
 
-        var vertieces = [start, end];
+        var vertieces = [
+            [Math.round(start[0]), Math.round(start[1])],
+            [Math.round(end[0]), Math.round(end[1])]
+        ];
         return vertieces;
     },
     /**
@@ -2090,10 +2145,11 @@ Tree.prototype = {
             start = [parentExCenterX - startDistance, parentY];
             end = [myCenter - endDistance, myY];
         }
-        vertieces = [start,
-            [(start[0] + end[0]) / 2, start[1]],
-            [(start[0] + end[0]) / 2, end[1]],
-            end
+        vertieces = [
+            [Math.round(start[0]), Math.round(start[1])],
+            [Math.round((start[0] + end[0]) / 2), Math.round(start[1])],
+            [Math.round((start[0] + end[0]) / 2), Math.round(end[1])],
+            [Math.round(end[0]), Math.round(end[1])]
         ];
         return vertieces;
     },
@@ -2136,10 +2192,11 @@ Tree.prototype = {
                 end = [standardX - distance - ((me._CONFIG.SHAPE_SIZE.COL_SIZE / 2) + me._CONFIG.SHAPE_SIZE.EXPANDER_FROM_MARGIN - (me._CONFIG.SHAPE_SIZE.EXPANDER_WIDTH / 2)), myY];
             }
         }
-        vertieces = [start,
-            [(start[0] + end[0]) / 2, start[1]],
-            [(start[0] + end[0]) / 2, end[1]],
-            end
+        vertieces = [
+            [Math.round(start[0]), Math.round(start[1])],
+            [Math.round((start[0] + end[0]) / 2), Math.round(start[1])],
+            [Math.round((start[0] + end[0]) / 2), Math.round(end[1])],
+            [Math.round(end[0]), Math.round(end[1])]
         ];
         return vertieces;
     },
@@ -2189,6 +2246,7 @@ Tree.prototype = {
      */
     reRangeAreaSize: function (viewData) {
         //displayViews 중 각 영역의 최고 depth 를 바탕으로 Area 의 크기를 결정한다.
+        // ==> 퍼포먼스를 위해 views 검색으로 바꾸도록 조정한다.
         var me = this;
         var boundary, upper, low, left, right, width;
         var containerWidth = me._CONTAINER.width();
@@ -2206,7 +2264,7 @@ Tree.prototype = {
                 me._CONFIG.SHAPE_SIZE.EXPANDER_FROM_MARGIN + me._CONFIG.SHAPE_SIZE.EXPANDER_TO_MARGIN;
         };
 
-        var viewsByPosition = me.dividedViewsByPosition(viewData.displayViews);
+        var viewsByPosition = me.dividedViewsByPosition(viewData['views']);
         var myInAreaWidth = getAreaWidth(viewsByPosition[me.Constants.POSITION.MY_IN]);
         var myOutAreaWidth = getAreaWidth(viewsByPosition[me.Constants.POSITION.MY_OUT]);
         var otherOutAreaWidth = getAreaWidth(viewsByPosition[me.Constants.POSITION.OTHER_OUT]);

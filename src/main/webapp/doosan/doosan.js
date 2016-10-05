@@ -285,11 +285,12 @@ Doosan.prototype = {
              */
             me.tree.onPickEd = function (data, view) {
                 console.log('onPickEd', data, view);
+                var dataSet = [];
                 var renderTable = function () {
                     var pickEdNumber = $('#pickEdNumber').val();
                     var pickEdName = $('#pickEdName').val();
 
-                    var dataSet = me.aras.getPickEd(pickEdNumber, pickEdName);
+                    dataSet = me.aras.getPickEd(pickEdNumber, pickEdName);
                     for (var i = 0; i < dataSet.length; i++) {
                         dataSet[i]['label'] =
                             '<input type="checkbox" name="pickEdObj" data-index="' + i + '"/>&nbsp;' +
@@ -304,8 +305,9 @@ Doosan.prototype = {
                             columns: [
                                 {data: 'label', title: 'Name'},
                                 {data: 'ed_type', title: 'Type'},
-                                {data: '_rel_project', title: 'Project'},
-                                {data: 'state', title: 'State'}
+                                {data: 'rel_project', title: 'Project'},
+                                {data: 'state', title: 'State'},
+                                {data: 'class', title: 'Class'}
                             ]
                         });
                         // page event
@@ -393,12 +395,12 @@ Doosan.prototype = {
                     me.tree.updateData(otherData);
                 });
             });
-        }
 
-        //var otherData = randomData('other');
-        //var myData = randomData('my');
-        //me.tree.updateData(otherData);
-        //me.tree.updateData(myData);
+            //var otherData = randomData('other');
+            //var myData = randomData('my');
+            //me.tree.updateData(otherData);
+            //me.tree.updateData(myData);
+        }
 
         me.renderStateBox();
 
