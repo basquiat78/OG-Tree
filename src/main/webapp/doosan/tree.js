@@ -1739,15 +1739,15 @@ Tree.prototype = {
     drawMappingLabel: function (view, element) {
         if (view.mapping) {
             var id = view.id + this.Constants.PREFIX.MAPPING_LABEL;
-            var size = [10, 12];
-            var offset = [view.x + 10, view.y - 17];
+            var size = [12, 14];
+            var offset = [view.x + 10, view.y - 19];
             var shape = new OG.MLabel();
             this.canvas.drawShape(offset, shape, size, null, id);
         }
         if (view.selected) {
             var id = view.id + this.Constants.PREFIX.SELECTED_LABEL;
-            var size = [10, 12];
-            var offset = [view.x - 2, view.y - 17];
+            var size = [12, 14];
+            var offset = [view.x - 2, view.y - 19];
             var shape = new OG.SLabel();
             this.canvas.drawShape(offset, shape, size, null, id);
         }
