@@ -261,10 +261,12 @@ Aras.prototype = {
      * @param prj_id
      * @returns {*}
      */
-    getPickEd: function () {
+    getPickEd: function (ed_number, ed_name) {
         var data = [];
         var me = this, params = {
-            prj_id: me.projectId
+            project_id: me.projectId,
+            ed_number: ed_number ? ed_number : '',
+            ed_name: ed_name ? ed_name : ''
         };
         var nodeResult = me.applyMethod('DHI_WF_EDITOR_ED_PICK', me.createBody(params));
         var nodeList = nodeResult['nodeList'];

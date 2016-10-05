@@ -279,12 +279,23 @@
                             <li role="separator" class="divider"></li>
                             <li><a href="#">Separated link</a></li>
                         </ul>
-                        <button class="btn btn-xs rounded btn-default" id="newActivity" type="button"><i class="fa fa-plus"></i> Activity</button>
-                        <button class="btn btn-xs rounded btn-default" id="refresh" type="button"><i class="fa fa-refresh"></i> Refresh</button>
-                        <button class="btn btn-xs rounded btn-default" id="zoomIn" type="button"><i class="fa fa-search-plus"></i> Zoom | IN</button>
-                        <button class="btn btn-xs rounded btn-default" id="zoomFit" type="button"><i class="fa fa-arrows-h"></i> Zoom | FIT</button>
-                        <button class="btn btn-xs rounded btn-default" id="zoomOut" type="button"><i class="fa fa-search-minus"></i> Zoom | OUT</button>
-                        <button class="btn btn-xs rounded btn-default" id="labelSwitch" type="button"><i class="fa fa-caret-square-o-down"></i> Label On|Off
+                        <button class="btn btn-xs rounded btn-default" id="newActivity" type="button"><i
+                                class="fa fa-plus"></i> Activity
+                        </button>
+                        <button class="btn btn-xs rounded btn-default" id="refresh" type="button"><i
+                                class="fa fa-refresh"></i> Refresh
+                        </button>
+                        <button class="btn btn-xs rounded btn-default" id="zoomIn" type="button"><i
+                                class="fa fa-search-plus"></i> Zoom | IN
+                        </button>
+                        <button class="btn btn-xs rounded btn-default" id="zoomFit" type="button"><i
+                                class="fa fa-arrows-h"></i> Zoom | FIT
+                        </button>
+                        <button class="btn btn-xs rounded btn-default" id="zoomOut" type="button"><i
+                                class="fa fa-search-minus"></i> Zoom | OUT
+                        </button>
+                        <button class="btn btn-xs rounded btn-default" id="labelSwitch" type="button"><i
+                                class="fa fa-caret-square-o-down"></i> Label On|Off
                         </button>
                     </div>
                 </div>
@@ -327,6 +338,19 @@
                 <h4 class="modal-title">Pick Ed List</h4>
             </div>
             <div class="modal-body">
+                <form class="form-inline" role="form">
+                    <div class="form-group">
+                        <label class="sr-only" for="pickEdNumber">Ed number</label>
+                        <input type="text" class="custom-form-control" id="pickEdNumber" placeholder="Ed number">
+                    </div>
+                    <div class="form-group">
+                        <label class="sr-only" for="pickEdName">Ed name</label>
+                        <input type="text" class="custom-form-control" id="pickEdName" placeholder="Ed name">
+                    </div>
+
+                    <a href="Javascript:void(0)" class="btn-u btn-u-default" name="search">Search</a>
+                </form>
+
                 <table id="pickEdGrid" class="display" width="100%"></table>
             </div>
             <div class="modal-footer">

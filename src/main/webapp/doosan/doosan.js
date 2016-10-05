@@ -285,71 +285,75 @@ Doosan.prototype = {
              */
             me.tree.onPickEd = function (data, view) {
                 console.log('onPickEd', data, view);
-                var dataSet = me.aras.getPickEd();
-                for (var i = 0; i < dataSet.length; i++) {
-                    dataSet[i]['label'] =
-                        '<input type="checkbox" name="pickEdObj" data-index="' + i + '"/>&nbsp;' +
-                        '<i class="fa fa-search-plus"></i>&nbsp;<a href="Javascript:void(0)" name="statusBtn">' + dataSet[i]['name'] + '</a>';
+                var renderTable = function () {
+                    var pickEdNumber = $('#pickEdNumber').val();
+                    var pickEdName = $('#pickEdName').val();
 
-                    //dataSet[i]['detail'] = '<button class="btn btn-xs rounded btn-primary" name="statusBtn">Detail</button>'
-                }
+                    var dataSet = me.aras.getPickEd(pickEdNumber, pickEdName);
+                    for (var i = 0; i < dataSet.length; i++) {
+                        dataSet[i]['label'] =
+                            '<input type="checkbox" name="pickEdObj" data-index="' + i + '"/>&nbsp;' +
+                            '<i class="fa fa-search-plus"></i>&nbsp;<a href="Javascript:void(0)" name="statusBtn">' + dataSet[i]['name'] + '</a>';
+                    }
 
-                var gridPanel = $('#pickEdGrid');
-                if (!gridPanel.data('table')) {
-                    gridPanel.data('table', true);
-                    gridPanel.DataTable({
-                        data: dataSet,
-                        columns: [
-                            {data: 'label', title: 'Name'},
-                            {data: '_rel_project', title: 'Project'},
-                            {data: 'state', title: 'State'}
-                            //{data: 'detail', title: 'Detail'}
-                        ]
-                    });
-                }
+                    var gridPanel = $('#pickEdGrid');
+                    if (!gridPanel.data('table')) {
+                        gridPanel.data('table', true);
+                        gridPanel.DataTable({
+                            data: dataSet,
+                            columns: [
+                                {data: 'label', title: 'Name'},
+                                {data: 'ed_type', title: 'Type'},
+                                {data: '_rel_project', title: 'Project'},
+                                {data: 'state', title: 'State'}
+                            ]
+                        });
+                        // page event
+                        gridPanel.on('draw.dt', function () {
+                            var pickEdObj = $("[name=pickEdObj]");
+                            pickEdObj.each(function (index, check) {
+                                var checkbox = $(check);
+                                var td = checkbox.parent();
+                                var tr = td.parent();
+                                var dataIndex = checkbox.data('index');
+                                var edData = dataSet[parseInt(dataIndex)];
+                                var statusBtn = tr.find('[name=statusBtn]');
+                                bindStatusEvent(statusBtn, edData);
+                                trClickEvent(tr, edData);
+                            });
+                            blockStop();
+                        });
+                    }
 
-                var bindStatusEvent = function (btn, edData) {
-                    btn.unbind('click');
-                    btn.click(function (event) {
-                        event.stopPropagation();
-                        me.aras.showPropertyWindow(me.tree.Constants.TYPE.ED, edData.id);
-                    });
+                    var bindStatusEvent = function (btn, edData) {
+                        btn.unbind('click');
+                        btn.click(function (event) {
+                            event.stopPropagation();
+                            me.aras.showPropertyWindow(me.tree.Constants.TYPE.ED, edData.id);
+                        });
+                    };
+
+                    var trClickEvent = function (tr, edData) {
+                        tr.unbind('click');
+                        tr.click(function () {
+                            var checkbox = tr.find('input:checkbox');
+                            if (checkbox.prop('checked')) {
+                                checkbox.prop('checked', false);
+                            } else {
+                                checkbox.prop('checked', true);
+                            }
+                        })
+                    };
+
+                    var dataTable = gridPanel.dataTable().api();
+                    dataTable.clear();
+                    dataTable.rows.add(dataSet);
+                    dataTable.draw();
                 };
-
-                var trClickEvent = function (tr, edData) {
-                    tr.unbind('click');
-                    tr.click(function () {
-                        var checkbox = tr.find('input:checkbox');
-                        if (checkbox.prop('checked')) {
-                            checkbox.prop('checked', false);
-                        } else {
-                            checkbox.prop('checked', true);
-                        }
-                    })
-                };
-
-                // page event
-                gridPanel.on('draw.dt', function () {
-                    var pickEdObj = $("[name=pickEdObj]");
-                    pickEdObj.each(function (index, check) {
-                        var checkbox = $(check);
-                        var td = checkbox.parent();
-                        var tr = td.parent();
-                        var dataIndex = checkbox.data('index');
-                        var edData = dataSet[parseInt(dataIndex)];
-                        var statusBtn = tr.find('[name=statusBtn]');
-                        bindStatusEvent(statusBtn, edData);
-                        trClickEvent(tr, edData);
-                    });
-                    blockStop();
-                });
-
-                var dataTable = gridPanel.dataTable().api();
-                dataTable.clear();
-                dataTable.rows.add(dataSet);
-                dataTable.draw();
+                renderTable();
 
                 var modal = $('#pickEdModal');
+                modal.find('[name=search]').unbind('click');
                 modal.find('[name=action]').unbind('click');
                 modal.find('[name=close]').unbind('click');
                 modal.find('[name=close]').bind('click', function () {
@@ -366,6 +370,9 @@ Doosan.prototype = {
                         var folderItem = me.aras.getItemById(me.aras.TYPE.FOLDER, data.id);
                         me.aras.addPickEDOutRelation(edItem, folderItem, data, view);
                     });
+                });
+                modal.find('[name=search]').bind('click', function () {
+                    renderTable();
                 });
                 modal.modal({
                     show: true
