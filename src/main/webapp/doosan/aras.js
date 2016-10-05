@@ -899,6 +899,7 @@ Aras.prototype = {
         });
     },
     addInRel: function (source, target, selectedTargetList) {
+        console.log('addInRel');
         var me = this;
         var inn = this.aras.newIOMInnovator();
         var relType = me.getRelType(source.type, target.type, 'in');
