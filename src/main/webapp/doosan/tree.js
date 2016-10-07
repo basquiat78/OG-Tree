@@ -50,10 +50,24 @@ var Tree = function (container) {
         MAPPING_ENABLE: false,
         CREATE_FOLDER: false,
         CREATE_ED: false,
+        PICK_ED: false,
         DELETABLE: false,
         SHOW_LABEL: true,
         DISPLAY_MARGIN: 50,
         CONTAINER_HEIGHT: 600,
+        /**
+         * 라벨 최소 크기(IE)
+         */
+        LABEL_MIN_SIZE: 150,
+
+        /**
+         * 라벨 최대 크기(IE)
+         */
+        LABEL_MAX_SIZE: 300,
+        /**
+         * 라벨 최대 글자 크기
+         */
+        LABEL_MAX_LENGTH: 8,
         AREA: {
             LEFT_SIZE_RATE: (5 / 12) - 0.002,
             RIGHT_SIZE_RATE: (7 / 12) + 0.002,
@@ -100,7 +114,8 @@ var Tree = function (container) {
             COL_SIZE: 50,
             ACTIVITY_WIDTH: 50,
             ACTIVITY_HEIGHT: 50,
-            ACTIVITY_MARGIN: 20,
+            ACTIVITY_LABEL_MARGIN: 20,
+            ACTIVITY_MARGIN: 50,
             FOLDER_WIDTH: 40,
             FOLDER_HEIGHT: 40,
             FOLDER_MARGIN: 20,
@@ -109,8 +124,8 @@ var Tree = function (container) {
             ED_MARGIN: 24,
             EXPANDER_FROM_MARGIN: 10,
             EXPANDER_TO_MARGIN: 20,
-            EXPANDER_WIDTH: 10,
-            EXPANDER_HEIGHT: 10
+            EXPANDER_WIDTH: 14,
+            EXPANDER_HEIGHT: 14
         },
         DEFAULT_STYLE: {
             BLUR: "0.3",
@@ -155,6 +170,8 @@ var Tree = function (container) {
         stickGuide: false,
         checkBridgeEdge: false
     });
+    this.canvas._CONFIG.LABEL_MIN_SIZE = this._CONFIG.LABEL_MIN_SIZE;
+    this.canvas._CONFIG.LABEL_MAX_SIZE = this._CONFIG.LABEL_MAX_SIZE;
 
     this._RENDERER = this.canvas._RENDERER;
 
@@ -301,6 +318,7 @@ Tree.prototype = {
                 delete me._STORAGE[key];
             }
         }
+        me._STORAGE = JSON.parse(JSON.stringify(me._STORAGE));
     },
     /**
      * 데이터를 업데이트한다.
@@ -1652,7 +1670,7 @@ Tree.prototype = {
         }
     },
     labelSubstring: function (label) {
-        var length = 5;
+        var length = this._CONFIG.LABEL_MAX_LENGTH;
         if (label) {
             if (label.length <= length) {
                 return label;
@@ -2105,7 +2123,12 @@ Tree.prototype = {
         var me = this;
 
         var centerX = standardX - me._CONFIG.AREA.ACTIVITY_SIZE / 2;
-        var start = [centerX, myY + (me._CONFIG.SHAPE_SIZE.ACTIVITY_HEIGHT / 2) + me._CONFIG.SHAPE_SIZE.ACTIVITY_MARGIN];
+        var start;
+        if (me._CONFIG.SHOW_LABEL) {
+            start = [centerX, myY + (me._CONFIG.SHAPE_SIZE.ACTIVITY_HEIGHT / 2) + me._CONFIG.SHAPE_SIZE.ACTIVITY_LABEL_MARGIN];
+        } else {
+            start = [centerX, myY + (me._CONFIG.SHAPE_SIZE.ACTIVITY_HEIGHT / 2)];
+        }
         var end = [centerX, parentY - 15];
 
         var vertieces = [
@@ -2370,18 +2393,10 @@ Tree.prototype = {
      * @returns {Array}
      */
     selectActivityByPosition: function (position) {
-        var storage = this._STORAGE;
-        var activities = [];
-        if (position) {
-            for (var key in storage) {
-                if (storage[key]['type'] == this.Constants.TYPE.ACTIVITY) {
-                    if (storage[key]['position'] == position) {
-                        activities.push(storage[key]);
-                    }
-                }
-            }
-        }
-        return activities;
+        return this.loadByFilter({
+            type: this.Constants.TYPE.ACTIVITY,
+            position: position
+        });
     }
     ,
     /**
@@ -3088,6 +3103,9 @@ Tree.prototype = {
                 //TODO
                 //담당자명 , 명칭, 생성일 재정렬
                 //IE 라벨 살펴보기
+                //줌 인의 기준이 현재 스크롤 상태에서 부터 확대하기.
+                //줌 인 아웃시에 캔버스 사이즈도 변경하기.
+                //도트 확실하게 보이게 하기.
 
 
                 //before 이벤트
@@ -3098,9 +3116,10 @@ Tree.prototype = {
                     }
                 }
 
-                for (var i = 0, leni = activities.length; i < leni; i++) {
-                    me.removeDataByFilter({id: activities[i].id});
-                }
+                me.removeDataByFilter({
+                    type: me.Constants.TYPE.ACTIVITY,
+                    position: position
+                });
                 me.updateData(activities, true);
                 me.render();
 
@@ -3381,13 +3400,21 @@ Tree.prototype = {
                             }
                         }
                     }
+                    //ED 는 폴더,ED 생성 금지.
                     if (data.type == me.Constants.TYPE.ED) {
                         enableCreateEd = false;
                         enableCreateFolder = false;
                     }
 
+                    //액티비티는 ED 생성 금지
+                    if (data.type == me.Constants.TYPE.ACTIVITY) {
+                        enableCreateEd = false;
+                    }
+
                     if (enableCreateEd && me._CONFIG.CREATE_ED) {
                         items.makeEd = me.makeEd();
+                    }
+                    if (enableCreateEd && me._CONFIG.PICK_ED) {
                         items.makePickEd = me.makePickEd();
                     }
                     if (enableCreateFolder && me._CONFIG.CREATE_FOLDER) {

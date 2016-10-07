@@ -37,6 +37,12 @@ Doosan.prototype = {
         if (parent.top.aras) {
             me.aras = new Aras(me.tree);
             me.aras.init();
+
+            //스탠다드 모드에서는 PICK ED 를 끄도록 한다.
+            if (me.aras.stdYN == 'Y') {
+                me.tree._CONFIG.PICK_ED = false;
+            }
+
             var innerMode = me.aras.getHtmlParameter('mode');
             if (innerMode) {
                 $('.header-info').hide();
@@ -463,17 +469,19 @@ Doosan.prototype = {
 
         $('#targetOtherWorkflow').change(function () {
             var wfId = $('#targetOtherWorkflow').val();
-            var headerItem = me.aras.getWorkflowHeader(wfId);
-            if (headerItem.getItemCount() == 1) {
-                me.renderHeaders(headerItem, 'other');
-            }
-            var outResult = me.aras.getWorkflowStructure(wfId, 'OUT');
-            var otherWorkFlowData;
-            if (outResult) {
-                otherWorkFlowData = me.aras.createOtherWorkFlowData(outResult['nodeList']);
-                me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER});
-                me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER_OUT});
-                me.tree.updateData(otherWorkFlowData);
+            if (wfId && wfId != '') {
+                var headerItem = me.aras.getWorkflowHeader(wfId);
+                if (headerItem.getItemCount() == 1) {
+                    me.renderHeaders(headerItem, 'other');
+                }
+                var outResult = me.aras.getWorkflowStructure(wfId, 'OUT');
+                var otherWorkFlowData;
+                if (outResult) {
+                    otherWorkFlowData = me.aras.createOtherWorkFlowData(outResult['nodeList']);
+                    me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER});
+                    me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER_OUT});
+                    me.tree.updateData(otherWorkFlowData);
+                }
             }
         });
     },
@@ -505,6 +513,7 @@ Doosan.prototype = {
         if (json['rtn']) {
             var otherWorkFlows = JSON.parse(json['data']);
             $('#targetOtherWorkflow').find('option').remove();
+            me.appendSelectBoxElement($('#targetOtherWorkflow'), '--select--', '');
             for (var key in otherWorkFlows.data) {
                 me.appendSelectBoxElement($('#targetOtherWorkflow'), otherWorkFlows.data[key]['LABEL'], otherWorkFlows.data[key]['VALUE']);
             }
