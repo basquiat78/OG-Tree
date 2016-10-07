@@ -104,7 +104,8 @@
     "name": "my-ed-1-1-2-1-Ed",
     "position": "my-out",
     "parentId": "my-fd-1-1-2",
-    "extData": {}
+    "extData": {},
+    "color": "#5bc0de"
   },
   {
     "type": "ed",

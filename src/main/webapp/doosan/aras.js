@@ -167,6 +167,15 @@ Aras.prototype = {
         this.inn = this.aras.newIOMInnovator();
         return this.inn.applyMethod(methodName, body);
     },
+    getUserIdentity: function(){
+        var inn = this.aras.newIOMInnovator();
+        var userId = inn.getUserID();
+        var aliasRelItem = inn.newItem("Alias", "get");
+        aliasRelItem.setProperty("source_id", userId);
+        aliasRelItem = aliasRelItem.apply();
+        var identityId= aliasRelItem.getProperty("related_id");
+        return identityId ? identityId : '';
+    },
     /**
      * WF 하위의 액티비티, 폴더 및 ED 조회
      * @param wf_id
@@ -431,7 +440,6 @@ Aras.prototype = {
         //부모 아이템(선택된 아이템) 가져오기
         var parentItem = inn.newItem(parentItemType, "get");
         parentItem.setProperty('id', data.extData['f_id']);
-        //parentItem.setAttribute('select', 'id,_rel_wfa,_rel_wfat,item_number,_level,owned_by_id');
         parentItem = parentItem.apply();
 
         //폴더 아이템 생성
@@ -469,7 +477,7 @@ Aras.prototype = {
                 newItem.setProperty('_discipline', workflowItem.getProperty('_discipline', ''));
                 newItem.setProperty('_discipline_spec', workflowItem.getProperty('_discipline_spec', ''));
                 newItem.setProperty('_rel_ownedteam', workflowItem.getProperty('_rel_ownedteam', ''));
-                newItem.setProperty('owned_by_id', workflowItem.getProperty('owned_by_id', ''));
+                newItem.setProperty('owned_by_id', me.getUserIdentity());
 
                 newItem.setProperty("_parent_type", parentItemType);
                 newItem.setProperty("_parent_id", parentId);
@@ -492,7 +500,7 @@ Aras.prototype = {
                 newItem.setProperty('_discipline', parentItem.getProperty('_discipline', ''));
                 newItem.setProperty('_discipline_spec', parentItem.getProperty('_discipline_spec', ''));
                 newItem.setProperty('_rel_ownedteam', parentItem.getProperty('_rel_ownedteam', ''));
-                newItem.setProperty('owned_by_id', parentItem.getProperty('owned_by_id', ''));
+                newItem.setProperty('owned_by_id', me.getUserIdentity());
 
                 newItem.setProperty('_first_p6_act', parentItem.getProperty('_first_p6_act', ''));
                 newItem.setProperty('_first_pims_act', parentItem.getProperty('_first_pims_act', ''));
@@ -567,7 +575,7 @@ Aras.prototype = {
                 var relItem = inn.newItem(relType, 'add');
                 relItem.setProperty('source_id', parentId);
                 relItem.setProperty('related_id', newItem.getID());
-                relItem.setProperty('owned_by_id', parentItem.getProperty('owned_by_id', ''));
+                relItem.setProperty('owned_by_id', me.getUserIdentity());
                 relItem = relItem.apply();
 
                 //스테이터스를 업데이트한다.
@@ -597,7 +605,7 @@ Aras.prototype = {
         var edItem = inn.newItem(edType, "add");
         edItem.setProperty("_p_id", data.extData['fs_id']);
 
-        edItem.setProperty('owned_by_id', parentItem.getProperty('owned_by_id', ''));
+        edItem.setProperty('owned_by_id', me.getUserIdentity());
 
         edItem.setProperty("_eng_mat_structure", parentItem.getProperty('_eng_mat_structure', ''));
         edItem.setProperty("_eng_mat_code", parentItem.getProperty('_eng_mat_code', ''));
@@ -684,7 +692,7 @@ Aras.prototype = {
                 relItem = inn.newItem(relType, "add");
                 relItem.setProperty("source_id", data.id);
                 relItem.setProperty("related_id", edId);
-                relItem.setProperty("owned_by_id", parentItem.getProperty("owned_by_id", ""));
+                relItem.setProperty("owned_by_id", me.getUserIdentity());
                 relItem = relItem.apply();
 
                 //스테이터스를 업데이트한다.
@@ -741,7 +749,7 @@ Aras.prototype = {
                 relItem = inn.newItem(relType, "add");
                 relItem.setProperty("source_id", data.id);
                 relItem.setProperty("related_id", edId);
-                relItem.setProperty("owned_by_id", parentItem.getProperty("owned_by_id", ""));
+                relItem.setProperty("owned_by_id", me.getUserIdentity());
                 relItem.apply();
 
                 //스테이터스를 업데이트한다.
@@ -879,7 +887,7 @@ Aras.prototype = {
             newItem.setProperty('_discipline', workflowItem.getProperty('_discipline', ''));
             newItem.setProperty('_discipline_spec', workflowItem.getProperty('_discipline_spec', ''));
             newItem.setProperty('_rel_ownedteam', workflowItem.getProperty('_rel_ownedteam', ''));
-            newItem.setProperty('owned_by_id', workflowItem.getProperty('owned_by_id', ''));
+            newItem.setProperty('owned_by_id', me.getUserIdentity());
 
             newItem.setProperty("_parent_type", workflowItemType);
             newItem.setProperty("_parent_id", workflowItem.getProperty('id', ''));
@@ -918,7 +926,7 @@ Aras.prototype = {
                     relItem = inn.newItem(relType, "add");
                     relItem.setProperty("source_id", source.id);
                     relItem.setProperty("related_id", target.id);
-                    relItem.setProperty("owned_by_id", me.thisItem.getProperty("owned_by_id", ""));
+                    relItem.setProperty("owned_by_id", me.getUserIdentity());
                     relItem = relItem.apply();
 
                     var body = "<source_id>" + source.id + "</source_id>";
@@ -941,7 +949,7 @@ Aras.prototype = {
                         relItem = inn.newItem(relType, "add");
                         relItem.setProperty("source_id", source.id);
                         relItem.setProperty("related_id", targetId);
-                        relItem.setProperty("owned_by_id", me.thisItem.getProperty("owned_by_id", ""));
+                        relItem.setProperty("owned_by_id", me.getUserIdentity());
                         relItem = relItem.apply();
 
                         var body = "<_parent_type>" + me.getItemType(me.TYPE.ACTIVITY) + "</_parent_type>";
