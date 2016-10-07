@@ -7,7 +7,8 @@
     "parentId": "",
     "expand": true,
     "extData": {},
-    "color": "#5bc0de"
+    "color": "#b4eabd",
+    "stroke": "#d9534f"
   },
   {
     "type": "activity",
@@ -17,7 +18,7 @@
     "parentId": "",
     "expand": true,
     "extData": {},
-    "color": "#5bc0de"
+    "color": "#b4eabd"
   },
   {
     "type": "activity",
@@ -27,7 +28,7 @@
     "parentId": "",
     "expand": true,
     "extData": {},
-    "color": "#5bc0de"
+    "color": "#b4eabd"
   },
   {
     "type": "folder",
@@ -37,7 +38,7 @@
     "parentId": "my-ac-1",
     "expand": true,
     "extData": {},
-    "color": "#5bc0de"
+    "color": "#b4eabd"
   },
   {
     "type": "folder",
@@ -47,7 +48,7 @@
     "parentId": "my-ac-1",
     "expand": true,
     "extData": {},
-    "color": "#5bc0de"
+    "color": "#b4eabd"
   },
   {
     "type": "folder",
@@ -66,7 +67,8 @@
     "parentId": "my-fd-1",
     "expand": true,
     "extData": {},
-    "color": "#5bc0de"
+    "color": "#b4eabd",
+    "stroke": "#d9534f"
   },
   {
     "type": "folder",
@@ -76,7 +78,8 @@
     "parentId": "my-fd-1",
     "expand": true,
     "extData": {},
-    "color": "#5bc0de"
+    "color": "#b4eabd",
+    "stroke": "#d9534f"
   },
   {
     "type": "folder",
@@ -86,7 +89,7 @@
     "parentId": "my-fd-1-1",
     "expand": true,
     "extData": {},
-    "color": "#5bc0de"
+    "color": "#b4eabd"
   },
   {
     "type": "folder",
@@ -96,7 +99,7 @@
     "parentId": "my-fd-1-1",
     "expand": true,
     "extData": {},
-    "color": "#5bc0de"
+    "color": "#b4eabd"
   },
   {
     "type": "ed",
@@ -105,7 +108,8 @@
     "position": "my-out",
     "parentId": "my-fd-1-1-2",
     "extData": {},
-    "color": "#5bc0de"
+    "color": "#b4eabd",
+    "stroke": "#d9534f"
   },
   {
     "type": "ed",
@@ -113,7 +117,9 @@
     "name": "my-ed-1-1-2-2-Ed",
     "position": "my-out",
     "parentId": "my-fd-1-1-2",
-    "extData": {}
+    "extData": {},
+    "color": "#b4eabd",
+    "stroke": "#d9534f"
   },
   {
     "type": "ed",
@@ -121,7 +127,8 @@
     "name": "my-ed-2-1-Ed",
     "position": "my-out",
     "parentId": "my-fd-2",
-    "extData": {}
+    "extData": {},
+    "stroke": "#d9534f"
   },
   {
     "type": "mapping",

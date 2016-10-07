@@ -279,10 +279,16 @@ Tree.prototype = {
         var rAcLabel = me._CONFIG.AREA.rAc.display ? me._CONFIG.AREA.rAc.label : undefined;
         var rOutLabel = me._CONFIG.AREA.rOut.display ? me._CONFIG.AREA.rOut.label : undefined;
         me.AREA.lAc = me.canvas.drawShape([0, 0], new OG.Area(lacLabel), [50, 50], {stroke: '#555', 'stroke-width': 2});
-        me.AREA.lOut = me.canvas.drawShape([0, 0], new OG.Area(lOutLabel), [50, 50], {stroke: '#555', 'stroke-width': 2});
+        me.AREA.lOut = me.canvas.drawShape([0, 0], new OG.Area(lOutLabel), [50, 50], {
+            stroke: '#555',
+            'stroke-width': 2
+        });
         me.AREA.rIn = me.canvas.drawShape([0, 0], new OG.Area(rInLabel), [50, 50], {stroke: '#555', 'stroke-width': 2});
         me.AREA.rAc = me.canvas.drawShape([0, 0], new OG.Area(rAcLabel), [50, 50], {stroke: '#555', 'stroke-width': 2});
-        me.AREA.rOut = me.canvas.drawShape([0, 0], new OG.Area(rOutLabel), [50, 50], {stroke: '#555', 'stroke-width': 2});
+        me.AREA.rOut = me.canvas.drawShape([0, 0], new OG.Area(rOutLabel), [50, 50], {
+            stroke: '#555',
+            'stroke-width': 2
+        });
         me.canvas.setShapeStyle(me.AREA.lAc, me._CONFIG.AREA_STYLE.lAc);
         me.canvas.setShapeStyle(me.AREA.lOut, me._CONFIG.AREA_STYLE.lOut);
         me.canvas.setShapeStyle(me.AREA.rIn, me._CONFIG.AREA_STYLE.rIn);
@@ -488,6 +494,7 @@ Tree.prototype = {
                 view.type = object['type'];
                 view.name = object['name'];
                 view.color = object['color'];
+                view.stroke = object['stroke'];
             }
 
             //폴더일 경우
@@ -505,6 +512,7 @@ Tree.prototype = {
                 view.type = object['type'];
                 view.name = object['name'];
                 view.color = object['color'];
+                view.stroke = object['stroke'];
             }
 
             //ed 일 경우
@@ -522,6 +530,7 @@ Tree.prototype = {
                 view.type = object['type'];
                 view.name = object['name'];
                 view.color = object['color'];
+                view.stroke = object['stroke'];
             }
 
             //자식이 있을 경우 hasChild true
@@ -1141,6 +1150,7 @@ Tree.prototype = {
                 view.mapping = true;
                 view.selected = object['selected'];
                 view.color = object['color'];
+                view.stroke = object['stroke'];
             }
 
             //ed 일 경우
@@ -1163,6 +1173,7 @@ Tree.prototype = {
                 view.mapping = true;
                 view.selected = object['selected'];
                 view.color = object['color'];
+                view.stroke = object['stroke'];
             }
 
             //자식이 있을 경우 hasChild true
@@ -1717,7 +1728,14 @@ Tree.prototype = {
     updateImageShapeStatus: function (view, element) {
         var me = this;
         var color = view['color'];
-        if (color && color != 'none' && color != '') {
+        var stroke = view['stroke'];
+        if (!color || color == 'none' || color == '') {
+            color = undefined;
+        }
+        if (!stroke || stroke == 'none' || stroke == '') {
+            stroke = undefined;
+        }
+        if (color || stroke) {
             var $img = $(element).find('image');
             var imgURL = $img.attr('href');
             var attributes = $img.prop("attributes");
@@ -1727,18 +1745,33 @@ Tree.prototype = {
                     $.each(attributes, function () {
                         $svg.attr(this.name, this.value);
                     });
-                    //ignore
                     $svg.find('path').each(function () {
-                        var ignore = false;
-                        if ($(this).attr('class')) {
-                            if ($(this).attr('class').indexOf('ignore') != -1) {
-                                ignore = true;
+                        //컬러 입히기
+                        if (color) {
+                            var ignoreColor = false;
+                            if ($(this).attr('class')) {
+                                if ($(this).attr('class').indexOf('ignoreColor') != -1) {
+                                    ignoreColor = true;
+                                }
+                            }
+                            if (!ignoreColor) {
+                                $(this).css('fill', color);
                             }
                         }
-                        if (!ignore) {
-                            $(this).css('fill', color);
+                        //라인 색 입히기
+                        if (stroke) {
+                            var ignoreStroke = false;
+                            if ($(this).attr('class')) {
+                                if ($(this).attr('class').indexOf('ignoreStroke') != -1) {
+                                    ignoreStroke = true;
+                                }
+                            }
+                            if (!ignoreStroke) {
+                                $(this).css('stroke', stroke);
+                            }
                         }
                     });
+
                     // Remove IMG
                     var rElement = me._RENDERER._getREleById(element.id);
                     if (rElement) {
@@ -1758,14 +1791,29 @@ Tree.prototype = {
                             $svg.attr(this.name, this.value);
                         });
                         $svg.find('path').each(function () {
-                            var ignore = false;
-                            if ($(this).attr('class')) {
-                                if ($(this).attr('class').indexOf('ignore') != -1) {
-                                    ignore = true;
+                            //컬러 입히기
+                            if (color) {
+                                var ignoreColor = false;
+                                if ($(this).attr('class')) {
+                                    if ($(this).attr('class').indexOf('ignoreColor') != -1) {
+                                        ignoreColor = true;
+                                    }
+                                }
+                                if (!ignoreColor) {
+                                    $(this).css('fill', color);
                                 }
                             }
-                            if (!ignore) {
-                                $(this).css('fill', color);
+                            //라인 색 입히기
+                            if (stroke) {
+                                var ignoreStroke = false;
+                                if ($(this).attr('class')) {
+                                    if ($(this).attr('class').indexOf('ignoreStroke') != -1) {
+                                        ignoreStroke = true;
+                                    }
+                                }
+                                if (!ignoreStroke) {
+                                    $(this).css('stroke', stroke);
+                                }
                             }
                         });
 

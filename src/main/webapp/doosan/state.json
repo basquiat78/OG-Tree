@@ -2,82 +2,105 @@
   "Standard": [
     {
       "name": "In Work",
-      "color": "none"
+      "color": "none",
+      "stroke": "none"
     },
     {
       "name": "In Review",
-      "color": "#f2d888"
+      "color": "#f2d888",
+      "stroke": "none"
     },
     {
       "name": "Active",
-      "color": "#b4eabd"
+      "color": "#b4eabd",
+      "stroke": "none"
     },
     {
       "name": "Obsolate",
-      "color": "#d9534f"
+      "color": "#d9534f",
+      "stroke": "none"
     }
   ],
   "Project": {
     "Activity": [
       {
         "name": "In Planning",
-        "color": "none"
+        "color": "none",
+        "stroke": "none"
       },
       {
         "name": "Plan Review",
-        "color": "#428bca"
+        "color": "none",
+        "stroke": "#428bca"
       },
       {
         "name": "Waiting",
-        "color": "#d0aff2"
+        "color": "#d0aff2",
+        "stroke": "none"
       },
       {
         "name": "Active",
-        "color": "#b4eabd"
+        "color": "#b4eabd",
+        "stroke": "none"
       },
       {
         "name": "Close",
-        "color": "#d9534f"
+        "color": "#7e7e7e",
+        "stroke": "none"
       }
     ],
     "Folder": [
       {
         "name": "Open",
-        "color": "#b4eabd"
+        "color": "#b4eabd",
+        "stroke": "none"
       },
       {
         "name": "Close",
-        "color": "#d9534f"
+        "color": "#7e7e7e",
+        "stroke": "none"
       }
     ],
     "EDB": [
       {
         "name": "In Planning",
-        "color": "none"
+        "color": "none",
+        "stroke": "none"
       },
       {
         "name": "Plan Review",
-        "color": "#428bca"
+        "color": "#none",
+        "stroke": "#428bca"
       },
       {
         "name": "Inactive",
-        "color": "#d0aff2"
+        "color": "#d0aff2",
+        "stroke": "none"
       },
       {
         "name": "In Progress",
-        "color": "#b4eabd"
+        "color": "#b4eabd",
+        "stroke": "none"
       },
       {
         "name": "Cross Review",
-        "color": "#b4eabd"
+        "color": "#bfd4d4",
+        "stroke": "none"
       },
       {
         "name": "In Review",
-        "color": "#f2d888"
+        "color": "#f2d888",
+        "stroke": "none"
       },
       {
         "name": "Approved",
-        "color": "#d9534f"
+        "color": "#7e7e7e",
+        "stroke": "none"
+      },
+      {
+        "name": "Delay",
+        "color": "none",
+        "stroke": "#d9534f"
       }
     ]
   }

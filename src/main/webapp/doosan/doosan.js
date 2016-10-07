@@ -409,7 +409,6 @@ Doosan.prototype = {
             if (me.mode == 'random') {
                 me.renderRandomData();
             } else {
-                console.log('renderSampleData');
                 me.renderSampleData();
             }
         }
@@ -559,9 +558,15 @@ Doosan.prototype = {
             }
         });
         var stateColorBox = $('.state-color');
-        var renderState = function (name, color) {
-            stateColorBox.append('<li><a href="Javascript:void(0)"><div class="state-bar"' +
-                'style="background-color:' + color + '">&nbsp;</div>' + name + '</a></li>');
+        var renderState = function (name, color, stroke) {
+            var bar = $('<li><a href="Javascript:void(0)"><div class="state-bar">&nbsp;</div>' + name + '</a></li>');
+            stateColorBox.append(bar);
+            if (stroke) {
+                bar.find('.state-bar').css('border', '1px solid ' + stroke);
+            }
+            if(color){
+                bar.find('.state-bar').css('background-color', color);
+            }
         };
         var renderSeparator = function () {
             stateColorBox.append('<li role="separator" class="divider"></li>');
@@ -575,27 +580,27 @@ Doosan.prototype = {
             if (stdYN == 'Y') {
                 stateList = stateJson['Standard'];
                 for (var i = 0; i < stateList.length; i++) {
-                    renderState(stateList[i]['name'], stateList[i]['color']);
+                    renderState(stateList[i]['name'], stateList[i]['color'], stateList[i]['stroke']);
                 }
             } else {
                 renderTitle('Activity');
                 stateList = stateJson['Project']['Activity'];
                 for (var i = 0; i < stateList.length; i++) {
-                    renderState(stateList[i]['name'], stateList[i]['color']);
+                    renderState(stateList[i]['name'], stateList[i]['color'], stateList[i]['stroke']);
                 }
                 renderSeparator();
 
                 renderTitle('Folder');
                 stateList = stateJson['Project']['Folder'];
                 for (var i = 0; i < stateList.length; i++) {
-                    renderState(stateList[i]['name'], stateList[i]['color']);
+                    renderState(stateList[i]['name'], stateList[i]['color'], stateList[i]['stroke']);
                 }
                 renderSeparator();
 
                 renderTitle('EDB');
                 stateList = stateJson['Project']['EDB'];
                 for (var i = 0; i < stateList.length; i++) {
-                    renderState(stateList[i]['name'], stateList[i]['color']);
+                    renderState(stateList[i]['name'], stateList[i]['color'], stateList[i]['stroke']);
                 }
                 renderSeparator();
             }
