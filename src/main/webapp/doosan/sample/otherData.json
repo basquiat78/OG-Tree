@@ -141,7 +141,8 @@
     "name": "other-ed-2-1-1-1-Ed",
     "position": "other-out",
     "parentId": "other-fd-2-1-1",
-    "extData": {}
+    "extData": {},
+    "color": "#5bc0de"
   },
   {
     "type": "ed",

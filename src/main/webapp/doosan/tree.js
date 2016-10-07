@@ -3101,6 +3101,7 @@ Tree.prototype = {
                 //pick ed 화면 ed number, ed name 필드 추가하기.ok
                 //expand 상태 기억하게 하기(aras 에서 데이터 업데이트 하기 전에 조치해야 함).ok
                 //IE 라벨 살펴보기.ok
+                //액티비티,ed,폴더 생성시 현재 유저 아이디 적용.ok
 
                 //TODO
                 //담당자명 , 명칭, 생성일 재정렬
