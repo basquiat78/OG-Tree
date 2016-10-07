@@ -7,8 +7,8 @@
  *
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
  */
-OG.shape.Area = function () {
-    OG.shape.Area.superclass.call(this);
+OG.shape.Area = function (lable) {
+    OG.shape.Area.superclass.call(this, lable);
 
     this.SHAPE_ID = 'OG.shape.Area';
     this.LABEL_EDITABLE = false;
@@ -20,7 +20,7 @@ OG.shape.Area = function () {
     this.CONNECTABLE = false;
     this.DELETABLE = false;
 };
-OG.shape.Area.prototype = new OG.shape.RectangleShape();
-OG.shape.Area.superclass = OG.shape.RectangleShape;
+OG.shape.Area.prototype = new OG.shape.VerticalLaneShape();
+OG.shape.Area.superclass = OG.shape.VerticalLaneShape;
 OG.shape.Area.prototype.constructor = OG.shape.Area;
 OG.Area = OG.shape.Area;

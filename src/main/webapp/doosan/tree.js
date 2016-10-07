@@ -58,7 +58,7 @@ var Tree = function (container) {
         /**
          * 라벨 최소 크기(IE)
          */
-        LABEL_MIN_SIZE: 150,
+        LABEL_MIN_SIZE: 200,
 
         /**
          * 라벨 최대 크기(IE)
@@ -73,20 +73,26 @@ var Tree = function (container) {
             RIGHT_SIZE_RATE: (7 / 12) + 0.002,
             ACTIVITY_SIZE: 100,
             BOTTOM_MARGIN: 50,
+            TOP_MARGIN: 30,
             lAc: {
+                label: 'Other Activity',
                 display: false
             },
             lOut: {
+                label: 'Other Output',
                 display: false
             },
             rIn: {
+                label: 'My Input',
                 display: true
             },
             rAc: {
+                label: 'My Activity',
                 center: true,
                 display: true
             },
             rOut: {
+                label: 'My Output',
                 display: true
             }
         },
@@ -212,13 +218,37 @@ Tree.prototype = {
     },
 
     /**
-     * Scale 을 설정한다. (리얼 사이즈 : Scale = 1)
+     * Scale 을 설정한다. (기본 사이즈 : Scale = 1)
      *
      * @param {Number} scale 스케일값
      */
     setScale: function (scale) {
+        var me = this;
+        var preSize = me.canvas.getCanvasSize();
+        var preWidth = preSize[0];
+        var preHeight = preSize[1];
+        var preScrollLeft = me._CONTAINER.scrollLeft();
+        var preScrollTop = me._CONTAINER.scrollTop();
+        var preCenterX = preScrollLeft + (me._CONTAINER.width() / 2);
+        var preCenterY = preScrollTop + (me._CONTAINER.height() / 2);
+
         this.canvas.setScale(scale);
         this.renderViews();
+
+        var cuSize = me.canvas.getCanvasSize();
+        var cuWidth = cuSize[0];
+        var cuHeight = cuSize[1];
+        var cuScrollLeft = me._CONTAINER.scrollLeft();
+        var cuScrollTop = me._CONTAINER.scrollTop();
+
+        var cuCenterX = preCenterX * (preWidth / cuWidth);
+        var cuCenterY = preCenterY * (preHeight / cuHeight);
+
+        var moveX = preCenterX - cuCenterX;
+        var moveY = preCenterY - cuCenterY;
+        me._CONTAINER.scrollLeft(cuScrollLeft + moveX);
+        me._CONTAINER.scrollTop(cuScrollTop + moveY);
+
     },
     setShowLabel: function (show) {
         var me = this;
@@ -243,11 +273,11 @@ Tree.prototype = {
      */
     drawArea: function () {
         var me = this;
-        me.AREA.lAc = me.canvas.drawShape([0, 0], new OG.Area(), [50, 50], {stroke: '#555', 'stroke-width': 2});
-        me.AREA.lOut = me.canvas.drawShape([0, 0], new OG.Area(), [50, 50], {stroke: '#555', 'stroke-width': 2});
-        me.AREA.rIn = me.canvas.drawShape([0, 0], new OG.Area(), [50, 50], {stroke: '#555', 'stroke-width': 2});
-        me.AREA.rAc = me.canvas.drawShape([0, 0], new OG.Area(), [50, 50], {stroke: '#555', 'stroke-width': 2});
-        me.AREA.rOut = me.canvas.drawShape([0, 0], new OG.Area(), [50, 50], {stroke: '#555', 'stroke-width': 2});
+        me.AREA.lAc = me.canvas.drawShape([0, 0], new OG.Area(me._CONFIG.AREA.lAc.label), [50, 50], {stroke: '#555', 'stroke-width': 2});
+        me.AREA.lOut = me.canvas.drawShape([0, 0], new OG.Area(me._CONFIG.AREA.lOut.label), [50, 50], {stroke: '#555', 'stroke-width': 2});
+        me.AREA.rIn = me.canvas.drawShape([0, 0], new OG.Area(me._CONFIG.AREA.rIn.label), [50, 50], {stroke: '#555', 'stroke-width': 2});
+        me.AREA.rAc = me.canvas.drawShape([0, 0], new OG.Area(me._CONFIG.AREA.rAc.label), [50, 50], {stroke: '#555', 'stroke-width': 2});
+        me.AREA.rOut = me.canvas.drawShape([0, 0], new OG.Area(me._CONFIG.AREA.rOut.label), [50, 50], {stroke: '#555', 'stroke-width': 2});
         me.canvas.setShapeStyle(me.AREA.lAc, me._CONFIG.AREA_STYLE.lAc);
         me.canvas.setShapeStyle(me.AREA.lOut, me._CONFIG.AREA_STYLE.lOut);
         me.canvas.setShapeStyle(me.AREA.rIn, me._CONFIG.AREA_STYLE.rIn);
@@ -646,14 +676,14 @@ Tree.prototype = {
         };
 
         //1. 아더 액비티비 기준 시작
-        lastViewBottom = 0;
+        lastViewBottom = me._CONFIG.AREA.TOP_MARGIN;
         otherActivities = me.selectActivityByPosition(this.Constants.POSITION.OTHER);
         for (var i = 0, leni = otherActivities.length; i < leni; i++) {
             root = otherActivities[i]['id'];
             getViewData(otherActivities[i]);
         }
         //2. 마이 액티비티 기준 시작
-        lastViewBottom = 0;
+        lastViewBottom = me._CONFIG.AREA.TOP_MARGIN;
         myActivities = me.selectActivityByPosition(this.Constants.POSITION.MY);
         for (var i = 0, leni = myActivities.length; i < leni; i++) {
             root = myActivities[i]['id'];
@@ -2363,7 +2393,7 @@ Tree.prototype = {
         }
 
         //캔버스의 사이즈를 재조정한다.
-        me.canvas.setCanvasSize([right, totalHeight]);
+        me.canvas.setCanvasSize([right * me.getScale(), totalHeight * me.getScale()]);
     }
     ,
     /**
@@ -3102,13 +3132,21 @@ Tree.prototype = {
                 //expand 상태 기억하게 하기(aras 에서 데이터 업데이트 하기 전에 조치해야 함).ok
                 //IE 라벨 살펴보기.ok
                 //액티비티,ed,폴더 생성시 현재 유저 아이디 적용.ok
+                //EDB 도트 확실하게 보이게 하기.(svg 다시 만들어 테스트).ok
+                //줌 인 아웃시에 캔버스 사이즈도 변경하기.ok
+                //줌 인의 기준이 현재 스크롤 상태에서 부터 확대하기.ok
+                //Area 라벨 표기 하기.ok
 
                 //TODO
-                //담당자명 , 명칭, 생성일 재정렬
-                //줌 인의 기준이 현재 스크롤 상태에서 부터 확대하기.
-                //줌 인 아웃시에 캔버스 사이즈도 변경하기.
-                //EDB 도트 확실하게 보이게 하기.(svg 다시 만들어 테스트)
-                //Area 라벨 표기 하기
+                //계획일, 완료일, 수정일
+
+                //사람이름, _first_start_date, _final_end_date, modified_date
+
+               //스테이터스 컬러 재조정하기
+
+                //스탠다드, 폴더 3레벨 까지 enable, 3레벨 일 경우는 ed 생성 불가
+                //프로젝트, 폴더 5레벨 까지 enable, 5레벨 일 경우는 ed 생성 불가
+
 
 
                 //before 이벤트

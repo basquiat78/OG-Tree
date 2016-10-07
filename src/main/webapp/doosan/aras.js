@@ -24,6 +24,17 @@ var Aras = function (tree) {
     this.projectId = null;
     this.inn = null;
 
+    /**
+     * 프로젝트, 폴더 5레벨 까지 enable, 5레벨 일 경우는 ed 생성 불가
+     * @type {number}
+     */
+    this.prjMaxDepth = 5;
+    /**
+     * 스탠다드, 폴더 3레벨 까지 enable, 3레벨 일 경우는 ed 생성 불가
+     * @type {number}
+     */
+    this.stdMaxDepth = 3;
+
     this.TYPE = {
         WORKFLOW: "workflow",
         ACTIVITY: "activity",
@@ -167,13 +178,13 @@ Aras.prototype = {
         this.inn = this.aras.newIOMInnovator();
         return this.inn.applyMethod(methodName, body);
     },
-    getUserIdentity: function(){
+    getUserIdentity: function () {
         var inn = this.aras.newIOMInnovator();
         var userId = inn.getUserID();
         var aliasRelItem = inn.newItem("Alias", "get");
         aliasRelItem.setProperty("source_id", userId);
         aliasRelItem = aliasRelItem.apply();
-        var identityId= aliasRelItem.getProperty("related_id");
+        var identityId = aliasRelItem.getProperty("related_id");
         return identityId ? identityId : '';
     },
     /**
@@ -422,10 +433,33 @@ Aras.prototype = {
             }
         }
         me.refreshMyWorkFlow();
+    },
+    /**
+     * 최대 생성 개수로 생성 가능 여부를 체크한다.
+     * @param depth
+     * @returns {boolean}
+     */
+    checkMaxCreateNumber: function (depth) {
+        var enable = true;
+        if (this.stdYN == 'Y') {
+            if (depth >= this.stdMaxDepth) {
+                enable = false;
+                msgBox('Max depth is ' + this.stdMaxDepth + ' in standard workflow.');
+            }
+        } else {
+            if (depth >= this.prjMaxDepth) {
+                enable = false;
+                msgBox('Max depth is ' + this.prjMaxDepth + ' in project workflow.');
+            }
+        }
+        return enable;
     }
-
     ,
     createFolder: function (data, view) {
+        if (!this.checkMaxCreateNumber(view.depth)) {
+            return;
+        }
+
         this.data = data;
         this.view = view;
 
@@ -590,6 +624,10 @@ Aras.prototype = {
         this.refreshOutFolder(parentData, parentView);
     },
     createEd: function (data, view, edType) {
+        if (!this.checkMaxCreateNumber(view.depth)) {
+            return;
+        }
+
         var me = this;
         var inn = this.aras.newIOMInnovator();
         var parentId = data.id;

@@ -297,6 +297,10 @@ Doosan.prototype = {
              */
             me.tree.onPickEd = function (data, view) {
                 console.log('onPickEd', data, view);
+                if (!me.aras.checkMaxCreateNumber(view.depth)) {
+                    return;
+                }
+
                 var dataSet = [];
                 var renderTable = function () {
                     var pickEdNumber = $('#pickEdNumber').val();
