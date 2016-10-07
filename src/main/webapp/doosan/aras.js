@@ -836,12 +836,17 @@ Aras.prototype = {
                 existRelItem.setProperty("source_id", me.wfId);
                 existRelItem.setProperty("related_id", data.id);
                 existRelItem = existRelItem.apply();
+
                 if (existRelItem.getItemCount() > 0) {
-                    relItem = inn.newItem(relType, 'delete');
-                    relItem.setProperty("source_id", me.wfId);
-                    relItem.setProperty("related_id", data.id);
-                    relItem = relItem.apply();
+                    var amlStr = "<AML><Item type=\"" + relType + "\" action=\"delete\" where=\"source_id = '" + me.wfId + "' and related_id = '" + data.id + "'\"></Item></AML>"
+                    inn.applyAML(amlStr);
                 }
+                //if (existRelItem.getItemCount() > 0) {
+                //    relItem = inn.newItem(relType, 'delete');
+                //    relItem.setProperty("source_id", me.wfId);
+                //    relItem.setProperty("related_id", data.id);
+                //    relItem = relItem.apply();
+                //}
                 me.refreshMyWorkFlow();
             }
         }
