@@ -1192,7 +1192,7 @@ Aras.prototype = {
     syncExpandDataWithTree: function (data) {
         var existData;
         for (var i = 0, leni = data.length; i < leni; i++) {
-            if (data.id) {
+            if (data[i].id) {
                 existData = this.tree.selectById(data[i].id);
                 if (existData && typeof existData.expand == 'boolean') {
                     if (existData.expand) {
