@@ -1039,6 +1039,8 @@ Aras.prototype = {
             }
         }
 
+        me.syncExpandDataWithTree(refreshData);
+
         //remove Other Data
         me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER});
         me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER_OUT});
@@ -1173,17 +1175,34 @@ Aras.prototype = {
         var inResult = me.getWorkflowStructure(me.wfId, 'IN');
         var outResult = me.getWorkflowStructure(me.wfId, 'OUT');
 
+        // create data
+        var myInData = me.createMyWorkFlowData(inResult['nodeList'], 'in');
+        var myOutData = me.createMyWorkFlowData(outResult['nodeList'], 'out');
+        var concat = myInData.concat(myOutData);
+        me.syncExpandDataWithTree(concat);
+
         //remove My Data
         //me.tree._INCOLLAPSE = [];
         me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY});
         me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_IN});
         me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_OUT});
 
-        // create data
-        var myInData = me.createMyWorkFlowData(inResult['nodeList'], 'in');
-        var myOutData = me.createMyWorkFlowData(outResult['nodeList'], 'out');
-        var concat = myInData.concat(myOutData);
         me.tree.updateData(concat);
+    },
+    syncExpandDataWithTree: function (data) {
+        var existData;
+        for (var i = 0, leni = data.length; i < leni; i++) {
+            if (data.id) {
+                existData = this.tree.selectById(data.id);
+                if (existData && typeof existData.expand == 'boolean') {
+                    if (existData.expand) {
+                        data[i]['expand'] = true;
+                    } else {
+                        data[i]['expand'] = false;
+                    }
+                }
+            }
+        }
     }
 }
 ;
