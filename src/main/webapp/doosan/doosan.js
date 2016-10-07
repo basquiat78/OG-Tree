@@ -14,6 +14,7 @@ Doosan.prototype = {
             me.tree._CONFIG.MAPPING_ENABLE = true;
             me.tree._CONFIG.CREATE_FOLDER = true;
             me.tree._CONFIG.CREATE_ED = true;
+            me.tree._CONFIG.PICK_ED = true;
             me.tree._CONFIG.DELETABLE = true;
             me.tree._CONFIG.AREA.lAc.display = true;
             me.tree._CONFIG.AREA.lOut.display = true;
@@ -25,6 +26,7 @@ Doosan.prototype = {
             me.tree._CONFIG.MAPPING_ENABLE = false;
             me.tree._CONFIG.CREATE_FOLDER = false;
             me.tree._CONFIG.CREATE_ED = false;
+            me.tree._CONFIG.PICK_ED = false;
             me.tree._CONFIG.DELETABLE = false;
             me.tree._CONFIG.AREA.lAc.display = false;
             me.tree._CONFIG.AREA.lOut.display = false;
@@ -231,7 +233,11 @@ Doosan.prototype = {
 
                 for (var i = 0; i < dataSet.length; i++) {
                     dataSet[i]['label'] = '<a href="#" name="listRelObj" data-index="' + i + '">' + dataSet[i]['name'] + '</a>';
-                    dataSet[i]['activity_owner'] = dataSet[i]['activity_owner'] ? dataSet[i]['activity_owner'] : ''
+                    dataSet[i]['process_id'] = dataSet[i]['process_id'] ? dataSet[i]['process_id'] : '';
+                    dataSet[i]['wf_name'] = dataSet[i]['wf_name'] ? dataSet[i]['wf_name'] : '';
+                    dataSet[i]['item_number'] = dataSet[i]['item_number'] ? dataSet[i]['item_number'] : '';
+                    dataSet[i]['activity_owner'] = dataSet[i]['activity_owner'] ? dataSet[i]['activity_owner'] : '';
+                    dataSet[i]['eng_funtion_structure'] = dataSet[i]['eng_funtion_structure'] ? dataSet[i]['eng_funtion_structure'] : '';
                 }
 
                 var gridPanel = $('#listRelGrid');
@@ -301,6 +307,10 @@ Doosan.prototype = {
                         dataSet[i]['label'] =
                             '<input type="checkbox" name="pickEdObj" data-index="' + i + '"/>&nbsp;' +
                             '<i class="fa fa-search-plus"></i>&nbsp;<a href="Javascript:void(0)" name="statusBtn">' + dataSet[i]['name'] + '</a>';
+                        dataSet[i]['ed_type'] = dataSet[i]['ed_type'] ? dataSet[i]['ed_type'] : '';
+                        dataSet[i]['rel_project'] = dataSet[i]['rel_project'] ? dataSet[i]['rel_project'] : '';
+                        dataSet[i]['state'] = dataSet[i]['state'] ? dataSet[i]['state'] : '';
+                        dataSet[i]['class'] = dataSet[i]['class'] ? dataSet[i]['class'] : '';
                     }
 
                     var gridPanel = $('#pickEdGrid');

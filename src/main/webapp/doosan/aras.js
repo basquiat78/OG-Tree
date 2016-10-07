@@ -597,6 +597,8 @@ Aras.prototype = {
         var edItem = inn.newItem(edType, "add");
         edItem.setProperty("_p_id", data.extData['fs_id']);
 
+        edItem.setProperty('owned_by_id', parentItem.getProperty('owned_by_id', ''));
+
         edItem.setProperty("_eng_mat_structure", parentItem.getProperty('_eng_mat_structure', ''));
         edItem.setProperty("_eng_mat_code", parentItem.getProperty('_eng_mat_code', ''));
 
@@ -1172,7 +1174,7 @@ Aras.prototype = {
         var outResult = me.getWorkflowStructure(me.wfId, 'OUT');
 
         //remove My Data
-        me.tree._INCOLLAPSE = [];
+        //me.tree._INCOLLAPSE = [];
         me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY});
         me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_IN});
         me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_OUT});
