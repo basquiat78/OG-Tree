@@ -4,6 +4,7 @@
 var Doosan = function () {
     this.tree = null;
     this.aras = null;
+    this.mode = 'sample'; //random,sample
 };
 Doosan.prototype = {
     init: function () {
@@ -192,6 +193,8 @@ Doosan.prototype = {
             $('#refresh').click(function () {
                 me.aras.refreshMyWorkFlow();
             });
+
+
             /**
              * 폴더 또는 ED 또는 액티비티 삭제 콘텍스트 클릭시
              * @param data
@@ -403,25 +406,12 @@ Doosan.prototype = {
                 })
             };
         } else {
-            $.getJSON("doosan/sample/myData.json", function (myData) {
-
-                me.tree._INCOLLAPSE = [];
-                me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY});
-                me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_IN});
-                me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_OUT});
-                me.tree.updateData(myData);
-
-                $.getJSON("doosan/sample/otherData.json", function (otherData) {
-                    me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER});
-                    me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER_OUT});
-                    me.tree.updateData(otherData);
-                });
-            });
-
-            //var otherData = randomData('other');
-            //var myData = randomData('my');
-            //me.tree.updateData(otherData);
-            //me.tree.updateData(myData);
+            if (me.mode == 'random') {
+                me.renderRandomData();
+            } else {
+                console.log('renderSampleData');
+                me.renderSampleData();
+            }
         }
 
         me.renderStateBox();
@@ -439,6 +429,7 @@ Doosan.prototype = {
                 me.tree.setShowLabel(true);
             }
         });
+
 
         $('#zoomIn').click(function () {
             var scale = me.tree.getScale();
@@ -609,6 +600,30 @@ Doosan.prototype = {
                 renderSeparator();
             }
         }
+    },
+    renderSampleData: function () {
+        var me = this;
+        $.getJSON("doosan/sample/myData.json", function (myData) {
+
+            me.tree._INCOLLAPSE = [];
+            me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY});
+            me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_IN});
+            me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_OUT});
+            me.tree.updateData(myData, true);
+
+            $.getJSON("doosan/sample/otherData.json", function (otherData) {
+                me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER});
+                me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER_OUT});
+                me.tree.updateData(otherData);
+            });
+        });
+    },
+    renderRandomData: function () {
+        var me = this;
+        var otherData = randomData('other');
+        var myData = randomData('my');
+        me.tree.updateData(otherData, true);
+        me.tree.updateData(myData);
     }
 }
 ;
@@ -618,6 +633,7 @@ $(function () {
     var doosan = new Doosan();
     doosan.init();
 });
+
 
 var randomData = function (type) {
     var data = {};

@@ -273,11 +273,16 @@ Tree.prototype = {
      */
     drawArea: function () {
         var me = this;
-        me.AREA.lAc = me.canvas.drawShape([0, 0], new OG.Area(me._CONFIG.AREA.lAc.label), [50, 50], {stroke: '#555', 'stroke-width': 2});
-        me.AREA.lOut = me.canvas.drawShape([0, 0], new OG.Area(me._CONFIG.AREA.lOut.label), [50, 50], {stroke: '#555', 'stroke-width': 2});
-        me.AREA.rIn = me.canvas.drawShape([0, 0], new OG.Area(me._CONFIG.AREA.rIn.label), [50, 50], {stroke: '#555', 'stroke-width': 2});
-        me.AREA.rAc = me.canvas.drawShape([0, 0], new OG.Area(me._CONFIG.AREA.rAc.label), [50, 50], {stroke: '#555', 'stroke-width': 2});
-        me.AREA.rOut = me.canvas.drawShape([0, 0], new OG.Area(me._CONFIG.AREA.rOut.label), [50, 50], {stroke: '#555', 'stroke-width': 2});
+        var lacLabel = me._CONFIG.AREA.lAc.display ? me._CONFIG.AREA.lAc.label : undefined;
+        var lOutLabel = me._CONFIG.AREA.lOut.display ? me._CONFIG.AREA.lOut.label : undefined;
+        var rInLabel = me._CONFIG.AREA.rIn.display ? me._CONFIG.AREA.rIn.label : undefined;
+        var rAcLabel = me._CONFIG.AREA.rAc.display ? me._CONFIG.AREA.rAc.label : undefined;
+        var rOutLabel = me._CONFIG.AREA.rOut.display ? me._CONFIG.AREA.rOut.label : undefined;
+        me.AREA.lAc = me.canvas.drawShape([0, 0], new OG.Area(lacLabel), [50, 50], {stroke: '#555', 'stroke-width': 2});
+        me.AREA.lOut = me.canvas.drawShape([0, 0], new OG.Area(lOutLabel), [50, 50], {stroke: '#555', 'stroke-width': 2});
+        me.AREA.rIn = me.canvas.drawShape([0, 0], new OG.Area(rInLabel), [50, 50], {stroke: '#555', 'stroke-width': 2});
+        me.AREA.rAc = me.canvas.drawShape([0, 0], new OG.Area(rAcLabel), [50, 50], {stroke: '#555', 'stroke-width': 2});
+        me.AREA.rOut = me.canvas.drawShape([0, 0], new OG.Area(rOutLabel), [50, 50], {stroke: '#555', 'stroke-width': 2});
         me.canvas.setShapeStyle(me.AREA.lAc, me._CONFIG.AREA_STYLE.lAc);
         me.canvas.setShapeStyle(me.AREA.lOut, me._CONFIG.AREA_STYLE.lOut);
         me.canvas.setShapeStyle(me.AREA.rIn, me._CONFIG.AREA_STYLE.rIn);
@@ -3136,18 +3141,13 @@ Tree.prototype = {
                 //줌 인 아웃시에 캔버스 사이즈도 변경하기.ok
                 //줌 인의 기준이 현재 스크롤 상태에서 부터 확대하기.ok
                 //Area 라벨 표기 하기.ok
+                //스탠다드, 폴더 3레벨 까지 enable, 3레벨 일 경우는 ed 생성 불가.ok
+                //프로젝트, 폴더 5레벨 까지 enable, 5레벨 일 경우는 ed 생성 불가.ok
 
                 //TODO
                 //계획일, 완료일, 수정일
-
                 //사람이름, _first_start_date, _final_end_date, modified_date
-
-               //스테이터스 컬러 재조정하기
-
-                //스탠다드, 폴더 3레벨 까지 enable, 3레벨 일 경우는 ed 생성 불가
-                //프로젝트, 폴더 5레벨 까지 enable, 5레벨 일 경우는 ed 생성 불가
-
-
+                //스테이터스 컬러 재조정하기
 
                 //before 이벤트
                 var beforeActivityMove = me.onBeforeActivityMove(activities);
