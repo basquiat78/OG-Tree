@@ -1729,6 +1729,41 @@ Tree.prototype = {
         var me = this;
         var color = view['color'];
         var stroke = view['stroke'];
+
+        /**
+         * svg 의 path 들에 컬러와 stroke 를 적용시킨다.
+         * @param $svg
+         * @param color
+         * @param stroke
+         */
+        var applyPathStyle = function ($svg, color, stroke) {
+            $svg.find('path').each(function () {
+                //컬러 입히기
+                if (color) {
+                    var ignoreColor = false;
+                    if ($(this).attr('class')) {
+                        if ($(this).attr('class').indexOf('ignoreColor') != -1) {
+                            ignoreColor = true;
+                        }
+                    }
+                    if (!ignoreColor) {
+                        $(this).css('fill', color);
+                    }
+                }
+                //라인 색 입히기
+                if (stroke) {
+                    var ignoreStroke = false;
+                    if ($(this).attr('class')) {
+                        if ($(this).attr('class').indexOf('ignoreStroke') != -1) {
+                            ignoreStroke = true;
+                        }
+                    }
+                    if (!ignoreStroke) {
+                        $(this).css('stroke', stroke);
+                    }
+                }
+            });
+        };
         if (!color || color == 'none' || color == '') {
             color = undefined;
         }
@@ -1745,32 +1780,7 @@ Tree.prototype = {
                     $.each(attributes, function () {
                         $svg.attr(this.name, this.value);
                     });
-                    $svg.find('path').each(function () {
-                        //컬러 입히기
-                        if (color) {
-                            var ignoreColor = false;
-                            if ($(this).attr('class')) {
-                                if ($(this).attr('class').indexOf('ignoreColor') != -1) {
-                                    ignoreColor = true;
-                                }
-                            }
-                            if (!ignoreColor) {
-                                $(this).css('fill', color);
-                            }
-                        }
-                        //라인 색 입히기
-                        if (stroke) {
-                            var ignoreStroke = false;
-                            if ($(this).attr('class')) {
-                                if ($(this).attr('class').indexOf('ignoreStroke') != -1) {
-                                    ignoreStroke = true;
-                                }
-                            }
-                            if (!ignoreStroke) {
-                                $(this).css('stroke', stroke);
-                            }
-                        }
-                    });
+                    applyPathStyle($svg, color, stroke);
 
                     // Remove IMG
                     var rElement = me._RENDERER._getREleById(element.id);
@@ -1790,32 +1800,7 @@ Tree.prototype = {
                         $.each(attributes, function () {
                             $svg.attr(this.name, this.value);
                         });
-                        $svg.find('path').each(function () {
-                            //컬러 입히기
-                            if (color) {
-                                var ignoreColor = false;
-                                if ($(this).attr('class')) {
-                                    if ($(this).attr('class').indexOf('ignoreColor') != -1) {
-                                        ignoreColor = true;
-                                    }
-                                }
-                                if (!ignoreColor) {
-                                    $(this).css('fill', color);
-                                }
-                            }
-                            //라인 색 입히기
-                            if (stroke) {
-                                var ignoreStroke = false;
-                                if ($(this).attr('class')) {
-                                    if ($(this).attr('class').indexOf('ignoreStroke') != -1) {
-                                        ignoreStroke = true;
-                                    }
-                                }
-                                if (!ignoreStroke) {
-                                    $(this).css('stroke', stroke);
-                                }
-                            }
-                        });
+                        applyPathStyle($svg, color, stroke);
 
                         // Replace IMG with SVG
                         var rElement = me._RENDERER._getREleById(element.id);
