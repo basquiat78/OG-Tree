@@ -180,6 +180,7 @@ var Tree = function (container) {
     this.canvas._CONFIG.LABEL_MAX_SIZE = this._CONFIG.LABEL_MAX_SIZE;
 
     this._RENDERER = this.canvas._RENDERER;
+    this._HANDLER = this.canvas._HANDLER;
 
     this.AREA = {
         lAc: null,
@@ -913,7 +914,6 @@ Tree.prototype = {
                 targetActivityView.hasMirror = true;
                 targetActivityView.sourceActivityId = sourceActivity['id'];
 
-
                 isLoad = false;
                 for (var l = 0, lenl = loaded.length; l < lenl; l++) {
                     if (loaded[l].sourceActivity == sourceActivity['id'] &&
@@ -966,6 +966,11 @@ Tree.prototype = {
                                 //익스팬더를 제외한 객체는 blur 처리한다.
                                 if (sourceView['type'] != me.Constants.TYPE.EXPANDER) {
                                     targetView.blur = true;
+                                }
+
+                                //sourceActivity 의 expanderFrom 은 blur 처리를 해제한다.
+                                if (sourceView.id == sourceActivity['id'] + me.Constants.PREFIX.EXPANDER_FROM) {
+                                    targetView.blur = false;
                                 }
 
                                 if (sourceView.parentY) {
@@ -3285,13 +3290,13 @@ Tree.prototype = {
                 //m 라벨 지우기.ok
                 //picked, 또는 Structure 불러올때 카운트 1 처리하기.ok
                 //액티비티가 하나일때는 표현이 안되는 문제.ok
+                //순서를 재정렬 하고 난 이후에는 콘텍스트가 안먹힘.ok
+                //우클릭 했을때 포커싱이 같이 갈 수 있도록.ok
+                //In의 루트 폴더 와 Activity 연결선 실선으로 바꾸기.ok
 
                 //TODO
                 //상단 창 더 줄이기.
                 //부모창에 겹친 스크롤바 지우기.
-                //순서를 재정렬 하고 난 이후에는 콘텍스트가 안먹힘.
-                //우클릭 했을때 포커싱이 같이 갈 수 있도록.
-                //In의 루트 폴더 와 Activity 연결선 실선으로 바꾸기
 
                 //before 이벤트
                 var beforeActivityMove = me.onBeforeActivityMove(activities);
@@ -3565,6 +3570,15 @@ Tree.prototype = {
                 }
                 me.selectedView = view;
                 me.selectedData = data;
+
+                //선택된 엘리먼트 셀렉트
+                if ($(element).attr("_selected") === "true") {
+                    me._HANDLER.deselectShape(element);
+                    me._HANDLER.selectShape(element);
+                } else {
+                    me._HANDLER.selectShape(element);
+                }
+
 
                 //폴더,ED 생성 및 삭제
                 if (view.position == me.Constants.POSITION.MY || view.position == me.Constants.POSITION.MY_OUT) {
