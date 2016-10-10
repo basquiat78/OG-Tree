@@ -161,24 +161,23 @@ Aras.prototype = {
                     if (parentDoc.find('#doosanIframe').length) {
                         console.log('doosanIframe created');
 
-                        //종료 아이콘이 없으면 종료 아이콘 추가.
-                        if (!parentDoc.find('#doosanCloseBtn').length) {
+                        //종료 아이콘이 없으면 종료 아이콘 추가. => 이것은 내부페이지에서 만들어 넣도록 한다.
+                        if (!$('#doosanCloseBtn').length) {
                             var closeBtn = $('<div>X</div>');
                             closeBtn.attr('id', 'doosanCloseBtn');
                             closeBtn.css({
                                 width: '20px',
                                 height: '20px',
-                                'z-index': '10001',
+                                'z-index': '10000',
                                 position: 'absolute',
                                 top: '10px',
                                 right: '10px'
                             });
                             closeBtn.click(function () {
                                 window.parent.document.body.removeChild(window.parent.document.getElementById('doosanIframe'));
-                                window.parent.document.body.removeChild(window.parent.document.getElementById('doosanCloseBtn'));
                             });
                         }
-                        parentDoc.find('body').append(closeBtn);
+                        $('body').append(closeBtn);
                     }
 
                     me.tree.renderViews();
