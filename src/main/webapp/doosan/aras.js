@@ -1339,13 +1339,13 @@ Aras.prototype = {
         var outResultNodes = [];
 
         if (inResult.getItemCount() == 1) {
-            inResultNodes = inResultNodes.push(inResult.node);
+            inResultNodes.push(inResult.node);
         } else {
             inResultNodes = inResult['nodeList'];
         }
 
         if (outResult.getItemCount() == 1) {
-            outResultNodes = outResultNodes.push(outResult.node);
+            outResultNodes.push(outResult.node);
         } else {
             outResultNodes = outResult['nodeList'];
         }
