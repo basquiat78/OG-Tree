@@ -578,6 +578,7 @@ Tree.prototype = {
                 view.name = object['name'];
                 view.color = object['color'];
                 view.stroke = object['stroke'];
+                view.tooltip = object['tooltip'];
             }
 
             //폴더일 경우
@@ -596,6 +597,7 @@ Tree.prototype = {
                 view.name = object['name'];
                 view.color = object['color'];
                 view.stroke = object['stroke'];
+                view.tooltip = object['tooltip'];
             }
 
             //ed 일 경우
@@ -614,6 +616,7 @@ Tree.prototype = {
                 view.name = object['name'];
                 view.color = object['color'];
                 view.stroke = object['stroke'];
+                view.tooltip = object['tooltip'];
             }
 
             //자식이 있을 경우 hasChild true
@@ -1234,6 +1237,7 @@ Tree.prototype = {
                 view.selected = object['selected'];
                 view.color = object['color'];
                 view.stroke = object['stroke'];
+                view.tooltip = object['tooltip'];
             }
 
             //ed 일 경우
@@ -1257,6 +1261,7 @@ Tree.prototype = {
                 view.selected = object['selected'];
                 view.color = object['color'];
                 view.stroke = object['stroke'];
+                view.tooltip = object['tooltip'];
             }
 
             //자식이 있을 경우 hasChild true
@@ -3031,10 +3036,7 @@ Tree.prototype = {
         var me = this;
         var view = me.selectViewById(me._VIEWDATA, element.id);
         if (view) {
-            var text = view.name;
-            if (view.mapping) {
-                text = view.name;
-            }
+            var text = view.tooltip ? view.tooltip : view.name;
             var tooltip =
                 $('<div class="og-tooltip ui-tooltip ui-widget ui-corner-all" id="' + element.id + '-tooltip">' +
                     '<div class="ui-tooltip-content">' + text + '</div>' +
@@ -3259,9 +3261,12 @@ Tree.prototype = {
                 //Area 라벨 표기 하기.ok
                 //스탠다드, 폴더 3레벨 까지 enable, 3레벨 일 경우는 ed 생성 불가.ok
                 //프로젝트, 폴더 5레벨 까지 enable, 5레벨 일 경우는 ed 생성 불가.ok
+                //계획일, 완료일, 수정일 소트(_first_start_date, _final_end_date, modified_date).ok
+                //스테이터스 컬러 재조정하기.ok
+                //셀릭트 패널 크기 줄이기.ok
+                //툴팁 사람 이름 추가하기
 
                 //TODO
-                //계획일, 완료일, 수정일
                 //사람이름, _first_start_date, _final_end_date, modified_date
                 //스테이터스 컬러 재조정하기
 

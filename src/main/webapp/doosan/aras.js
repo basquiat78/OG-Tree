@@ -1198,7 +1198,8 @@ Aras.prototype = {
                         stroke: colorAndStroke.stroke,
                         first_start_date: convertDate(node.first_start_date),
                         final_end_date: convertDate(node.final_end_date),
-                        modified_date: convertDate(node.modified_date)
+                        modified_date: convertDate(node.modified_date),
+                        tooltip: node.fs_name + '-' + node['_user_name']
                     };
                 } else if (node.kind == 'F') {
                     colorAndStroke = getStateColorAndStroke(me.tree.Constants.TYPE.FOLDER, node.state, checkDelay(node));
@@ -1214,7 +1215,8 @@ Aras.prototype = {
                         stroke: colorAndStroke.stroke,
                         first_start_date: convertDate(node.first_start_date),
                         final_end_date: convertDate(node.final_end_date),
-                        modified_date: convertDate(node.modified_date)
+                        modified_date: convertDate(node.modified_date),
+                        tooltip: node.fs_name + '-' + node['_user_name']
                     };
                 } else if (node.kind == 'E') {
                     colorAndStroke = getStateColorAndStroke(me.tree.Constants.TYPE.ED, node.state, checkDelay(node));
@@ -1230,7 +1232,8 @@ Aras.prototype = {
                         stroke: colorAndStroke.stroke,
                         first_start_date: convertDate(node.first_start_date),
                         final_end_date: convertDate(node.final_end_date),
-                        modified_date: convertDate(node.modified_date)
+                        modified_date: convertDate(node.modified_date),
+                        tooltip: node.fs_name + '-' + node['_user_name']
                     };
                 }
             }
@@ -1277,7 +1280,8 @@ Aras.prototype = {
                     stroke: colorAndStroke.stroke,
                     first_start_date: convertDate(node.first_start_date),
                     final_end_date: convertDate(node.final_end_date),
-                    modified_date: convertDate(node.modified_date)
+                    modified_date: convertDate(node.modified_date),
+                    tooltip: node.fs_name + '-' + node['_user_name']
                 };
             }
             data.push(object);
