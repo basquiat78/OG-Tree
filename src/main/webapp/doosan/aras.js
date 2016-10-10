@@ -1021,9 +1021,10 @@ Aras.prototype = {
 
         me.syncExpandDataWithTree(refreshData);
 
-        //remove Other Data
-        me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER});
-        me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER_OUT});
+        //remove My Data
+        me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY});
+        me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_IN});
+        me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_OUT});
 
         //update Data
         var sortOrder = me.currentSortOrder();
@@ -1185,10 +1186,19 @@ Aras.prototype = {
         }
 
         var colorAndStroke;
+        var tooltip;
 
         for (var i = 0; i < tempData.length; i++) {
             node = tempData[i];
             if (inout == 'out') {
+                //스탠다드 일 경우 name 만
+                if (me.stdYN == 'Y') {
+                    tooltip = node.fs_name;
+                }
+                //프로젝트 일 경우 사람이름과 함께
+                else {
+                    tooltip = node['_user_name'] ? node.fs_name + '-' + node['_user_name'] : node.fs_name;
+                }
                 if (node.kind == 'A') {
                     colorAndStroke = getStateColorAndStroke(me.tree.Constants.TYPE.ACTIVITY, node.state, checkDelay(node));
                     object = {
@@ -1204,7 +1214,7 @@ Aras.prototype = {
                         first_start_date: convertDate(node.first_start_date),
                         final_end_date: convertDate(node.final_end_date),
                         modified_date: convertDate(node.modified_date),
-                        tooltip: node['_user_name'] ? node.fs_name + '-' + node['_user_name'] : node.fs_name
+                        tooltip: tooltip
                     };
                 } else if (node.kind == 'F') {
                     colorAndStroke = getStateColorAndStroke(me.tree.Constants.TYPE.FOLDER, node.state, checkDelay(node));
@@ -1221,7 +1231,7 @@ Aras.prototype = {
                         first_start_date: convertDate(node.first_start_date),
                         final_end_date: convertDate(node.final_end_date),
                         modified_date: convertDate(node.modified_date),
-                        tooltip: node['_user_name'] ? node.fs_name + '-' + node['_user_name'] : node.fs_name
+                        tooltip: tooltip
                     };
                 } else if (node.kind == 'E') {
                     colorAndStroke = getStateColorAndStroke(me.tree.Constants.TYPE.ED, node.state, checkDelay(node));
@@ -1238,7 +1248,7 @@ Aras.prototype = {
                         first_start_date: convertDate(node.first_start_date),
                         final_end_date: convertDate(node.final_end_date),
                         modified_date: convertDate(node.modified_date),
-                        tooltip: node['_user_name'] ? node.fs_name + '-' + node['_user_name'] : node.fs_name
+                        tooltip: tooltip
                     };
                 }
             }
@@ -1269,6 +1279,14 @@ Aras.prototype = {
                 }
                 var sourceType = node.kind == 'F' ? me.tree.Constants.TYPE.FOLDER : me.tree.Constants.TYPE.ED;
                 colorAndStroke = getStateColorAndStroke(sourceType, node.state, checkDelay(node));
+                //스탠다드 일 경우 name 만
+                if (me.stdYN == 'Y') {
+                    tooltip = node.fs_name;
+                }
+                //프로젝트 일 경우 사람이름과 함께
+                else {
+                    tooltip = node['_user_name'] ? node.name + '-' + node['_user_name'] : node.name;
+                }
                 object = {
                     type: me.tree.Constants.TYPE.MAPPING,
                     id: node.id + '-' + node.fs_parent_id, //소스 + '-' + 타겟
@@ -1286,7 +1304,7 @@ Aras.prototype = {
                     first_start_date: convertDate(node.first_start_date),
                     final_end_date: convertDate(node.final_end_date),
                     modified_date: convertDate(node.modified_date),
-                    tooltip: node['_user_name'] ? node.name + '-' + node['_user_name'] : node.name
+                    tooltip: tooltip
                 };
             }
             data.push(object);

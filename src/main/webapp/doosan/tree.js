@@ -742,6 +742,7 @@ Tree.prototype = {
                     }
                     if (expanderFromView) {
                         expanderFromView.y = vy;
+                        expanderFromView.parentY = vy;
                     }
                     if (expanderToView) {
                         expanderToView.y = vy;
@@ -3267,14 +3268,19 @@ Tree.prototype = {
                 //툴팁 사람 이름 추가하기.ok
                 //스테이터스 컬러 재조정하기.ok
 
+                //스탠다드일때는 owner 이름 안보이게.ok
+                //start,end 버튼 가리기.ok
+                //모니터에 My Workflow 가리기.ok
+                //데이터 리프레쉬 할때 포지션 배포가 섞임.ok
                 //TODO
-                //상단 창 더 줄이기
-                //start,end 버튼 가리기
-                //모니터에 My Workflow 가리기
-                //부모창에 겹친 스크롤바 지우기
+                //상단 창 더 줄이기.
+                //부모창에 겹친 스크롤바 지우기.
                 //액티비티가 하나일때는 표현이 안되는 문제.
-                //스탠다드일때는 owner 이름 안보이게.
-                //데이터 리프레쉬 할때 포지션 배포가 섞임.
+                //순서를 재정렬 하고 난 이후에는 콘텍스트가 안먹힘.
+                //폴더 하나만 가진 액티비티 리스트가 있을 경우 선이 깨짐.
+                //우클릭 했을때 포커싱이 같이 갈 수 있도록.
+                //m 라벨 지우기
+                //In의 루트 폴더 와 Activity 연결선 실선으로 바꾸기
 
 
                 //before 이벤트
