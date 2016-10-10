@@ -116,15 +116,26 @@ Aras.prototype = {
                 //    'height': $('body').height() + 'px',
                 //    'width': '100%'
                 //});
-                var innerMode = me.getHtmlParameter('mode');
+                var iframes;
                 var parentIframe;
-                var iframes = parentDoc.find('iframe');
-                iframes.each(function () {
-                    var src = $(this).attr('src');
-                    if (src && src.indexOf('doosanMonitor') != -1) {
-                        parentIframe = $(this);
-                    }
-                });
+                var innerMode = me.getHtmlParameter('mode');
+                if (innerMode) {
+                    iframes = parentDoc.find('iframe');
+                    iframes.each(function () {
+                        var src = $(this).attr('src');
+                        if (src && src.indexOf('doosanMonitor') != -1) {
+                            parentIframe = $(this);
+                        }
+                    });
+                } else {
+                    iframes = parentDoc.find('.dijitDialogPaneContent').find('iframe');
+                    iframes.each(function () {
+                        var src = $(this).attr('src');
+                        if (src && src.indexOf('doosan') != -1) {
+                            parentIframe = $(this);
+                        }
+                    });
+                }
                 if (parentIframe && parentIframe.length) {
                     if (innerMode) {
                         var height = parentIframe.height();
