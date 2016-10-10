@@ -1179,11 +1179,13 @@ Aras.prototype = {
             tempData.push(xmlNodeStringToJSON);
         }
 
+        var colorAndStroke;
+
         for (var i = 0; i < tempData.length; i++) {
             node = tempData[i];
             if (inout == 'out') {
-                var colorAndStroke = getStateColorAndStroke(me.tree.Constants.TYPE.ACTIVITY, node.state, checkDelay(node));
                 if (node.kind == 'A') {
+                    colorAndStroke = getStateColorAndStroke(me.tree.Constants.TYPE.ACTIVITY, node.state, checkDelay(node));
                     object = {
                         type: me.tree.Constants.TYPE.ACTIVITY,
                         id: node.f_id,
@@ -1199,6 +1201,7 @@ Aras.prototype = {
                         modified_date: convertDate(node.modified_date)
                     };
                 } else if (node.kind == 'F') {
+                    colorAndStroke = getStateColorAndStroke(me.tree.Constants.TYPE.FOLDER, node.state, checkDelay(node));
                     object = {
                         type: me.tree.Constants.TYPE.FOLDER,
                         id: node.f_id,
@@ -1214,6 +1217,7 @@ Aras.prototype = {
                         modified_date: convertDate(node.modified_date)
                     };
                 } else if (node.kind == 'E') {
+                    colorAndStroke = getStateColorAndStroke(me.tree.Constants.TYPE.ED, node.state, checkDelay(node));
                     object = {
                         type: me.tree.Constants.TYPE.ED,
                         id: node.f_id,
@@ -1256,7 +1260,7 @@ Aras.prototype = {
                     }
                 }
                 var sourceType = node.kind == 'F' ? me.tree.Constants.TYPE.FOLDER : me.tree.Constants.TYPE.ED;
-                var colorAndStroke = getStateColorAndStroke(sourceType, node.state, checkDelay(node));
+                colorAndStroke = getStateColorAndStroke(sourceType, node.state, checkDelay(node));
                 object = {
                     type: me.tree.Constants.TYPE.MAPPING,
                     id: node.id + '-' + node.fs_parent_id, //소스 + '-' + 타겟
