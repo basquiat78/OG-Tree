@@ -1281,7 +1281,7 @@ Aras.prototype = {
                     first_start_date: convertDate(node.first_start_date),
                     final_end_date: convertDate(node.final_end_date),
                     modified_date: convertDate(node.modified_date),
-                    tooltip: node.fs_name + '-' + node['_user_name']
+                    tooltip: node.name + '-' + node['_user_name']
                 };
             }
             data.push(object);
