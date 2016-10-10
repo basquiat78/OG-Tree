@@ -171,9 +171,12 @@ Aras.prototype = {
                                 'z-index': '10000',
                                 position: 'absolute',
                                 top: '10px',
-                                right: '10px'
+                                right: '10px',
+                                cursor: 'pointer',
+                                'font-size': '15px'
                             });
                             closeBtn.click(function () {
+                                parentDoc.find('.digitDialog').find('.digitDialogCloseIcon').click();
                                 window.parent.document.body.removeChild(window.parent.document.getElementById('doosanIframe'));
                             });
                         }
