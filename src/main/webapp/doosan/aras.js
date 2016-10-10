@@ -1017,7 +1017,7 @@ Aras.prototype = {
         var activityStructure = me.getActivityStructure(view.root, data.type == me.TYPE.ACTIVITY ? 'N' : 'Y', data.id, 'OUT');
         var nodeList = activityStructure.nodeList;
 
-        var refreshData = me.createWorkFlowData(nodeList, 'other', 'out');
+        var refreshData = me.createWorkFlowData(nodeList, 'my', 'out');
 
         me.syncExpandDataWithTree(refreshData);
 
@@ -1053,6 +1053,13 @@ Aras.prototype = {
         });
         return orderData;
     },
+    /**
+     *
+     * @param resultNodeList
+     * @param who  other/my
+     * @param inout  in/out
+     * @returns {Array}
+     */
     createWorkFlowData: function (resultNodeList, who, inout) {
         var me = this;
         var data = [];

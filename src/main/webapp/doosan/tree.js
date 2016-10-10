@@ -3272,7 +3272,11 @@ Tree.prototype = {
                 //start,end 버튼 가리기
                 //모니터에 My Workflow 가리기
                 //부모창에 겹친 스크롤바 지우기
-                //
+                //액티비티가 하나일때는 표현이 안되는 문제.
+                //스탠다드일때는 owner 이름 안보이게.
+                //데이터 리프레쉬 할때 포지션 배포가 섞임.
+
+
 
                 //before 이벤트
                 var beforeActivityMove = me.onBeforeActivityMove(activities);
