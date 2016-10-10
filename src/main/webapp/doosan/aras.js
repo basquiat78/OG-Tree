@@ -1148,7 +1148,7 @@ Aras.prototype = {
             }
             return year + month + date;
         };
-//_first_start_date, _final_end_date
+
         var checkDelay = function (node) {
             var currentDate = new Date(), compareDate;
             var isDelay = function (dateStr) {
@@ -1163,7 +1163,9 @@ Aras.prototype = {
                 var year = parseInt(split[2]),
                     month = parseInt(split[0]),
                     date = parseInt(split[1]);
-                compareDate = new Date(year, month - 1, date);
+
+                //당일 자정까지 비교날짜로 정한다.
+                compareDate = new Date(year, month - 1, date + 1);
                 return compareDate.getTime() < currentDate.getTime();
             };
 
@@ -1207,7 +1209,10 @@ Aras.prototype = {
                         expand: true,
                         extData: JSON.parse(JSON.stringify(node)),
                         color: colorAndStroke.color,
-                        stroke: colorAndStroke.stroke
+                        stroke: colorAndStroke.stroke,
+                        first_start_date: convertDate(node.first_start_date),
+                        final_end_date: convertDate(node.final_end_date),
+                        modified_date: convertDate(node.modified_date)
                     };
                 } else if (node.kind == 'F') {
                     object = {
@@ -1219,7 +1224,10 @@ Aras.prototype = {
                         expand: true,
                         extData: JSON.parse(JSON.stringify(node)),
                         color: colorAndStroke.color,
-                        stroke: colorAndStroke.stroke
+                        stroke: colorAndStroke.stroke,
+                        first_start_date: convertDate(node.first_start_date),
+                        final_end_date: convertDate(node.final_end_date),
+                        modified_date: convertDate(node.modified_date)
                     };
                 } else if (node.kind == 'E') {
                     object = {
@@ -1231,7 +1239,10 @@ Aras.prototype = {
                         expand: true,
                         extData: JSON.parse(JSON.stringify(node)),
                         color: colorAndStroke.color,
-                        stroke: colorAndStroke.stroke
+                        stroke: colorAndStroke.stroke,
+                        first_start_date: convertDate(node.first_start_date),
+                        final_end_date: convertDate(node.final_end_date),
+                        modified_date: convertDate(node.modified_date)
                     };
                 }
             }
@@ -1275,7 +1286,10 @@ Aras.prototype = {
                     name: node.name,
                     expand: true,
                     color: colorAndStroke.color,
-                    stroke: colorAndStroke.stroke
+                    stroke: colorAndStroke.stroke,
+                    first_start_date: convertDate(node.first_start_date),
+                    final_end_date: convertDate(node.final_end_date),
+                    modified_date: convertDate(node.modified_date)
                 };
             }
             data.push(object);
