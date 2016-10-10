@@ -158,7 +158,7 @@ Aras.prototype = {
                     }
 
                     //아이프레임이 이동된 후에 로드되었을 경우
-                    if (parentDoc.find('#doosanIframe').length) {
+                    if (parentDoc.find('#doosanIframe').length && !innerMode) {
                         console.log('doosanIframe created');
 
                         //종료 아이콘이 없으면 종료 아이콘 추가. => 이것은 내부페이지에서 만들어 넣도록 한다.
