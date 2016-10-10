@@ -160,10 +160,11 @@ Aras.prototype = {
                                     top: '10px',
                                     right: '10px'
                                 });
-                                closeBtn.click(function(){
+                                closeBtn.click(function () {
                                     window.parent.document.body.removeChild(window.parent.document.getElementById('doosanIframe'));
                                     window.parent.document.body.removeChild(window.parent.document.getElementById('doosanCloseBtn'));
                                 });
+                                parentDoc.find('body').append(closeBtn);
                                 window.parent.document.body.appendChild(window.parent.document.getElementById('doosanIframe'));
                             }
                         }
