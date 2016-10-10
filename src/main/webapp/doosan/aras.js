@@ -157,30 +157,32 @@ Aras.prototype = {
                         }
                     }
 
-                    //아이프레임이 이동된 후에 로드되었을 경우
+                    //아이프레임이 이동된 후에 로드되었고 innerMode 가 아닌경우
                     if (parentDoc.find('#doosanIframe').length && !innerMode) {
-                        console.log('doosanIframe created');
 
                         //종료 아이콘이 없으면 종료 아이콘 추가. => 이것은 내부페이지에서 만들어 넣도록 한다.
-                        if (!$('#doosanCloseBtn').length) {
-                            var closeBtn = $('<div>X</div>');
-                            closeBtn.attr('id', 'doosanCloseBtn');
-                            closeBtn.css({
-                                width: '20px',
-                                height: '20px',
-                                'z-index': '10000',
-                                position: 'absolute',
-                                top: '10px',
-                                right: '10px',
-                                cursor: 'pointer',
-                                'font-size': '15px'
-                            });
-                            closeBtn.click(function () {
-                                parentDoc.find('.dijitDialog').find('.dijitDialogCloseIcon').click();
-                                window.parent.document.body.removeChild(window.parent.document.getElementById('doosanIframe'));
-                            });
+                        try {
+                            if (!$('#doosanCloseBtn').length) {
+                                var closeBtn = $('<div>X</div>');
+                                closeBtn.attr('id', 'doosanCloseBtn');
+                                closeBtn.css({
+                                    width: '20px',
+                                    height: '20px',
+                                    'z-index': '10000',
+                                    position: 'absolute',
+                                    top: '10px',
+                                    right: '10px',
+                                    cursor: 'pointer',
+                                    'font-size': '15px'
+                                });
+                                closeBtn.click(function () {
+                                    parentDoc.find('.dijitDialog').find('.dijitDialogCloseIcon').click();
+                                    window.parent.document.body.removeChild(window.parent.document.getElementById('doosanIframe'));
+                                });
+                            }
+                            $('body').append(closeBtn);
+                        } catch (e) {
                         }
-                        $('body').append(closeBtn);
                     }
 
                     me.tree.renderViews();
