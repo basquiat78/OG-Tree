@@ -105,8 +105,13 @@ Aras.prototype = {
         //아라츠 팝업창 디자인을 손보도록 한다.
         var resizeView = function () {
             if (window && window.parent && window.parent.document) {
-                var parentDoc = $(window.parent.document);
-                if(parentDoc && parentDoc.length){
+                var parentDoc;
+                try {
+                    parentDoc = $(window.parent.document);
+                } catch (e) {
+
+                }
+                if (parentDoc && parentDoc.length) {
                     var iframes;
                     var parentIframe;
                     var innerMode = me.getHtmlParameter('mode');
