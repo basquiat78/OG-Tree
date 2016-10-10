@@ -84,7 +84,7 @@
     <script type="text/javascript" src="doosan/aras.js"></script>
     <script type="text/javascript" src="doosan/doosan.js"></script>
 
-    
+
 </head>
 
 <div class="wrapper">
@@ -126,7 +126,8 @@
 
     <div class="breadcrumbs">
         <div class="container">
-            <h1 class="pull-left">Doosan Workflow Monitor <i class="header-angle fa fa-angle-down" style="cursor: pointer"></i></h1>
+            <h1 class="pull-left">Doosan Workflow Monitor <i class="header-angle fa fa-angle-down"
+                                                             style="cursor: pointer"></i></h1>
             <script>
                 $(function () {
                     $('.header-angle').click(function () {
@@ -135,7 +136,7 @@
                             headerAngle.removeClass('fa-angle-down');
                             headerAngle.addClass('fa-angle-right');
                             $('.header-info').hide();
-                        }else{
+                        } else {
                             headerAngle.addClass('fa-angle-down');
                             headerAngle.removeClass('fa-angle-right');
                             $('.header-info').show();
@@ -193,23 +194,56 @@
         </div>
         <div class="row">
             <div class="row col-md-12">
-                <div class="toolbar" style="margin-left: 15px">
-                    <button type="button" class="btn btn-xs rounded btn-default dropdown-toggle" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
-                        State Color <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu state-color">
-                        <li><a href="Javascript:void(0)">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
-                    </ul>
-                    <button class="btn btn-xs rounded btn-default" id="refresh" type="button"><i class="fa fa-refresh"></i> Refresh</button>
-                    <button class="btn btn-xs rounded btn-default" id="zoomIn" type="button"><i class="fa fa-search-plus"></i> Zoom | IN</button>
-                    <button class="btn btn-xs rounded btn-default" id="zoomFit" type="button"><i class="fa fa-arrows-h"></i> Zoom | FIT</button>
-                    <button class="btn btn-xs rounded btn-default" id="zoomOut" type="button"><i class="fa fa-search-minus"></i> Zoom | OUT</button>
-                    <button class="btn btn-xs rounded btn-default" id="labelSwitch" type="button"><i class="fa fa-caret-square-o-down"></i> Label On|Off
+                <div class="col-md-5">
+                    <div class="sortBar" style="margin-left: 15px">
+                        <button class="btn btn-xs rounded btn-default" data-key="name" data-order="asc"
+                                type="button"><i
+                                class="fa fa-caret-square-o-down"></i> Name
+                        </button>
+                        <button class="btn btn-xs rounded btn-default" data-key="first_start_date" data-order="asc"
+                                type="button"><i
+                                class="fa fa-caret-square-o-down"></i> Start
+                        </button>
+                        <button class="btn btn-xs rounded btn-default" data-key="final_end_date" data-order="asc"
+                                type="button"><i
+                                class="fa fa-caret-square-o-down"></i> End
+                        </button>
+                        <button class="btn btn-xs rounded btn-default" data-key="modified_date" data-order="asc"
+                                type="button"><i
+                                class="fa fa-caret-square-o-down"></i> Modified
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="toolbar" style="margin-left: 15px">
+                        <button type="button" class="btn btn-xs rounded btn-default dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            State Color <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu state-color">
+                            <li><a href="Javascript:void(0)">Action</a></li>
+                            <li><a href="#">Another action</a></li>
+                            <li><a href="#">Something else here</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Separated link</a></li>
+                        </ul>
+                        <button class="btn btn-xs rounded btn-default" id="refresh" type="button"><i
+                                class="fa fa-refresh"></i> Refresh
+                        </button>
+                        <button class="btn btn-xs rounded btn-default" id="zoomIn" type="button"><i
+                                class="fa fa-search-plus"></i> Zoom | IN
+                        </button>
+                        <button class="btn btn-xs rounded btn-default" id="zoomFit" type="button"><i
+                                class="fa fa-arrows-h"></i> Zoom | FIT
+                        </button>
+                        <button class="btn btn-xs rounded btn-default" id="zoomOut" type="button"><i
+                                class="fa fa-search-minus"></i> Zoom | OUT
+                        </button>
+                        <button class="btn btn-xs rounded btn-default" id="labelSwitch" type="button"><i
+                                class="fa fa-caret-square-o-down"></i> Label On|Off
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="col-md-12">

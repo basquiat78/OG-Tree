@@ -362,6 +362,89 @@ Tree.prototype = {
         me._STORAGE = JSON.parse(JSON.stringify(me._STORAGE));
     },
     /**
+     * 노드 데이터를 모두 삭제한다.
+     * @param preventRender
+     */
+    clearData: function (preventRender) {
+        this._STORAGE = {};
+        if (!preventRender) {
+            this.render();
+        }
+    },
+    /**
+     * 트리의 데이터를 주어진 prop 로 소트한다.
+     * @param prop
+     * @param positions
+     * @param desc
+     * @param preventRender
+     */
+    sortData: function (prop, positions, desc, preventRender) {
+        var me = this, key, aType, bType, x, y;
+        var list = [];
+
+        //해당하는 포지션 정보를 담는다.
+        if (!positions || !positions.length) {
+            list = me.load();
+        } else {
+            for (var i = 0, leni = positions.length; i < leni; i++) {
+                list = list.concat(me.loadByFilter({position: positions[i]}));
+            }
+        }
+
+        list.sort(function (a, b) {
+            if (!a[prop] && !b[prop]) {
+                return 0;
+            }
+            if (!a[prop] && b[prop]) {
+                return 1;
+            }
+            if (a[prop] && !b[prop]) {
+                return -1;
+            }
+            aType = typeof(a[prop]).toLowerCase();
+            bType = typeof(b[prop]).toLowerCase();
+            //스트링 비교
+            if (aType == 'string' && bType == 'string') {
+                x = a[prop].toLowerCase();
+                y = b[prop].toLowerCase();
+                //순차 배열
+                if (!desc) {
+                    return x < y ? -1 : x > y ? 1 : 0;
+                }
+                //역순 배열
+                else {
+                    return x < y ? 1 : x > y ? -1 : 0;
+                }
+            }
+            //넘버 비교
+            else if (aType == 'number' && bType == 'number') {
+                //순차 배열
+                if (!desc) {
+                    return a[prop] - b[prop];
+                }
+                //역순 배열
+                else {
+                    return b[prop] - a[prop];
+                }
+            }
+            //그 외의 비교는 소트를 실행하지 않는다.
+            else {
+                return 0;
+            }
+        });
+        var sorted = JSON.parse(JSON.stringify(list));
+
+        //해당하는 포지션대로 업데이트 한다.
+        if (!positions || !positions.length) {
+            me.clearData(true);
+        } else {
+            for (var i = 0, leni = positions.length; i < leni; i++) {
+                me.removeDataByFilter({position: positions[i]});
+            }
+        }
+        me.updateData(sorted, preventRender);
+    },
+    /**
      * 데이터를 업데이트한다.
      * @param data
      * @param preventRender 업데이트 후 렌더링 방지 여부.
@@ -754,7 +837,7 @@ Tree.prototype = {
                 }
                 //처음 매핑 그룹 뷰 생성을 수행하는 매핑 일 경우
                 else {
-                    standaloneViewData = me.createStandaloneViewData(mapping, targetActivityView);
+                    standaloneViewData = me.createStandaloneViewData(rootMapping, targetActivityView);
                     for (var s = 0, lens = standaloneViewData['views'].length; s < lens; s++) {
                         standaloneView = standaloneViewData['views'][s];
                         standaloneView.y = standaloneView.y + diffY;

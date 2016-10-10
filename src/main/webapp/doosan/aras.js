@@ -43,6 +43,9 @@ var Aras = function (tree) {
         MAPPING: "mapping"
     };
 
+    /**
+     * 스테이트 정의가 저장되어 있는 파일을 불러온다.
+     */
     var stateJson;
     $.ajax({
         type: 'GET',
@@ -57,32 +60,6 @@ var Aras = function (tree) {
 
 };
 Aras.prototype = {
-    getStateColor: function (type, state) {
-        var me = this;
-        var color = 'none';
-        var stateList = [];
-        if (me.stdYN == 'Y') {
-            stateList = me.stateJson['Standard'];
-        } else {
-            if (type == me.TYPE.ACTIVITY) {
-                stateList = me.stateJson['Project']['Activity'];
-            }
-            if (type == me.TYPE.FOLDER) {
-                stateList = me.stateJson['Project']['Folder'];
-            }
-            if (type == me.TYPE.ED) {
-                stateList = me.stateJson['Project']['EDB'];
-            }
-        }
-        if (stateList && stateList.length) {
-            for (var i = 0, leni = stateList.length; i < leni; i++) {
-                if (stateList[i]['name'] == state) {
-                    color = stateList[i]['color'];
-                }
-            }
-        }
-        return color;
-    },
     iExmL2jsobj: function (node) {
         var data = {};
         var item;
@@ -841,12 +818,6 @@ Aras.prototype = {
                     var amlStr = "<AML><Item type=\"" + relType + "\" action=\"delete\" where=\"source_id = '" + me.wfId + "' and related_id = '" + data.id + "'\"></Item></AML>"
                     inn.applyAML(amlStr);
                 }
-                //if (existRelItem.getItemCount() > 0) {
-                //    relItem = inn.newItem(relType, 'delete');
-                //    relItem.setProperty("source_id", me.wfId);
-                //    relItem.setProperty("related_id", data.id);
-                //    relItem = relItem.apply();
-                //}
                 me.refreshMyWorkFlow();
             }
         }
@@ -880,10 +851,8 @@ Aras.prototype = {
                 existRelItem.setProperty("related_id", data.id);
                 existRelItem = existRelItem.apply();
                 if (existRelItem.getItemCount() > 0) {
-                    relItem = inn.newItem(relType, 'delete');
-                    relItem.setProperty("source_id", parentData.id);
-                    relItem.setProperty("related_id", data.id);
-                    relItem = relItem.apply();
+                    var amlStr = "<AML><Item type=\"" + relType + "\" action=\"delete\" where=\"source_id = '" + parentData.id + "' and related_id = '" + data.id + "'\"></Item></AML>"
+                    inn.applyAML(amlStr);
                 }
                 me.refreshMyWorkFlow();
             }
@@ -1046,49 +1015,52 @@ Aras.prototype = {
         var me = this;
 
         //자식 폴더 및 ED 를 불러오기
-        var refreshData = [];
+        //var refreshData = [];
         var activityStructure = me.getActivityStructure(view.root, data.type == me.TYPE.ACTIVITY ? 'N' : 'Y', data.id, 'OUT');
         var nodeList = activityStructure.nodeList;
 
-        for (var i = 0; i < nodeList.length; i++) {
-            var xmlNode = nodeList[i];
-            var xmlNodeToString = '';
-            var xmlNodeStringToJSON;
-            if (OG.Util.isIE()) {
-                xmlNodeToString = '<node>' + xmlNode.xml + '</node>';
-                xmlNodeStringToJSON = me.iExmL2jsobj($.parseXML(xmlNodeToString));
-            } else {
-                xmlNodeToString = '<node>' + $(xmlNode).html() + '</node>';
-                xmlNodeStringToJSON = $.xml2json(xmlNodeToString);
-            }
-            var node = xmlNodeStringToJSON, object;
-            if (node.kind == 'F') {
-                object = {
-                    type: tree.Constants.TYPE.FOLDER,
-                    id: node.f_id,
-                    name: node.fs_name,
-                    position: tree.Constants.POSITION.MY_OUT,
-                    parentId: node.fs_parent_id,
-                    expand: true,
-                    extData: JSON.parse(JSON.stringify(node)),
-                    color: me.getStateColor(me.tree.Constants.TYPE.FOLDER, node.state)
-                };
-            } else if (node.kind == 'E') {
-                object = {
-                    type: tree.Constants.TYPE.ED,
-                    id: node.f_id,
-                    name: node.fs_name,
-                    position: tree.Constants.POSITION.MY_OUT,
-                    parentId: node.fs_parent_id,
-                    expand: true,
-                    extData: JSON.parse(JSON.stringify(node)),
-                    color: me.getStateColor(me.tree.Constants.TYPE.ED, node.state)
-                };
-            }
-            if (object) {
-                refreshData.push(object);
-            }
-        }
+        var refreshData = me.createWorkFlowData(nodeList, 'other', 'out');
+
+
+        //for (var i = 0; i < nodeList.length; i++) {
+        //    var xmlNode = nodeList[i];
+        //    var xmlNodeToString = '';
+        //    var xmlNodeStringToJSON;
+        //    if (OG.Util.isIE()) {
+        //        xmlNodeToString = '<node>' + xmlNode.xml + '</node>';
+        //        xmlNodeStringToJSON = me.iExmL2jsobj($.parseXML(xmlNodeToString));
+        //    } else {
+        //        xmlNodeToString = '<node>' + $(xmlNode).html() + '</node>';
+        //        xmlNodeStringToJSON = $.xml2json(xmlNodeToString);
+        //    }
+        //    var node = xmlNodeStringToJSON, object;
+        //    if (node.kind == 'F') {
+        //        object = {
+        //            type: tree.Constants.TYPE.FOLDER,
+        //            id: node.f_id,
+        //            name: node.fs_name,
+        //            position: tree.Constants.POSITION.MY_OUT,
+        //            parentId: node.fs_parent_id,
+        //            expand: true,
+        //            extData: JSON.parse(JSON.stringify(node)),
+        //            color: me.getStateColor(me.tree.Constants.TYPE.FOLDER, node.state)
+        //        };
+        //    } else if (node.kind == 'E') {
+        //        object = {
+        //            type: tree.Constants.TYPE.ED,
+        //            id: node.f_id,
+        //            name: node.fs_name,
+        //            position: tree.Constants.POSITION.MY_OUT,
+        //            parentId: node.fs_parent_id,
+        //            expand: true,
+        //            extData: JSON.parse(JSON.stringify(node)),
+        //            color: me.getStateColor(me.tree.Constants.TYPE.ED, node.state)
+        //        };
+        //    }
+        //    if (object) {
+        //        refreshData.push(object);
+        //    }
+        //}
 
         me.syncExpandDataWithTree(refreshData);
 
@@ -1103,6 +1075,109 @@ Aras.prototype = {
         var me = this;
         var data = [];
         var tempData = [], node, object;
+
+        /**
+         * 스테이트 컬러를 반환한다. 딜레이 값이 있을 경우 stroke 를 더한다.
+         * @param type
+         * @param state
+         * @param isDelay
+         * @returns {Object}
+         */
+        var getStateColorAndStroke = function (type, state, isDelay) {
+            var color = 'none';
+            var stroke = 'none';
+            var stateList = [];
+            if (me.stdYN == 'Y') {
+                stateList = me.stateJson['Standard'];
+            } else {
+                if (type == me.TYPE.ACTIVITY) {
+                    stateList = me.stateJson['Project']['Activity'];
+                }
+                if (type == me.TYPE.FOLDER) {
+                    stateList = me.stateJson['Project']['Folder'];
+                }
+                if (type == me.TYPE.ED) {
+                    stateList = me.stateJson['Project']['EDB'];
+                }
+            }
+            if (stateList && stateList.length) {
+                for (var i = 0, leni = stateList.length; i < leni; i++) {
+                    if (stateList[i]['name'] == state) {
+                        color = stateList[i]['color'];
+                        stroke = stateList[i]['stroke'];
+                    }
+                }
+                //딜레이 처리.
+                if (isDelay) {
+                    for (var i = 0, leni = stateList.length; i < leni; i++) {
+                        if (stateList[i]['name'] == 'Delay') {
+                            stroke = stateList[i]['stroke'];
+                        }
+                    }
+                }
+            }
+            return {
+                color: color,
+                stroke: stroke
+            };
+        };
+        /**
+         * 월/일/년 형식의 데이터를 년월일 형식으로 교체한다.(ex) 20160901)
+         * @param dateStr
+         * @returns {*}
+         */
+        var convertDate = function (dateStr) {
+            if (!dateStr) {
+                return undefined;
+            }
+            var split = dateStr.split('/');
+            //월/일/년 형식이 아니면 리턴
+            if (split.length != 3) {
+                return undefined;
+            }
+
+            var year = split[2],
+                month = split[0],
+                date = split[1];
+            //월, 일 의 자리수 보정
+            if (month.length < 2) {
+                month = '0' + month;
+            }
+            if (date.length < 2) {
+                date = '0' + date;
+            }
+            return year + month + date;
+        };
+//_first_start_date, _final_end_date
+        var checkDelay = function (node) {
+            var currentDate = new Date(), compareDate;
+            var isDelay = function (dateStr) {
+                if (!dateStr) {
+                    return false;
+                }
+                var split = dateStr.split('/');
+                //월/일/년 형식이 아니면 리턴
+                if (split.length != 3) {
+                    return false;
+                }
+                var year = parseInt(split[2]),
+                    month = parseInt(split[0]),
+                    date = parseInt(split[1]);
+                compareDate = new Date(year, month - 1, date);
+                return compareDate.getTime() < currentDate.getTime();
+            };
+
+            var delay = false;
+            //ED 의 상태가 Inactive 이고 first_start_date 가 금일보다 이전일 경우 : 시작지연
+            if (node.state && node.state == 'Inactive' && isDelay(node['first_start_date'])) {
+                delay = true;
+            }
+            //ED 의 상태가 Approved 가 아니고 final_end_date 가 금일보다 이전일 경우 : 종료 지연
+            if (node.state && node.state != 'Approved' && isDelay(node['final_end_date'])) {
+                delay = true;
+            }
+            return delay;
+        };
 
         for (var i = 0; i < resultNodeList.length; i++) {
             var xmlNode = resultNodeList[i];
@@ -1121,6 +1196,7 @@ Aras.prototype = {
         for (var i = 0; i < tempData.length; i++) {
             node = tempData[i];
             if (inout == 'out') {
+                var colorAndStroke = getStateColorAndStroke(me.tree.Constants.TYPE.ACTIVITY, node.state, checkDelay(node));
                 if (node.kind == 'A') {
                     object = {
                         type: me.tree.Constants.TYPE.ACTIVITY,
@@ -1130,7 +1206,8 @@ Aras.prototype = {
                         parentId: "",
                         expand: true,
                         extData: JSON.parse(JSON.stringify(node)),
-                        color: me.getStateColor(me.tree.Constants.TYPE.ACTIVITY, node.state)
+                        color: colorAndStroke.color,
+                        stroke: colorAndStroke.stroke
                     };
                 } else if (node.kind == 'F') {
                     object = {
@@ -1141,7 +1218,8 @@ Aras.prototype = {
                         parentId: node.fs_parent_id,
                         expand: true,
                         extData: JSON.parse(JSON.stringify(node)),
-                        color: me.getStateColor(me.tree.Constants.TYPE.FOLDER, node.state)
+                        color: colorAndStroke.color,
+                        stroke: colorAndStroke.stroke
                     };
                 } else if (node.kind == 'E') {
                     object = {
@@ -1152,10 +1230,12 @@ Aras.prototype = {
                         parentId: node.fs_parent_id,
                         expand: true,
                         extData: JSON.parse(JSON.stringify(node)),
-                        color: me.getStateColor(me.tree.Constants.TYPE.ED, node.state)
+                        color: colorAndStroke.color,
+                        stroke: colorAndStroke.stroke
                     };
                 }
-            } else if (inout == 'in') {
+            }
+            else if (inout == 'in') {
                 // in 일 경우에는 무조건 마이-인 쪽의 매핑 데이터만 온다고 가정
                 var parentId = '';
                 var path = node['_path'] ? node['_path'] : '';
@@ -1181,6 +1261,7 @@ Aras.prototype = {
                     }
                 }
                 var sourceType = node.kind == 'F' ? me.tree.Constants.TYPE.FOLDER : me.tree.Constants.TYPE.ED;
+                var colorAndStroke = getStateColorAndStroke(sourceType, node.state, checkDelay(node));
                 object = {
                     type: me.tree.Constants.TYPE.MAPPING,
                     id: node.id + '-' + node.fs_parent_id, //소스 + '-' + 타겟
@@ -1193,7 +1274,8 @@ Aras.prototype = {
                     parentId: parentId,
                     name: node.name,
                     expand: true,
-                    color: me.getStateColor(sourceType, node.state)
+                    color: colorAndStroke.color,
+                    stroke: colorAndStroke.stroke
                 };
             }
             data.push(object);
@@ -1209,7 +1291,9 @@ Aras.prototype = {
             data = [];
         }
         return data;
-    },
+    }
+
+    ,
     createOtherWorkFlowData: function (resultNodeList) {
         var data = [];
         if (resultNodeList) {
@@ -1219,7 +1303,8 @@ Aras.prototype = {
             data = [];
         }
         return data;
-    },
+    }
+    ,
     refreshMyWorkFlow: function () {
         //마이워크플로우 데이터를 불러온다.
         var me = this;
@@ -1239,7 +1324,8 @@ Aras.prototype = {
         me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_OUT});
 
         me.tree.updateData(concat);
-    },
+    }
+    ,
     syncExpandDataWithTree: function (data) {
         var existData;
         for (var i = 0, leni = data.length; i < leni; i++) {
