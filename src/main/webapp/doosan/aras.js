@@ -133,16 +133,18 @@ Aras.prototype = {
                             height: me.tree._CONFIG.CONTAINER_HEIGHT + 'px'
                         });
                     } else {
-                        parentIframe.attr('id', 'doosanIframe');
-                        window.parent.document.body.appendChild(window.parent.document.getElementById('doosanIframe'));
-                        parentDoc.find('#doosanIframe').css({
-                            width: '100%',
-                            height: '100%',
-                            'z-index': '10000',
-                            position: 'absolute',
-                            top: '0px',
-                            left: '0px'
-                        });
+                        if (!parentDoc.find('#doosanIframe').length) {
+                            parentIframe.attr('id', 'doosanIframe');
+                            window.parent.document.body.appendChild(window.parent.document.getElementById('doosanIframe'));
+                            parentDoc.find('#doosanIframe').css({
+                                width: '100%',
+                                height: '100%',
+                                'z-index': '10000',
+                                position: 'absolute',
+                                top: '0px',
+                                left: '0px'
+                            });
+                        }
                     }
                 }
                 me.tree.renderViews();
