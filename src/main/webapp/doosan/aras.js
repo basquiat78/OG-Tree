@@ -104,61 +104,53 @@ Aras.prototype = {
 
         //아라츠 팝업창 디자인을 손보도록 한다.
         var resizeView = function () {
-            if (window && window.parent) {
+            if (window && window.parent && window.parent.document) {
                 var parentDoc = $(window.parent.document);
-                //var pane = parentDoc.find('.dijitDialogPaneContent');
-                //pane.css('width', '100%');
-                //pane.parent().css({
-                //    'left': '0px',
-                //    'right': '0px'
-                //});
-                //pane.find('iframe').css({
-                //    'height': $('body').height() + 'px',
-                //    'width': '100%'
-                //});
-                var iframes;
-                var parentIframe;
-                var innerMode = me.getHtmlParameter('mode');
-                if (innerMode) {
-                    iframes = parentDoc.find('iframe');
-                    iframes.each(function () {
-                        var src = $(this).attr('src');
-                        if (src && src.indexOf('doosanMonitor') != -1) {
-                            parentIframe = $(this);
-                        }
-                    });
-                } else {
-                    iframes = parentDoc.find('.dijitDialogPaneContent').find('iframe');
-                    iframes.each(function () {
-                        var src = $(this).attr('src');
-                        if (src && src.indexOf('doosan') != -1) {
-                            parentIframe = $(this);
-                        }
-                    });
-                }
-                if (parentIframe && parentIframe.length) {
+                if(parentDoc && parentDoc.length){
+                    var iframes;
+                    var parentIframe;
+                    var innerMode = me.getHtmlParameter('mode');
                     if (innerMode) {
-                        var height = parentIframe.height();
-                        me.tree._CONFIG.CONTAINER_HEIGHT = height - 50;
-                        me.tree._CONTAINER.css({
-                            height: me.tree._CONFIG.CONTAINER_HEIGHT + 'px'
+                        iframes = parentDoc.find('iframe');
+                        iframes.each(function () {
+                            var src = $(this).attr('src');
+                            if (src && src.indexOf('doosanMonitor') != -1) {
+                                parentIframe = $(this);
+                            }
                         });
                     } else {
-                        if (!parentDoc.find('#doosanIframe').length) {
-                            parentIframe.attr('id', 'doosanIframe');
-                            window.parent.document.body.appendChild(window.parent.document.getElementById('doosanIframe'));
-                            parentDoc.find('#doosanIframe').css({
-                                width: '100%',
-                                height: '100%',
-                                'z-index': '10000',
-                                position: 'absolute',
-                                top: '0px',
-                                left: '0px'
+                        iframes = parentDoc.find('.dijitDialogPaneContent').find('iframe');
+                        iframes.each(function () {
+                            var src = $(this).attr('src');
+                            if (src && src.indexOf('doosan') != -1) {
+                                parentIframe = $(this);
+                            }
+                        });
+                    }
+                    if (parentIframe && parentIframe.length) {
+                        if (innerMode) {
+                            var height = parentIframe.height();
+                            me.tree._CONFIG.CONTAINER_HEIGHT = height - 50;
+                            me.tree._CONTAINER.css({
+                                height: me.tree._CONFIG.CONTAINER_HEIGHT + 'px'
                             });
+                        } else {
+                            if (!parentDoc.find('#doosanIframe').length) {
+                                parentIframe.attr('id', 'doosanIframe');
+                                window.parent.document.body.appendChild(window.parent.document.getElementById('doosanIframe'));
+                                parentDoc.find('#doosanIframe').css({
+                                    width: '100%',
+                                    height: '100%',
+                                    'z-index': '10000',
+                                    position: 'absolute',
+                                    top: '0px',
+                                    left: '0px'
+                                });
+                            }
                         }
                     }
+                    me.tree.renderViews();
                 }
-                me.tree.renderViews();
             }
         };
 
