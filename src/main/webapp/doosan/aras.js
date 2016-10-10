@@ -176,7 +176,7 @@ Aras.prototype = {
                                 'font-size': '15px'
                             });
                             closeBtn.click(function () {
-                                parentDoc.find('.digitDialog').find('.digitDialogCloseIcon').click();
+                                parentDoc.find('.dijitDialog').find('.dijitDialogCloseIcon').click();
                                 window.parent.document.body.removeChild(window.parent.document.getElementById('doosanIframe'));
                             });
                         }
