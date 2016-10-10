@@ -1021,47 +1021,6 @@ Aras.prototype = {
 
         var refreshData = me.createWorkFlowData(nodeList, 'other', 'out');
 
-
-        //for (var i = 0; i < nodeList.length; i++) {
-        //    var xmlNode = nodeList[i];
-        //    var xmlNodeToString = '';
-        //    var xmlNodeStringToJSON;
-        //    if (OG.Util.isIE()) {
-        //        xmlNodeToString = '<node>' + xmlNode.xml + '</node>';
-        //        xmlNodeStringToJSON = me.iExmL2jsobj($.parseXML(xmlNodeToString));
-        //    } else {
-        //        xmlNodeToString = '<node>' + $(xmlNode).html() + '</node>';
-        //        xmlNodeStringToJSON = $.xml2json(xmlNodeToString);
-        //    }
-        //    var node = xmlNodeStringToJSON, object;
-        //    if (node.kind == 'F') {
-        //        object = {
-        //            type: tree.Constants.TYPE.FOLDER,
-        //            id: node.f_id,
-        //            name: node.fs_name,
-        //            position: tree.Constants.POSITION.MY_OUT,
-        //            parentId: node.fs_parent_id,
-        //            expand: true,
-        //            extData: JSON.parse(JSON.stringify(node)),
-        //            color: me.getStateColor(me.tree.Constants.TYPE.FOLDER, node.state)
-        //        };
-        //    } else if (node.kind == 'E') {
-        //        object = {
-        //            type: tree.Constants.TYPE.ED,
-        //            id: node.f_id,
-        //            name: node.fs_name,
-        //            position: tree.Constants.POSITION.MY_OUT,
-        //            parentId: node.fs_parent_id,
-        //            expand: true,
-        //            extData: JSON.parse(JSON.stringify(node)),
-        //            color: me.getStateColor(me.tree.Constants.TYPE.ED, node.state)
-        //        };
-        //    }
-        //    if (object) {
-        //        refreshData.push(object);
-        //    }
-        //}
-
         me.syncExpandDataWithTree(refreshData);
 
         //remove Other Data
@@ -1069,7 +1028,32 @@ Aras.prototype = {
         me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER_OUT});
 
         //update Data
-        tree.updateData(refreshData);
+        var sortOrder = me.currentSortOrder();
+        if (sortOrder.key) {
+            tree.updateData(refreshData, true);
+            tree.sortData(sortOrder.key,
+                [me.tree.Constants.POSITION.OTHER_OUT,
+                    me.tree.Constants.POSITION.MY_IN,
+                    me.tree.Constants.POSITION.MY_OUT],
+                sortOrder.order == 'desc');
+        } else {
+            tree.updateData(refreshData);
+        }
+    },
+    currentSortOrder: function () {
+        var orderData = {};
+        $('.sortBar').find('button').each(function () {
+            var btn = $(this);
+            if (btn.hasClass('active')) {
+                var key = btn.data('key');
+                var order = btn.data('order');
+                orderData = {
+                    key: key,
+                    order: order
+                }
+            }
+        });
+        return orderData;
     },
     createWorkFlowData: function (resultNodeList, who, inout) {
         var me = this;
@@ -1337,7 +1321,18 @@ Aras.prototype = {
         me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_IN});
         me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_OUT});
 
-        me.tree.updateData(concat);
+        //update Data
+        var sortOrder = me.currentSortOrder();
+        if (sortOrder.key) {
+            me.tree.updateData(concat, true);
+            me.tree.sortData(sortOrder.key,
+                [me.tree.Constants.POSITION.OTHER_OUT,
+                    me.tree.Constants.POSITION.MY_IN,
+                    me.tree.Constants.POSITION.MY_OUT],
+                sortOrder.order == 'desc');
+        } else {
+            me.tree.updateData(concat);
+        }
     }
     ,
     syncExpandDataWithTree: function (data) {

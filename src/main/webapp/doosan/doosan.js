@@ -455,6 +455,9 @@ Doosan.prototype = {
         //소트 이벤트
         $('.sortBar').find('button').each(function () {
             $(this).click(function () {
+                $('.sortBar').find('button').removeClass('active');
+                $(this).addClass('active');
+
                 var btn = $(this);
                 var key = $(this).data('key');
                 var order = $(this).data('order');
@@ -542,7 +545,7 @@ Doosan.prototype = {
         if (json['rtn']) {
             var otherWorkFlows = JSON.parse(json['data']);
             $('#targetOtherWorkflow').find('option').remove();
-            me.appendSelectBoxElement($('#targetOtherWorkflow'), '--select--', '');
+            me.appendSelectBoxElement($('#targetOtherWorkflow'), '--Workflow--', '');
             for (var key in otherWorkFlows.data) {
                 me.appendSelectBoxElement($('#targetOtherWorkflow'), otherWorkFlows.data[key]['LABEL'], otherWorkFlows.data[key]['VALUE']);
             }
