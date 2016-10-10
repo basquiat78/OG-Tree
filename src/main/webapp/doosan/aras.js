@@ -885,24 +885,22 @@ Aras.prototype = {
         //액티비티 아이템 생성
         var newItem = inn.newItem(newItemType, "add");
 
-        //연결 워크플로우 설정
-        newItem.setProperty(me.stdYN == 'Y' ? '_rel_wft' : '_rel_wf', workflowItem.getProperty('id', ''));
-
-
         //액티비티 기본 정보 설정
         if (workflowItem.getItemCount() == 1) {
+            newItem.setProperty('_rel_wf', workflowItem.getProperty('id', ''));
             newItem.setProperty('_eng_func_structure', workflowItem.getProperty('_eng_func_structure', ''));
             newItem.setProperty('_eng_func_code', workflowItem.getProperty('_eng_func_code', ''));
 
-            newItem.setProperty('_rel_project', workflowItem.getProperty('_rel_project', ''));
-            newItem.setProperty('_bg', workflowItem.getProperty('_bg', ''));
-            newItem.setProperty('_discipline', workflowItem.getProperty('_discipline', ''));
-            newItem.setProperty('_discipline_spec', workflowItem.getProperty('_discipline_spec', ''));
             newItem.setProperty('_rel_ownedteam', workflowItem.getProperty('_rel_ownedteam', ''));
-            newItem.setProperty('owned_by_id', me.getUserIdentity());
 
             newItem.setProperty("_parent_type", workflowItemType);
             newItem.setProperty("_parent_id", workflowItem.getProperty('id', ''));
+
+            if (me.stdYN != 'Y') {
+                newItem.setProperty('_rel_project', workflowItem.getProperty('_rel_project', ''));
+                newItem.setProperty('_discipline', workflowItem.getProperty('_discipline', ''));
+                newItem.setProperty('owned_by_id', me.getUserIdentity());
+            }
         }
 
         // aras callback

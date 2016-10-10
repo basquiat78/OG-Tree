@@ -3264,11 +3264,15 @@ Tree.prototype = {
                 //계획일, 완료일, 수정일 소트(_first_start_date, _final_end_date, modified_date).ok
                 //스테이터스 컬러 재조정하기.ok
                 //셀릭트 패널 크기 줄이기.ok
-                //툴팁 사람 이름 추가하기
+                //툴팁 사람 이름 추가하기.ok
+                //스테이터스 컬러 재조정하기.ok
 
                 //TODO
-                //사람이름, _first_start_date, _final_end_date, modified_date
-                //스테이터스 컬러 재조정하기
+                //상단 창 더 줄이기
+                //start,end 버튼 가리기
+                //모니터에 My Workflow 가리기
+                //부모창에 겹친 스크롤바 지우기
+                //
 
                 //before 이벤트
                 var beforeActivityMove = me.onBeforeActivityMove(activities);
