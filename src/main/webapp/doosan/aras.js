@@ -1322,7 +1322,7 @@ Aras.prototype = {
         }
         var otherWorkFlowData;
         if (outResult) {
-            otherWorkFlowData = me.aras.createOtherWorkFlowData(outResultNodes);
+            otherWorkFlowData = me.createOtherWorkFlowData(outResultNodes);
             me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER});
             me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER_OUT});
             me.tree.updateData(otherWorkFlowData);
