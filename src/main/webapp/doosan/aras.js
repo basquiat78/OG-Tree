@@ -1394,11 +1394,6 @@ Aras.prototype = {
 
         me.syncExpandDataWithTree(refreshData);
 
-        //remove My Data
-        me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY});
-        me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_IN});
-        me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_OUT});
-
         //update Data
         var sortOrder = me.currentSortOrder();
         if (sortOrder.key) {
