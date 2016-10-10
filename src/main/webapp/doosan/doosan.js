@@ -506,14 +506,7 @@ Doosan.prototype = {
                 if (headerItem.getItemCount() == 1) {
                     me.renderHeaders(headerItem, 'other');
                 }
-                var outResult = me.aras.getWorkflowStructure(wfId, 'OUT');
-                var otherWorkFlowData;
-                if (outResult) {
-                    otherWorkFlowData = me.aras.createOtherWorkFlowData(outResult['nodeList']);
-                    me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER});
-                    me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER_OUT});
-                    me.tree.updateData(otherWorkFlowData);
-                }
+                me.aras.refreshOtherWorkflow(wfId);
             }
         });
     },

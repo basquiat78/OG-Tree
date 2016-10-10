@@ -25,7 +25,7 @@ var Aras = function (tree) {
     this.inn = null;
 
     /**
-     * 프로젝트, 폴더 5레벨 까지 enable, 5레벨 일 경우는 ed 생성 불가
+     * 프로젝트, 폴더 5레벨 까지 enable, ed 는 6레벨까지 가능
      * @type {number}
      */
     this.prjMaxDepth = 5;
@@ -265,8 +265,13 @@ Aras.prototype = {
             ed_number: ed_number ? ed_number : '',
             ed_name: ed_name ? ed_name : ''
         };
+        var nodeList = [];
         var nodeResult = me.applyMethod('DHI_WF_EDITOR_ED_PICK', me.createBody(params));
-        var nodeList = nodeResult['nodeList'];
+        if (nodeResult.getItemCount() > 1) {
+            nodeList = nodeResult['nodeList'];
+        } else if (nodeResult.getItemCount() == 1) {
+            nodeList.push(nodeResult['node']);
+        }
         if (nodeList && nodeList.length) {
             for (var i = 0; i < nodeList.length; i++) {
                 data.push(me.nodeToJson(nodeList[i]));
@@ -416,7 +421,7 @@ Aras.prototype = {
      * @param depth
      * @returns {boolean}
      */
-    checkMaxCreateNumber: function (depth) {
+    checkMaxCreateNumber: function (depth, type) {
         var enable = true;
         if (this.stdYN == 'Y') {
             if (depth >= this.stdMaxDepth) {
@@ -424,16 +429,21 @@ Aras.prototype = {
                 msgBox('Max depth is ' + this.stdMaxDepth + ' in standard workflow.');
             }
         } else {
-            if (depth >= this.prjMaxDepth) {
+            var compareDepth = this.prjMaxDepth;
+            //ed 일 경우는 +1 뎁스까지 허용.
+            if (type == this.TYPE.ED) {
+                compareDepth++;
+            }
+            if (depth >= compareDepth) {
                 enable = false;
-                msgBox('Max depth is ' + this.prjMaxDepth + ' in project workflow.');
+                msgBox('Max depth is ' + compareDepth + ' in project workflow.');
             }
         }
         return enable;
     }
     ,
     createFolder: function (data, view) {
-        if (!this.checkMaxCreateNumber(view.depth)) {
+        if (!this.checkMaxCreateNumber(view.depth, this.TYPE.FOLDER)) {
             return;
         }
 
@@ -601,7 +611,7 @@ Aras.prototype = {
         this.refreshOutFolder(parentData, parentView);
     },
     createEd: function (data, view, edType) {
-        if (!this.checkMaxCreateNumber(view.depth)) {
+        if (!this.checkMaxCreateNumber(view.depth, this.TYPE.ED)) {
             return;
         }
 
@@ -1014,8 +1024,13 @@ Aras.prototype = {
 
         //자식 폴더 및 ED 를 불러오기
         //var refreshData = [];
+        var nodeList = [];
         var activityStructure = me.getActivityStructure(view.root, data.type == me.TYPE.ACTIVITY ? 'N' : 'Y', data.id, 'OUT');
-        var nodeList = activityStructure.nodeList;
+        if (activityStructure.getItemCount() == 0) {
+            nodeList.push(activityStructure.node);
+        } else {
+            nodeList = activityStructure.nodeList;
+        }
 
         var refreshData = me.createWorkFlowData(nodeList, 'my', 'out');
 
@@ -1332,6 +1347,23 @@ Aras.prototype = {
             data = [];
         }
         return data;
+    },
+    refreshOtherWorkflow: function (wfId) {
+        var me = this;
+        var outResult = me.getWorkflowStructure(wfId, 'OUT');
+        var outResultNodes = [];
+        if (outResult.getItemCount() == 1) {
+            outResultNodes.push(outResult.node);
+        } else {
+            outResultNodes = outResult['nodeList']
+        }
+        var otherWorkFlowData;
+        if (outResult) {
+            otherWorkFlowData = me.aras.createOtherWorkFlowData(outResultNodes);
+            me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER});
+            me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER_OUT});
+            me.tree.updateData(otherWorkFlowData);
+        }
     }
     ,
     refreshMyWorkFlow: function () {
@@ -1339,6 +1371,21 @@ Aras.prototype = {
         var me = this;
         var inResult = me.getWorkflowStructure(me.wfId, 'IN');
         var outResult = me.getWorkflowStructure(me.wfId, 'OUT');
+
+        var inResultNodes = [];
+        var outResultNodes = [];
+
+        if (inResult.getItemCount() == 1) {
+            inResultNodes = inResult.node;
+        } else {
+            inResultNodes = inResult['nodeList'];
+        }
+
+        if (outResult.getItemCount() == 1) {
+            outResultNodes = outResult.node;
+        } else {
+            outResultNodes = outResult['nodeList'];
+        }
 
         // create data
         var myInData = me.createMyWorkFlowData(inResult['nodeList'], 'in');

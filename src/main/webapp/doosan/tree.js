@@ -1592,9 +1592,9 @@ Tree.prototype = {
 
                         //삭제할 엘리먼트의 매핑 라벨 엘리먼트가 있다면 함께 삭제한다.
                         me.canvas.removeShape(currentDisplayShapes[i]);
-                        if (me.canvas.getElementById(currentDisplayShapes[i].id + me.Constants.PREFIX.MAPPING_LABEL)) {
-                            me.canvas.removeShape(currentDisplayShapes[i].id + me.Constants.PREFIX.MAPPING_LABEL);
-                        }
+                        //if (me.canvas.getElementById(currentDisplayShapes[i].id + me.Constants.PREFIX.MAPPING_LABEL)) {
+                        //    me.canvas.removeShape(currentDisplayShapes[i].id + me.Constants.PREFIX.MAPPING_LABEL);
+                        //}
                         if (me.canvas.getElementById(currentDisplayShapes[i].id + me.Constants.PREFIX.SELECTED_LABEL)) {
                             me.canvas.removeShape(currentDisplayShapes[i].id + me.Constants.PREFIX.SELECTED_LABEL);
                         }
@@ -1908,18 +1908,25 @@ Tree.prototype = {
         }
     },
     drawMappingLabel: function (view) {
-        var id = view.id + this.Constants.PREFIX.MAPPING_LABEL, size, offset, shape;
-        if (view.mapping) {
-            size = [12, 14];
-            offset = [view.x + 10, view.y - 19];
-            shape = new OG.MLabel();
-            this.canvas.drawShape(offset, shape, size, null, id);
-        }
-
-        id = view.id + this.Constants.PREFIX.SELECTED_LABEL;
+        //var id = view.id + this.Constants.PREFIX.MAPPING_LABEL, size, offset, shape;
+        //if (view.mapping) {
+        //    size = [12, 14];
+        //    offset = [view.x + 10, view.y - 19];
+        //    shape = new OG.MLabel();
+        //    this.canvas.drawShape(offset, shape, size, null, id);
+        //}
+        //
+        //id = view.id + this.Constants.PREFIX.SELECTED_LABEL;
+        //if (view.selected) {
+        //    size = [12, 14];
+        //    offset = [view.x - 2, view.y - 19];
+        //    shape = new OG.SLabel();
+        //    this.canvas.drawShape(offset, shape, size, null, id);
+        //}
+        var id = view.id + this.Constants.PREFIX.SELECTED_LABEL, size, offset, shape;
         if (view.selected) {
             size = [12, 14];
-            offset = [view.x - 2, view.y - 19];
+            offset = [view.x + 10, view.y - 19];
             shape = new OG.SLabel();
             this.canvas.drawShape(offset, shape, size, null, id);
         }
@@ -1932,23 +1939,23 @@ Tree.prototype = {
         if (customData.x != view.x || customData.y != view.y) {
             enableDraw = true;
         }
-        if (customData.mapping != view.mapping) {
-            enableDraw = true;
-        }
+        //if (customData.mapping != view.mapping) {
+        //    enableDraw = true;
+        //}
         if (customData.selected != view.selected) {
             enableDraw = true;
         }
         if (enableDraw) {
             this.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
 
-            var id = view.id + this.Constants.PREFIX.MAPPING_LABEL, size, offset, shape;
-            if (!view.mapping) {
-                if (this.canvas.getElementById(id)) {
-                    this.canvas.removeShape(id);
-                }
-            }
+            //var id = view.id + this.Constants.PREFIX.MAPPING_LABEL, size, offset, shape;
+            //if (!view.mapping) {
+            //    if (this.canvas.getElementById(id)) {
+            //        this.canvas.removeShape(id);
+            //    }
+            //}
 
-            id = view.id + this.Constants.PREFIX.SELECTED_LABEL;
+            var id = view.id + this.Constants.PREFIX.SELECTED_LABEL;
             if (!view.selected) {
                 if (this.canvas.getElementById(id)) {
                     this.canvas.removeShape(id);
@@ -3272,16 +3279,19 @@ Tree.prototype = {
                 //start,end 버튼 가리기.ok
                 //모니터에 My Workflow 가리기.ok
                 //데이터 리프레쉬 할때 포지션 배포가 섞임.ok
+
+                //폴더 하나만 가진 액티비티 리스트가 있을 경우 선이 깨짐.ok
+                //depth, ed 하나 늘리기.ok
+                //m 라벨 지우기.ok
+                //picked, 또는 Structure 불러올때 카운트 1 처리하기.ok
+                //액티비티가 하나일때는 표현이 안되는 문제.ok
+
                 //TODO
                 //상단 창 더 줄이기.
                 //부모창에 겹친 스크롤바 지우기.
-                //액티비티가 하나일때는 표현이 안되는 문제.
                 //순서를 재정렬 하고 난 이후에는 콘텍스트가 안먹힘.
-                //폴더 하나만 가진 액티비티 리스트가 있을 경우 선이 깨짐.
                 //우클릭 했을때 포커싱이 같이 갈 수 있도록.
-                //m 라벨 지우기
                 //In의 루트 폴더 와 Activity 연결선 실선으로 바꾸기
-
 
                 //before 이벤트
                 var beforeActivityMove = me.onBeforeActivityMove(activities);
