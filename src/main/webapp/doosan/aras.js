@@ -132,6 +132,8 @@ Aras.prototype = {
                             }
                         });
                     }
+
+                    //innerMode 일 경우엔 늘 parentIframe 이 존재하고, 그 외의 경우는 처음 한번 존재한다.
                     if (parentIframe && parentIframe.length) {
                         if (innerMode) {
                             var height = parentIframe.height();
@@ -151,26 +153,34 @@ Aras.prototype = {
                                     left: '0px'
                                 });
                                 window.parent.document.body.appendChild(window.parent.document.getElementById('doosanIframe'));
-                            } else {
-                                console.log('doosanIframe created');
-                                var closeBtn = $('<div>X</div>');
-                                closeBtn.attr('id', 'doosanCloseBtn');
-                                closeBtn.css({
-                                    width: '20px',
-                                    height: '20px',
-                                    'z-index': '10001',
-                                    position: 'absolute',
-                                    top: '10px',
-                                    right: '10px'
-                                });
-                                closeBtn.click(function () {
-                                    window.parent.document.body.removeChild(window.parent.document.getElementById('doosanIframe'));
-                                    window.parent.document.body.removeChild(window.parent.document.getElementById('doosanCloseBtn'));
-                                });
-                                parentDoc.find('body').append(closeBtn);
                             }
                         }
                     }
+
+                    //아이프레임이 이동된 후에 로드되었을 경우
+                    if (parentDoc.find('#doosanIframe').length) {
+                        console.log('doosanIframe created');
+
+                        //종료 아이콘이 없으면 종료 아이콘 추가.
+                        if (!parentDoc.find('#doosanCloseBtn').length) {
+                            var closeBtn = $('<div>X</div>');
+                            closeBtn.attr('id', 'doosanCloseBtn');
+                            closeBtn.css({
+                                width: '20px',
+                                height: '20px',
+                                'z-index': '10001',
+                                position: 'absolute',
+                                top: '10px',
+                                right: '10px'
+                            });
+                            closeBtn.click(function () {
+                                window.parent.document.body.removeChild(window.parent.document.getElementById('doosanIframe'));
+                                window.parent.document.body.removeChild(window.parent.document.getElementById('doosanCloseBtn'));
+                            });
+                        }
+                        parentDoc.find('body').append(closeBtn);
+                    }
+
                     me.tree.renderViews();
                 }
             }
