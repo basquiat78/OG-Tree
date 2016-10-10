@@ -106,19 +106,17 @@ Aras.prototype = {
         var resizeView = function () {
             if (window && window.parent) {
                 var parentDoc = $(window.parent.document);
-                var pane = parentDoc.find('.dijitDialogPaneContent');
-                pane.css('width', '100%');
-                pane.parent().css({
-                    'left': '0px',
-                    'right': '0px'
-                });
-                pane.find('iframe').css({
-                    'height': $('body').height() + 'px',
-                    'width': '100%'
-                });
-            }
-            var innerMode = me.getHtmlParameter('mode');
-            if (innerMode) {
+                //var pane = parentDoc.find('.dijitDialogPaneContent');
+                //pane.css('width', '100%');
+                //pane.parent().css({
+                //    'left': '0px',
+                //    'right': '0px'
+                //});
+                //pane.find('iframe').css({
+                //    'height': $('body').height() + 'px',
+                //    'width': '100%'
+                //});
+                var innerMode = me.getHtmlParameter('mode');
                 var parentIframe;
                 var iframes = parentDoc.find('iframe');
                 iframes.each(function () {
@@ -127,15 +125,28 @@ Aras.prototype = {
                         parentIframe = $(this);
                     }
                 });
-                if (parentIframe) {
-                    var height = parentIframe.height();
-                    me.tree._CONFIG.CONTAINER_HEIGHT = height - 50;
-                    me.tree._CONTAINER.css({
-                        height: me.tree._CONFIG.CONTAINER_HEIGHT + 'px'
-                    });
+                if (parentIframe && parentIframe.length) {
+                    if (innerMode) {
+                        var height = parentIframe.height();
+                        me.tree._CONFIG.CONTAINER_HEIGHT = height - 50;
+                        me.tree._CONTAINER.css({
+                            height: me.tree._CONFIG.CONTAINER_HEIGHT + 'px'
+                        });
+                    } else {
+                        parentIframe.attr('id', 'doosanIframe');
+                        window.parent.document.body.appendChild(window.parent.document.getElementById('doosanIframe'));
+                        parentDoc.find('#doosanIframe').css({
+                            width: '100%',
+                            height: '100%',
+                            'z-index': '10000',
+                            position: 'absolute',
+                            top: '0px',
+                            left: '0px'
+                        });
+                    }
                 }
+                me.tree.renderViews();
             }
-            me.tree.renderViews();
         };
 
         $(window.parent).resize(function () {
