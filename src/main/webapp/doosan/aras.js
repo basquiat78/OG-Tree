@@ -142,8 +142,7 @@ Aras.prototype = {
                         } else {
                             if (!parentDoc.find('#doosanIframe').length) {
                                 parentIframe.attr('id', 'doosanIframe');
-                                window.parent.document.body.appendChild(window.parent.document.getElementById('doosanIframe'));
-                                parentDoc.find('#doosanIframe').css({
+                                parentIframe.css({
                                     width: '100%',
                                     height: '100%',
                                     'z-index': '10000',
@@ -151,6 +150,21 @@ Aras.prototype = {
                                     top: '0px',
                                     left: '0px'
                                 });
+                                var closeBtn = $('<div>X</div>');
+                                closeBtn.attr('id', 'doosanCloseBtn');
+                                closeBtn.css({
+                                    width: '20px',
+                                    height: '20px',
+                                    'z-index': '10001',
+                                    position: 'absolute',
+                                    top: '10px',
+                                    right: '10px'
+                                });
+                                closeBtn.click(function(){
+                                    window.parent.document.body.removeChild(window.parent.document.getElementById('doosanIframe'));
+                                    window.parent.document.body.removeChild(window.parent.document.getElementById('doosanCloseBtn'));
+                                });
+                                window.parent.document.body.appendChild(window.parent.document.getElementById('doosanIframe'));
                             }
                         }
                     }
