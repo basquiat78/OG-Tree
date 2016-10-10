@@ -3277,7 +3277,6 @@ Tree.prototype = {
                 //데이터 리프레쉬 할때 포지션 배포가 섞임.
 
 
-
                 //before 이벤트
                 var beforeActivityMove = me.onBeforeActivityMove(activities);
                 if (typeof beforeActivityMove == 'boolean') {
