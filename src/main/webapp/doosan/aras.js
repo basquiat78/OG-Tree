@@ -150,6 +150,9 @@ Aras.prototype = {
                                     top: '0px',
                                     left: '0px'
                                 });
+                                window.parent.document.body.appendChild(window.parent.document.getElementById('doosanIframe'));
+                            } else {
+                                console.log('doosanIframe created');
                                 var closeBtn = $('<div>X</div>');
                                 closeBtn.attr('id', 'doosanCloseBtn');
                                 closeBtn.css({
@@ -165,7 +168,6 @@ Aras.prototype = {
                                     window.parent.document.body.removeChild(window.parent.document.getElementById('doosanCloseBtn'));
                                 });
                                 parentDoc.find('body').append(closeBtn);
-                                window.parent.document.body.appendChild(window.parent.document.getElementById('doosanIframe'));
                             }
                         }
                     }
