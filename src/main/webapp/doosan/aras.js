@@ -1017,43 +1017,6 @@ Aras.prototype = {
             me.refreshMyWorkFlow();
         }
     },
-    refreshOutFolder: function (data, view) {
-        //이벤트가 발생한 폴더 (부모폴더)
-        var tree = this.tree;
-        var me = this;
-
-        //자식 폴더 및 ED 를 불러오기
-        //var refreshData = [];
-        var nodeList = [];
-        var activityStructure = me.getActivityStructure(view.root, data.type == me.TYPE.ACTIVITY ? 'N' : 'Y', data.id, 'OUT');
-        if (activityStructure.getItemCount() == 0) {
-            nodeList.push(activityStructure.node);
-        } else {
-            nodeList = activityStructure.nodeList;
-        }
-
-        var refreshData = me.createWorkFlowData(nodeList, 'my', 'out');
-
-        me.syncExpandDataWithTree(refreshData);
-
-        //remove My Data
-        me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY});
-        me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_IN});
-        me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_OUT});
-
-        //update Data
-        var sortOrder = me.currentSortOrder();
-        if (sortOrder.key) {
-            tree.updateData(refreshData, true);
-            tree.sortData(sortOrder.key,
-                [me.tree.Constants.POSITION.OTHER_OUT,
-                    me.tree.Constants.POSITION.MY_IN,
-                    me.tree.Constants.POSITION.MY_OUT],
-                sortOrder.order == 'desc');
-        } else {
-            tree.updateData(refreshData);
-        }
-    },
     currentSortOrder: function () {
         var orderData = {};
         $('.sortBar').find('button').each(function () {
@@ -1376,20 +1339,20 @@ Aras.prototype = {
         var outResultNodes = [];
 
         if (inResult.getItemCount() == 1) {
-            inResultNodes = inResult.node;
+            inResultNodes = inResultNodes.push(inResult.node);
         } else {
             inResultNodes = inResult['nodeList'];
         }
 
         if (outResult.getItemCount() == 1) {
-            outResultNodes = outResult.node;
+            outResultNodes = outResultNodes.push(outResult.node);
         } else {
             outResultNodes = outResult['nodeList'];
         }
 
         // create data
-        var myInData = me.createMyWorkFlowData(inResult['nodeList'], 'in');
-        var myOutData = me.createMyWorkFlowData(outResult['nodeList'], 'out');
+        var myInData = me.createMyWorkFlowData(inResultNodes, 'in');
+        var myOutData = me.createMyWorkFlowData(outResultNodes, 'out');
         var concat = myInData.concat(myOutData);
         me.syncExpandDataWithTree(concat);
 
@@ -1410,6 +1373,43 @@ Aras.prototype = {
                 sortOrder.order == 'desc');
         } else {
             me.tree.updateData(concat);
+        }
+    },
+    refreshOutFolder: function (data, view) {
+        //이벤트가 발생한 폴더 (부모폴더)
+        var tree = this.tree;
+        var me = this;
+
+        //자식 폴더 및 ED 를 불러오기
+        //var refreshData = [];
+        var nodeList = [];
+        var activityStructure = me.getActivityStructure(view.root, data.type == me.TYPE.ACTIVITY ? 'N' : 'Y', data.id, 'OUT');
+        if (activityStructure.getItemCount() == 0) {
+            nodeList.push(activityStructure.node);
+        } else {
+            nodeList = activityStructure.nodeList;
+        }
+
+        var refreshData = me.createWorkFlowData(nodeList, 'my', 'out');
+
+        me.syncExpandDataWithTree(refreshData);
+
+        //remove My Data
+        me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY});
+        me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_IN});
+        me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_OUT});
+
+        //update Data
+        var sortOrder = me.currentSortOrder();
+        if (sortOrder.key) {
+            tree.updateData(refreshData, true);
+            tree.sortData(sortOrder.key,
+                [me.tree.Constants.POSITION.OTHER_OUT,
+                    me.tree.Constants.POSITION.MY_IN,
+                    me.tree.Constants.POSITION.MY_OUT],
+                sortOrder.order == 'desc');
+        } else {
+            tree.updateData(refreshData);
         }
     }
     ,
