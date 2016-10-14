@@ -387,16 +387,20 @@ Doosan.prototype = {
                 modal.find('[name=action]').bind('click', function () {
                     modal.find('.close').click();
                     var pickEdObj = $("[name=pickEdObj]");
+                    var folderItem = me.aras.getItemById(me.aras.TYPE.FOLDER, data.id);
+                    var edItems = [];
                     pickEdObj.each(function (index, check) {
                         var checkbox = $(check);
                         var dataIndex = checkbox.data('index');
                         var edData = dataSet[parseInt(dataIndex)];
-                        var edItem = me.aras.getItemById(me.aras.TYPE.ED, edData.id);
-                        var folderItem = me.aras.getItemById(me.aras.TYPE.FOLDER, data.id);
                         if (checkbox.prop('checked')) {
-                            me.aras.addPickEDOutRelation(edItem, folderItem, data, view);
+                            var edItem = me.aras.getItemById(me.aras.TYPE.ED, edData.id);
+                            edItems.push(edItem);
                         }
                     });
+                    if (edItems.length) {
+                        me.aras.addPickEDOutRelation(edItems, folderItem, data, view);
+                    }
                 });
                 modal.find('[name=search]').bind('click', function () {
                     renderTable();

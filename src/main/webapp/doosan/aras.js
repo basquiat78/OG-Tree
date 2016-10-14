@@ -783,61 +783,107 @@ Aras.prototype = {
         }
         this.refreshOutFolder(data, view);
     },
-    addPickEDOutRelation: function (edItem, parentItem, data, view) {
+    addPickEDOutRelation: function (edItems, parentItem, data, view) {
         var me = this;
         var inn = this.aras.newIOMInnovator();
-        var edId = edItem.getID();
-        var edType = edItem.getType();
-        var relType = me.getRelType(me.TYPE.FOLDER, me.TYPE.ED, 'out');
-        var existRelItem;
-        var relItem;
 
-        var path = parentItem.getProperty("_path") + '||' + edItem.getProperty("_ed_number", "");
+        var DDCLEds = [];
+        //선택한 ED 들의 _class Property 값이 DDCL 인 것들을 추린다.
+        for (var i = 0, leni = edItems.length; i < leni; i++) {
+            if (edItems[i].getProperty("_class") == 'DDCL') {
+                DDCLEds.push(edItems[i]);
+            }
+        }
 
-        if (me.stdYN == 'Y') {
-            body = "<sqlString>UPDATE innovator." + edType +
-                " SET _PATH = '" + path + "'" +
-                ", _P_ID = '" + data.extData['fs_id'] + "'" +
-                ", _REL_PROJECT = '" + parentItem.getProperty('_rel_project', '') + "'" +
-                ", _REL_OWNEDTEAM = '" + parentItem.getProperty('_rel_ownedteam', '') + "'" +
-                ", _REL_WFAT = '" + view.root + "'" +
-                ", _REL_WFT = '" + parentItem.getProperty('_rel_wft', '') + "'" +
-                ", IS_TEMPLATE = '" + 1 + "'" +
-                " WHERE id = '" + edId + "'</sqlString>";
+        //기존 폴더의 DDCL ITEM 의 수를 체크한다.
+        var existDDCLItemCount = 0;
+        var body = "<_parent_type>" + parentItem.getType() + "</_parent_type>";
+        body += "<_parent_id>" + parentItem.getID() + "</_parent_id>";
+        var result = inn.applyMethod("DHI_getDDCL_Item", body);
+        if (!result) {
+            msgBox('No result from DHI_getDDCL_Item');
+            return;
         } else {
-            body = "<sqlString>UPDATE innovator." + edType +
-                " SET _PATH = '" + path + "'" +
-                ", _P_ID = '" + data.extData['fs_id'] + "'" +
-                ", _REL_PROJECT = '" + parentItem.getProperty('_rel_project', '') + "'" +
-                ", _REL_OWNEDTEAM = '" + parentItem.getProperty('_rel_ownedteam', '') + "'" +
-                ", _REL_WFA = '" + view.root + "'" +
-                ", _REL_WF = '" + parentItem.getProperty('_rel_wf', '') + "'" +
-                ", IS_TEMPLATE = '" + 1 + "'" +
-                " WHERE id = '" + edId + "'</sqlString>";
+            existDDCLItemCount = result.getItemCount();
         }
-        inn.applyMethod("DHI_APPLY_SQL", body);
 
-        existRelItem = inn.newItem(relType, "get");
-        existRelItem.setProperty("source_id", data.id);
-        existRelItem.setProperty("related_id", edId);
-        existRelItem = existRelItem.apply();
-        if (existRelItem.getItemCount() < 1) {
-            try {
-                relItem = inn.newItem(relType, "add");
-                relItem.setProperty("source_id", data.id);
-                relItem.setProperty("related_id", edId);
-                relItem.setProperty("owned_by_id", me.getUserIdentity());
-                relItem.apply();
+        //기존 폴더의 DDCL이 존재할 경우
+        if (existDDCLItemCount > 0) {
+            msgBox('DDCL ED is exists.');
+            return;
+        }
 
-                //스테이터스를 업데이트한다.
-                var body = "<source_id>" + data.id + "</source_id>";
-                body += "<related_id>" + edId + "</related_id>";
-                inn.applyMethod("DHI_WF_RESET_STATE_ITEM", body);
+        //연결할 ED 중 DDCL 인 것이 두개 이상일 경우
+        if (DDCLEds.length > 1) {
+            msgBox('Two or more DDCL are exist in selected ED.');
+            return;
+        }
+
+        //edItems 들에 대한 릴레이션을 생성한다.
+        for (var i = 0, leni = edItems.length; i < leni; i++) {
+            var edItem = edItems[i];
+            var edId = edItem.getID();
+            var edType = edItem.getType();
+            var relType = me.getRelType(me.TYPE.FOLDER, me.TYPE.ED, 'out');
+            var existRelItem;
+            var relItem;
+
+            var path = parentItem.getProperty("_path") + '||' + edItem.getProperty("_ed_number", "");
+
+            if (me.stdYN == 'Y') {
+                body = "<sqlString>UPDATE innovator." + edType +
+                    " SET _PATH = '" + path + "'" +
+                    ", _P_ID = '" + data.extData['fs_id'] + "'" +
+                    ", _REL_PROJECT = '" + parentItem.getProperty('_rel_project', '') + "'" +
+                    ", _REL_OWNEDTEAM = '" + parentItem.getProperty('_rel_ownedteam', '') + "'" +
+                    ", _REL_WFAT = '" + view.root + "'" +
+                    ", _REL_WFT = '" + parentItem.getProperty('_rel_wft', '') + "'" +
+                    ", IS_TEMPLATE = '" + 1 + "'" +
+                    " WHERE id = '" + edId + "'</sqlString>";
+            } else {
+                body = "<sqlString>UPDATE innovator." + edType +
+                    " SET _PATH = '" + path + "'" +
+                    ", _P_ID = '" + data.extData['fs_id'] + "'" +
+                    ", _REL_PROJECT = '" + parentItem.getProperty('_rel_project', '') + "'" +
+                    ", _REL_OWNEDTEAM = '" + parentItem.getProperty('_rel_ownedteam', '') + "'" +
+                    ", _REL_WFA = '" + view.root + "'" +
+                    ", _REL_WF = '" + parentItem.getProperty('_rel_wf', '') + "'" +
+                    ", IS_TEMPLATE = '" + 1 + "'" +
+                    " WHERE id = '" + edId + "'</sqlString>";
             }
-            catch (e) {
-                msgBox('Failed to create ' + relType + ' Relation : ' + data.id + ' to ' + edId);
+            inn.applyMethod("DHI_APPLY_SQL", body);
+
+            existRelItem = inn.newItem(relType, "get");
+            existRelItem.setProperty("source_id", data.id);
+            existRelItem.setProperty("related_id", edId);
+            existRelItem = existRelItem.apply();
+            if (existRelItem.getItemCount() < 1) {
+                try {
+                    relItem = inn.newItem(relType, "add");
+                    relItem.setProperty("source_id", data.id);
+                    relItem.setProperty("related_id", edId);
+                    relItem.setProperty("owned_by_id", me.getUserIdentity());
+                    relItem.apply();
+
+                    //스테이터스를 업데이트한다.
+                    var body = "<source_id>" + data.id + "</source_id>";
+                    body += "<related_id>" + edId + "</related_id>";
+                    inn.applyMethod("DHI_WF_RESET_STATE_ITEM", body);
+
+                    //DDCL 인 경우 _doc_no 를 상속받는다.
+                    if (edItem.getProperty("_class") == 'DDCL') {
+                        var body = "<_ed_id>" + edId + "</_ed_id>";
+                        body += "<_ed_type>" + edType + "</_ed_type>";
+                        body += "<_doc_no>" + parentItem.getProperty('_doc_no', '') + "</_doc_no>";
+                        inn.applyMethod("DHI_WF_setDocNo", body);
+                    }
+                }
+                catch (e) {
+                    msgBox('Failed to create ' + relType + ' Relation : ' + data.id + ' to ' + edId);
+                }
             }
         }
+
         this.refreshOutFolder(data, view);
     },
     deleteOutItem: function (data, view) {
