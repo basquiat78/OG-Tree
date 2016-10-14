@@ -988,6 +988,9 @@ Tree.prototype = {
                                     targetView.mapping = true;
                                     targetView.selected = selected;
                                     targetView.data = JSON.parse(JSON.stringify(mapping));
+
+                                    //소스의 expand 를 상속받는다.
+                                    targetView.data.expand = sourceView.data.expand;
                                 }
                                 viewData.views.push(targetView);
                             }
@@ -2141,14 +2144,14 @@ Tree.prototype = {
      * @param element
      */
     updateExpander: function (view, element) {
-        var customData = this.canvas.getCustomData(element);
-        if (customData.data.expand != view.data.expand) {
-            if (view.data.expand) {
+        var href = $(element).find('image').attr('href');
+        if (href) {
+            if (view.data.expand && href != 'doosan/shape/collapse.svg') {
                 $(element).find('image').attr('href', 'doosan/shape/collapse.svg');
-            } else {
+            }
+            else if (!view.data.expand && href != 'doosan/shape/expand.svg') {
                 $(element).find('image').attr('href', 'doosan/shape/expand.svg');
             }
-            this.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
         }
     },
     /**
