@@ -481,14 +481,9 @@ Aras.prototype = {
                 msgBox('Max depth is ' + this.stdMaxDepth + ' in standard workflow.');
             }
         } else {
-            var compareDepth = this.prjMaxDepth;
-            //ed 일 경우는 +1 뎁스까지 허용.
-            if (type == this.TYPE.ED) {
-                compareDepth++;
-            }
-            if (depth >= compareDepth) {
+            if (depth >= this.prjMaxDepth) {
                 enable = false;
-                msgBox('Max depth is ' + compareDepth + ' in project workflow.');
+                msgBox('Max depth is ' + this.prjMaxDepth + ' in project workflow.');
             }
         }
         return enable;
@@ -663,9 +658,6 @@ Aras.prototype = {
         this.refreshOutFolder(parentData, parentView);
     },
     createEd: function (data, view, edType) {
-        if (!this.checkMaxCreateNumber(view.depth, this.TYPE.ED)) {
-            return;
-        }
 
         var me = this;
         var inn = this.aras.newIOMInnovator();
@@ -807,8 +799,8 @@ Aras.prototype = {
             existDDCLItemCount = result.getItemCount();
         }
 
-        //기존 폴더의 DDCL이 존재할 경우
-        if (existDDCLItemCount > 0) {
+        //기존 폴더의 DDCL이 존재하고 선택한 ED 중 DDCL 인 것이 있을 경우
+        if (existDDCLItemCount > 0 && DDCLEds.length > 0) {
             msgBox('DDCL ED is exists.');
             return;
         }
