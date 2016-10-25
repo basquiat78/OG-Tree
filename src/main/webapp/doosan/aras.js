@@ -193,6 +193,17 @@ Aras.prototype = {
         $(window.parent).resize(function () {
             resizeView();
         });
+
+        //이너 모드일 경우엔 dijitReset 이 클릭된 경우에도 리사이즈 한다.
+        var innerMode = me.getHtmlParameter('mode');
+        if (window.parent.document && innerMode) {
+            if ($(window.parent.document).find('.dijitReset').length) {
+                $(window.parent.document).find('.dijitReset').click(function () {
+                    resizeView();
+                })
+            }
+        }
+
         resizeView();
     },
     createBody: function (params) {
@@ -1263,9 +1274,18 @@ Aras.prototype = {
                 if (me.stdYN == 'Y') {
                     tooltip = node.fs_name;
                 }
-                //프로젝트 일 경우 사람이름과 함께
+                //프로젝트 일 경우 c_c_rev,c_major_rev,_user_name 과 함께
                 else {
-                    tooltip = node['_user_name'] ? node.fs_name + '-' + node['_user_name'] : node.fs_name;
+                    tooltip = node.fs_name;
+                    if (node['c_c_rev']) {
+                        tooltip = tooltip + ' ' + node['c_c_rev'];
+                    }
+                    if (node['c_major_rev']) {
+                        tooltip = tooltip + ' ' + node['c_major_rev'];
+                    }
+                    if (node['_user_name']) {
+                        tooltip = tooltip + ' ' + node['_user_name'];
+                    }
                 }
                 if (node.kind == 'A') {
                     colorAndStroke = getStateColorAndStroke(me.tree.Constants.TYPE.ACTIVITY, node.state, checkDelay(node));

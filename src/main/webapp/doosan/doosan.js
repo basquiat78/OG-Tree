@@ -41,9 +41,11 @@ Doosan.prototype = {
             me.aras = new Aras(me.tree);
             me.aras.init();
 
-            //스탠다드 모드에서는 PICK ED 와 CREATE ED 를 끄도록 한다.
+            //스탠다드 모드에서는 PICK ED 와 CREATE ED 를 설정하도록 한다.
             if (me.aras.stdYN == 'Y') {
                 me.tree._CONFIG.PICK_ED = false;
+
+                //2016-10-19 요청에 의해 스탠다드 모드일때 CREATE_ED 막음.
                 me.tree._CONFIG.CREATE_ED = false;
             }
 

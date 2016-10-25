@@ -1973,6 +1973,15 @@ Tree.prototype = {
         }
     },
     updateActivity: function (view, element) {
+        var customData = this.canvas.getCustomData(element);
+        var needUpdate = false;
+        if (customData.name != view.name) {
+            this.canvas.drawLabel(element, view.name);
+            needUpdate = true;
+        }
+        if(needUpdate){
+            this.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
+        }
         this.updateImageShapeStatus(view, element);
     },
     drawActivity: function (view) {
@@ -1995,12 +2004,20 @@ Tree.prototype = {
     },
     updateFolder: function (view, element) {
         var customData = this.canvas.getCustomData(element);
+        var needUpdate = false;
         if (customData.blur != view.blur) {
             if (view.blur) {
                 this.canvas.setShapeStyle(element, {"opacity": this._CONFIG.DEFAULT_STYLE.BLUR});
             } else {
                 this.canvas.setShapeStyle(element, {"opacity": "1"});
             }
+            needUpdate = true;
+        }
+        if (customData.name != view.name) {
+            this.canvas.drawLabel(element, view.name);
+            needUpdate = true;
+        }
+        if(needUpdate){
             this.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
         }
         this.updateImageShapeStatus(view, element);
@@ -2031,12 +2048,20 @@ Tree.prototype = {
     },
     updateEd: function (view, element) {
         var customData = this.canvas.getCustomData(element);
+        var needUpdate = false;
         if (customData.blur != view.blur) {
             if (view.blur) {
                 this.canvas.setShapeStyle(element, {"opacity": this._CONFIG.DEFAULT_STYLE.BLUR});
             } else {
                 this.canvas.setShapeStyle(element, {"opacity": "1"});
             }
+            needUpdate = true;
+        }
+        if (customData.name != view.name) {
+            this.canvas.drawLabel(element, view.name);
+            needUpdate = true;
+        }
+        if(needUpdate){
             this.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
         }
         this.updateImageShapeStatus(view, element);
