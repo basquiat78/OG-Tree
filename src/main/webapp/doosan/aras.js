@@ -227,6 +227,11 @@ Aras.prototype = {
         var identityId = aliasRelItem.getProperty("related_id");
         return identityId ? identityId : '';
     },
+    getUserId: function(){
+        var inn = this.aras.newIOMInnovator();
+        var userId = inn.getUserID();
+        return userId;
+    },
     /**
      * WF 하위의 액티비티, 폴더 및 ED 조회
      * @param wf_id
@@ -324,6 +329,7 @@ Aras.prototype = {
     getPickEd: function (ed_number, ed_name) {
         var data = [];
         var me = this, params = {
+            user_id: me.getUserId(),
             project_id: me.projectId,
             ed_number: ed_number ? ed_number : '',
             ed_name: ed_name ? ed_name : ''

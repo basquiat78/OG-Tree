@@ -170,7 +170,7 @@ var Tree = function (container) {
         labelEditable: false,
         groupDropable: true,
         collapsible: true,
-        enableHotKey: true,
+        enableHotKey: false,
         enableContextMenu: false,
         useSlider: true,
         stickGuide: false,
@@ -846,6 +846,7 @@ Tree.prototype = {
                     for (var s = 0, lens = standaloneViewData['views'].length; s < lens; s++) {
                         standaloneView = standaloneViewData['views'][s];
                         standaloneView.y = standaloneView.y + diffY;
+                        standaloneView.bottom = standaloneView.bottom + diffY;
                         if (standaloneView.parentY) {
                             if (standaloneView.type == me.Constants.TYPE.EXPANDER_FROM && standaloneView.depth == 0) {
                                 standaloneView.parentY = targetActivityView.y;
@@ -1432,6 +1433,8 @@ Tree.prototype = {
                 }
             }
         };
+
+        //로직 시작.
         lastViewBottom = 0;
 
         //mapping.parentId 가 _INCOLLAPSE 에서 expand 처리 되어있는지 본다.
@@ -1451,7 +1454,7 @@ Tree.prototype = {
             y: me._CONFIG.SHAPE_SIZE.FOLDER_HEIGHT / 2,
             width: me._CONFIG.SHAPE_SIZE.EXPANDER_WIDTH,
             height: me._CONFIG.SHAPE_SIZE.EXPANDER_HEIGHT,
-            bottom: targetActivityView.y + (me._CONFIG.SHAPE_SIZE.EXPANDER_HEIGHT / 2),
+            bottom: me._CONFIG.SHAPE_SIZE.FOLDER_HEIGHT / 2,//targetActivityView.y + (me._CONFIG.SHAPE_SIZE.EXPANDER_HEIGHT / 2),
             root: targetActivityView.id,
             position: me.Constants.POSITION.MY_IN,
             type: me.Constants.TYPE.EXPANDER,
@@ -1500,7 +1503,11 @@ Tree.prototype = {
             for (var i = 0, leni = rootGroup.length; i < leni; i++) {
                 getViewData(rootGroup[i], 1);
             }
+
             viewData.totalHeight = lastViewBottom;
+        }else{
+            //최소한의 totalHeight 는 폴더의 크기로 남겨두도록 한다.
+            viewData.totalHeight = me._CONFIG.SHAPE_SIZE.FOLDER_HEIGHT;
         }
         return viewData;
     },
