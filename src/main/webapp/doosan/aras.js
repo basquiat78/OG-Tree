@@ -1331,9 +1331,6 @@ Aras.prototype = {
                     } else {
                         tooltip = node['fs_name'];
                     }
-                    if (node['fs_name']) {
-                        tooltip = tooltip + ' ' + node['fs_name'];
-                    }
                     if (node['c_c_rev']) {
                         tooltip = tooltip + ' ' + node['c_c_rev'];
                     }
