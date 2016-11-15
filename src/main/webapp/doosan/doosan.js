@@ -34,6 +34,10 @@ Doosan.prototype = {
             me.tree._CONFIG.AREA.rIn.display = true;
             me.tree._CONFIG.AREA.rAc.display = true;
             me.tree._CONFIG.AREA.rOut.display = true;
+
+            //좌우 여백 채움 프로퍼티
+            me.tree._CONFIG.AREA.rIn.fit = 'left';
+            me.tree._CONFIG.AREA.rOut.fit = 'right';
         }
         me.tree.init();
 
@@ -302,7 +306,6 @@ Doosan.prototype = {
              * @param view
              */
             me.tree.onPickEd = function (data, view) {
-                console.log('onPickEd', data, view);
                 if (!me.aras.checkMaxCreateNumber(view.depth)) {
                     return;
                 }
@@ -648,8 +651,6 @@ Doosan.prototype = {
                 me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER});
                 me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.OTHER_OUT});
                 me.tree.updateData(otherData);
-                //me.tree.updateData(otherData, true);
-                //me.tree.sortData('name',[me.tree.Constants.POSITION.MY_OUT], true);
             });
         });
     },

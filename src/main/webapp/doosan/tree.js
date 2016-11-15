@@ -58,20 +58,20 @@ var Tree = function (container) {
         /**
          * 라벨 최소 크기(IE)
          */
-        LABEL_MIN_SIZE: 200,
+        LABEL_MIN_SIZE: 300,
 
         /**
          * 라벨 최대 크기(IE)
          */
-        LABEL_MAX_SIZE: 300,
+        LABEL_MAX_SIZE: 400,
         /**
          * 라벨 최대 글자 크기
          */
-        LABEL_MAX_LENGTH: 8,
+        LABEL_MAX_LENGTH: 20,
         AREA: {
             LEFT_SIZE_RATE: (5 / 12) - 0.002,
             RIGHT_SIZE_RATE: (7 / 12) + 0.002,
-            ACTIVITY_SIZE: 100,
+            ACTIVITY_SIZE: 120,
             BOTTOM_MARGIN: 50,
             TOP_MARGIN: 30,
             lAc: {
@@ -107,9 +107,11 @@ var Tree = function (container) {
             },
             rIn: {
                 'fill': 'RGB(255,255,255)',
+                'fill-opacity': '1'
             },
             rAc: {
-                'fill': 'RGB(255,255,255)'
+                'fill': 'RGB(255,255,255)',
+                'fill-opacity': '1'
             },
             rOut: {
                 'fill': 'RGB(246,246,246)',
@@ -129,14 +131,16 @@ var Tree = function (container) {
             ED_HEIGHT: 30,
             ED_MARGIN: 24,
             EXPANDER_FROM_MARGIN: 10,
-            EXPANDER_TO_MARGIN: 20,
+            EXPANDER_TO_VERTICE_MARGIN: 10,
+            EXPANDER_TO_MARGIN: 40,
             EXPANDER_WIDTH: 14,
             EXPANDER_HEIGHT: 14
         },
         DEFAULT_STYLE: {
             BLUR: "0.3",
             EDGE: "plain", //bezier || plain,
-            MAPPING_EDGE: "bezier" //bezier || plain,
+            MAPPING_EDGE: "bezier", //bezier || plain,
+            FONT_SIZE: 9
         }
     };
 
@@ -1505,7 +1509,7 @@ Tree.prototype = {
             }
 
             viewData.totalHeight = lastViewBottom;
-        }else{
+        } else {
             //최소한의 totalHeight 는 폴더의 크기로 남겨두도록 한다.
             viewData.totalHeight = me._CONFIG.SHAPE_SIZE.FOLDER_HEIGHT;
         }
@@ -1842,6 +1846,10 @@ Tree.prototype = {
          */
         var applyPathStyle = function ($svg, color, stroke) {
             $svg.find('path').each(function () {
+                //컬러가 없지만 선색상은 변경해야 하는경우
+                if (!color && stroke) {
+                    color = '#fff';
+                }
                 //컬러 입히기
                 if (color) {
                     var ignoreColor = false;
@@ -1866,6 +1874,7 @@ Tree.prototype = {
                         $(this).css('stroke', stroke);
                     }
                 }
+
             });
         };
         if (!color || color == 'none' || color == '') {
@@ -1986,7 +1995,7 @@ Tree.prototype = {
             this.canvas.drawLabel(element, view.name);
             needUpdate = true;
         }
-        if(needUpdate){
+        if (needUpdate) {
             this.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
         }
         this.updateImageShapeStatus(view, element);
@@ -2002,7 +2011,8 @@ Tree.prototype = {
         if (!me._CONFIG.MOVE_SORTABLE) {
             shape.MOVABLE = false;
         }
-        var element = me.canvas.drawShape([view.x, view.y], shape, [view.width, view.height], null, view.id);
+        var element = me.canvas.drawShape([view.x, view.y], shape, [view.width, view.height],
+            {'font-size': me._CONFIG.DEFAULT_STYLE.FONT_SIZE}, view.id);
         me.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
         me.updateImageShapeStatus(view, element);
         me.bindDblClickEvent(element);
@@ -2024,7 +2034,7 @@ Tree.prototype = {
             this.canvas.drawLabel(element, view.name);
             needUpdate = true;
         }
-        if(needUpdate){
+        if (needUpdate) {
             this.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
         }
         this.updateImageShapeStatus(view, element);
@@ -2041,7 +2051,8 @@ Tree.prototype = {
         if (!me._CONFIG.MAPPING_ENABLE) {
             shape.MOVABLE = false;
         }
-        var element = me.canvas.drawShape([view.x, view.y], shape, [view.width, view.height], null, view.id);
+        var element = me.canvas.drawShape([view.x, view.y], shape, [view.width, view.height],
+            {'font-size': me._CONFIG.DEFAULT_STYLE.FONT_SIZE}, view.id);
         me.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
         if (view.blur) {
             this.canvas.setShapeStyle(element, {"opacity": me._CONFIG.DEFAULT_STYLE.BLUR});
@@ -2068,7 +2079,7 @@ Tree.prototype = {
             this.canvas.drawLabel(element, view.name);
             needUpdate = true;
         }
-        if(needUpdate){
+        if (needUpdate) {
             this.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
         }
         this.updateImageShapeStatus(view, element);
@@ -2085,7 +2096,8 @@ Tree.prototype = {
         if (!me._CONFIG.MAPPING_ENABLE) {
             shape.MOVABLE = false;
         }
-        var element = me.canvas.drawShape([view.x, view.y], shape, [view.width, view.height], null, view.id);
+        var element = me.canvas.drawShape([view.x, view.y], shape, [view.width, view.height],
+            {'font-size': me._CONFIG.DEFAULT_STYLE.FONT_SIZE}, view.id);
         me.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
         if (view.blur) {
             this.canvas.setShapeStyle(element, {"opacity": me._CONFIG.DEFAULT_STYLE.BLUR});
@@ -2144,6 +2156,7 @@ Tree.prototype = {
                 edgeShape.geom = new OG.BezierCurve(view.vertieces);
             } else {
                 edgeShape.geom = new OG.PolyLine(view.vertieces);
+                //if(view.vertieces.length)
             }
             var element = me.canvas.drawShape(null, edgeShape, null, null, view.id);
             me.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
@@ -2372,10 +2385,14 @@ Tree.prototype = {
             start = [parentExCenterX - startDistance, parentY];
             end = [myCenter - endDistance, myY];
         }
+        var verticeMargin = me._CONFIG.SHAPE_SIZE.EXPANDER_TO_VERTICE_MARGIN;
+        if (start[0] > end[0]) {
+            verticeMargin = -verticeMargin;
+        }
         vertieces = [
             [Math.round(start[0]), Math.round(start[1])],
-            [Math.round((start[0] + end[0]) / 2), Math.round(start[1])],
-            [Math.round((start[0] + end[0]) / 2), Math.round(end[1])],
+            [Math.round(start[0] + verticeMargin), Math.round(start[1])],
+            [Math.round(start[0] + verticeMargin), Math.round(end[1])],
             [Math.round(end[0]), Math.round(end[1])]
         ];
         return vertieces;
@@ -2563,6 +2580,38 @@ Tree.prototype = {
                 }
                 //캔버스 사이즈 조정
                 right = right + moveX;
+            }
+        }
+
+        //Fit 프로퍼티를 가진 Area 를 기준으로 재정렬한다.
+        var fitList = [
+            {area: me.AREA.lAc, fit: me._CONFIG.AREA.lAc.fit},
+            {area: me.AREA.lOut, fit: me._CONFIG.AREA.lOut.fit},
+            {area: me.AREA.rIn, fit: me._CONFIG.AREA.rIn.fit},
+            {area: me.AREA.rAc, fit: me._CONFIG.AREA.rAc.fit},
+            {area: me.AREA.rOut, fit: me._CONFIG.AREA.rOut.fit}
+        ];
+        for (var f = 0, lenf = fitList.length; f < lenf; f++) {
+            var fBoundary = me._RENDERER.getBoundary(fitList[f].area);
+            var fLeft = fBoundary.getLeftCenter().x;
+            var fRight = fBoundary.getRightCenter().x;
+            //좌측방향 여백채움일 경우
+            if (fitList[f].fit == 'left') {
+                me.fitToBoundary(fitList[f].area, [upper, low, 0, fRight]);
+                for (var g = 0; g < f; g++) {
+                    me.fitToBoundary(fitList[g].area, [upper, low, 0, 0]);
+                }
+            }
+            //우측방향 여백채움일 경우
+            if (fitList[f].fit == 'right') {
+                if (fRight < containerWidth) {
+                    me.fitToBoundary(fitList[f].area, [upper, low, fLeft, containerWidth - 15]);
+                    right = containerWidth - 15;
+
+                    for (var g = f + 1; g < fitList.length; g++) {
+                        me.fitToBoundary(fitList[g].area, [upper, low, right, right]);
+                    }
+                }
             }
         }
 
@@ -3096,7 +3145,7 @@ Tree.prototype = {
                 $('.og-tooltip').remove();
                 tooltip.css({
                     'top': event.pageY,
-                    'left': event.pageX,
+                    'left': event.pageX + 15,
                     'background-color': '#333',
                     'color': 'whitesmoke',
                     'font-size': '12px'

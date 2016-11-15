@@ -40,7 +40,8 @@
         has = "hasOwnProperty",
         separator = /[\.\/]/,
         wildcard = "*",
-        fun = function () {},
+        fun = function () {
+        },
         numsort = function (a, b) {
             return a - b;
         },
@@ -240,7 +241,9 @@
     eve.toString = function () {
         return "You are running Eve " + version;
     };
-    (typeof module != "undefined" && module.exports) ? (module.exports = eve) : (typeof define != "undefined" ? (define("eve", [], function() { return eve; })) : (glob.eve = eve));
+    (typeof module != "undefined" && module.exports) ? (module.exports = eve) : (typeof define != "undefined" ? (define("eve", [], function () {
+        return eve;
+    })) : (glob.eve = eve));
 })(this);
 
 
@@ -270,6 +273,7 @@
             }
         }
     }
+
     R.version = "2.1.0";
     R.eve = eve;
     var loaded,
@@ -373,7 +377,9 @@
             x: 0,
             y: 0,
             // 추가 ("shape-rendering": "crispEdges")
-            "shape-rendering": "crispEdges"
+            "shape-rendering": "crispEdges",
+            "text-decoration": "none",
+            "word-wrap": "none"
         },
         availableAnimAttrs = R._availableAnimAttrs = {
             blur: nu,
@@ -412,7 +418,8 @@
         sortByNumber = function (a, b) {
             return toFloat(a) - toFloat(b);
         },
-        fun = function () {},
+        fun = function () {
+        },
         pipe = function (x) {
             return x;
         },
@@ -514,7 +521,7 @@
         if (type == "array") {
             return o instanceof Array;
         }
-        return  (type == "null" && o === null) ||
+        return (type == "null" && o === null) ||
             (type == typeof o && o !== null) ||
             (type == "object" && o === Object(o)) ||
             (type == "array" && Array.isArray && Array.isArray(o)) ||
@@ -604,7 +611,7 @@
                     docum.write("<body>");
                     docum.close();
                     bod = docum.body;
-                } catch(e) {
+                } catch (e) {
                     bod = createPopup().document.body;
                 }
                 var range = bod.createTextRange();
@@ -614,7 +621,7 @@
                         var value = range.queryCommandValue("ForeColor");
                         value = ((value & 255) << 16) | (value & 65280) | ((value & 16711680) >>> 16);
                         return "#" + ("000000" + value.toString(16)).slice(-6);
-                    } catch(e) {
+                    } catch (e) {
                         return "none";
                     }
                 });
@@ -669,17 +676,6 @@
                 b: b,
                 hex: R.rgb(r, g, b),
                 toString: rgbtoString
-
-
-
-
-
-
-
-
-
-
-
 
 
             };
@@ -816,6 +812,7 @@
             return array.push(array.splice(i, 1)[0]);
         }
     }
+
     function cacher(f, scope, postprocessor) {
         function newf() {
             var arg = Array.prototype.slice.call(arguments, 0),
@@ -831,6 +828,7 @@
             cache[args] = f[apply](scope, arg);
             return postprocessor ? postprocessor(cache[args]) : cache[args];
         }
+
         return newf;
     }
 
@@ -960,7 +958,7 @@
         for (var i = 0, iLen = crp.length; iLen - 2 * !z > i; i += 2) {
             var p = [
                 {x: +crp[i - 2], y: +crp[i - 1]},
-                {x: +crp[i],     y: +crp[i + 1]},
+                {x: +crp[i], y: +crp[i + 1]},
                 {x: +crp[i + 2], y: +crp[i + 3]},
                 {x: +crp[i + 4], y: +crp[i + 5]}
             ];
@@ -984,7 +982,7 @@
                 (-p[0].x + 6 * p[1].x + p[2].x) / 6,
                 (-p[0].y + 6 * p[1].y + p[2].y) / 6,
                 (p[1].x + 6 * p[2].x - p[3].x) / 6,
-                (p[1].y + 6*p[2].y - p[3].y) / 6,
+                (p[1].y + 6 * p[2].y - p[3].y) / 6,
                 p[2].x,
                 p[2].y
             ]);
@@ -1141,6 +1139,7 @@
             t2 = t * t1 + 6 * p1 - 12 * p2 + 6 * p3;
         return t * t2 - 3 * p1 + 3 * p2;
     }
+
     function bezlen(x1, y1, x2, y2, x3, y3, x4, y4, z) {
         if (z == null) {
             z = 1;
@@ -1148,8 +1147,8 @@
         z = z > 1 ? 1 : z < 0 ? 0 : z;
         var z2 = z / 2,
             n = 12,
-            Tvalues = [-0.1252,0.1252,-0.3678,0.3678,-0.5873,0.5873,-0.7699,0.7699,-0.9041,0.9041,-0.9816,0.9816],
-            Cvalues = [0.2491,0.2491,0.2335,0.2335,0.2032,0.2032,0.1601,0.1601,0.1069,0.1069,0.0472,0.0472],
+            Tvalues = [-0.1252, 0.1252, -0.3678, 0.3678, -0.5873, 0.5873, -0.7699, 0.7699, -0.9041, 0.9041, -0.9816, 0.9816],
+            Cvalues = [0.2491, 0.2491, 0.2335, 0.2335, 0.2032, 0.2032, 0.1601, 0.1601, 0.1069, 0.1069, 0.0472, 0.0472],
             sum = 0;
         for (var i = 0; i < n; i++) {
             var ct = z2 * Tvalues[i] + z2,
@@ -1160,6 +1159,7 @@
         }
         return z2 * sum;
     }
+
     function getTatLen(x1, y1, x2, y2, x3, y3, x4, y4, ll) {
         if (ll < 0 || bezlen(x1, y1, x2, y2, x3, y3, x4, y4) < ll) {
             return;
@@ -1177,6 +1177,7 @@
         }
         return t2;
     }
+
     function intersect(x1, y1, x2, y2, x3, y3, x4, y4) {
         if (
             mmax(x1, x2) < mmin(x3, x4) ||
@@ -1211,12 +1212,15 @@
         }
         return {x: px, y: py};
     }
+
     function inter(bez1, bez2) {
         return interHelper(bez1, bez2);
     }
+
     function interCount(bez1, bez2) {
         return interHelper(bez1, bez2, 1);
     }
+
     function interHelper(bez1, bez2, justCount) {
         var bbox1 = R.bezierBBox(bez1),
             bbox2 = R.bezierBBox(bez2);
@@ -1737,7 +1741,7 @@
                     if (!path) {
                         return ["C", d.x, d.y, d.x, d.y, d.x, d.y];
                     }
-                    !(path[0] in {T:1, Q:1}) && (d.qx = d.qy = null);
+                    !(path[0] in {T: 1, Q: 1}) && (d.qx = d.qy = null);
                     switch (path[0]) {
                         case "M":
                             d.X = path[1];
@@ -2014,20 +2018,24 @@
         getEmpty = function (item) {
             var l = item[0];
             switch (l.toLowerCase()) {
-                case "t": return [l, 0, 0];
-                case "m": return [l, 1, 0, 0, 1, 0, 0];
-                case "r": if (item.length == 4) {
-                    return [l, 0, item[2], item[3]];
-                } else {
-                    return [l, 0];
-                }
-                case "s": if (item.length == 5) {
-                    return [l, 1, 1, item[3], item[4]];
-                } else if (item.length == 3) {
-                    return [l, 1, 1];
-                } else {
-                    return [l, 1];
-                }
+                case "t":
+                    return [l, 0, 0];
+                case "m":
+                    return [l, 1, 0, 0, 1, 0, 0];
+                case "r":
+                    if (item.length == 4) {
+                        return [l, 0, item[2], item[3]];
+                    } else {
+                        return [l, 0];
+                    }
+                case "s":
+                    if (item.length == 5) {
+                        return [l, 1, 1, item[3], item[4]];
+                    } else if (item.length == 3) {
+                        return [l, 1, 1];
+                    } else {
+                        return [l, 1];
+                    }
             }
         },
         equaliseTransform = R._equaliseTransform = function (t1, t2) {
@@ -2115,6 +2123,7 @@
             this.f = 0;
         }
     }
+
     (function (matrixproto) {
 
         matrixproto.add = function (a, b, c, d, e, f) {
@@ -2201,6 +2210,7 @@
         function norm(a) {
             return a[0] * a[0] + a[1] * a[1];
         }
+
         function normalize(a) {
             var mag = math.sqrt(norm(a));
             a[0] && (a[0] /= mag);
@@ -2249,7 +2259,7 @@
                 s.scalex = +s.scalex.toFixed(4);
                 s.scaley = +s.scaley.toFixed(4);
                 s.rotate = +s.rotate.toFixed(4);
-                return  (s.dx || s.dy ? "t" + [s.dx, s.dy] : E) +
+                return (s.dx || s.dy ? "t" + [s.dx, s.dy] : E) +
                     (s.scalex != 1 || s.scaley != 1 ? "s" + [s.scalex, s.scaley, 0, 0] : E) +
                     (s.rotate ? "r" + [s.rotate, 0, 0] : E);
             } else {
@@ -2265,7 +2275,9 @@
 
         paperproto.safari = function () {
             var rect = this.rect(-99, -99, this.width + 99, this.height + 99).attr({stroke: "none"});
-            setTimeout(function () {rect.remove();});
+            setTimeout(function () {
+                rect.remove();
+            });
         };
     } else {
         paperproto.safari = fun;
@@ -2290,32 +2302,6 @@
                         f = function (e) {
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                             var scrollY = g.doc.documentElement.scrollTop || g.doc.body.scrollTop,
                                 scrollX = g.doc.documentElement.scrollLeft || g.doc.body.scrollLeft,
                                 x = e.clientX + scrollX,
@@ -2330,27 +2316,6 @@
                                         e.stopPropagation = stopTouch;
                                         break;
                                     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
                                 }
@@ -2440,39 +2405,16 @@
         elproto = R.el = {};
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     for (var i = events.length; i--;) {
         (function (eventName) {
             R[eventName] = elproto[eventName] = function (fn, scope) {
                 if (R.is(fn, "function")) {
                     this.events = this.events || [];
-                    this.events.push({name: eventName, f: fn, unbind: addEvent(this.shape || this.node || g.doc, eventName, fn, scope || this)});
+                    this.events.push({
+                        name: eventName,
+                        f: fn,
+                        unbind: addEvent(this.shape || this.node || g.doc, eventName, fn, scope || this)
+                    });
                 }
                 return this;
             };
@@ -2541,6 +2483,7 @@
             onend && eve.on("raphael.drag.end." + this.id, onend);
             eve("raphael.drag.start." + this.id, start_scope || move_scope || this, e.clientX + scrollX, e.clientY + scrollY, e);
         }
+
         this._drag = {};
         draggable.push({el: this, start: start});
         this.mousedown(start);
@@ -2647,7 +2590,7 @@
             body = doc.body,
             docElem = doc.documentElement,
             clientTop = docElem.clientTop || body.clientTop || 0, clientLeft = docElem.clientLeft || body.clientLeft || 0,
-            top  = box.top  + (g.win.pageYOffset || docElem.scrollTop || body.scrollTop ) - clientTop,
+            top = box.top + (g.win.pageYOffset || docElem.scrollTop || body.scrollTop ) - clientTop,
             left = box.left + (g.win.pageXOffset || docElem.scrollLeft || body.scrollLeft) - clientLeft;
         return {
             y: top,
@@ -2715,6 +2658,7 @@
     function x_y() {
         return this.x + S + this.y;
     }
+
     function x_y_w_h() {
         return this.x + S + this.y + S + this.width + " \xd7 " + this.height;
     }
@@ -2813,16 +2757,15 @@
                             if (subpath && !subpaths.start) {
                                 point = getPointAtSegmentLength(x, y, p[1], p[2], p[3], p[4], p[5], p[6], length - len);
                                 sp += ["C" + point.start.x, point.start.y, point.m.x, point.m.y, point.x, point.y];
-                                if (onlystart) {return sp;}
+                                if (onlystart) {
+                                    return sp;
+                                }
                                 subpaths.start = sp;
                                 sp = ["M" + point.x, point.y + "C" + point.n.x, point.n.y, point.end.x, point.end.y, p[5], p[6]].join();
                                 len += l;
                                 x = +p[5];
                                 y = +p[6];
                                 continue;
-
-
-
 
 
                             }
@@ -2860,7 +2803,9 @@
     };
 
     elproto.getTotalLength = function () {
-        if (this.type != "path") {return;}
+        if (this.type != "path") {
+            return;
+        }
         if (this.node.getTotalLength) {
             return this.node.getTotalLength();
         }
@@ -2868,12 +2813,16 @@
     };
 
     elproto.getPointAtLength = function (length) {
-        if (this.type != "path") {return;}
+        if (this.type != "path") {
+            return;
+        }
         return getPointAtLength(this.attrs.path, length);
     };
 
     elproto.getSubpath = function (from, to) {
-        if (this.type != "path") {return;}
+        if (this.type != "path") {
+            return;
+        }
         return R.getSubpath(this.attrs.path, from, to);
     };
 
@@ -2942,11 +2891,11 @@
     ef["back-out"] = ef.backOut;
 
     var animationElements = [],
-        requestAnimFrame = window.requestAnimationFrame       ||
+        requestAnimFrame = window.requestAnimationFrame ||
             window.webkitRequestAnimationFrame ||
-            window.mozRequestAnimationFrame    ||
-            window.oRequestAnimationFrame      ||
-            window.msRequestAnimationFrame     ||
+            window.mozRequestAnimationFrame ||
+            window.oRequestAnimationFrame ||
+            window.msRequestAnimationFrame ||
             function (callback) {
                 setTimeout(callback, 16);
             },
@@ -3050,8 +2999,8 @@
                         });
                     })(that.id, that, e.anim);
                 } else {
-                    (function(f, el, a) {
-                        setTimeout(function() {
+                    (function (f, el, a) {
+                        setTimeout(function () {
                             eve("raphael.anim.frame." + el.id, el, a);
                             eve("raphael.anim.finish." + el.id, el, a);
                             R.is(f, "function") && f.call(el);
@@ -3107,16 +3056,19 @@
             cy = 3 * p1y,
             by = 3 * (p2y - p1y) - cy,
             ay = 1 - cy - by;
+
         function sampleCurveX(t) {
             return ((ax * t + bx) * t + cx) * t;
         }
+
         function solve(x, epsilon) {
             var t = solveCurveX(x, epsilon);
             return ((ay * t + by) * t + cy) * t;
         }
+
         function solveCurveX(x, epsilon) {
             var t0, t1, t2, x2, d2, i;
-            for(t2 = x, i = 0; i < 8; i++) {
+            for (t2 = x, i = 0; i < 8; i++) {
                 x2 = sampleCurveX(t2) - x;
                 if (abs(x2) < epsilon) {
                     return t2;
@@ -3150,8 +3102,10 @@
             }
             return t2;
         }
+
         return solve(t, 1 / (200 * duration));
     }
+
     elproto.onAnimation = function (f) {
         f ? eve.on("raphael.anim.frame." + this.id, f) : eve.unbind("raphael.anim.frame." + this.id);
         return this;
@@ -3500,6 +3454,7 @@
             animationElements.splice(i--, 1);
         }
     }
+
     eve.on("raphael.remove", stopAnimation);
     eve.on("raphael.clear", stopAnimation);
     elproto.toString = function () {
@@ -3841,7 +3796,7 @@
     R.st = setproto;
     // Firefox <3.6 fix: http://webreflection.blogspot.com/2009/11/195-chars-to-help-lazy-loading.html
     (function (doc, loaded, f) {
-        if (doc.readyState == null && doc.addEventListener){
+        if (doc.readyState == null && doc.addEventListener) {
             doc.addEventListener(loaded, f = function () {
                 doc.removeEventListener(loaded, f, false);
                 doc.readyState = "complete";
@@ -3851,6 +3806,7 @@
         function isLoaded() {
             (/in/).test(doc.readyState) ? setTimeout(isLoaded, 9) : R.eve("raphael.DOMload");
         }
+
         isLoaded();
     })(document, "DOMContentLoaded");
 
@@ -3897,7 +3853,7 @@ window.Raphael.svg && function (R) {
         },
         markerCounter = {};
     R.toString = function () {
-        return  "Your browser supports SVG.\nYou are running Rapha\xebl " + this.version;
+        return "Your browser supports SVG.\nYou are running Rapha\xebl " + this.version;
     };
     var $ = function (el, attr) {
             if (attr) {
@@ -3952,55 +3908,6 @@ window.Raphael.svg && function (R) {
 
                     angle = -toFloat(angle);
                     if (isNaN(angle)) {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                         return null;
                     }
                     var vector = [0, 0, math.cos(R.rad(angle)), math.sin(R.rad(angle))],
@@ -4014,30 +3921,8 @@ window.Raphael.svg && function (R) {
                     if (vector[3] < 0) {
                         vector[1] = -vector[3];
                         vector[3] = 0;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                     }
                 }
-
-
-
                 var dots = R._parseDots(gradient);
 
                 if (!dots) {
@@ -4072,14 +3957,14 @@ window.Raphael.svg && function (R) {
                     }
                 }
 
-                if(element.attrs['fill-r']){
+                if (element.attrs['fill-r']) {
                     el.setAttribute('r', element.attrs['fill-r']);
                 }
-                if(element.attrs['fill-cx']){
+                if (element.attrs['fill-cx']) {
                     el.setAttribute('cx', element.attrs['fill-cx']);
                 }
 
-                if(element.attrs['fill-cy']){
+                if (element.attrs['fill-cy']) {
                     el.setAttribute('cy', element.attrs['fill-cy']);
                 }
             }
@@ -4112,7 +3997,7 @@ window.Raphael.svg && function (R) {
                     dx,
                     refX,
                     attr,
-                    marker_stroke_width = stroke / 2 ,
+                    marker_stroke_width = stroke / 2,
                     w = 7,
                     h = 7,
                     t = 5;
@@ -4129,36 +4014,44 @@ window.Raphael.svg && function (R) {
                         case "none":
                             type = values[i];
                             break;
-                        case "wide": h = 10; break;
-                        case "narrow": h = 5; break;
-                        case "long": w = 10; break;
-                        case "short": w = 5; break;
+                        case "wide":
+                            h = 10;
+                            break;
+                        case "narrow":
+                            h = 5;
+                            break;
+                        case "long":
+                            w = 10;
+                            break;
+                        case "short":
+                            w = 5;
+                            break;
                     }
                 }
-                if (type == "open")  {
+                if (type == "open") {
                     w += 2;
                     h += 2;
                     t += 2;
                     dx = 1;
-                    refX = isEnd ? w-2 : 1;
+                    refX = isEnd ? w - 2 : 1;
                     attr = {
                         fill: "none",
                         stroke: attrs.stroke,
                         'stroke-dasharray': 0
                     };
-                } else if(type == 'classic'){
+                } else if (type == 'classic') {
                     refX = dx = w / 2;
                     attr = {
                         fill: "none",
-                        'fill-opacity' : 1,
+                        'fill-opacity': 1,
                         stroke: attrs.stroke,
                         'stroke-dasharray': 0
                     };
-                } else if(type == 'open_block' || type == 'open_diamond' || type == 'open_oval') {
+                } else if (type == 'open_block' || type == 'open_diamond' || type == 'open_oval') {
                     refX = dx = w / 2;
                     attr = {
                         fill: 'white',
-                        'fill-opacity' : 1,
+                        'fill-opacity': 1,
                         stroke: attrs.stroke,
                         'stroke-dasharray': 0
                     };
@@ -4166,7 +4059,7 @@ window.Raphael.svg && function (R) {
                     refX = dx = w / 2;
                     attr = {
                         fill: attrs.stroke,
-                        'fill-opacity' : 1,
+                        'fill-opacity': 1,
                         stroke: "none"
                     };
                 }
@@ -4174,57 +4067,9 @@ window.Raphael.svg && function (R) {
                     if (isEnd) {
                         o._.arrows.endPath && markerCounter[o._.arrows.endPath]--;
                         o._.arrows.endMarker && markerCounter[o._.arrows.endMarker]--;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                     } else {
                         o._.arrows.startPath && markerCounter[o._.arrows.startPath]--;
                         o._.arrows.startMarker && markerCounter[o._.arrows.startMarker]--;
-
-
-
-
                     }
                 } else {
                     o._.arrows = {};
@@ -4256,22 +4101,7 @@ window.Raphael.svg && function (R) {
                         use = $($("use"), {
                             "xlink:href": "#" + pathId,
                             transform: (isEnd ? "rotate(180 " + w / 2 + " " + h / 2 + ") " : E) + "scale(" + w / t + "," + h / t + ")",
-
-
-
-
-
-
-
-
-
-
-
-
-
-//                        transform: (isEnd ? "rotate(180 " + (w-marker_stroke_width) / 2 + " " + (h-marker_stroke_width) / 2 + ") " : E) + "scale(" + (w-stroke*2) / t + "," + (h-stroke*2) / t + ")" + " translate(" + marker_stroke_width + "," + marker_stroke_width +")",
                             "stroke-width": (1 / ((w / t + h / t) / 2)).toFixed(4)
-//                        "stroke-width": marker_stroke_width
                         });
                         marker.appendChild(use);
                         p.defs.appendChild(marker);
@@ -4281,41 +4111,13 @@ window.Raphael.svg && function (R) {
                         use = marker.getElementsByTagName("use")[0];
                     }
                     $(use, attr);
-//                var delta = dx * (type != "diamond" && type != "oval" && type != "open_diamond" && type != "open_oval");
-//                var delta = dx * (type != "diamond" && type != "oval");
                     var delta = dx;
                     if (isEnd) {
                         from = o._.arrows.startdx * stroke || 0;
                         to = R.getTotalLength(attrs.path) - delta * stroke;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                     } else {
                         from = delta * stroke;
                         to = R.getTotalLength(attrs.path) - (o._.arrows.enddx * stroke || 0);
-
-
-
-
-
-
-
-
-
-
-
                     }
                     attr = {};
                     attr["marker-" + se] = "url(#" + markerId + ")";
@@ -4335,18 +4137,6 @@ window.Raphael.svg && function (R) {
                     } else {
                         from = 0;
                         to = R.getTotalLength(attrs.path) - (o._.arrows.enddx * stroke || 0);
-
-
-
-
-
-
-
-
-
-
-
-
                     }
                     o._.arrows[se + "Path"] && $(node, {d: Raphael.getSubpath(attrs.path, from, to)});
                     delete o._.arrows[se + "Path"];
@@ -4380,7 +4170,11 @@ window.Raphael.svg && function (R) {
             value = dasharray[Str(value).toLowerCase()];
             if (value) {
                 var width = o.attrs["stroke-width"] || "1",
-                    butt = {round: width, square: width, butt: 0}[o.attrs["stroke-linecap"] || params["stroke-linecap"]] || 0,
+                    butt = {
+                            round: width,
+                            square: width,
+                            butt: 0
+                        }[o.attrs["stroke-linecap"] || params["stroke-linecap"]] || 0,
                     dashes = [],
                     i = value.length;
                 while (i--) {
@@ -4390,7 +4184,7 @@ window.Raphael.svg && function (R) {
             }
         },
         setFillAndStroke = function (o, params, size) {
-            if(!o.node.style){
+            if (!o.node.style) {
                 o.node.style = {};
             }
             var node = o.node,
@@ -4468,125 +4262,7 @@ window.Raphael.svg && function (R) {
                         case "path":
                             if (o.type == "path") {
                                 $(node, {d: value ? attrs.path = R._pathToAbsolute(value) : "M0,0"});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 o._.dirty = 1;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 if (o._.arrows) {
                                     "startString" in o._.arrows && addArrow(o, o._.arrows.startString);
                                     "endString" in o._.arrows && addArrow(o, o._.arrows.endString, 1);
@@ -4600,126 +4276,6 @@ window.Raphael.svg && function (R) {
                                 att = "x";
                                 value = attrs.x;
                             } else {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 break;
                             }
                         case "x":
@@ -4853,7 +4409,6 @@ window.Raphael.svg && function (R) {
                             if (attrs.gradient && !attrs[has]("stroke-opacity")) {
                                 $(node, {"stroke-opacity": value > 1 ? value / 100 : value});
                             }
-                        // fall
                         case "fill-opacity":
                             if (attrs.gradient) {
                                 gradient = R._g.doc.getElementById(node.getAttribute("fill").replace(/^url\(#|\)$/g, E));
@@ -4865,6 +4420,14 @@ window.Raphael.svg && function (R) {
                             }
                         // 추가 ("shape-rendering": "crispEdges")
                         case "shape-rendering":
+                            node.setAttribute(att, value);
+                            break;
+
+                        case "text-decoration":
+                            node.setAttribute(att, value);
+                            break;
+
+                        case "word-wrap":
                             node.setAttribute(att, value);
                             break;
 
@@ -4898,25 +4461,76 @@ window.Raphael.svg && function (R) {
                 while (node.firstChild) {
                     node.removeChild(node.firstChild);
                 }
-                var texts = Str(params.text).split("\n"),
-                    tspans = [], finaltspans = [],
-                    tspan, temp;
+                var tspans = [], finaltspans = [],
+                    tspan;
 
-                //한 라인의 최대 글자 수. font size를 얻어와야 함.
+                //TODO 한 라인의 최대 글자 수. font size 를 얻어와야 하는데 param의 font 프로퍼티는 정확하지 않음.
+                //var fontSize = params['font'];
+                //fontSize = fontSize ? fontSize.substring(0, fontSize.indexOf('px')) : 12;
+                //var maxNum = parseInt(size[0] / fontSize);
                 var maxNum = parseInt(size[0] / 12);
 
-                for (var i = 0, ii = texts.length; i < ii; i++) {
-                    temp = texts[i];
+                function wordWrap(str, maxWidth) {
+                    var texts = str.split("\n"), text;
+                    var lines = [];
+                    var done = false;
+                    var testWhite = function (x) {
+                        var white = new RegExp(/^\s$/);
+                        return white.test(x.charAt(0));
+                    };
+                    for (var t = 0; t < texts.length; t++) {
+                        text = texts[t];
+                        do {
+                            var found = false;
+                            var res = '';
+                            if (text.length <= maxWidth) {
+                                lines.push(text);
+                                done = true;
+                            } else {
+                                // Inserts new line at first whitespace of the line
+                                for (i = maxWidth - 1; i >= 0; i--) {
+                                    if (testWhite(str.charAt(i))) {
+                                        res = res + text.slice(0, i)
+                                        text = text.slice(i + 1);
+                                        found = true;
+                                        lines.push(res);
+                                        break;
+                                    }
+                                }
+                                // Inserts new line at maxWidth position, the word is too long to wrap
+                                if (!found) {
+                                    res = res + text.slice(0, maxWidth);
+                                    text = text.slice(maxWidth);
+                                    lines.push(res);
+                                }
+                            }
+                        } while (!done);
+                    }
 
-                    while(true){
-                        if(temp.length > maxNum){
-                            finaltspans.push(temp.substring(0, maxNum));
-                            temp = temp.substring(maxNum, temp.length);
-                        }else{
-                            finaltspans.push(temp);
-                            break;
+                    var result = [];
+                    for (var r = 0, lenr = lines.length; r < lenr; r++) {
+                        if (lines[r] && lines[r].length > 0) {
+                            result.push(lines[r]);
                         }
                     }
+                    if (!lines.length) {
+                        lines.push('');
+                    }
+                    return lines;
+                }
+
+                if (!params.text) {
+                    finaltspans = [];
+                    finaltspans.push('');
+                }
+                if (!maxNum || isNaN(maxNum)) {
+                    finaltspans = [];
+                    finaltspans.push(params.text);
+                } else if (params['word-wrap'] == 'none') {
+                    finaltspans = params.text.split("\n");
+                }
+                else {
+                    finaltspans = wordWrap(params.text, maxNum);
                 }
                 for (var i = 0, ii = finaltspans.length; i < ii; i++) {
                     tspan = $("tspan");
@@ -4972,11 +4586,6 @@ window.Raphael.svg && function (R) {
             this.next = null;
         },
         elproto = R.el;
-
-
-
-
-
     Element.prototype = elproto;
     elproto.constructor = Element;
 
@@ -4993,7 +4602,7 @@ window.Raphael.svg && function (R) {
         return p;
     };
 
-    elproto.setTooltip = function(title){
+    elproto.setTooltip = function (title) {
         if (this.removed) {
             return this;
         }
@@ -5116,7 +4725,7 @@ window.Raphael.svg && function (R) {
         var bbox = {};
         try {
             bbox = this.node.getBBox();
-        } catch(e) {
+        } catch (e) {
             // Firefox 3.0.x plays badly here
         } finally {
             bbox = bbox || {};
@@ -5367,8 +4976,8 @@ window.Raphael.svg && function (R) {
             var el = $("div");
             el.style.cssText = [
                     "position:absolute",
-                    "left:" + (x - w/2) + "px",
-                    "top:" + (y - h/2) + "px",
+                    "left:" + (x - w / 2) + "px",
+                    "top:" + (y - h / 2) + "px",
                     "width:" + w + "px",
                     "height:" + h + "px"
                 ].join(";") + ";";
@@ -5457,7 +5066,8 @@ window.Raphael.svg && function (R) {
         container.canvas = cnvs;
         container.clear();
         container._left = container._top = 0;
-        isFloating && (container.renderfix = function () {});
+        isFloating && (container.renderfix = function () {
+        });
         container.renderfix();
         return container;
     };
@@ -5581,7 +5191,7 @@ window.Raphael.vml && function (R) {
         pathTypes = {path: 1, rect: 1, image: 1},
         ovalTypes = {circle: 1, ellipse: 1},
         path2vml = function (path) {
-            var total =  /[ahqstv]/ig,
+            var total = /[ahqstv]/ig,
                 command = R._pathToAbsolute;
             Str(path).match(total) && (command = R._path2curve);
             total = /[clmz]/g;
@@ -5664,7 +5274,7 @@ window.Raphael.vml && function (R) {
             s.visibility = "visible";
         };
     R.toString = function () {
-        return  "Your browser doesn\u2019t support SVG. Falling down to VML.\nYou are running Rapha\xebl " + this.version;
+        return "Your browser doesn\u2019t support SVG. Falling down to VML.\nYou are running Rapha\xebl " + this.version;
     };
     var addArrow = function (o, value, isEnd) {
             var values = Str(value).toLowerCase().split("-"),
@@ -5693,9 +5303,13 @@ window.Raphael.vml && function (R) {
                         type = 'diamond';
                         break;
                     case "wide":
-                    case "narrow": h = values[i]; break;
+                    case "narrow":
+                        h = values[i];
+                        break;
                     case "long":
-                    case "short": w = values[i]; break;
+                    case "short":
+                        w = values[i];
+                        break;
                 }
             }
             var stroke = o.node.getElementsByTagName("stroke")[0];
@@ -5822,7 +5436,10 @@ window.Raphael.vml && function (R) {
                         fill.color = R.getRGB(params.fill).hex;
                         fill.src = E;
                         fill.type = "solid";
-                        if (R.getRGB(params.fill).error && (res.type in {circle: 1, ellipse: 1} || Str(params.fill).charAt() != "r") && addGradientFill(res, params.fill, fill)) {
+                        if (R.getRGB(params.fill).error && (res.type in {
+                                circle: 1,
+                                ellipse: 1
+                            } || Str(params.fill).charAt() != "r") && addGradientFill(res, params.fill, fill)) {
                             a.fill = "none";
                             a.gradient = params.fill;
                             fill.rotate = false;
@@ -6295,7 +5912,7 @@ window.Raphael.vml && function (R) {
     R._engine.group = function (vml, x, y) {
         var el = createNode("group");
         el.coordsize = zoom + S + zoom;
-        if(x && y) {
+        if (x && y) {
             el.coordorigin = x + " " + y;
         }
         var p = new Element(el, vml),
@@ -6443,8 +6060,8 @@ window.Raphael.vml && function (R) {
         var g = createNode("group");
         g.style.cssText = [
                 "position:absolute",
-                "left:" + (x - w/2) + "px",
-                "top:" + (y - h/2) + "px",
+                "left:" + (x - w / 2) + "px",
+                "top:" + (y - h / 2) + "px",
                 "width:" + w + "px",
                 "height:" + h + "px"
             ].join(";") + ";";
@@ -6563,7 +6180,8 @@ window.Raphael.vml && function (R) {
                 container.appendChild(c);
             }
         }
-        res.renderfix = function () {};
+        res.renderfix = function () {
+        };
         return res;
     };
     R.prototype.clear = function () {
@@ -6617,12 +6235,24 @@ OG.layout = {};
 OG.renderer = {};
 
 /** @namespace */
+OG.marker = {};
+
+/** @namespace */
+OG.pattern = {};
+
+/** @namespace */
 OG.shape = {};
 
 /** @namespace */
 OG.shape.bpmn = {};
 
 /** @namespace */
+OG.shape.elec = {};
+
+/**
+ * @namespace
+ * @private
+ */
 OG.shape.essencia = {};
 
 /**
@@ -6744,6 +6374,8 @@ OG.common.Constants = {
 		LINE_TEXT : "_GUIDE_LINE_TEXT",
 		LINE_CONNECT_MODE: "LINE_CONNECT_MODE",
 		LINE_CONNECT_TEXT: "LINE_CONNECT_TEXT",
+		LINE_CONNECT_SHAPE: "LINE_CONNECT_SHAPE",
+		LINE_CONNECT_LABEL: "LINE_CONNECT_LABEL",
 		LINE_VIRTUAL_EDGE: "LINE_VIRTUAL_EDGE",
 		RECT_CONNECT_MODE: "RECT_CONNECT_MODE",
 		TRASH: "_GUIDE_TRASH",
@@ -6813,6 +6445,24 @@ OG.common.Constants = {
 	 */
 	TERMINAL: "_TERMINAL",
 
+	/**
+	 * 마커 등록을 위한 임시 노드 아이디
+	 */
+	MARKER_TEMP_NODE: "MARKER_TEMP_NODE",
+
+	/**
+	 * 패턴 등록을 위한 임시 노드 아이디
+	 */
+	PATTERN_TEMP_NODE: "PATTERN_TEMP_NODE",
+
+	/**
+	 * 캔버스의 마커 데피니션 suffix 정의
+	 */
+	MARKER_DEFS_SUFFIX: "_MARKER",
+	/**
+	 * Shape 에서 마커가 그려질 경우 원본 노드 suffix 정의
+	 */
+	ORIGINAL_NODE: "ORIGINAL_NODE",
 	/**
 	 * Element 의 커넥트 가이드 이벤트 보정영역의 정의
 	 */
@@ -7689,6 +7339,7 @@ OG.CurveUtil = OG.common.CurveUtil;
  *
  * @param {String} message 메시지
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.common.NotSupportedException = function (message) {
 	/**
@@ -7712,6 +7363,7 @@ OG.NotSupportedException = OG.common.NotSupportedException;
  *
  * @param {String} message 메시지
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.common.NotImplementedException = function (message) {
 	/**
@@ -7735,6 +7387,7 @@ OG.NotImplementedException = OG.common.NotImplementedException;
  *
  * @param {String} message 메시지
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.common.ParamError = function (message) {
 	/**
@@ -8126,130 +7779,130 @@ OG.Style = OG.geometry.Style;
  */
 OG.geometry.Coordinate = function (x, y) {
 
-	/**
-	 * x좌표
-	 * @type Number
-	 */
-	this.x = undefined;
+    /**
+     * x좌표
+     * @type Number
+     */
+    this.x = undefined;
 
-	/**
-	 * y좌표
-	 * @type Number
-	 */
-	this.y = undefined;
+    /**
+     * y좌표
+     * @type Number
+     */
+    this.y = undefined;
 
-	// Array 좌표를 OG.geometry.Coordinate 로 변환
-	if (arguments.length === 1 && x.constructor === Array) {
-		this.x = x[0];
-		this.y = x[1];
-	} else if (arguments.length === 2 && typeof x === "number" && typeof y === "number") {
-		this.x = x;
-		this.y = y;
-	} else if (arguments.length !== 0) {
-		throw new OG.ParamError();
-	}
+    // Array 좌표를 OG.geometry.Coordinate 로 변환
+    if (arguments.length === 1 && x.constructor === Array) {
+        this.x = x[0];
+        this.y = x[1];
+    } else if (arguments.length === 2 && typeof x === "number" && typeof y === "number") {
+        this.x = x;
+        this.y = y;
+    } else if (arguments.length !== 0) {
+        throw new OG.ParamError();
+    }
 };
 OG.geometry.Coordinate.prototype = {
 
-	/**
-	 * 주어진 좌표와의 거리를 계산한다.
-	 *
-	 * @example
-	 * coordinate.distance([10, 10]);
-	 * or
-	 * coordinate.distance(new OG.Coordinate(10, 10));
-	 *
-	 *
-	 * @param {OG.geometry.Coordinate,Number[]} coordinate 좌표값
-	 * @return {Number} 좌표간의 거리값
-	 */
-	distance: function (coordinate) {
-		if (coordinate.constructor === Array) {
-			coordinate = new OG.geometry.Coordinate(coordinate[0], coordinate[1]);
-		}
+    /**
+     * 주어진 좌표와의 거리를 계산한다.
+     *
+     * @example
+     * coordinate.distance([10, 10]);
+     * or
+     * coordinate.distance(new OG.Coordinate(10, 10));
+     *
+     *
+     * @param {OG.geometry.Coordinate|Number[]} coordinate 좌표값
+     * @return {Number} 좌표간의 거리값
+     */
+    distance: function (coordinate) {
+        if (coordinate.constructor === Array) {
+            coordinate = new OG.geometry.Coordinate(coordinate[0], coordinate[1]);
+        }
 
-		var dx = this.x - coordinate.x, dy = this.y - coordinate.y;
-		return OG.Util.round(Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)));
-	},
+        var dx = this.x - coordinate.x, dy = this.y - coordinate.y;
+        return OG.Util.round(Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)));
+    },
 
-	/**
-	 * 가로, 세로 Offset 만큼 좌표를 이동한다.
-	 *
-	 * @param {Number} offsetX 가로 Offset
-	 * @param {Number} offsetY 세로 Offset
-	 * @return {OG.geometry.Coordinate} 이동된 좌표
-	 */
-	move: function (offsetX, offsetY) {
-		this.x += offsetX;
-		this.y += offsetY;
+    /**
+     * 가로, 세로 Offset 만큼 좌표를 이동한다.
+     *
+     * @param {Number} offsetX 가로 Offset
+     * @param {Number} offsetY 세로 Offset
+     * @return {OG.geometry.Coordinate} 이동된 좌표
+     */
+    move: function (offsetX, offsetY) {
+        this.x += offsetX;
+        this.y += offsetY;
 
-		return this;
-	},
+        return this;
+    },
 
-	/**
-	 * 기준 좌표를 기준으로 주어진 각도 만큼 회전한다.
-	 *
-	 * @example
-	 * coordinate.rotate(90, [10,10]);
-	 * or
-	 * coordinate.rotate(90, new OG.Coordinate(10, 10));
-	 *
-	 * @param {Number} angle 회전 각도
-	 * @param {OG.geometry.Coordinate,Number[]} origin 기준 좌표
-	 * @return {OG.geometry.Coordinate} 회전된 좌표
-	 */
-	rotate: function (angle, origin) {
-		if (origin.constructor === Array) {
-			origin = new OG.geometry.Coordinate(origin[0], origin[1]);
-		}
+    /**
+     * 기준 좌표를 기준으로 주어진 각도 만큼 회전한다.
+     *
+     * @example
+     * coordinate.rotate(90, [10,10]);
+     * or
+     * coordinate.rotate(90, new OG.Coordinate(10, 10));
+     *
+     * @param {Number} angle 회전 각도
+     * @param {OG.geometry.Coordinate|Number[]} origin 기준 좌표
+     * @return {OG.geometry.Coordinate} 회전된 좌표
+     */
+    rotate: function (angle, origin) {
+        if (origin.constructor === Array) {
+            origin = new OG.geometry.Coordinate(origin[0], origin[1]);
+        }
 
-		angle *= Math.PI / 180;
-		var radius = this.distance(origin),
-			theta = angle + Math.atan2(this.y - origin.y, this.x - origin.x);
-		this.x = OG.Util.round(origin.x + (radius * Math.cos(theta)));
-		this.y = OG.Util.round(origin.y + (radius * Math.sin(theta)));
+        angle *= Math.PI / 180;
+        var radius = this.distance(origin),
+            theta = angle + Math.atan2(this.y - origin.y, this.x - origin.x);
+        this.x = OG.Util.round(origin.x + (radius * Math.cos(theta)));
+        this.y = OG.Util.round(origin.y + (radius * Math.sin(theta)));
 
-		return this;
-	},
+        return this;
+    },
 
-	/**
-	 * 주어진 좌표값과 같은지 비교한다.
-	 *
-	 * @example
-	 * coordinate.isEquals([10, 10]);
-	 * or
-	 * coordinate.isEquals(new OG.Coordinate(10, 10));
-	 *
-	 * @param {OG.geometry.Coordinate,Number[]} coordinate 좌표값
-	 * @return {Boolean} true:같음, false:다름
-	 */
-	isEquals: function (coordinate) {
-		if (coordinate.constructor === Array) {
-			coordinate = new OG.geometry.Coordinate(coordinate[0], coordinate[1]);
-		}
+    /**
+     * 주어진 좌표값과 같은지 비교한다.
+     *
+     * @example
+     * coordinate.isEquals([10, 10]);
+     * or
+     * coordinate.isEquals(new OG.Coordinate(10, 10));
+     *
+     * @param {OG.geometry.Coordinate|Number[]} coordinate 좌표값
+     * @return {Boolean} true:같음, false:다름
+     */
+    isEquals: function (coordinate) {
+        if (coordinate.constructor === Array) {
+            coordinate = new OG.geometry.Coordinate(coordinate[0], coordinate[1]);
+        }
 
-		if (coordinate && coordinate instanceof OG.geometry.Coordinate) {
-			if (this.x === coordinate.x && this.y === coordinate.y) {
-				return true;
-			}
-		}
+        if (coordinate && coordinate instanceof OG.geometry.Coordinate) {
+            if (this.x === coordinate.x && this.y === coordinate.y) {
+                return true;
+            }
+        }
 
-		return false;
-	},
+        return false;
+    },
 
-	/**
-	 * 객체 프라퍼티 정보를 JSON 스트링으로 반환한다.
-	 *
-	 * @return {String} 프라퍼티 정보
-	 * @override
-	 */
-	toString: function () {
-		var s = [];
-		s.push(this.x);
-		s.push(this.y);
+    /**
+     * 객체 프라퍼티 정보를 JSON 스트링으로 반환한다.
+     *
+     * @return {String} 프라퍼티 정보
+     * @override
+     */
+    toString: function () {
+        var s = [];
+        s.push(this.x);
+        s.push(this.y);
 
-		return "[" + s.join() + "]";
-	}
+        return "[" + s.join() + "]";
+    }
 };
 OG.geometry.Coordinate.prototype.constructor = OG.geometry.Coordinate;
 OG.Coordinate = OG.geometry.Coordinate;
@@ -8262,7 +7915,7 @@ OG.Coordinate = OG.geometry.Coordinate;
  * @example
  * var boundingBox = new OG.geometry.Envelope([50, 50], 200, 100);
  *
- * @param {OG.geometry.Coordinate,Number[]} upperLeft 기준 좌상단 좌표
+ * @param {OG.geometry.Coordinate|Number[]} upperLeft 기준 좌상단 좌표
  * @param {Number} width 너비
  * @param {Number} height 높이
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
@@ -8363,7 +8016,7 @@ OG.geometry.Envelope.prototype = {
 	/**
 	 * 주어진 좌표로 기준 좌상단 좌표를 설정한다. 새로 설정된 값으로 이동된다.
 	 *
-	 * @param {OG.geometry.Coordinate,Number[]} upperLeft 좌상단 좌표
+	 * @param {OG.geometry.Coordinate|Number[]} upperLeft 좌상단 좌표
 	 */
 	setUpperLeft: function (upperLeft) {
 		if (upperLeft.constructor === Array) {
@@ -8475,7 +8128,7 @@ OG.geometry.Envelope.prototype = {
 	/**
 	 * 주어진 좌표로 중심 좌표를 설정한다. 새로 설정된 값으로 이동된다.
 	 *
-	 * @param {OG.geometry.Coordinate,Number[]} centroid 중심좌표
+	 * @param {OG.geometry.Coordinate|Number[]} centroid 중심좌표
 	 */
 	setCentroid: function (centroid) {
 		if (centroid.constructor === Array) {
@@ -8548,7 +8201,7 @@ OG.geometry.Envelope.prototype = {
 	/**
 	 * 주어진 좌표값이 Envelope 영역에 포함되는지 비교한다.
 	 *
-	 * @param {OG.geometry.Coordinate,Number[]} coordinate 좌표값
+	 * @param {OG.geometry.Coordinate|Number[]} coordinate 좌표값
 	 * @return {Boolean} true:포함, false:비포함
 	 */
 	isContains: function (coordinate) {
@@ -8716,7 +8369,8 @@ OG.Envelope = OG.geometry.Envelope;
  * 공간 기하 객체(Spatial Geometry Object)의 최상위 추상 클래스
  *
  * @class
- * @requires OG.geometry.Coordinate, OG.geometry.Envelope
+ * @requires OG.geometry.Coordinate
+ * @requires OG.geometry.Envelope
  *
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
  */
@@ -8973,7 +8627,7 @@ OG.geometry.Geometry.prototype = {
     /**
      * 파라미터가 [x, y] 형식의 좌표 Array 이면 OG.geometry.Coordinate 인스턴스를 new 하여 반환한다.
      *
-     * @param {OG.geometry.Coordinate,Number[]} coordinate [x, y] 형식의 좌표 Array 또는 OG.geometry.Coordinate 인스턴스
+     * @param {OG.geometry.Coordinate|Number[]} coordinate [x, y] 형식의 좌표 Array 또는 OG.geometry.Coordinate 인스턴스
      * @return {OG.geometry.Coordinate}
      */
     convertCoordinate: function (coordinate) {
@@ -8995,7 +8649,7 @@ OG.geometry.Geometry.prototype = {
      * 포인트 P 로부터 라인 AB의 거리를 계산한다.
      * Note: NON-ROBUST!
      *
-     * @param {OG.geometry.Coordinate,Number[]} p 기준좌표
+     * @param {OG.geometry.Coordinate|Number[]} p 기준좌표
      * @param {OG.geometry.Coordinate[]} line 라인 시작좌표, 끝좌표 Array
      * @return {Number} 거리
      */
@@ -9010,17 +8664,6 @@ OG.geometry.Geometry.prototype = {
             return p.distance(A);
         }
 
-        // otherwise use comp.graphics.algorithms Frequently Asked Questions method
-        //	(1)				AC dot AB
-        //			   r = -----------
-        //					||AB||^2
-        //	r has the following meaning:
-        //	r=0 P = A
-        //	r=1 P = B
-        //	r<0 P is on the backward extension of AB
-        //	r>1 P is on the forward extension of AB
-        //	0<r<1 P is interior to AB
-
         r = ((p.x - A.x) * (B.x - A.x) + (p.y - A.y) * (B.y - A.y)) /
             ((B.x - A.x) * (B.x - A.x) + (B.y - A.y) * (B.y - A.y));
 
@@ -9030,13 +8673,6 @@ OG.geometry.Geometry.prototype = {
         if (r >= 1.0) {
             return p.distance(B);
         }
-
-        // (2)
-        //		 (Ay-Cy)(Bx-Ax)-(Ax-Cx)(By-Ay)
-        //	s = -----------------------------
-        //					L^2
-        //
-        //	Then the distance from C to P = |s|*L.
 
         s = ((A.y - p.y) * (B.x - A.x) - (A.x - p.x) * (B.y - A.y)) /
             ((B.x - A.x) * (B.x - A.x) + (B.y - A.y) * (B.y - A.y));
@@ -9094,7 +8730,7 @@ OG.geometry.Geometry.prototype = {
     },
 
     /**
-     * 주어진 라인과 교차하는 좌표를 반환한다.
+     * 기하도형이 주어진 라인과 교차하는 좌표들을 반환한다.
      *
      * @param {OG.geometry.Coordinate[]} line 라인 시작좌표, 끝좌표 Array
      * @return {OG.geometry.Coordinate[]}
@@ -9122,7 +8758,7 @@ OG.geometry.Geometry.prototype = {
     },
 
     /**
-     * 주어진 라인과 교차하는 좌표중 시작좌표에 가장 가까운 좌표를 반환한다.
+     * 기하도형이 주어진 라인과 교차하는 좌표중 시작좌표에 가장 가까운 좌표를 반환한다.
      *
      * @param {OG.geometry.Coordinate[]} line 라인 시작좌표, 끝좌표 Array
      * @return {OG.geometry.Coordinate[]}
@@ -9149,13 +8785,14 @@ OG.geometry.Geometry.prototype = {
     },
 
     /**
-     * 라인1 로부터 라인2 의 교차점을 계산한다.
+     * 라인1 과 라인2 의 교차점을 계산한다.
      *
      * @param {OG.geometry.Coordinate[]} line1 line1 라인 시작좌표, 끝좌표 Array
      * @param {OG.geometry.Coordinate[]} line2 line2 라인 시작좌표, 끝좌표 Array
+     * @param {boolean} extension 라인을 연장하여 교차점을 계산하는 여부
      * @return {OG.geometry.Coordinate} 교차점
      */
-    intersectLineToLine: function (line1, line2) {
+    intersectLineToLine: function (line1, line2, extension) {
         var A = this.convertCoordinate(line1[0]),
             B = this.convertCoordinate(line1[1]),
             C = this.convertCoordinate(line2[0]),
@@ -9185,6 +8822,9 @@ OG.geometry.Geometry.prototype = {
                 result = new OG.Coordinate(OG.Util.round(A.x + r * (B.x - A.x)), OG.Util.round(A.y + r * (B.y - A.y)));
             } else {
                 resultText = "No Intersection";
+                if (extension) {
+                    result = new OG.Coordinate(OG.Util.round(A.x + r * (B.x - A.x)), OG.Util.round(A.y + r * (B.y - A.y)));
+                }
             }
         } else {
             if (r_top === 0 || s_top === 0) {
@@ -9198,7 +8838,7 @@ OG.geometry.Geometry.prototype = {
     },
 
     /**
-     * 라인1 로부터 라인2 의 교차점을 계산한다.
+     * 주어진 원과 주어진 라인의 교차점을 계산한다.
      *
      * @param {OG.geometry.Coordinate} center 중심점
      * @param {Number} radius 반경
@@ -9257,10 +8897,10 @@ OG.geometry.Geometry.prototype = {
     },
 
     /**
-     * 포인트 P 로부터 라인 AB의 교차점을 계산한다.
+     * 포인트 P 로부터 라인 AB 까지 수직인 가상선을 생각할때, 그 교차점을 계산한다.
      * Note: NON-ROBUST!
      *
-     * @param {OG.geometry.Coordinate,Number[]} p 기준좌표
+     * @param {OG.geometry.Coordinate|Number[]} p 기준좌표
      * @param {OG.geometry.Coordinate[]} line 라인 시작좌표, 끝좌표 Array
      * @return {OG.geometry.Coordinate} 교차점
      */
@@ -9292,7 +8932,7 @@ OG.geometry.Geometry.prototype = {
     },
 
     /**
-     * 주어진 좌표에 대해 공간기하객체의 퍼센테이지 비율을 구한다.
+     * 주어진 좌표에 대해 공간기하객체 바운더리 대비 가로,세로 위치 퍼센테이지 비율을 구한다.
      *
      * @param {OG.geometry.Coordinate} _coordinate 좌표
      * @return {Object} {px , py}
@@ -9373,6 +9013,174 @@ OG.geometry.Geometry.prototype = {
     },
 
     /**
+     * 주어진 선분과 일정 거리에 있는 평행한 선분을 반환한다.
+     * @param {OG.geometry.Coordinate} from 라인 시작좌표
+     * @param {OG.geometry.Coordinate} to 라인 끝좌표
+     * @param distance
+     * @return {OG.geometry.Coordinate[]} 평행선 시작좌표, 끝좌표 Array
+     */
+    getParallelLine: function (from, to, distance) {
+        var me = this;
+        var direction = 'plus';
+        var moveX = 0;
+        var moveY = 0;
+        var p1 = this.convertCoordinate(from);
+        var p2 = this.convertCoordinate(to);
+        //캔버스의 좌표계는 y 좌표가 위에서부터 0으로 시작하기 때문에 방정식 좌표계에 맞추기 위해, 두 점의 y 를 교환하고,
+        //방정식의 상수를 마추기 위해 첫번째 x,y 를 0 으로 맞추고 두번째 x,y 도 그 거리만큼 이동한다.
+        //계산 후의 두 좌표를 리턴할때 y 를 서로 교체하도록 한다.
+        var reverseY = function (p1, p2) {
+            p1.y = p1.y * -1;
+            p2.y = p2.y * -1;
+            moveX = 0 - p1.x;
+            moveY = 0 - p1.y;
+            p1.x = p1.x + moveX;
+            p2.x = p2.x + moveX;
+            p1.y = p1.y + moveY;
+            p2.y = p2.y + moveY;
+            return [p1, p2]
+        };
+
+        var revertY = function (p1, p2) {
+            p1 = me.convertCoordinate(p1);
+            p2 = me.convertCoordinate(p2);
+            p1.x = p1.x - moveX;
+            p2.x = p2.x - moveX;
+            p1.y = p1.y - moveY;
+            p2.y = p2.y - moveY;
+            p1.y = p1.y * -1;
+            p2.y = p2.y * -1;
+            return [p1, p2]
+        };
+
+        reverseY(p1, p2);
+
+        var x1 = p1.x;
+        var x2 = p2.x;
+        var y1 = p1.y;
+        var y2 = p2.y;
+
+        //distance 이 0 인 경우
+        if (y1 == y2 && x1 == x2) {
+            return revertY(p1, p2);
+        }
+
+        //두 점이 동일할 경우
+        if (y1 == y2 && x1 == x2) {
+            return revertY(p1, p2);
+        }
+
+        //distance 이 직선이 어느방향인가에 따라 틀려져야 한다.
+        //두 점이 y 축과 평행할 경우 선분이 위 방향이면 distance 은 - 값이다.
+        if (x1 == x2) {
+            if (y2 > y1) {
+                distance = distance * -1;
+                direction = 'minus';
+            }
+        }
+        //그 외의 경우 선분이 좌측방향이면 distance 은 - 값이다
+        else {
+            if (x2 < x1) {
+                distance = distance * -1;
+                direction = 'minus';
+            }
+        }
+
+        //두 점이 x 축과 평행할 경우
+        if (y1 == y2) {
+            return revertY([x1, y1 + distance], [x2, y2 + distance]);
+        }
+
+        //두 점이 y 축과 평행할 경우
+        if (x1 == x2) {
+            return revertY([x1 + distance, y1], [x2 + distance, y2]);
+        }
+
+        //두 점 사이에 기울기가 존재할 경우
+        var m = -1 / ((y2 - y1) / (x2 - x1));
+
+        //상수 c1 는 p1 과 수직인 선의 방정식 상수
+        var c1 = y1 - (m * x1);
+
+        //상수 c2 는 p2 과 수직인 선의 방정식 상수
+        var c2 = y2 - (m * x2);
+
+        //점x1 ,y1 을 지나는 원의 방정식: (x-x1)제곱 + (y-y1)제곱 = distance (반지름) 제곱
+        //근의 방정식: ax제곱 + bx + d = 0; ==> -b +- 루트(b제곱 - 4ad) / 2a
+        var getInjectPoint = function (x1, y1, m, c, distance) {
+            var x, y, meetX1, meetX2, meetY1, meetY2;
+            var a, b, d;
+            a = 1 + Math.pow(m, 2);
+            b = (-2 * x1) + (2 * m * c) - (2 * m * y1);
+            d = Math.pow(x1, 2) + Math.pow(c - y1, 2) - Math.pow(distance, 2);
+
+            meetX1 = (-b + Math.sqrt(Math.pow(b, 2) - (4 * a * d))) / (2 * a);
+            meetY1 = meetX1 * m + c;
+
+            meetX2 = (-b - Math.sqrt(Math.pow(b, 2) - (4 * a * d))) / (2 * a);
+            meetY2 = meetX2 * m + c;
+
+            //원 방정식으로 구한 두 접점을 벡터의 방향에 따라 한 접점을 선택한다.
+            //distance 이 음수값일 경우
+            if (distance < 0) {
+                if (meetY1 < meetY2) {
+                    x = meetX1;
+                    y = meetY1;
+                } else {
+                    x = meetX2;
+                    y = meetY2;
+                }
+            }
+            //distance 이 양수일 경우
+            else {
+                if (meetY1 > meetY2) {
+                    x = meetX1;
+                    y = meetY1;
+                } else {
+                    x = meetX2;
+                    y = meetY2;
+                }
+            }
+            return [x, y];
+        };
+        return revertY(getInjectPoint(x1, y1, m, c1, distance), getInjectPoint(x2, y2, m, c2, distance));
+    },
+
+    /**
+     * 주어진 라인과 일정 거리에 있는 평행한 라인을 반환한다.
+     * @param {OG.geometry.Coordinate[]} line 라인 좌표 Array
+     * @param distance
+     */
+    getParallelPath: function (line, distance) {
+        var me = this;
+        var lines = [];
+        var vertices = [];
+        for (var i = 0, leni = line.length; i < leni; i++) {
+            if (i < leni - 1) {
+                lines.push(me.getParallelLine(line[i], line[i + 1], distance));
+            }
+        }
+        for (var c = 0, lenc = lines.length; c < lenc; c++) {
+            if (c == 0) {
+                vertices[0] = lines[c][0];
+            }
+            if (c < lenc - 1) {
+                var inject = me.intersectLineToLine(lines[c], lines[c + 1], true);
+                //교점이 존재할 경우
+                if (inject) {
+                    vertices[c + 1] = inject;
+                } else {
+                    vertices[c + 1] = lines[c][1]
+                }
+            }
+            if (c == lenc - 1) {
+                vertices[c + 1] = lines[c][1]
+            }
+        }
+        return vertices;
+    },
+
+    /**
      * 저장된 boundary 를 클리어하여 새로 계산하도록 한다.
      */
     reset: function () {
@@ -9385,7 +9193,9 @@ OG.geometry.Geometry.prototype.constructor = OG.geometry.Geometry;
  *
  * @class
  * @extends OG.geometry.Geometry
- * @requires OG.geometry.Coordinate, OG.geometry.Envelope, OG.geometry.Geometry
+ * @requires OG.geometry.Coordinate
+ * @requires OG.geometry.Envelope
+ * @requires OG.geometry.Geometry
  *
  * @example
  * var geom = new OG.geometry.PolyLine([[20, 5], [30, 15], [40, 25], [50, 15]]);
@@ -9604,7 +9414,10 @@ OG.geometry.PolyLine.prototype.angleBetweenThreePoints = function (prev, center,
  *
  * @class
  * @extends OG.geometry.PolyLine
- * @requires OG.geometry.Coordinate, OG.geometry.Envelope, OG.geometry.Geometry, OG.common.CurveUtil
+ * @requires OG.geometry.Coordinate
+ * @requires OG.geometry.Envelope
+ * @requires OG.geometry.Geometry
+ * @requires OG.common.CurveUtil
  *
  * @example
  * var geom = new OG.geometry.Curve([[200, 100], [100, 300], [-100, -100], [-200, 100]]);
@@ -9684,7 +9497,9 @@ OG.geometry.Curve.prototype.toString = function () {
  *
  * @class
  * @extends OG.geometry.Curve
- * @requires OG.geometry.Coordinate, OG.geometry.Envelope, OG.geometry.Geometry
+ * @requires OG.geometry.Coordinate
+ * @requires OG.geometry.Envelope
+ * @requires OG.geometry.Geometry
  *
  * @example
  * var geom = new OG.geometry.Ellipse([10, 10], 10, 5);
@@ -9793,7 +9608,10 @@ OG.geometry.Ellipse.prototype.toString = function () {
  *
  * @class
  * @extends OG.geometry.PolyLine
- * @requires OG.geometry.Coordinate, OG.geometry.Envelope, OG.geometry.Geometry, OG.common.CurveUtil
+ * @requires OG.geometry.Coordinate
+ * @requires OG.geometry.Envelope
+ * @requires OG.geometry.Geometry
+ * @requires OG.common.CurveUtil
  *
  * @example
  * var geom = new OG.geometry.BezierCurve([[200, 100], [100, 300], [-100, -100], [-200, 100]]);
@@ -9955,7 +9773,9 @@ OG.geometry.BezierCurve.prototype.reset = function () {
  *
  * @class
  * @extends OG.geometry.Ellipse
- * @requires OG.geometry.Coordinate, OG.geometry.Envelope, OG.geometry.Geometry
+ * @requires OG.geometry.Coordinate
+ * @requires OG.geometry.Envelope
+ * @requires OG.geometry.Geometry
  *
  * @example
  * var geom = new OG.geometry.Circle([10, 10], 5);
@@ -10022,7 +9842,9 @@ OG.geometry.Circle.prototype.toString = function () {
  *
  * @class
  * @extends OG.geometry.Geometry
- * @requires OG.geometry.Coordinate, OG.geometry.Envelope, OG.geometry.Geometry
+ * @requires OG.geometry.Coordinate
+ * @requires OG.geometry.Envelope
+ * @requires OG.geometry.Geometry
  *
  * @example
  * var geom1 = new OG.geometry.Point([20, 5]),
@@ -10205,7 +10027,9 @@ OG.geometry.GeometryCollection.prototype.toString = function () {
  *
  * @class
  * @extends OG.geometry.PolyLine
- * @requires OG.geometry.Coordinate, OG.geometry.Envelope, OG.geometry.Geometry
+ * @requires OG.geometry.Coordinate
+ * @requires OG.geometry.Envelope
+ * @requires OG.geometry.Geometry
  *
  * @example
  * var geom = new OG.geometry.Line([20, 5], [30, 15]);
@@ -10252,7 +10076,9 @@ OG.geometry.Line.prototype.toString = function () {
  *
  * @class
  * @extends OG.geometry.Geometry
- * @requires OG.geometry.Coordinate, OG.geometry.Envelope, OG.geometry.Geometry
+ * @requires OG.geometry.Coordinate
+ * @requires OG.geometry.Envelope
+ * @requires OG.geometry.Geometry
  *
  * @example
  * var geom = new OG.geometry.Point([20, 5]);
@@ -10404,7 +10230,9 @@ OG.geometry.Point.prototype.toString = function () {
  *
  * @class
  * @extends OG.geometry.PolyLine
- * @requires OG.geometry.Coordinate, OG.geometry.Envelope, OG.geometry.Geometry
+ * @requires OG.geometry.Coordinate
+ * @requires OG.geometry.Envelope
+ * @requires OG.geometry.Geometry
  *
  * @example
  * var geom = new OG.geometry.Polygon([[20, 5], [30, 15], [40, 25], [50, 15], [60, 5], [20, 5]]);
@@ -10434,7 +10262,9 @@ OG.Polygon = OG.geometry.Polygon;
  *
  * @class
  * @extends OG.geometry.Polygon
- * @requires OG.geometry.Coordinate, OG.geometry.Envelope, OG.geometry.Geometry
+ * @requires OG.geometry.Coordinate
+ * @requires OG.geometry.Envelope
+ * @requires OG.geometry.Geometry
  *
  * @example
  * var geom = new OG.geometry.Rectangle([20, 5], 10, 10);
@@ -10490,10 +10320,422 @@ OG.geometry.Rectangle.prototype.toString = function () {
 	return "{" + s.join() + "}";
 };
 /**
+ * 도형 Path 의 Marker 정보 최상위 인터페이스
+ *
+ * @class
+ * @requires OG.common.*
+ * @requires OG.geometry.*
+ *
+ * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ */
+OG.marker.IMarker = function () {
+
+	/**
+	 * marker 을 구분하는 marker ID(marker 클래스명과 일치)
+	 * @type String
+	 */
+	this.MARKER_ID = null;
+
+	/**
+	 * marker 모양을 나타내는 공간기하객체(Geometry)
+	 * @type OG.geometry.Geometry
+	 */
+	this.geom = null;
+};
+OG.marker.IMarker.prototype = {
+
+
+	/**
+	 * 드로잉할 marker 를 생성하여 반환한다.
+	 * @return {*} Marker 정보
+	 * @abstract
+	 */
+	createMarker: function () {
+		throw new OG.NotImplementedException("OG.shape.IMarker.createMarker");
+	}
+};
+OG.marker.IMarker.prototype.constructor = OG.marker.IMarker;
+OG.IMarker = OG.marker.IMarker;
+/**
+ * Rectangle Maker
+ *
+ * @class
+ * @extends OG.marker.IMarker
+ * @requires OG.common.*
+ * @requires OG.geometry.*
+ *
+ * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ */
+OG.marker.ArrowMarker = function () {
+	OG.marker.ArrowMarker.superclass.call(this);
+
+	this.MARKER_ID = 'OG.marker.ArrowMarker';
+};
+OG.marker.ArrowMarker.prototype = new OG.marker.IMarker();
+OG.marker.ArrowMarker.superclass = OG.marker.IMarker;
+OG.marker.ArrowMarker.prototype.constructor = OG.marker.ArrowMarker;
+OG.ArrowMarker = OG.marker.ArrowMarker;
+
+/**
+ * 드로잉할 marker 을 생성하여 반환한다.
+ *
+ * @return {OG.geometry.Geometry} marker 정보
+ * @override
+ */
+OG.marker.ArrowMarker.prototype.createMarker = function () {
+	if (this.geom) {
+		return this.geom;
+	}
+
+	//this.geom = new OG.geometry.Rectangle([0, 0], 100, 100);
+	this.geom = new OG.geometry.Polygon([[0, 0], [30, 20], [0, 40], [0, 0]]);
+	this.geom.style = new OG.geometry.Style({
+		'fill-opacity': 1,
+		'fill': 'black'
+	});
+	return this.geom;
+};
+/**
+ * Circle Marker
+ *
+ * @class
+ * @extends OG.marker.IMarker
+ * @requires OG.common.*
+ * @requires OG.geometry.*
+ *
+ * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ */
+OG.marker.CircleMarker = function () {
+	OG.marker.CircleMarker.superclass.call(this);
+
+	this.MARKER_ID = 'OG.marker.CircleMarker';
+};
+OG.marker.CircleMarker.prototype = new OG.marker.IMarker();
+OG.marker.CircleMarker.superclass = OG.marker.IMarker;
+OG.marker.CircleMarker.prototype.constructor = OG.marker.CircleMarker;
+OG.CircleMarker = OG.marker.CircleMarker;
+
+/**
+ * 드로잉할 marker 을 생성하여 반환한다.
+ *
+ * @return {OG.geometry.Geometry} marker 정보
+ * @override
+ */
+OG.marker.CircleMarker.prototype.createMarker = function () {
+	if (this.geom) {
+		return this.geom;
+	}
+
+	this.geom = new OG.geometry.Circle([50, 50], 50);
+	return this.geom;
+};
+/**
+ * Rectangle Maker
+ *
+ * @class
+ * @extends OG.marker.IMarker
+ * @requires OG.common.*
+ * @requires OG.geometry.*
+ *
+ * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ */
+OG.marker.RectangleMarker = function () {
+	OG.marker.RectangleMarker.superclass.call(this);
+
+	this.MARKER_ID = 'OG.marker.RectangleMarker';
+};
+OG.marker.RectangleMarker.prototype = new OG.marker.IMarker();
+OG.marker.RectangleMarker.superclass = OG.marker.IMarker;
+OG.marker.RectangleMarker.prototype.constructor = OG.marker.RectangleMarker;
+OG.RectangleMarker = OG.marker.RectangleMarker;
+
+/**
+ * 드로잉할 marker 을 생성하여 반환한다.
+ *
+ * @return {OG.geometry.Geometry} marker 정보
+ * @override
+ */
+OG.marker.RectangleMarker.prototype.createMarker = function () {
+	//if (this.geom) {
+	//	return this.geom;
+	//}
+    //
+	//this.geom = new OG.geometry.Rectangle([0, 0], 100, 100);
+	//this.geom.style = new OG.geometry.Style({
+	//	'fill-opacity': 1
+	//});
+	//return this.geom;
+	var geom1, geom2, geomCollection = [];
+	if (this.geom) {
+		return this.geom;
+	}
+
+	geom1 = new OG.geometry.Circle([50, 50], 50);
+	geom1.style = new OG.geometry.Style({
+		"stroke-width": 4
+	});
+
+	geom2 = new OG.geometry.Polygon([
+		[20, 75],
+		[40, 30],
+		[60, 60],
+		[80, 20],
+		[60, 75],
+		[40, 50]
+
+	]);
+	geom2.style = new OG.geometry.Style({
+		"fill": "black",
+		"fill-opacity": 1
+	});
+
+	geomCollection.push(geom1);
+	geomCollection.push(geom2);
+
+	this.geom = new OG.geometry.GeometryCollection(geomCollection);
+	this.geom.style = new OG.geometry.Style({
+		'label-position': 'bottom'
+	});
+
+	return this.geom;
+};
+/**
+ * Rectangle Maker
+ *
+ * @class
+ * @extends OG.marker.IMarker
+ * @requires OG.common.*
+ * @requires OG.geometry.*
+ *
+ * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ */
+OG.marker.SwitchLMarker = function () {
+	OG.marker.SwitchLMarker.superclass.call(this);
+
+	this.MARKER_ID = 'OG.marker.SwitchLMarker';
+};
+OG.marker.SwitchLMarker.prototype = new OG.marker.IMarker();
+OG.marker.SwitchLMarker.superclass = OG.marker.IMarker;
+OG.marker.SwitchLMarker.prototype.constructor = OG.marker.SwitchLMarker;
+OG.SwitchLMarker = OG.marker.SwitchLMarker;
+
+/**
+ * 드로잉할 marker 을 생성하여 반환한다.
+ *
+ * @return {OG.geometry.Geometry} marker 정보
+ * @override
+ */
+OG.marker.SwitchLMarker.prototype.createMarker = function () {
+	if (this.geom) {
+		return this.geom;
+	}
+
+	this.geom = new OG.geometry.PolyLine([[0, 0], [20, 5]]);
+	this.geom.style = new OG.geometry.Style({
+		'fill-opacity': 1
+	});
+	return this.geom;
+};
+/**
+ * Rectangle Maker
+ *
+ * @class
+ * @extends OG.marker.IMarker
+ * @requires OG.common.*
+ * @requires OG.geometry.*
+ *
+ * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ */
+OG.marker.SwitchRMarker = function () {
+	OG.marker.SwitchRMarker.superclass.call(this);
+
+	this.MARKER_ID = 'OG.marker.SwitchRMarker';
+};
+OG.marker.SwitchRMarker.prototype = new OG.marker.IMarker();
+OG.marker.SwitchRMarker.superclass = OG.marker.IMarker;
+OG.marker.SwitchRMarker.prototype.constructor = OG.marker.SwitchRMarker;
+OG.SwitchRMarker = OG.marker.SwitchRMarker;
+
+/**
+ * 드로잉할 marker 을 생성하여 반환한다.
+ *
+ * @return {OG.geometry.Geometry} marker 정보
+ * @override
+ */
+OG.marker.SwitchRMarker.prototype.createMarker = function () {
+	if (this.geom) {
+		return this.geom;
+	}
+
+	this.geom = new OG.geometry.PolyLine([[0, 5], [20, 0]]);
+	this.geom.style = new OG.geometry.Style({
+		'fill-opacity': 1
+	});
+	return this.geom;
+};
+/**
+ * Rectangle Maker
+ *
+ * @class
+ * @extends OG.marker.IMarker
+ * @requires OG.common.*
+ * @requires OG.geometry.*
+ *
+ * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ */
+OG.marker.SwitchXMarker = function () {
+	OG.marker.SwitchXMarker.superclass.call(this);
+
+	this.MARKER_ID = 'OG.marker.SwitchXMarker';
+};
+OG.marker.SwitchXMarker.prototype = new OG.marker.IMarker();
+OG.marker.SwitchXMarker.superclass = OG.marker.IMarker;
+OG.marker.SwitchXMarker.prototype.constructor = OG.marker.SwitchXMarker;
+OG.SwitchXMarker = OG.marker.SwitchXMarker;
+
+/**
+ * 드로잉할 marker 을 생성하여 반환한다.
+ *
+ * @return {OG.geometry.Geometry} marker 정보
+ * @override
+ */
+OG.marker.SwitchXMarker.prototype.createMarker = function () {
+	var geom1, geom2,geomCollection = [];
+	if (this.geom) {
+		return this.geom;
+	}
+
+	geom1 = new OG.geometry.Line([-10, 10],[10,-10]);
+	geom2 = new OG.geometry.Line([-10, -10],[10,10]);
+
+	geomCollection.push(geom1);
+	geomCollection.push(geom2);
+
+	this.geom = new OG.geometry.GeometryCollection(geomCollection);
+
+	return this.geom;
+};
+/**
+ * 도형 Pattern 정보 최상위 인터페이스
+ *
+ * @class
+ * @requires OG.common.*
+ * @requires OG.geometry.*
+ *
+ * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ */
+OG.pattern.IPattern = function () {
+
+	/**
+	 * pattern 을 구분하는 pattern ID(pattern 클래스명과 일치)
+	 * @type String
+	 */
+	this.PATTERN_ID = null;
+
+	/**
+	 * pattern 모양을 나타내는 공간기하객체(Geometry)
+	 * @type OG.geometry.Geometry
+	 */
+	this.geom = null;
+};
+OG.pattern.IPattern.prototype = {
+
+
+	/**
+	 * 드로잉할 pattern 를 생성하여 반환한다.
+	 * @return {*} pattern 정보
+	 * @abstract
+	 */
+	createPattern: function () {
+		throw new OG.NotImplementedException("OG.shape.IPattern.createPattern");
+	}
+};
+OG.pattern.IPattern.prototype.constructor = OG.pattern.IPattern;
+OG.IPattern = OG.pattern.IPattern;
+/**
+ * Hatched Pattern
+ *
+ * @class
+ * @extends OG.pattern.IPattern
+ * @requires OG.common.*
+ * @requires OG.geometry.*
+ *
+ * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ */
+OG.pattern.HatchedPattern = function () {
+    OG.pattern.HatchedPattern.superclass.call(this);
+
+    this.PATTERN_ID = 'OG.pattern.HatchedPattern';
+};
+OG.pattern.HatchedPattern.prototype = new OG.pattern.IPattern();
+OG.pattern.HatchedPattern.superclass = OG.pattern.IPattern;
+OG.pattern.HatchedPattern.prototype.constructor = OG.pattern.HatchedPattern;
+OG.HatchedPattern = OG.pattern.HatchedPattern;
+
+/**
+ * 드로잉할 pattern 을 생성하여 반환한다.
+ *
+ * @return {OG.geometry.Geometry} pattern 정보
+ * @override
+ */
+OG.pattern.HatchedPattern.prototype.createPattern = function () {
+    var geom1, geom2, geom3, geomCollection = [];
+    if (this.geom) {
+        return this.geom;
+    }
+
+    geom1 = new OG.geometry.Line([-1, 1], [1, -1]);
+    geom2 = new OG.geometry.Line([0, 4], [4, 0]);
+    geom3 = new OG.geometry.Line([3, 5], [5, 3]);
+
+    geomCollection.push(geom1);
+    geomCollection.push(geom2);
+    geomCollection.push(geom3);
+
+    this.geom = new OG.geometry.GeometryCollection(geomCollection);
+
+    return this.geom;
+};
+/**
+ * Hatched Pattern
+ *
+ * @class
+ * @extends OG.pattern.IPattern
+ * @requires OG.common.*
+ * @requires OG.geometry.*
+ *
+ * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ */
+OG.pattern.RectPattern = function () {
+    OG.pattern.RectPattern.superclass.call(this);
+
+    this.PATTERN_ID = 'OG.pattern.RectPattern';
+};
+OG.pattern.RectPattern.prototype = new OG.pattern.IPattern();
+OG.pattern.RectPattern.superclass = OG.pattern.IPattern;
+OG.pattern.RectPattern.prototype.constructor = OG.pattern.RectPattern;
+OG.RectPattern = OG.pattern.RectPattern;
+
+/**
+ * 드로잉할 pattern 을 생성하여 반환한다.
+ *
+ * @return {OG.geometry.Geometry} pattern 정보
+ * @override
+ */
+OG.pattern.RectPattern.prototype.createPattern = function () {
+    if (this.geom) {
+        return this.geom;
+    }
+
+    this.geom = new OG.geometry.Rectangle([0, 0], 100, 100);
+    return this.geom;
+};
+/**
  * 도형, 텍스트, 이미지 등의 드로잉 될 Object 의 정보를 저장하는 Shape 정보 최상위 인터페이스
  *
  * @class
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
  */
@@ -10566,16 +10808,10 @@ OG.shape.IShape = function () {
 	this.ENABLE_TO = true;
 
 	/**
-	 * TO 연결 가능여부
-	 * @type Boolean
-	 */
-	this.ENABLE_FROM = true;
-
-	/**
 	 * Self 연결 가능여부
 	 * @type Boolean
 	 */
-	this.SELF_CONNECTABLE = true;
+	this.SELF_CONNECTABLE = false;
 
 	/**
 	 * 가이드에 자기자신을 복사하는 컨트롤러 여부.
@@ -10609,6 +10845,18 @@ OG.shape.IShape = function () {
 
 
 	this.exceptionType = '';
+
+	/**
+	 * 도형의 데이터
+	 * @type Object
+	 */
+	this.data = null;
+
+	/**
+	 * 도형 선연결시 선연결 컨트롤러 목록
+	 * @type {Array}
+	 */
+	this.textList = [];
 };
 OG.shape.IShape.prototype = {
 
@@ -10636,6 +10884,14 @@ OG.shape.IShape.prototype = {
 
 	// (void) 특수한 컨트롤을 생성하기 위한 함수
 	drawCustomControl: function(){
+	},
+
+	setData: function(data){
+		this.data = data;
+	},
+
+	getData: function(){
+		return this.data;
 	}
 };
 OG.shape.IShape.prototype.constructor = OG.shape.IShape;
@@ -10645,7 +10901,8 @@ OG.IShape = OG.shape.IShape;
  *
  * @class
  * @extends OG.shape.IShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
  */
@@ -10676,7 +10933,8 @@ OG.shape.GeomShape.prototype.clone = function () {
  *
  * @class
  * @extends OG.shape.IShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} text 텍스트
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
@@ -10732,7 +10990,8 @@ OG.shape.TextShape.prototype.clone = function () {
  *
  * @class
  * @extends OG.shape.IShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} image 이미지 URL
  * @param {String} label 라벨 [Optional]
@@ -10791,7 +11050,8 @@ OG.shape.ImageShape.prototype.clone = function () {
  *
  * @class
  * @extends OG.shape.IShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {Number[]} from 와이어 시작 좌표
  * @param {Number[]} to 와이어 끝 좌표
@@ -10873,7 +11133,8 @@ OG.shape.EdgeShape.prototype.clone = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
@@ -10908,7 +11169,8 @@ OG.shape.CircleShape.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
@@ -10943,10 +11205,12 @@ OG.shape.EllipseShape.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.From = function (label) {
 	OG.shape.From.superclass.call(this);
@@ -10986,7 +11250,8 @@ OG.shape.From.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.IShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
@@ -11061,7 +11326,8 @@ OG.shape.GroupShape.prototype.clone = function () {
  *
  * @class
  * @extends OG.shape.GroupShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
@@ -11103,7 +11369,8 @@ OG.shape.HorizontalLaneShape.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GroupShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
@@ -11150,7 +11417,8 @@ OG.shape.HorizontalPoolShape.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.IShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} html 임베드 HTML String
  * @param {String} label 라벨 [Optional]
@@ -11209,7 +11477,8 @@ OG.shape.HtmlShape.prototype.clone = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
@@ -11244,7 +11513,8 @@ OG.shape.RectangleShape.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
@@ -11279,10 +11549,12 @@ OG.shape.SpotShape.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.To = function (label) {
 	OG.shape.To.superclass.call(this);
@@ -11322,10 +11594,13 @@ OG.shape.To.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.bpmn.A_Task
- * @requires OG.common.*, OG.geometry.*, OG.shape.bpmn.A_Task
+ * @requires OG.common.*
+ * @requires OG.geometry.*
+ * @requires OG.shape.bpmn.A_Task
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.Transformer = function (label) {
     OG.shape.Transformer.superclass.call(this);
@@ -11364,7 +11639,8 @@ OG.shape.Transformer.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GroupShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
@@ -11406,7 +11682,8 @@ OG.shape.VerticalLaneShape.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GroupShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨
  */
@@ -11448,10 +11725,12 @@ OG.shape.VerticalPoolShape.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.A_Task = function (label) {
     OG.shape.bpmn.A_Task.superclass.call(this);
@@ -11497,6 +11776,76 @@ OG.shape.bpmn.A_Task.prototype.createShape = function () {
 
     return this.geom;
 };
+
+OG.shape.bpmn.A_Task.prototype.createSubShape = function () {
+    this.sub = [];
+
+    var loopShape;
+    switch (this.LoopType) {
+        case 'Standard' :
+            loopShape = new OG.ImageShape('resources/images/symbol/loop_standard.png');
+            break;
+        case 'MIParallel' :
+            loopShape = new OG.MIParallel();
+            break;
+        case 'MISequential' :
+            loopShape = new OG.MISequential();
+            break;
+    }
+    if (loopShape) {
+        this.sub.push({
+            shape: loopShape,
+            width: '15px',
+            height: '15px',
+            bottom: '5px',
+            align: 'center',
+            style: {}
+        })
+    }
+
+    var taskTypeShape;
+    switch (this.TaskType) {
+        case "User":
+            taskTypeShape = new OG.ImageShape("resources/images/symbol/User.png");
+            break;
+        case "Send":
+            taskTypeShape = new OG.ImageShape('resources/images/symbol/Send.png');
+            break;
+        case "Receive":
+            taskTypeShape = new OG.ImageShape("resources/images/symbol/Receive.png");
+            break;
+        case "Manual":
+            taskTypeShape = new OG.ImageShape("resources/images/symbol/Manual.png");
+            break;
+        case "Service":
+            taskTypeShape = new OG.ImageShape("resources/images/symbol/Service.png");
+            break;
+        case "BusinessRule":
+            taskTypeShape = new OG.ImageShape("resources/images/symbol/BusinessRule.png");
+            break;
+        case "Script":
+            taskTypeShape = new OG.ImageShape("resources/images/symbol/Script.png");
+            break;
+        case "Mapper":
+            taskTypeShape = new OG.ImageShape("resources/images/symbol/Mapper.png");
+            break;
+        case "WebService":
+            taskTypeShape = new OG.ImageShape("resources/images/symbol/WebService.png");
+            break;
+    }
+    if (taskTypeShape) {
+        this.sub.push({
+            shape: taskTypeShape,
+            width: '20px',
+            height: '20px',
+            top: '5px',
+            left: '5px',
+            style: {}
+        })
+    }
+
+    return this.sub;
+};
 OG.shape.bpmn.Event = function (label) {
     OG.shape.bpmn.Event.superclass.call(this);
 
@@ -11512,10 +11861,12 @@ OG.Event = OG.shape.bpmn.Event;
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_End = function (label) {
     OG.shape.bpmn.E_End.superclass.call(this);
@@ -11553,10 +11904,12 @@ OG.shape.bpmn.E_End.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_Intermediate = function (label) {
 	OG.shape.bpmn.E_Intermediate.superclass.call(this);
@@ -11596,10 +11949,12 @@ OG.shape.bpmn.E_Intermediate.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_Start = function (label) {
 	OG.shape.bpmn.E_Start.superclass.call(this);
@@ -11637,10 +11992,12 @@ OG.shape.bpmn.E_Start.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.G_Gateway = function (label) {
 	OG.shape.bpmn.G_Gateway.superclass.call(this);
@@ -11678,10 +12035,13 @@ OG.shape.bpmn.G_Gateway.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.bpmn.A_Task
- * @requires OG.common.*, OG.geometry.*, OG.shape.bpmn.A_Task
+ * @requires OG.common.*
+ * @requires OG.geometry.*
+ * @requires OG.shape.bpmn.A_Task
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.A_HumanTask = function (label) {
     OG.shape.bpmn.A_HumanTask.superclass.call(this);
@@ -11692,7 +12052,7 @@ OG.shape.bpmn.A_HumanTask = function (label) {
     this.GROUP_COLLAPSIBLE = false;
     this.LoopType = "None";
     this.TaskType = "User";
-    this.status = "None";
+    this.status = "Running";
 }
 OG.shape.bpmn.A_HumanTask.prototype = new OG.shape.bpmn.A_Task();
 OG.shape.bpmn.A_HumanTask.superclass = OG.shape.bpmn.A_Task;
@@ -11703,10 +12063,13 @@ OG.A_HumanTask = OG.shape.bpmn.A_HumanTask;
  *
  * @class
  * @extends OG.shape.bpmn.A_Task
- * @requires OG.common.*, OG.geometry.*, OG.shape.bpmn.A_Task
+ * @requires OG.common.*
+ * @requires OG.geometry.*
+ * @requires OG.shape.bpmn.A_Task
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.A_LoopTask = function (label) {
     OG.shape.bpmn.A_LoopTask.superclass.call(this);
@@ -11728,10 +12091,13 @@ OG.A_LoopTask = OG.shape.bpmn.A_LoopTask;
  *
  * @class
  * @extends OG.shape.bpmn.A_Task
- * @requires OG.common.*, OG.geometry.*, OG.shape.bpmn.A_Task
+ * @requires OG.common.*
+ * @requires OG.geometry.*
+ * @requires OG.shape.bpmn.A_Task
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.A_ManualTask = function (label) {
     OG.shape.bpmn.A_ManualTask.superclass.call(this);
@@ -11753,10 +12119,13 @@ OG.A_ManualTask = OG.shape.bpmn.A_ManualTask;
  *
  * @class
  * @extends OG.shape.bpmn.A_Task
- * @requires OG.common.*, OG.geometry.*, OG.shape.bpmn.A_Task
+ * @requires OG.common.*
+ * @requires OG.geometry.*
+ * @requires OG.shape.bpmn.A_Task
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.A_MapperTask = function (label) {
     OG.shape.bpmn.A_MapperTask.superclass.call(this);
@@ -11778,10 +12147,13 @@ OG.A_MapperTask = OG.shape.bpmn.A_MapperTask;
  *
  * @class
  * @extends OG.shape.bpmn.A_Task
- * @requires OG.common.*, OG.geometry.*, OG.shape.bpmn.A_Task
+ * @requires OG.common.*
+ * @requires OG.geometry.*
+ * @requires OG.shape.bpmn.A_Task
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.A_ServiceTask = function (label) {
     OG.shape.bpmn.A_HumanTask.superclass.call(this);
@@ -11802,10 +12174,12 @@ OG.A_ServiceTask = OG.shape.bpmn.A_ServiceTask;
  *
  * @class
  * @extends OG.shape.GroupShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.A_Subprocess = function (label) {
     OG.shape.bpmn.A_Subprocess.superclass.call(this);
@@ -11850,10 +12224,13 @@ OG.shape.bpmn.A_Subprocess.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.bpmn.A_Task
- * @requires OG.common.*, OG.geometry.*, OG.shape.bpmn.A_Task
+ * @requires OG.common.*
+ * @requires OG.geometry.*
+ * @requires OG.shape.bpmn.A_Task
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.A_WebServiceTask = function (label) {
     OG.shape.bpmn.A_WebServiceTask.superclass.call(this);
@@ -11874,12 +12251,14 @@ OG.A_WebServiceTask = OG.shape.bpmn.A_WebServiceTask;
  *
  * @class
  * @extends OG.shape.EdgeShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {Number[]} from 와이어 시작 좌표
  * @param {Number[]} to 와이어 끝 좌표
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.C_Association = function (from, to, label) {
     OG.shape.bpmn.C_Association.superclass.call(this, from, to, label);
@@ -11917,12 +12296,14 @@ OG.shape.bpmn.C_Association.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.EdgeShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {Number[]} from 와이어 시작 좌표
  * @param {Number[]} to 와이어 끝 좌표
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.C_Conditional = function (from, to, label) {
     OG.shape.bpmn.C_Conditional.superclass.call(this, from, to, label);
@@ -11959,55 +12340,14 @@ OG.shape.bpmn.C_Conditional.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.EdgeShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {Number[]} from 와이어 시작 좌표
  * @param {Number[]} to 와이어 끝 좌표
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
- */
-OG.shape.bpmn.C_DataAssociation = function (from, to, label) {
-    OG.shape.bpmn.C_DataAssociation.superclass.call(this, from, to, label);
-
-    this.SHAPE_ID = 'OG.shape.bpmn.C_DataAssociation';
-};
-OG.shape.bpmn.C_DataAssociation.prototype = new OG.shape.EdgeShape();
-OG.shape.bpmn.C_DataAssociation.superclass = OG.shape.EdgeShape;
-OG.shape.bpmn.C_DataAssociation.prototype.constructor = OG.shape.bpmn.C_DataAssociation;
-OG.C_DataAssociation = OG.shape.bpmn.C_DataAssociation;
-
-/**
- * 드로잉할 Shape 을 생성하여 반환한다.
- *
- * @return {OG.geometry.Geometry} Shape 정보
- * @override
- */
-OG.shape.bpmn.C_DataAssociation.prototype.createShape = function () {
-    if (this.geom) {
-        return this.geom;
-    }
-
-    this.geom = new OG.Line(this.from || [0, 0], this.to || [70, 0]);
-    this.geom.style = new OG.geometry.Style({
-        "edge-type": "straight",
-        "arrow-start": "none",
-        "arrow-end": "classic-wide-long",
-        'stroke-dasharray': '. '
-    });
-
-    return this.geom;
-};
-/**
- * BPMN : Data Association Connector Shape
- *
- * @class
- * @extends OG.shape.EdgeShape
- * @requires OG.common.*, OG.geometry.*
- *
- * @param {Number[]} from 와이어 시작 좌표
- * @param {Number[]} to 와이어 끝 좌표
- * @param {String} label 라벨 [Optional]
- * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.C_DataAssociation = function (from, to, label) {
     OG.shape.bpmn.C_DataAssociation.superclass.call(this, from, to, label);
@@ -12045,12 +12385,14 @@ OG.shape.bpmn.C_DataAssociation.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.EdgeShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {Number[]} from 와이어 시작 좌표
  * @param {Number[]} to 와이어 끝 좌표
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.C_Message = function (from, to, label) {
     OG.shape.bpmn.C_Message.superclass.call(this, from, to, label);
@@ -12088,12 +12430,14 @@ OG.shape.bpmn.C_Message.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.EdgeShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {Number[]} from 와이어 시작 좌표
  * @param {Number[]} to 와이어 끝 좌표
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.C_Sequence = function (from, to, label) {
     OG.shape.bpmn.C_Sequence.superclass.call(this, from, to, label);
@@ -12130,10 +12474,12 @@ OG.shape.bpmn.C_Sequence.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.D_Data = function (label) {
     OG.shape.bpmn.D_Data.superclass.call(this);
@@ -12176,10 +12522,12 @@ OG.shape.bpmn.D_Data.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.D_Store = function (label) {
     OG.shape.bpmn.D_Store.superclass.call(this);
@@ -12236,10 +12584,12 @@ OG.shape.bpmn.D_Store.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_End_Cancel = function (label) {
     OG.shape.bpmn.E_End_Cancel.superclass.call(this);
@@ -12295,10 +12645,12 @@ OG.shape.bpmn.E_End_Cancel.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_End_Compensation = function (label) {
     OG.shape.bpmn.E_End_Compensation.superclass.call(this);
@@ -12364,10 +12716,12 @@ OG.shape.bpmn.E_End_Compensation.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_End_Connector = function (label) {
     OG.shape.bpmn.E_End_Connector.superclass.call(this);
@@ -12421,10 +12775,12 @@ OG.shape.bpmn.E_End_Connector.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_End_Error = function (label) {
     OG.shape.bpmn.E_End_Error.superclass.call(this);
@@ -12483,10 +12839,12 @@ OG.shape.bpmn.E_End_Error.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_End_Link = function (label) {
     OG.shape.bpmn.E_End_Link.superclass.call(this);
@@ -12542,10 +12900,12 @@ OG.shape.bpmn.E_End_Link.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_End_Message = function (label) {
 	OG.shape.bpmn.E_End_Message.superclass.call(this);
@@ -12615,10 +12975,12 @@ OG.shape.bpmn.E_End_Message.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_End_Multiple = function (label) {
 	OG.shape.bpmn.E_End_Multiple.superclass.call(this);
@@ -12682,10 +13044,12 @@ OG.shape.bpmn.E_End_Multiple.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_Intermediate_Compensation = function (label) {
 	OG.shape.bpmn.E_Intermediate_Compensation.superclass.call(this);
@@ -12745,10 +13109,12 @@ OG.shape.bpmn.E_Intermediate_Compensation.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_Intermediate_Error = function (label) {
 	OG.shape.bpmn.E_Intermediate_Error.superclass.call(this);
@@ -12850,10 +13216,12 @@ OG.shape.bpmn.E_Intermediate_Escalation.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_Intermediate_Link = function (label) {
 	OG.shape.bpmn.E_Intermediate_Link.superclass.call(this);
@@ -12893,10 +13261,12 @@ OG.shape.bpmn.E_Intermediate_Link.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_Intermediate_Message = function (label) {
 	OG.shape.bpmn.E_Intermediate_Message.superclass.call(this);
@@ -13023,10 +13393,12 @@ OG.shape.bpmn.E_Intermediate_MessageFill.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_Intermediate_Multiple = function (label) {
 	OG.shape.bpmn.E_Intermediate_Multiple.superclass.call(this);
@@ -13079,10 +13451,12 @@ OG.shape.bpmn.E_Intermediate_Multiple.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_Intermediate_Rule = function (label) {
 	OG.shape.bpmn.E_Intermediate_Rule.superclass.call(this);
@@ -13133,10 +13507,12 @@ OG.shape.bpmn.E_Intermediate_Rule.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_Intermediate_Timer = function (label) {
 	OG.shape.bpmn.E_Intermediate_Timer.superclass.call(this);
@@ -13195,10 +13571,12 @@ OG.shape.bpmn.E_Intermediate_Timer.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_Start_Connector = function (label) {
     OG.shape.bpmn.E_Start_Connector.superclass.call(this);
@@ -13250,10 +13628,12 @@ OG.shape.bpmn.E_Start_Connector.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_Start_Error = function (label) {
     OG.shape.bpmn.E_Start_Error.superclass.call(this);
@@ -13305,10 +13685,12 @@ OG.shape.bpmn.E_Start_Error.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_Start_Link = function (label) {
 	OG.shape.bpmn.E_Start_Link.superclass.call(this);
@@ -13359,10 +13741,12 @@ OG.shape.bpmn.E_Start_Link.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_Start_Message = function (label) {
 	OG.shape.bpmn.E_Start_Message.superclass.call(this);
@@ -13424,10 +13808,12 @@ OG.shape.bpmn.E_Start_Message.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_Start_Multiple = function (label) {
 	OG.shape.bpmn.E_Start_Multiple.superclass.call(this);
@@ -13484,10 +13870,12 @@ OG.shape.bpmn.E_Start_Multiple.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_Start_Rule = function (label) {
 	OG.shape.bpmn.E_Start_Rule.superclass.call(this);
@@ -13538,10 +13926,12 @@ OG.shape.bpmn.E_Start_Rule.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_Start_Timer = function (label) {
 	OG.shape.bpmn.E_Start_Timer.superclass.call(this);
@@ -13599,10 +13989,12 @@ OG.shape.bpmn.E_Start_Timer.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.bpmn.E_End
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.E_Terminate = function (label) {
 	OG.shape.bpmn.E_Terminate.superclass.call(this, label);
@@ -13652,10 +14044,12 @@ OG.shape.bpmn.E_Terminate.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.G_Complex = function (label) {
 	OG.shape.bpmn.G_Complex.superclass.call(this);
@@ -13722,10 +14116,12 @@ OG.shape.bpmn.G_Complex.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.G_Exclusive = function (label) {
 	OG.shape.bpmn.G_Exclusive.superclass.call(this);
@@ -13780,10 +14176,12 @@ OG.shape.bpmn.G_Exclusive.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.G_Inclusive = function (label) {
 	OG.shape.bpmn.G_Inclusive.superclass.call(this);
@@ -13832,10 +14230,12 @@ OG.shape.bpmn.G_Inclusive.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.G_Parallel = function (label) {
 	OG.shape.bpmn.G_Parallel.superclass.call(this);
@@ -13884,6 +14284,74 @@ OG.shape.bpmn.G_Parallel.prototype.createShape = function () {
 	this.geom = new OG.geometry.GeometryCollection(geomCollection);
 
 	return this.geom;
+};
+OG.shape.bpmn.MIParallel = function (label) {
+    OG.shape.bpmn.MIParallel.superclass.call(this);
+
+    this.SHAPE_ID = 'OG.shape.bpmn.MIParallel';
+    this.label = label;
+};
+OG.shape.bpmn.MIParallel.prototype = new OG.shape.GeomShape();
+OG.shape.bpmn.MIParallel.superclass = OG.shape.GeomShape;
+OG.shape.bpmn.MIParallel.prototype.constructor = OG.shape.bpmn.MIParallel;
+OG.MIParallel = OG.shape.bpmn.MIParallel;
+
+/**
+ * 드로잉할 Shape 을 생성하여 반환한다.
+ *
+ * @return {OG.geometry.Geometry} Shape 정보
+ * @override
+ */
+OG.shape.bpmn.MIParallel.prototype.createShape = function () {
+    var geom1, geom2, geom3, geomCollection = [];
+    if (this.geom) {
+        return this.geom;
+    }
+
+    geom1 = new OG.geometry.Line([0, 30], [0, 0]);
+    geom2 = new OG.geometry.Line([15, 30], [15, 0]);
+    geom3 = new OG.geometry.Line([30, 30], [30, 0]);
+
+    geomCollection.push(geom1);
+    geomCollection.push(geom2);
+    geomCollection.push(geom3);
+
+    this.geom = new OG.geometry.GeometryCollection(geomCollection);
+    return this.geom;
+};
+OG.shape.bpmn.MISequential = function (label) {
+    OG.shape.bpmn.MISequential.superclass.call(this);
+
+    this.SHAPE_ID = 'OG.shape.bpmn.MISequential';
+    this.label = label;
+};
+OG.shape.bpmn.MISequential.prototype = new OG.shape.GeomShape();
+OG.shape.bpmn.MISequential.superclass = OG.shape.GeomShape;
+OG.shape.bpmn.MISequential.prototype.constructor = OG.shape.bpmn.MISequential;
+OG.MISequential = OG.shape.bpmn.MISequential;
+
+/**
+ * 드로잉할 Shape 을 생성하여 반환한다.
+ *
+ * @return {OG.geometry.Geometry} Shape 정보
+ * @override
+ */
+OG.shape.bpmn.MISequential.prototype.createShape = function () {
+    var geom1, geom2, geom3, geomCollection = [];
+    if (this.geom) {
+        return this.geom;
+    }
+
+    geom1 = new OG.geometry.Line([0, 30], [30, 30]);
+    geom2 = new OG.geometry.Line([0, 15], [30, 15]);
+    geom3 = new OG.geometry.Line([0, 0], [30, 0]);
+
+    geomCollection.push(geom1);
+    geomCollection.push(geom2);
+    geomCollection.push(geom3);
+
+    this.geom = new OG.geometry.GeometryCollection(geomCollection);
+    return this.geom;
 };
 OG.shape.bpmn.M_Annotation = function (label) {
 	OG.shape.bpmn.M_Annotation.superclass.call(this);
@@ -13941,10 +14409,12 @@ OG.shape.bpmn.M_Annotation.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.M_Group = function (label) {
     OG.shape.bpmn.M_Group.superclass.call(this);
@@ -13992,10 +14462,12 @@ OG.shape.bpmn.M_Group.prototype.createShape = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.M_Text = function (label) {
 	OG.shape.bpmn.M_Text.superclass.call(this);
@@ -14113,10 +14585,12 @@ OG.shape.bpmn.ScopeActivity.prototype.layoutChild = function () {
  *
  * @class
  * @extends OG.shape.GeomShape
- * @requires OG.common.*, OG.geometry.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
  *
  * @param {String} label 라벨 [Optional]
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.shape.bpmn.Signal = function (label) {
     OG.shape.bpmn.Signal.superclass.call(this);
@@ -14254,9 +14728,11 @@ OG.shape.bpmn.Value_Chain_Module.prototype.createShape = function () {
  * 도형의 Style 과 Shape 정보를 통해 캔버스에 렌더링 기능을 정의한 인터페이스
  *
  * @class
- * @requires OG.common.*, OG.geometry.*, OG.shape.*
+ * @requires OG.common.*
+ * @requires OG.geometry.*
+ * @requires OG.shape.*
  *
- * @param {HTMLElement,String} container 컨테이너 DOM element or ID
+ * @param {HTMLElement|String} container 컨테이너 DOM element or ID
  * @param {Number[]} containerSize 컨테이너 Width, Height
  * @param {String} backgroundColor 캔버스 배경색
  * @param {String} backgroundImage 캔버스 배경이미지
@@ -14407,7 +14883,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * 터미널로부터 부모 Shape element 를 찾아 반환한다.
      *
-     * @param {Element,String} terminal 터미널 Element or ID
+     * @param {Element|String} terminal 터미널 Element or ID
      * @return {Element} Shape element
      * @private
      */
@@ -14429,7 +14905,7 @@ OG.renderer.IRenderer.prototype = {
      * @param {Number[]} position 드로잉할 위치 좌표(중앙 기준)
      * @param {OG.shape.IShape} shape Shape
      * @param {Number[]} size Shape Width, Height
-     * @param {OG.geometry.Style,Object} style 스타일
+     * @param {OG.geometry.Style|Object} style 스타일
      * @param {String} id Element ID 지정
      * @return {Element} Group DOM Element with geometry
      */
@@ -14441,7 +14917,7 @@ OG.renderer.IRenderer.prototype = {
      * Geometry 를 캔버스에 드로잉한다.
      *
      * @param {OG.geometry.Geometry} geometry 기하 객체
-     * @param {OG.geometry.Style,Object} style 스타일
+     * @param {OG.geometry.Style|Object} style 스타일
      * @return {Element} Group DOM Element with geometry
      */
     drawGeom: function (geometry, style, id) {
@@ -14458,7 +14934,7 @@ OG.renderer.IRenderer.prototype = {
      * @param {Number[]} position 드로잉할 위치 좌표(스타일 'text-anchor': 'start' or 'middle' or 'end' 에 따라 기준이 다름)
      * @param {String} text 텍스트
      * @param {Number[]} size Text Width, Height, Angle
-     * @param {OG.geometry.Style,Object} style 스타일
+     * @param {OG.geometry.Style|Object} style 스타일
      * @param {String} id Element ID 지정
      * @return {Element} DOM Element
      */
@@ -14475,7 +14951,7 @@ OG.renderer.IRenderer.prototype = {
      * @param {Number[]} position 드로잉할 위치 좌표(좌상단 기준)
      * @param {String} imgSrc 이미지경로
      * @param {Number[]} size Image Width, Height, Angle
-     * @param {OG.geometry.Style,Object} style 스타일
+     * @param {OG.geometry.Style|Object} style 스타일
      * @param {String} id Element ID 지정
      * @return {Element} DOM Element
      */
@@ -14487,7 +14963,7 @@ OG.renderer.IRenderer.prototype = {
      * 라인을 캔버스에 드로잉한다.
      *
      * @param {OG.geometry.Line} line 라인
-     * @param {OG.geometry.Style,Object} style 스타일
+     * @param {OG.geometry.Style|Object} style 스타일
      * @param {String} id Element ID 지정
      * @param {Boolean} isSelf 셀프 연결 여부
      * @return {Element} Group DOM Element with geometry
@@ -14499,7 +14975,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * Shape 의 Label 을 캔버스에 위치 및 사이즈 지정하여 드로잉한다.
      *
-     * @param {Element,String} shapeElement Shape DOM element or ID
+     * @param {Element|String} shapeElement Shape DOM element or ID
      * @param {String} text 텍스트
      * @param {Object} style 스타일
      * @return {Element} DOM Element
@@ -14511,7 +14987,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * Edge 의 from, to Label 을 캔버스에 위치 및 사이즈 지정하여 드로잉한다.
      *
-     * @param {Element,String} shapeElement Shape DOM element or ID
+     * @param {Element|String} shapeElement Shape DOM element or ID
      * @param {String} text 텍스트
      * @param {String} type 유형(FROM or TO)
      * @return {Element} DOM Element
@@ -14541,15 +15017,15 @@ OG.renderer.IRenderer.prototype = {
 
     /**
      * 두개의 터미널을 연결하고, 속성정보에 추가한다.
-     *
-     * @param {Element,Number[]} from 시작점
-     * @param {Element,Number[]} to 끝점
+     * @param {Element|Number[]} fromTerminal 시작점 (fromTerminal)
+     * @param {Element|Number[]} toTerminal 끝점 (toTerminal)
      * @param {Element} edge Edge Shape
-     * @param {OG.geometry.Style,Object} style 스타일
+     * @param {OG.geometry.Style|Object} style 스타일
      * @param {String} label Label
-     * @return {Element} 연결된 Edge 엘리먼트
+     * @param {Boolean} preventTrigger 이벤트 트리거 발생 막기
+     * @returns {Element} 연결된 Edge 엘리먼트
      */
-    connect: function (from, to, edge, style, label) {
+    connect: function (fromTerminal, toTerminal, edge, style, label, preventTrigger) {
         throw new OG.NotImplementedException();
     },
 
@@ -14565,7 +15041,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * ID에 해당하는 Element 의 Edge 연결시 Drop Over 가이드를 드로잉한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      */
     drawDropOverGuide: function (element) {
         throw new OG.NotImplementedException();
@@ -14574,7 +15050,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * ID에 해당하는 Element 의 Move & Resize 용 가이드를 드로잉한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @return {Object}
      */
     drawGuide: function (element) {
@@ -14584,7 +15060,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * ID에 해당하는 Element 의 Move & Resize 용 가이드를 제거한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      */
     removeGuide: function (element) {
         throw new OG.NotImplementedException();
@@ -14601,7 +15077,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * ID에 해당하는 Element 의 Connect Guide 를 제거한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      */
     removeConnectGuide: function () {
         throw new OG.NotImplementedException();
@@ -14618,7 +15094,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * ID에 해당하는 Element 이외의 모든 Connect Guide 를 제거한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      */
     removeOtherConnectGuide: function () {
         throw new OG.NotImplementedException();
@@ -14634,7 +15110,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * ID에 해당하는 Edge Element 의 Move & Resize 용 가이드를 드로잉한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @return {Object}
      */
     drawEdgeGuide: function (element) {
@@ -14646,7 +15122,7 @@ OG.renderer.IRenderer.prototype = {
      *
      * @param {Number[]} position 드로잉할 위치 좌표(좌상단)
      * @param {Number[]} size Text Width, Height, Angle
-     * @param {OG.geometry.Style,Object} style 스타일
+     * @param {OG.geometry.Style|Object} style 스타일
      * @return {Element} DOM Element
      */
     drawRubberBand: function (position, size, style) {
@@ -14666,7 +15142,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * ID에 해당하는 Element 의 Draggable 가이드를 드로잉한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @return {Element}
      * @override
      */
@@ -14676,7 +15152,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * ID에 해당하는 Element 의 Collapse 가이드를 드로잉한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @return {Element}
      */
     drawCollapseGuide: function (element) {
@@ -14750,7 +15226,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * Shape 을 캔버스에서 관련된 모두를 삭제한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      */
     removeShape: function (element) {
         throw new OG.NotImplementedException();
@@ -14759,7 +15235,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * ID에 해당하는 Element 를 캔버스에서 제거한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      */
     remove: function (element) {
         throw new OG.NotImplementedException();
@@ -14768,7 +15244,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * 하위 엘리먼트만 제거한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      */
     removeChild: function (element) {
         throw new OG.NotImplementedException();
@@ -14822,7 +15298,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * 엘리먼트에 속성값을 설정한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @param {Object} attribute 속성값
      */
     setAttr: function (element, attribute) {
@@ -14832,7 +15308,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * 엘리먼트 속성값을 반환한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @param {String} attrName 속성이름
      * @return {Object} attribute 속성값
      */
@@ -14843,7 +15319,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * Shape 의 스타일을 변경한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @param {Object} style 스타일
      */
     setShapeStyle: function (element, style) {
@@ -14853,7 +15329,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * ID에 해당하는 Element 를 최상단 레이어로 이동한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      */
     toFront: function (element) {
         throw new OG.NotImplementedException();
@@ -14862,9 +15338,27 @@ OG.renderer.IRenderer.prototype = {
     /**
      * ID에 해당하는 Element 를 최하단 레이어로 이동한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      */
     toBack: function (element) {
+        throw new OG.NotImplementedException();
+    },
+
+    /**
+     * ID에 해당하는 Element 를 앞으로 한단계 이동한다.
+     *
+     * @param {Element|String} element Element 또는 ID
+     */
+    bringForward: function(element){
+        throw new OG.NotImplementedException();
+    },
+
+    /**
+     * ID에 해당하는 Element 를 뒤로 한단계 이동한다.
+     *
+     * @param {Element|String} element Element 또는 ID
+     */
+    sendBackward: function(element){
         throw new OG.NotImplementedException();
     },
 
@@ -14928,7 +15422,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * ID에 해당하는 Element 를 캔버스에서 show 한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      */
     show: function (element) {
         throw new OG.NotImplementedException();
@@ -14937,7 +15431,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * ID에 해당하는 Element 를 캔버스에서 hide 한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      */
     hide: function (element) {
         throw new OG.NotImplementedException();
@@ -14946,8 +15440,8 @@ OG.renderer.IRenderer.prototype = {
     /**
      * Source Element 를 Target Element 아래에 append 한다.
      *
-     * @param {Element,String} srcElement Element 또는 ID
-     * @param {Element,String} targetElement Element 또는 ID
+     * @param {Element|String} srcElement Element 또는 ID
+     * @param {Element|String} targetElement Element 또는 ID
      * @return {Element} Source Element
      */
     appendChild: function (srcElement, targetElement) {
@@ -14957,8 +15451,8 @@ OG.renderer.IRenderer.prototype = {
     /**
      * Source Element 를 Target Element 이후에 insert 한다.
      *
-     * @param {Element,String} srcElement Element 또는 ID
-     * @param {Element,String} targetElement Element 또는 ID
+     * @param {Element|String} srcElement Element 또는 ID
+     * @param {Element|String} targetElement Element 또는 ID
      * @return {Element} Source Element
      */
     insertAfter: function (srcElement, targetElement) {
@@ -14968,8 +15462,8 @@ OG.renderer.IRenderer.prototype = {
     /**
      * Source Element 를 Target Element 이전에 insert 한다.
      *
-     * @param {Element,String} srcElement Element 또는 ID
-     * @param {Element,String} targetElement Element 또는 ID
+     * @param {Element|String} srcElement Element 또는 ID
+     * @param {Element|String} targetElement Element 또는 ID
      * @return {Element} Source Element
      */
     insertBefore: function (srcElement, targetElement) {
@@ -14979,7 +15473,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * 해당 Element 를 가로, 세로 Offset 만큼 이동한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @param {Number[]} offset [가로, 세로]
      * @return {Element} Element
      */
@@ -14990,7 +15484,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * 주어진 중심좌표로 해당 Element 를 이동한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @param {Number[]} position [x, y]
      * @return {Element} Element
      */
@@ -15001,7 +15495,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * 중심 좌표를 기준으로 주어진 각도 만큼 회전한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @param {Number} angle 각도
      * @return {Element} Element
      */
@@ -15012,7 +15506,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * 상, 하, 좌, 우 외곽선을 이동한 만큼 리사이즈 한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @param {Number[]} offset [상, 하, 좌, 우] 각 방향으로 + 값
      * @return {Element} Element
      */
@@ -15023,7 +15517,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * 중심좌표는 고정한 채 Bounding Box 의 width, height 를 리사이즈 한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @param {Number[]} size [Width, Height]
      * @return {Element} Element
      */
@@ -15034,7 +15528,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * 노드 Element 를 복사한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @return {Element} Element
      */
     clone: function (element) {
@@ -15074,7 +15568,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * 해당 엘리먼트의 BoundingBox 영역 정보를 반환한다.
      *
-     * @param {Element,String} element
+     * @param {Element|String} element
      * @return {Object} {width, height, x, y, x2, y2}
      */
     getBBox: function (element) {
@@ -15164,7 +15658,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * 연결된 이전 Edge Element 들을 반환한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @return {Element[]} Previous Element's Array
      */
     getPrevEdges: function (element) {
@@ -15188,7 +15682,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * 연결된 이후 Edge Element 들을 반환한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @return {Element[]} Previous Element's Array
      */
     getNextEdges: function (element) {
@@ -15212,7 +15706,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * 연결된 이전 노드 Element 들을 반환한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @return {Element[]} Previous Element's Array
      */
     getPrevShapes: function (element) {
@@ -15237,7 +15731,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * 연결된 이전 노드 Element ID들을 반환한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @return {String[]} Previous Element Id's Array
      */
     getPrevShapeIds: function (element) {
@@ -15258,7 +15752,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * 연결된 이후 노드 Element 들을 반환한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @return {Element[]} Previous Element's Array
      */
     getNextShapes: function (element) {
@@ -15283,7 +15777,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * 연결된 이후 노드 Element ID들을 반환한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @return {String[]} Previous Element Id's Array
      */
     getNextShapeIds: function (element) {
@@ -15339,8 +15833,8 @@ OG.renderer.IRenderer.prototype = {
     /**
      * 부모 엘리먼트를 반환한다. 부모가 루트일때는 반환하지 않는다.
      *
-     * @param {Element} Element  엘리먼트
-     * @return {Element} Element  엘리먼트
+     * @param {Element} element  엘리먼트
+     * @return {Element} element  엘리먼트
      */
     getParent: function (element) {
         var parent = element.parentElement;
@@ -15359,8 +15853,8 @@ OG.renderer.IRenderer.prototype = {
     /**
      * 그룹의 하위 엘리먼트를 반환한다.
      *
-     * @param {Element} Element  엘리먼트
-     * @return {Element} Element  엘리먼트
+     * @param {Element} element  엘리먼트
+     * @returns {Array} Elements
      */
     getChilds: function (element) {
         var childShapes = [];
@@ -15378,7 +15872,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * 그룹의 Shape 인지 반환한다. RootGroup 일 경우는 제외.
      *
-     * @param {Element} Element  엘리먼트
+     * @param {Element} element  엘리먼트
      * @return {boolean} true false
      */
     isGroup: function (element) {
@@ -15422,7 +15916,7 @@ OG.renderer.IRenderer.prototype = {
             if ($(element).attr("_shape") === OG.Constants.SHAPE_TYPE.EDGE) {
                 edges.push(element);
             }
-        })
+        });
         return edges;
     },
     /**
@@ -15489,9 +15983,12 @@ OG.renderer.IRenderer.prototype.constructor = OG.renderer.IRenderer;
  *
  * @class
  * @extends OG.renderer.IRenderer
- * @requires OG.common.*, OG.geometry.*, OG.shape.*, raphael-2.1.0
+ * @requires OG.common.*
+ * @requires OG.geometry.*
+ * @requires OG.shape.*
+ * @requires raphael-2.1.0
  *
- * @param {HTMLElement,String} container 컨테이너 DOM element or ID
+ * @param {HTMLElement|String} container 컨테이너 DOM element or ID
  * @param {Number[]} containerSize 컨테이너 Width, Height
  * @param {String} backgroundColor 캔버스 배경색
  * @param {String} backgroundImage 캔버스 배경이미지
@@ -15615,18 +16112,162 @@ OG.renderer.RaphaelRenderer.prototype._getREleById = function (id) {
     return this._ELE_MAP.get(id);
 };
 
+OG.renderer.RaphaelRenderer.prototype._drawSubShape = function (groupElement) {
+    //그룹 엘리먼트에 createSubShape 메소드를 확인한다.
+    var me = this, subShapeNodes, subShapeNode, width, height,
+        left, top, right, bottom, align, verticalAlign,
+        subVertices, subStyle, subShape, subShapeId, tempNode, cloneNode,
+        boundary, bW, bH, bT, bL;
+    if (!groupElement.shape.createSubShape) {
+        return;
+    }
+
+    //shape 데이터와 groupElement 의 데이터 중 element 의 데이터를 우선시한다.
+    if (groupElement.data) {
+        groupElement.shape.setData(groupElement.data);
+    }
+    //shape 만 데이터가 있을 경우 element 에도 데이터를 적용시킨다.
+    else if (groupElement.shape.getData()) {
+        groupElement.data = groupElement.shape.getData();
+    }
+
+    subShapeNodes = groupElement.shape.createSubShape();
+    if (!subShapeNodes || !subShapeNodes.length) {
+        return;
+    }
+    for (var i = 0, leni = subShapeNodes.length; i < leni; i++) {
+        subShapeNode = subShapeNodes[i];
+        width = subShapeNode.width;
+        height = subShapeNode.height;
+        left = subShapeNode.left;
+        top = subShapeNode.top;
+        right = subShapeNode.right;
+        bottom = subShapeNode.bottom;
+        align = subShapeNode.align;
+        verticalAlign = subShapeNode['vertical-align'];
+        subVertices = subShapeNode.vertices;
+        subStyle = subShapeNode.style ? subShapeNode.style : {};
+        subShape = subShapeNode.shape;
+
+        //지정된 subShape 이 없다면 리턴한다.
+        if (!subShape) {
+            continue;
+        }
+
+        //subShapeId 를 구한다.
+        subShapeId = groupElement.id + '_sub_' + i;
+
+        //groupElement 의 바운더리에 따라 위치값들을 정한다.
+        boundary = me.getBoundary(groupElement);
+        bW = boundary.getWidth();
+        bH = boundary.getHeight();
+        bL = boundary.getUpperLeft().x;
+        bT = boundary.getUpperLeft().y;
+
+        var getLength = function (standard, value) {
+            var length;
+
+            //값이 없고, 0 이 아닐경우
+            if (!value && value != 0) {
+                length = undefined;
+            }
+            //픽셀인 경우
+            else if (typeof value == 'string' && value.indexOf('px') != -1) {
+                length = parseInt(value.replace('px', ''));
+            }
+            //퍼센테이지 인 경우
+            else {
+                length = standard * (value / 100);
+            }
+            return length;
+        };
+
+        //Edge 가 아닌 일반 도형의 위치값을 구한다.
+        width = getLength(bW, width);
+        height = getLength(bH, height);
+        left = getLength(bW, left) + bL;
+        right = bL + bW - getLength(bW, right);
+        top = getLength(bH, top) + bT;
+        bottom = bT + bH - getLength(bH, bottom) - height;
+
+        //right 가 있다면 left 보다 우선하고, bottom 이 있다면 top 보다 우선한다.
+        if (!right && right != 0) {
+
+        } else {
+            left = right;
+        }
+        if (!bottom && bottom != 0) {
+
+        } else {
+            top = bottom;
+        }
+
+        //align 이나 vertice-algin 이 start,center,end 일 경우 left 와 top 값을 오버라이드 한다.
+        if (align == 'start') {
+            left = bL;
+        } else if (align == 'center') {
+            left = bL + (bW / 2) - (width / 2);
+        } else if (align == 'end') {
+            left = bL + bW - width;
+        }
+
+        if (verticalAlign == 'start') {
+            top = bT;
+        } else if (verticalAlign == 'center') {
+            top = bT + (bH / 2) - (height / 2);
+        } else if (verticalAlign == 'end') {
+            top = bT + bH - height;
+        }
+        console.log(subShapeNode, left, top);
+
+        //Edge 인 도형의 위치값을 구한다. Edge 인 도형의 vertices 는 퍼센테이지로만 환산한다.
+        if (subShape instanceof OG.shape.EdgeShape) {
+            if (subVertices && subVertices.length) {
+                for (var v = 0, lenv = subVertices.length; v < lenv; v++) {
+                    subVertices[v][0] = bW * (subVertices[v][0] / 100) + bL;
+                    subVertices[v][1] = bH * (subVertices[v][1] / 100) + bT;
+                }
+            } else {
+                subVertices = [[bL, bT], [bL + bW, bT]];
+            }
+            subShape.geom = new OG.PolyLine(subVertices);
+        }
+
+        //노드 복사를 위한 가상의 그룹노드
+        tempNode = me.drawShape([left + width / 2, top + height / 2], subShape, [width, height], subStyle, subShapeId);
+
+        //가상의 그룹노드 내부의 svg 엘리먼트들을 groupElement 내부로 이전시킨다.
+        $(tempNode).children().each(function () {
+            var child = $(this);
+            child.removeAttr('_type');
+            child.removeAttr('_shape');
+            groupElement.appendChild(child.get(0));
+        });
+
+        //가상의 그룹노드를 삭제한다.
+        me._remove(me._getREleById(tempNode.id));
+    }
+};
+
 /**
  * Geometry 를 캔버스에 드로잉한다.(Recursive)
  *
  * @param {Element} groupElement Group DOM Element
  * @param {OG.geometry.Geometry} geometry 기하 객체
- * @param {OG.geometry.Style,Object} style 스타일
+ * @param {OG.geometry.Style|Object} style 스타일
  * @param {Object} parentStyle Geometry Collection 인 경우 상위 Geometry 스타일
  * @return {Element}
  * @private
  */
-OG.renderer.RaphaelRenderer.prototype._drawGeometry = function (groupElement, geometry, style, parentStyle) {
-    var me = this, i = 0, pathStr = "", vertices, element, geomObj, _style = {}, connectGuideElement
+OG.renderer.RaphaelRenderer.prototype._drawGeometry = function (groupElement, geometry, style, parentStyle, isEdge) {
+    //이곳에, 패턴에 관한 데이터를 추가해야 한다.
+    //패턴에 따라 주어진 vertices 를 따라 패턴을 추가해준다.
+    //패턴 두께. 패턴 내용물. 패턴 특이점. => 패턴의 일정거리까지는 무엇. 일정거리까지는 무엇. 디폴트는 무엇.
+    //패턴이 있다면 패턴 이외의 실제 라인은 투명처리.
+    //OG.Constants.ORIGINAL_NODE
+
+    var me = this, i = 0, pathStr = "", vertices, element, geomObj, _style = {}, connectGuideElement;
+    var svg = me.getRootElement();
     getRoundedPath = function (rectangle, radius) {
         var rectObj, rectVert, offset1, offset2, angle, array = [],
             getRoundedOffset = function (coord, dist, deg) {
@@ -15672,6 +16313,407 @@ OG.renderer.RaphaelRenderer.prototype._drawGeometry = function (groupElement, ge
             OG.Util.apply({}, geometry.style.map, me._CONFIG.DEFAULT_STYLE.GEOM));
     }
 
+    var multi = _style['multi'];
+    var rootMarker = _style['marker'];
+    var rootPattern = _style['pattern'];
+    var rootAnimation = _style['animation'];
+    var marker, pattern;
+
+
+    //기초 선분의 vertices 를 중심으로, top,from,to 에 따른 가상 선분을 그린다.
+    var drawMulti = function (vertices) {
+        var multiData, top, from, to, nodeId, multiStyle;
+
+        /**
+         * nodePath 스트링으로부터 distance 표현식 만큼의 거리를 반환한다.
+         * distance 는 start,center,end, percentage, number, end- 형태로 올 수 있다.
+         * @param nodePath 선분 노드 패스
+         * @param distance 거리 표현식
+         * @returns {Number} 선분 길이 대비 거리
+         */
+        var getSubDistance = function (nodePath, distance) {
+            var totalLenth = Raphael.getTotalLength(nodePath);
+            var length;
+            //넘버 형태일 경우
+            if (typeof distance == 'number') {
+                length = distance;
+            } else if (typeof distance == 'string') {
+                //퍼센테이지 일 경우
+                if (distance.indexOf('%') != -1) {
+                    distance = parseInt(distance.replace('%', ''));
+                    length = totalLenth * (distance / 100);
+                }
+                else if (distance == 'start') {
+                    length = 0;
+                }
+                else if (distance == 'center') {
+                    length = totalLenth / 2;
+                }
+                else if (distance == 'end') {
+                    length = totalLenth;
+                }
+                else if (distance.indexOf('end-') != -1) {
+                    distance = parseInt(distance.replace('end-', ''));
+                    length = totalLenth - distance;
+                } else {
+                    distance = parseInt(distance);
+                    length = distance;
+                }
+            }
+            return length;
+        };
+
+        for (var m = 0, lenm = multi.length; m < lenm; m++) {
+            multiData = multi[m];
+            top = multiData['top'];
+            from = multiData['from'];
+            to = multiData['to'];
+
+            multiStyle = OG.Util.apply(JSON.parse(JSON.stringify(_style)), multiData['style']);
+            if (!top || !from || !to) {
+                if (top != 0) {
+                    continue;
+                }
+            }
+            //노드 아이디는 도형아이디 + 멀티 선분의 인덱스이다.
+            nodeId = groupElement.id + m;
+
+            //top 만큼 평행한 라인을 구한다.
+            var pathStr;
+            var newVertices = [];
+            if (top == 0) {
+                newVertices = vertices;
+            } else {
+                newVertices = geometry.getParallelPath(vertices, top);
+            }
+            for (var l = 0, lenl = newVertices.length; l < lenl; l++) {
+                if (l === 0) {
+                    pathStr = "M" + newVertices[l].x + " " + newVertices[l].y;
+                } else {
+                    pathStr += "L" + newVertices[l].x + " " + newVertices[l].y;
+                }
+            }
+
+            //getSubDistance
+            var subPath = Raphael.getSubpath(pathStr, getSubDistance(pathStr, from), getSubDistance(pathStr, to));
+            var path = me._PAPER.path(subPath);
+
+            //마커 정보가 있을 경우는 arrow 스타일을 제거해주도록 한다.
+            if (multiStyle['marker']) {
+                delete multiStyle['arrow-end'];
+                delete multiStyle['arrow-start'];
+            }
+
+            path.attr(multiStyle);
+            me._add(path);
+            groupElement.appendChild(path.node);
+
+            if (multiStyle['marker']) {
+                drawMarker(path, multiStyle, subPath, m);
+            }
+            if (multiStyle['pattern']) {
+                drawPattern(path, multiStyle, subPath, m);
+            }
+        }
+    };
+
+    var drawPattern = function (rElement, nodeStyle, nodePath, nodeIndex) {
+        var patternShapeId = nodeStyle['pattern']['id'];
+        var thickness = nodeStyle['pattern']['thickness'];
+        var unitWidth = nodeStyle['pattern']['unit-width'];
+        var unitHeight = nodeStyle['pattern']['unit-height'];
+        var patternWidth = nodeStyle['pattern']['pattern-width'];
+        var patternHeight = nodeStyle['pattern']['pattern-height'];
+        var patternTransform = nodeStyle['pattern']['patternTransform'];
+        var patternStyle = nodeStyle['pattern']['style'] ? nodeStyle['pattern']['style'] : {};
+
+        patternWidth = patternWidth ? patternWidth : 20;
+        patternHeight = patternHeight ? patternHeight : 20;
+        unitWidth = unitWidth ? unitWidth : patternWidth;
+        unitHeight = unitHeight ? unitHeight : patternHeight;
+        thickness = thickness ? thickness : 20;
+
+        //지정한 마커 shape 이 없다면 리턴한다.
+        var patternShape;
+        eval('patternShape = ' + patternShapeId);
+        if (!patternShape) {
+            return;
+        }
+        //Def 에 들어갈 마커 id 를 구한다.
+        var split = patternShapeId.split('.');
+        var patternId = groupElement.id + nodeIndex + split[split.length - 1];
+
+        //기존 def 에 존재하는 마커 삭제
+        var existMarkerDef = $(svg).find('#' + patternId);
+        existMarkerDef.remove();
+
+        patternShape = eval('new ' + patternShapeId + '()');
+        var geometry = patternShape.createPattern();
+
+        // 좌상단으로 이동 및 크기 조정
+        geometry.moveCentroid([unitWidth / 2, unitHeight / 2]);
+        geometry.resizeBox(unitWidth, unitHeight);
+
+        //패턴 스타일링. geometry < nodeOverrideStyle < patternStyle
+        var nodeOverrideStyle = {
+            'stroke': nodeStyle['stroke']
+        };
+        OG.Util.apply(geometry.style.map, nodeOverrideStyle);
+        OG.Util.apply(geometry.style.map, patternStyle);
+
+        //노드 복사를 위한 가상의 그룹노드
+        var tempNode = me.drawGeom(geometry, null, OG.Constants.PATTERN_TEMP_NODE);
+        var cloneNode = $(tempNode).clone().wrapAll("<div/>");
+
+        //가상의 그룹노드를 삭제한다.
+        me._remove(me._getREleById(tempNode.id));
+
+        cloneNode.removeAttr('_type');
+        cloneNode.removeAttr('_shape');
+        cloneNode.removeAttr('id');
+        cloneNode.children().each(function () {
+            $(this).removeAttr('_type');
+            $(this).removeAttr('_shape');
+            $(this).removeAttr('id');
+            $(this).removeAttr('marker-end');
+            $(this).removeAttr('marker-start');
+            $(this).removeAttr('marker-mid');
+        });
+
+        var data = {
+            id: patternId,
+            x: 0,
+            y: 0,
+            width: patternWidth,
+            height: patternHeight,
+            patternUnits: 'userSpaceOnUse'
+        };
+        if (patternTransform) {
+            data.patternTransform = patternTransform;
+        }
+
+        var el = document.createElementNS('http://www.w3.org/2000/svg', 'pattern');
+        el.appendChild(cloneNode.get(0));
+        for (var k in data) {
+            el.setAttribute(k, data[k]);
+        }
+
+        $(svg).find('defs').get(0).appendChild(el);
+
+        //edge 일 경우 thickness 두께 만큼 새로운 패스를 생성한다.
+        if (isEdge) {
+            if (!thickness || thickness == 0) {
+                return;
+            }
+            //thickness +- 만큼 평행한 라인을 구한다.
+            var pathStr;
+            var topVertices = geometry.getParallelPath(vertices, thickness);
+            var bottomVertices = geometry.getParallelPath(vertices, -thickness);
+
+            //bottomVertices 의 순서를 리버스한다.
+            bottomVertices = bottomVertices.reverse();
+
+            //두 vertices 를 결합하여 Rectangle 형태의 polyline 을 생성한다.
+            var newVertices = topVertices.concat(bottomVertices);
+
+            for (var l = 0, lenl = newVertices.length; l < lenl; l++) {
+                if (l === 0) {
+                    pathStr = "M" + newVertices[l].x + " " + newVertices[l].y;
+                } else {
+                    pathStr += "L" + newVertices[l].x + " " + newVertices[l].y;
+                }
+            }
+            var path = me._PAPER.path(pathStr);
+
+            //새 패스에 적용할 스타일은 nodeStyle 의 fill-opacity 이다.
+            //만일 없다면 1로 적용한다.
+            var newPathStyle = {
+                'fill-opacity': nodeStyle['fill-opacity'] ? nodeStyle['fill-opacity'] : 1,
+                'stroke': 'none'
+            };
+            path.attr(newPathStyle);
+            me._add(path);
+            groupElement.appendChild(path.node);
+            $(path.node).attr('fill', 'url(#' + patternId + ')');
+        }
+        //edge 가 아닐경우 fill 에 바로 마커를 입힌다.
+        else {
+            $(rElement.node).attr('fill', 'url(#' + patternId + ')');
+        }
+    };
+
+    /**
+     * Path 선분에 마커를 적용한다.
+     * @param rElement 라파엘 엘리먼트
+     * @param nodeStyle 패스 스타일
+     * @param nodePath 패스 스트링
+     * @param nodeIndex 그룹 엘리먼트(g) 내부의 엘리먼트 인덱스
+     */
+    var drawMarker = function (rElement, nodeStyle, nodePath, nodeIndex) {
+        var makerData = {};
+        for (var key in nodeStyle['marker']) {
+            if (key != 'start' && key != 'end' && key != 'mid') {
+                continue;
+            }
+            var markerShapeId = nodeStyle['marker'][key]['id'];
+            var size = nodeStyle['marker'][key]['size'];
+            var ref = nodeStyle['marker'][key]['ref'];
+            var makerStyle = nodeStyle['marker'][key]['style'] ? nodeStyle['marker'][key]['style'] : {};
+
+            //지정한 마커 shape 이 없다면 리턴한다.
+            var makerShape;
+            eval('makerShape = ' + markerShapeId);
+            if (!makerShape) {
+                continue;
+            }
+            //Def 에 들어갈 마커 id 를 구한다.
+            var split = markerShapeId.split('.');
+            var markerId = groupElement.id + nodeIndex + key + split[split.length - 1];
+
+            //기존 def 에 존재하는 마커 삭제
+            var existMarkerDef = $(svg).find('#' + markerId);
+            existMarkerDef.remove();
+
+            makerShape = eval('new ' + markerShapeId + '()');
+            var geometry = makerShape.createMarker();
+
+            // 좌상단으로 이동 및 크기 조정
+            geometry.moveCentroid([size[0] / 2, size[1] / 2]);
+            geometry.resizeBox(size[0], size[1]);
+
+            //ref 값이 없을 시 값 보정
+            if (!ref) {
+                ref = [0, 0];
+                if (key == 'start') {
+                    ref[0] = size[0];
+                    ref[1] = size[1] / 2;
+                } else if (key == 'end') {
+                    ref[0] = 0;
+                    ref[1] = size[1] / 2;
+                } else if (key == 'mid') {
+                    ref[0] = size[0] / 2;
+                    ref[1] = size[1] / 2;
+                }
+            }
+
+            //마커 스타일링. geometry < nodeOverrideStyle < makerStyle
+            var nodeOverrideStyle = {
+                'stroke': nodeStyle['stroke'],
+                'fill': nodeStyle['stroke']
+            };
+            OG.Util.apply(geometry.style.map, nodeOverrideStyle);
+            OG.Util.apply(geometry.style.map, makerStyle);
+
+            //노드 복사를 위한 가상의 그룹노드
+            var tempNode = me.drawGeom(geometry, null, OG.Constants.MARKER_TEMP_NODE);
+            var cloneNode = $(tempNode).clone().wrapAll("<div/>");
+
+            //가상의 그룹노드를 삭제한다.
+            me._remove(me._getREleById(tempNode.id));
+
+            //시작 키일때는 g 태그를 180도 회전시킨다.
+            if (key == 'start') {
+                cloneNode.attr('transform', 'rotate(180,' + size[0] / 2 + ',' + size[1] / 2 + ')');
+            }
+
+            cloneNode.removeAttr('_type');
+            cloneNode.removeAttr('_shape');
+            cloneNode.removeAttr('id');
+            cloneNode.children().each(function () {
+                $(this).removeAttr('_type');
+                $(this).removeAttr('_shape');
+                $(this).removeAttr('id');
+                $(this).removeAttr('marker-end');
+                $(this).removeAttr('marker-start');
+                $(this).removeAttr('marker-mid');
+            });
+
+            var data = {
+                id: markerId,
+                refX: ref[0],
+                refY: ref[1],
+                markerWidth: size[0],
+                markerHeight: size[1],
+                orient: 'auto'
+            };
+            var el = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+            el.appendChild(cloneNode.get(0));
+            for (var k in data) {
+                el.setAttribute(k, data[k]);
+            }
+
+            $(svg).find('defs').get(0).appendChild(el);
+            makerData[key] = data;
+        }
+
+        //기존 노드는 투명처리한다.
+        rElement.attr('stroke-opacity', '0');
+
+        //기존 노드의 패스를 마커의 영역만큼 뺀 새로운 패스를 생성한다.
+        var totalLenth = Raphael.getTotalLength(nodePath);
+        var from, to;
+        if (makerData['start'] && makerData['end']) {
+            from = makerData['start']['markerWidth'] * 1.5;
+            to = totalLenth - makerData['end']['markerWidth'] * 1.5;
+        }
+        else if (makerData['start'] && !makerData['end']) {
+            from = makerData['start']['markerWidth'] * 1.5;
+            to = totalLenth;
+        }
+        else if (!makerData['start'] && makerData['end']) {
+            from = 0;
+            to = totalLenth - makerData['end']['markerWidth'] * 1.5;
+        } else {
+            from = 0;
+            to = totalLenth;
+        }
+
+        var subPath = Raphael.getSubpath(nodePath, from, to);
+        var virtualNode = me._PAPER.path(subPath);
+        virtualNode.attr(nodeStyle);
+
+        //virtualNode 에 마커 스타일 적용
+        for (var key in makerData) {
+            $(virtualNode.node).attr('marker-' + key, 'url(#' + makerData[key].id + ')');
+        }
+
+        me._add(virtualNode);
+        groupElement.appendChild(virtualNode.node);
+    };
+
+    var drawAnimation = function (rElement, nodeStyle) {
+        var animationData = nodeStyle['animation'];
+        var animationRepeat = nodeStyle['animation-repeat'];
+        var maxDuration = 0;
+        var monitorAnimationIndex;
+        var delay, ms;
+        for (var i = 0; i < animationData.length; i++) {
+            ms = animationData[i].ms ? animationData[i].ms : 0;
+            delay = animationData[i].delay ? animationData[i].delay : 0;
+            if (maxDuration < ms + delay) {
+                maxDuration = ms + delay;
+                monitorAnimationIndex = i;
+            }
+        }
+
+        var startAnimation = function () {
+            for (var i = 0; i < animationData.length; i++) {
+                var ani;
+                if (i == monitorAnimationIndex && animationRepeat) {
+                    ani = Raphael.animation(animationData[i].to, animationData[i].ms, startAnimation);
+                    rElement.attr(animationData[i].start).animate(ani.delay(animationData[i].delay));
+                } else {
+                    ani = Raphael.animation(animationData[i].to, animationData[i].ms);
+                    rElement.attr(animationData[i].start).animate(ani.delay(animationData[i].delay));
+                }
+            }
+        };
+        startAnimation();
+
+        //TODO 서브 도형의 제트 인덱스가 있어야 한다(원본 도형 뒤로 숨기 등)
+        //애니메이션 효과를 _drawGeometry 전부 넣어주기.
+    };
+
     geometry.style.map = _style;
 
     // 타입에 따라 드로잉
@@ -15679,6 +16721,11 @@ OG.renderer.RaphaelRenderer.prototype._drawGeometry = function (groupElement, ge
         case OG.Constants.GEOM_TYPE.POINT:
             element = this._PAPER.circle(geometry.coordinate.x, geometry.coordinate.y, 0.5);
             element.attr(_style);
+
+            //패턴정보가 있을 경우
+            if (rootPattern) {
+                drawPattern(element, _style, null, 0);
+            }
 
             connectGuideElement = this._PAPER.circle(geometry.coordinate.x, geometry.coordinate.y, 0.5);
             setConnectGuideAttr(connectGuideElement);
@@ -15696,8 +16743,38 @@ OG.renderer.RaphaelRenderer.prototype._drawGeometry = function (groupElement, ge
                     pathStr += "L" + vertices[i].x + " " + vertices[i].y;
                 }
             }
-            element = this._PAPER.path(pathStr);
-            element.attr(_style);
+
+            if (isEdge) {
+                //연결선이면서 마커정보가 있거나 멀티라인인 경우는 arrow 스타일을 제거하도록 한다.
+                if (rootMarker || multi) {
+                    delete _style['arrow-end'];
+                    delete _style['arrow-start'];
+                }
+                element = this._PAPER.path(pathStr);
+                element.attr(_style);
+
+                //멀티 라인 정보가 있을 경우
+                if (multi) {
+                    drawMulti(vertices);
+                    element.attr('stroke-opacity', '0');
+                }
+                //멀티 라인 정보가 없고, 마커정보가 있을 경우
+                else if (!multi && rootMarker) {
+                    drawMarker(element, _style, pathStr, 0);
+                }
+                //멀티 라인 정보가 없고, 패턴정보가 있을 경우
+                else if (!multi && rootPattern) {
+                    drawPattern(element, _style, pathStr, 0);
+                }
+            } else {
+                element = this._PAPER.path(pathStr);
+                element.attr(_style);
+
+                //패턴정보가 있을 경우
+                if (rootPattern) {
+                    drawPattern(element, _style, pathStr, 0);
+                }
+            }
 
             connectGuideElement = this._PAPER.path(pathStr);
             setConnectGuideAttr(connectGuideElement);
@@ -15719,6 +16796,15 @@ OG.renderer.RaphaelRenderer.prototype._drawGeometry = function (groupElement, ge
 
             element = this._PAPER.path(pathStr);
             element.attr(_style);
+
+            //패턴정보가 있을 경우
+            if (rootPattern) {
+                drawPattern(element, _style, pathStr, 0);
+            }
+            //애니메이션 정보가 있을 경우
+            if (rootAnimation) {
+                drawAnimation(element, _style);
+            }
 
             connectGuideElement = this._PAPER.path(pathStr);
             setConnectGuideAttr(connectGuideElement);
@@ -15745,6 +16831,12 @@ OG.renderer.RaphaelRenderer.prototype._drawGeometry = function (groupElement, ge
                 }
             }
             element.attr(_style);
+
+            //패턴정보가 있을 경우
+            if (rootPattern) {
+                drawPattern(element, _style, pathStr, 0);
+            }
+
             setConnectGuideAttr(connectGuideElement);
             break;
 
@@ -15764,6 +16856,10 @@ OG.renderer.RaphaelRenderer.prototype._drawGeometry = function (groupElement, ge
                 connectGuideElement = this._PAPER.path(pathStr);
             }
             element.attr(_style);
+            //패턴정보가 있을 경우
+            if (rootPattern) {
+                drawPattern(element, _style, pathStr, 0);
+            }
             setConnectGuideAttr(connectGuideElement);
             break;
 
@@ -15781,6 +16877,10 @@ OG.renderer.RaphaelRenderer.prototype._drawGeometry = function (groupElement, ge
             }
             element = this._PAPER.path(pathStr);
             element.attr(_style);
+            //패턴정보가 있을 경우
+            if (rootPattern) {
+                drawPattern(element, _style, pathStr, 0);
+            }
 
             connectGuideElement = this._PAPER.path(pathStr);
             setConnectGuideAttr(connectGuideElement);
@@ -15801,6 +16901,11 @@ OG.renderer.RaphaelRenderer.prototype._drawGeometry = function (groupElement, ge
             element = this._PAPER.path(pathStr);
             element.attr(_style);
 
+            //패턴정보가 있을 경우
+            if (rootPattern) {
+                drawPattern(element, _style, pathStr, 0);
+            }
+
             connectGuideElement = this._PAPER.path(pathStr);
             setConnectGuideAttr(connectGuideElement);
             break;
@@ -15817,6 +16922,7 @@ OG.renderer.RaphaelRenderer.prototype._drawGeometry = function (groupElement, ge
         this._add(element);
 
         groupElement.appendChild(element.node);
+        $(element.node).attr('name', OG.Constants.ORIGINAL_NODE);
         if (connectGuideElement) {
             this._add(connectGuideElement);
             groupElement.appendChild(connectGuideElement.node);
@@ -15835,7 +16941,7 @@ OG.renderer.RaphaelRenderer.prototype._drawGeometry = function (groupElement, ge
  * @param {Number[]} position 드로잉할 위치 좌표(중앙 기준)
  * @param {String} text 텍스트
  * @param {Number[]} size Text Width, Height, Angle
- * @param {OG.geometry.Style,Object} style 스타일
+ * @param {OG.geometry.Style|Object} style 스타일
  * @param {String} id Element ID 지정
  * @param {Boolean} isEdge 라인여부(라인인 경우 라벨이 가려지지 않도록)
  * @return {Element} DOM Element
@@ -15868,35 +16974,24 @@ OG.renderer.RaphaelRenderer.prototype._drawLabel = function (position, text, siz
     text_anchor = _style["text-anchor"] || 'middle';
     _style["text-anchor"] = 'middle';
 
+    //라벨 width 스타일 적용
+    size[0] = style.map['label-width'] ? style.map['label-width'] : size[0];
+
     //라벨 최대,최소 적용
     if (me._CONFIG.LABEL_MIN_SIZE && size[0]) {
         if (size[0] < me._CONFIG.LABEL_MIN_SIZE) {
             size[0] = me._CONFIG.LABEL_MIN_SIZE;
         }
     }
-    if (me._CONFIG.LABEL_MAX_SIZE && size[1]) {
-        if (size[1] > me._CONFIG.LABEL_MAX_SIZE) {
-            size[1] = me._CONFIG.LABEL_MAX_SIZE;
+    if (me._CONFIG.LABEL_MAX_SIZE && size[0]) {
+        if (size[0] > me._CONFIG.LABEL_MAX_SIZE) {
+            size[0] = me._CONFIG.LABEL_MAX_SIZE;
         }
     }
 
-    //익스 일때
-    if (OG.Util.isIE()) {
-        element = this._PAPER.text(position[0], position[1], text, size);
-        element.attr(_style);
-    }
-    else {
-        if (text) {
-            text = text.replace(/\n/g, '<br />');
-        }
-
-        // Draw text
-        if (_style["label-direction"] === 'vertical') {
-            element = this._PAPER.foreignObject(text, position[0], position[1], height, size[1]);
-        } else {
-            element = this._PAPER.foreignObject(text, position[0], position[1], size[0], size[1]);
-        }
-    }
+    //라벨 draw
+    element = this._PAPER.text(position[0], position[1], text, size);
+    element.attr(_style);
 
     // real size
     bBox = element.getBBox();
@@ -15910,142 +17005,71 @@ OG.renderer.RaphaelRenderer.prototype._drawLabel = function (position, text, siz
     // Boundary Box
     geom = new OG.Rectangle([left, top], width, height);
 
-    if (!OG.Util.isIE()) {
-        if (_style["label-direction"] === 'vertical') {
-            // Text Horizontal Align
-            switch (text_anchor) {
-                case "start":
-                    y = geom.getBoundary().getLowerCenter().y;
-                    break;
-                case "end":
-                    y = geom.getBoundary().getUpperCenter().y - bBox.height;
-                    break;
-                case "middle":
-                    y = OG.Util.round(geom.getBoundary().getCentroid().y - bBox.height / 2);
-                    break;
-                default:
-                    y = OG.Util.round(geom.getBoundary().getCentroid().y - bBox.height / 2);
-                    break;
-            }
-
-            // Text Vertical Align
-            switch (_style["vertical-align"]) {
-                case "top":
-                    x = OG.Util.round(geom.getBoundary().getLeftCenter().x - bBox.width / 2) + 5;
-                    break;
-                case "bottom":
-                    x = geom.getBoundary().getRightCenter().x - bBox.width;
-                    break;
-                case "middle":
-                    x = geom.getBoundary().getCentroid().x - bBox.width;
-                    break;
-                default:
-                    x = geom.getBoundary().getCentroid().x - bBox.width;
-                    break;
-            }
-
-            angle = -90;
-        } else {
-            // Text Horizontal Align
-            switch (text_anchor) {
-                case "start":
-                    x = geom.getBoundary().getLeftCenter().x;
-                    break;
-                case "end":
-                    x = geom.getBoundary().getRightCenter().x - bBox.width;
-                    break;
-                case "middle":
-                    x = OG.Util.round(geom.getBoundary().getCentroid().x - bBox.width / 2);
-                    break;
-                default:
-                    x = OG.Util.round(geom.getBoundary().getCentroid().x - bBox.width / 2);
-                    break;
-            }
-
-            // Text Vertical Align
-            switch (_style["vertical-align"]) {
-                case "top":
-                    y = geom.getBoundary().getUpperCenter().y;
-                    break;
-                case "bottom":
-                    y = geom.getBoundary().getLowerCenter().y - bBox.height;
-                    break;
-                case "middle":
-                    y = OG.Util.round(geom.getBoundary().getCentroid().y - bBox.height / 2);
-                    break;
-                default:
-                    y = OG.Util.round(geom.getBoundary().getCentroid().y - bBox.height / 2);
-                    break;
-            }
+    if (_style["label-direction"] === 'vertical') {
+        // Text Horizontal Align
+        switch (text_anchor) {
+            case "start":
+                y = geom.getBoundary().getLowerCenter().y;
+                break;
+            case "end":
+                y = geom.getBoundary().getUpperCenter().y;
+                break;
+            case "middle":
+                y = geom.getBoundary().getCentroid().y;
+                break;
+            default:
+                y = geom.getBoundary().getCentroid().y;
+                break;
         }
-    }
-    else if (OG.Util.isIE()) {
-        if (_style["label-direction"] === 'vertical') {
-            // Text Horizontal Align
-            switch (text_anchor) {
-                case "start":
-                    y = geom.getBoundary().getLowerCenter().y;
-                    break;
-                case "end":
-                    y = geom.getBoundary().getUpperCenter().y;
-                    break;
-                case "middle":
-                    y = geom.getBoundary().getCentroid().y;
-                    break;
-                default:
-                    y = geom.getBoundary().getCentroid().y;
-                    break;
-            }
 
-            // Text Vertical Align
-            switch (_style["vertical-align"]) {
-                case "top":
-                    x = OG.Util.round(geom.getBoundary().getLeftCenter().x + bBox.height / 2);
-                    break;
-                case "bottom":
-                    x = OG.Util.round(geom.getBoundary().getRightCenter().x - bBox.height / 2);
-                    break;
-                case "middle":
-                    x = geom.getBoundary().getCentroid().x;
-                    break;
-                default:
-                    x = geom.getBoundary().getCentroid().x;
-                    break;
-            }
+        // Text Vertical Align
+        switch (_style["vertical-align"]) {
+            case "top":
+                x = OG.Util.round(geom.getBoundary().getLeftCenter().x + bBox.height / 2);
+                break;
+            case "bottom":
+                x = OG.Util.round(geom.getBoundary().getRightCenter().x - bBox.height / 2);
+                break;
+            case "middle":
+                x = geom.getBoundary().getCentroid().x;
+                break;
+            default:
+                x = geom.getBoundary().getCentroid().x;
+                break;
+        }
 
-            angle = -90;
-        } else {
-            // Text Horizontal Align
-            switch (text_anchor) {
-                case "start":
-                    x = geom.getBoundary().getLeftCenter().x;
-                    break;
-                case "end":
-                    x = geom.getBoundary().getRightCenter().x;
-                    break;
-                case "middle":
-                    x = geom.getBoundary().getCentroid().x;
-                    break;
-                default:
-                    x = geom.getBoundary().getCentroid().x;
-                    break;
-            }
+        angle = -90;
+    } else {
+        // Text Horizontal Align
+        switch (text_anchor) {
+            case "start":
+                x = geom.getBoundary().getLeftCenter().x;
+                break;
+            case "end":
+                x = geom.getBoundary().getRightCenter().x;
+                break;
+            case "middle":
+                x = geom.getBoundary().getCentroid().x;
+                break;
+            default:
+                x = geom.getBoundary().getCentroid().x;
+                break;
+        }
 
-            // Text Vertical Align
-            switch (_style["vertical-align"]) {
-                case "top":
-                    y = OG.Util.round(geom.getBoundary().getUpperCenter().y + bBox.height / 2);
-                    break;
-                case "bottom":
-                    y = OG.Util.round(geom.getBoundary().getLowerCenter().y - bBox.height / 2);
-                    break;
-                case "middle":
-                    y = geom.getBoundary().getCentroid().y;
-                    break;
-                default:
-                    y = geom.getBoundary().getCentroid().y;
-                    break;
-            }
+        // Text Vertical Align
+        switch (_style["vertical-align"]) {
+            case "top":
+                y = OG.Util.round(geom.getBoundary().getUpperCenter().y + bBox.height / 2);
+                break;
+            case "bottom":
+                y = OG.Util.round(geom.getBoundary().getLowerCenter().y - bBox.height / 2);
+                break;
+            case "middle":
+                y = geom.getBoundary().getCentroid().y;
+                break;
+            default:
+                y = geom.getBoundary().getCentroid().y;
+                break;
         }
     }
 
@@ -16110,7 +17134,7 @@ OG.renderer.RaphaelRenderer.prototype._drawLabel = function (position, text, siz
  * @param {Number[]} position 드로잉할 위치 좌표(중앙 기준)
  * @param {OG.shape.IShape} shape Shape
  * @param {Number[]} size Shape Width, Height
- * @param {OG.geometry.Style,Object} style 스타일
+ * @param {OG.geometry.Style|Object} style 스타일
  * @param {String} id Element ID 지정
  * @param {Boolean} preventDrop Lane, Pool 생성 drop 모드 수행 방지
  * @return {Element} Group DOM Element with geometry
@@ -16175,6 +17199,9 @@ OG.renderer.RaphaelRenderer.prototype.drawShape = function (position, shape, siz
     }
     groupNode.shapeStyle = (style instanceof OG.geometry.Style) ? style.map : style;
     $(groupNode).attr("_shape_id", shape.SHAPE_ID);
+
+    // 서브 shape 드로잉
+    me._drawSubShape(groupNode);
 
     // Draw for Task
     if (shape instanceof OG.shape.bpmn.A_Task) {
@@ -16318,7 +17345,7 @@ OG.renderer.RaphaelRenderer.prototype.drawShape = function (position, shape, siz
  * Geometry 를 캔버스에 드로잉한다.
  *
  * @param {OG.geometry.Geometry} geometry 기하 객체
- * @param {OG.geometry.Style,Object} style 스타일
+ * @param {OG.geometry.Style|Object} style 스타일
  * @return {Element} Group DOM Element with geometry
  * @override
  */
@@ -16368,7 +17395,7 @@ OG.renderer.RaphaelRenderer.prototype.drawGeom = function (geometry, style, id) 
  * @param {Number[]} position 드로잉할 위치 좌표(중앙 기준)
  * @param {String} text 텍스트
  * @param {Number[]} size Text Width, Height, Angle
- * @param {OG.geometry.Style,Object} style 스타일
+ * @param {OG.geometry.Style|Object} style 스타일
  * @param {String} id Element ID 지정
  * @return {Element} DOM Element
  * @override
@@ -16398,7 +17425,7 @@ OG.renderer.RaphaelRenderer.prototype.drawText = function (position, text, size,
     }
 
     // Draw text
-    element = this._PAPER.text(position[0], position[1], text, 8);
+    element = this._PAPER.text(position[0], position[1], text, size);
     element.attr(_style);
 
     // real size
@@ -16506,7 +17533,7 @@ OG.renderer.RaphaelRenderer.prototype.drawText = function (position, text, size,
  * @param {Number[]} position 드로잉할 위치 좌표(중앙 기준)
  * @param {String} html 임베드 HTML String
  * @param {Number[]} size Image Width, Height, Angle
- * @param {OG.geometry.Style,Object} style 스타일
+ * @param {OG.geometry.Style|Object} style 스타일
  * @param {String} id Element ID 지정
  * @return {Element} DOM Element
  * @override
@@ -16601,7 +17628,7 @@ OG.renderer.RaphaelRenderer.prototype.drawHtml = function (position, html, size,
  * @param {Number[]} position 드로잉할 위치 좌표(중앙 기준)
  * @param {String} imgSrc 이미지경로
  * @param {Number[]} size Image Width, Height, Angle
- * @param {OG.geometry.Style,Object} style 스타일
+ * @param {OG.geometry.Style|Object} style 스타일
  * @param {String} id Element ID 지정
  * @return {Element} DOM Element
  * @override
@@ -16731,15 +17758,14 @@ OG.renderer.RaphaelRenderer.prototype._getPointOfInflectionFromEdge = function (
  * OG.geometry.Line 타입인 경우 EdgeType 에 따라 Path 를 자동으로 계산하며,
  * OG.geometry.PolyLine 인 경우는 주어진 Path 그대로 drawing 한다.
  *
- * @param {OG.geometry.Line,OG.geometry.PolyLine} line 또는 polyLine
- * @param {OG.geometry.Style,Object} style 스타일
+ * @param {OG.geometry.Line|OG.geometry.PolyLine} line 또는 polyLine
+ * @param {OG.geometry.Style|Object} style 스타일
  * @param {String} id Element ID 지정
  * @param {Boolean} isSelf 셀프 연결 여부
  * @return {Element} Group DOM Element with geometry
  * @override
  */
 OG.renderer.RaphaelRenderer.prototype.drawEdge = function (line, style, id, isSelf, pointOfInflection) {
-
     var me = this, group, _style = {},
         vertices = line.getVertices(),
         from = vertices[0], to = vertices[vertices.length - 1],
@@ -16811,7 +17837,8 @@ OG.renderer.RaphaelRenderer.prototype.drawEdge = function (line, style, id, isSe
     }
 
     // draw Edge
-    this._drawGeometry(group.node, edge, _style);
+    this._drawGeometry(group.node, edge, _style, null, true);
+
     group.node.geom = edge;
     group.attr(me._CONFIG.DEFAULT_STYLE.SHAPE);
 
@@ -16877,6 +17904,7 @@ OG.renderer.RaphaelRenderer.prototype.drawGroup = function (geometry, style, id)
 
     // 타이틀 라인 Drawing
     OG.Util.apply(_tempStyle, geometry.style.map, _style);
+
     if (_tempStyle['label-direction'] && _tempStyle['vertical-align'] === 'top') {
         if (_tempStyle['label-direction'] === 'vertical') {
             if (_tempStyle['title-size']) {
@@ -16908,7 +17936,16 @@ OG.renderer.RaphaelRenderer.prototype.drawGroup = function (geometry, style, id)
             }
         }
         this._drawGeometry(group.node, titleLine, _style);
-        this._drawGeometry(group.node, group_hidden, me._CONFIG.DEFAULT_STYLE.GROUP_HIDDEN);
+
+        //label-fill 어트리뷰트 적용
+        var groupHiddenStyle = JSON.parse(JSON.stringify(me._CONFIG.DEFAULT_STYLE.GROUP_HIDDEN));
+        if (_tempStyle['label-fill']) {
+            groupHiddenStyle['fill'] = _tempStyle['label-fill'];
+        }
+        if (_tempStyle['label-fill-opacity']) {
+            groupHiddenStyle['fill-opacity'] = _tempStyle['label-fill-opacity'];
+        }
+        this._drawGeometry(group.node, group_hidden, groupHiddenStyle);
     }
 
     // 위치조정
@@ -16935,9 +17972,9 @@ OG.renderer.RaphaelRenderer.prototype.drawGroup = function (geometry, style, id)
 /**
  * Shape 의 Label 을 캔버스에 위치 및 사이즈 지정하여 드로잉한다.
  *
- * @param {Element,String} shapeElement Shape DOM element or ID
+ * @param {Element|String} shapeElement Shape DOM element or ID
  * @param {String} text 텍스트
- * @param {OG.geometry.Style,Object} style 스타일
+ * @param {OG.geometry.Style|Object} style 스타일
  * @return {Element} DOM Element
  * @override
  */
@@ -17057,7 +18094,7 @@ OG.renderer.RaphaelRenderer.prototype.drawLabel = function (shapeElement, text, 
 /**
  * Edge 의 from, to Label 을 캔버스에 위치 및 사이즈 지정하여 드로잉한다.
  *
- * @param {Element,String} shapeElement Shape DOM element or ID
+ * @param {Element|String} shapeElement Shape DOM element or ID
  * @param {String} text 텍스트
  * @param {String} type 유형(FROM or TO)
  * @return {Element} DOM Element
@@ -17217,9 +18254,11 @@ OG.renderer.RaphaelRenderer.prototype.redrawShape = function (element, excludeEd
                     this.redrawConnectedEdge(element, excludeEdgeId);
                     this.drawLabel(element);
                 }
-
                 break;
         }
+
+        //서브 도형 그리기
+        me._drawSubShape(element);
 
         if (element.shape instanceof OG.shape.bpmn.A_Task) {
             if (element.shape.LoopType != 'None')
@@ -17429,17 +18468,16 @@ OG.renderer.RaphaelRenderer.prototype.reconnect = function (edge) {
 
 /**
  * 두개의 터미널을 연결하고, 속성정보에 추가한다.
- *
- * @param {Element,Number[]} from 시작점 (fromTerminal)
- * @param {Element,Number[]} to 끝점 (toTerminal)
+ * @param {Element|Number[]} fromTerminal 시작점 (fromTerminal)
+ * @param {Element|Number[]} toTerminal 끝점 (toTerminal)
  * @param {Element} edge Edge Shape
- * @param {OG.geometry.Style,Object} style 스타일
+ * @param {OG.geometry.Style|Object} style 스타일
  * @param {String} label Label
- * @return {Element} 연결된 Edge 엘리먼트
+ * @param {Boolean} preventTrigger 이벤트 트리거 발생 막기
+ * @returns {Element} 연결된 Edge 엘리먼트
  * @override
  */
 OG.renderer.RaphaelRenderer.prototype.connect = function (fromTerminal, toTerminal, edge, style, label, preventTrigger) {
-
     var isEssensia;
     var rEdge = this._getREleById(OG.Util.isElement(edge) ? edge.id : edge);
     if (rEdge) {
@@ -17722,7 +18760,7 @@ OG.renderer.RaphaelRenderer.prototype.disconnect = function (element) {
 /**
  * ID에 해당하는 Element 의 Drop Over 가이드를 드로잉한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @override
  */
 OG.renderer.RaphaelRenderer.prototype.drawDropOverGuide = function (element) {
@@ -17768,12 +18806,9 @@ OG.renderer.RaphaelRenderer.prototype.drawGuide = function (element) {
     var _isResizable = rElement && me._CANVAS._HANDLER._isResizable(element.shape);
 
 
-    var createLinePath = function (x, y, idx) {
-        var marginTop = 0;
-        if (idx > 0) {
-            marginTop = 8;
-        }
-        var from = [x, (y + _ctrlSize - 8) + marginTop];
+    var createLinePath = function (x, y, marginTop, diff) {
+        var marginTop = marginTop ? marginTop : 0;
+        var from = [x, (y + _ctrlSize - diff) + marginTop];
         var to = [x + _ctrlSize, y + marginTop];
         var path = 'M' + from[0] + ' ' + from[1] + 'L' + to[0] + ' ' + to[1];
         return path;
@@ -17960,27 +18995,39 @@ OG.renderer.RaphaelRenderer.prototype.drawGuide = function (element) {
             return;
         }
         _line = me._PAPER.rect(_upperRight.x + _ctrlMargin, _upperRight.y, _ctrlSize, _ctrlSize);
-        _linePath1 = me._PAPER.path(createLinePath(0, 0, 0));
-        _linePath2 = me._PAPER.path(createLinePath(0, 0, 8));
+        if (me._CONFIG.GUIDE_CONTROL_LINE_NUM == 2) {
+            _linePath1 = me._PAPER.path(createLinePath(0, 0, 0, 8));
+            _linePath2 = me._PAPER.path(createLinePath(0, 0, 8, 8));
+        } else {
+            _linePath1 = me._PAPER.path(createLinePath(0, 0, 0, 4));
+        }
         _line.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_LINE_AREA);
 
         if (!isEssensia) {
             _linePath1.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_LINE);
-            _linePath2.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_LINE);
+            if (_linePath2) {
+                _linePath2.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_LINE);
+            }
         }
         if (isEssensia) {
             _linePath1.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_LINE_ESSENSIA);
-            _linePath2.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_LINE_ESSENSIA);
+            if (_linePath2) {
+                _linePath2.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_LINE_ESSENSIA);
+            }
         }
-        _linePath2.attr({'stroke-dasharray': '-'});
 
         group.appendChild(_linePath1);
-        group.appendChild(_linePath2);
         group.appendChild(_line);
 
         me._add(_line, rElement.id + OG.Constants.GUIDE_SUFFIX.LINE);
         me._add(_linePath1, rElement.id + OG.Constants.GUIDE_SUFFIX.LINE + '1');
-        me._add(_linePath2, rElement.id + OG.Constants.GUIDE_SUFFIX.LINE + '2');
+
+
+        if (_linePath2) {
+            _linePath2.attr({'stroke-dasharray': '-'});
+            group.appendChild(_linePath2);
+            me._add(_linePath2, rElement.id + OG.Constants.GUIDE_SUFFIX.LINE + '2');
+        }
 
         if (!guide.line) {
             guide.line = [];
@@ -18006,9 +19053,24 @@ OG.renderer.RaphaelRenderer.prototype.drawGuide = function (element) {
         if (!_isConnectable) {
             return;
         }
-        var minText = text;
-        if (text.length > 3) {
-            minText = text.substring(0, 3) + '..';
+        var displayText;
+        var shapeId;
+        var shapeLabel;
+        //텍스트 형태가 스트링일 경우, 디폴트 선도형은 OG.EdgeShape
+        if (typeof text == 'string') {
+            displayText = text;
+            shapeLabel = text;
+            shapeId = 'OG.EdgeShape';
+        }
+        //오브젝트 형태일 경우 text 파라미터와 shape 파라미터를 얻는다.
+        else {
+            displayText = text.text;
+            shapeLabel = text.label;
+            shapeId = text.shape;
+        }
+        var minText = displayText;
+        if (displayText.length > 3) {
+            minText = displayText.substring(0, 3) + '..';
         }
         _line = me._PAPER.rect(_upperRight.x + _ctrlMargin, _upperRight.y, _ctrlSize, _ctrlSize);
         _linePath1 = me._PAPER.path(createTextLinePath(0, 0));
@@ -18035,7 +19097,9 @@ OG.renderer.RaphaelRenderer.prototype.drawGuide = function (element) {
         }
         guide.line.push({
             node: _line.node,
-            text: text
+            text: displayText,
+            label: shapeLabel ? shapeLabel : '',
+            shape: shapeId
         });
         controllers.push(_line);
     }
@@ -18187,8 +19251,12 @@ OG.renderer.RaphaelRenderer.prototype.drawGuide = function (element) {
             controller.attr({x: x, y: y});
             //라인일경우 하위 라인까지 함께 재배치
             if (controller.id === rElement.id + OG.Constants.GUIDE_SUFFIX.LINE) {
-                me._getREleById(controller.id + '1').attr({'path': createLinePath(x, y, 0)});
-                me._getREleById(controller.id + '2').attr({'path': createLinePath(x, y, 8)});
+                if (me._CONFIG.GUIDE_CONTROL_LINE_NUM == 2) {
+                    me._getREleById(controller.id + '1').attr({'path': createLinePath(x, y, 0, 8)});
+                    me._getREleById(controller.id + '2').attr({'path': createLinePath(x, y, 8, 8)});
+                } else {
+                    me._getREleById(controller.id + '1').attr({'path': createLinePath(x, y, 0, 4)});
+                }
             }
 
             //텍스트 라인일경우 하위 라인까지 함께 재배치
@@ -18279,7 +19347,7 @@ OG.renderer.RaphaelRenderer.prototype.drawGuide = function (element) {
 /**
  * ID에 해당하는 Element 의 Stick 용 가이드를 드로잉한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @param {Object} position
  */
 OG.renderer.RaphaelRenderer.prototype.drawStickGuide = function (position) {
@@ -18340,7 +19408,7 @@ OG.renderer.RaphaelRenderer.prototype.removeAllStickGuide = function () {
 /**
  * ID에 해당하는 Element 의 Move & Resize 용 가이드를 제거한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @override
  */
 OG.renderer.RaphaelRenderer.prototype.removeGuide = function (element) {
@@ -18375,7 +19443,7 @@ OG.renderer.RaphaelRenderer.prototype.removeAllGuide = function () {
 /**
  * ID에 해당하는 Edge Element 의 Move & Resize 용 가이드를 드로잉한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @return {Object}
  * @override
  */
@@ -18553,7 +19621,7 @@ OG.renderer.RaphaelRenderer.prototype.drawEdgeGuide = function (element) {
  *
  * @param {Number[]} position 드로잉할 위치 좌표(좌상단)
  * @param {Number[]} size Text Width, Height, Angle
- * @param {OG.geometry.Style,Object} style 스타일
+ * @param {OG.geometry.Style|Object} style 스타일
  * @return {Element} DOM Element
  * @override
  */
@@ -18596,7 +19664,7 @@ OG.renderer.RaphaelRenderer.prototype.removeRubberBand = function (root) {
 /**
  * ID에 해당하는 Element 의 Collapse 가이드를 드로잉한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @return {Element}
  * @override
  */
@@ -18695,7 +19763,7 @@ OG.renderer.RaphaelRenderer.prototype.drawButton = function (element) {
         fill: "white",
         "fill-opacity": 0,
         "shape-rendering": "crispEdges"
-    })
+    });
 
     this._add(_rect1, rElement.id + OG.Constants.COLLAPSE_SUFFIX);
 
@@ -18715,47 +19783,47 @@ OG.renderer.RaphaelRenderer.prototype.drawButton = function (element) {
 //Loop Type 드로우
 
 OG.renderer.RaphaelRenderer.prototype.drawLoopType = function (element) {
-    var me = this, rElement = this._getREleById(OG.Util.isElement(element) ? element.id : element),
-        geometry = rElement ? rElement.node.shape.geom : null,
-        envelope, _upperLeft, _bBoxRect, _rect, _rect1, _lowerCenter,
-        _size = me._CONFIG.COLLAPSE_SIZE,
-        _hSize = _size / 2;
-
-    _rect1 = this._getREleById(rElement.id + OG.Constants.LOOPTYPE_SUFFIX);
-    if (_rect1) {
-        this._remove(_rect1);
-    }
-
-    envelope = geometry.getBoundary();
-    _lowerCenter = envelope.getLowerCenter();
-
-    switch (element.shape.LoopType) {
-        case "Standard":
-            _rect1 = this._PAPER.image("resources/images/symbol/loop_standard.png", _lowerCenter.x - 10, _lowerCenter.y - 25, 20, 20);
-            break;
-
-        case "MIParallel":
-            _rect1 = this._PAPER.path(
-                "M" + (_lowerCenter.x - 15) + " " + (_lowerCenter.y - 15) +
-                "v" + 15 + "M" + (_lowerCenter.x - 10) + " " + (_lowerCenter.y - 15) +
-                "v" + 15 + "M" + (_lowerCenter.x - 5) + " " + (_lowerCenter.y - 15) + "v" + 15
-            );
-            break;
-
-        case "MISequential":
-            _rect1 = this._PAPER.path(
-                "M" + (_lowerCenter.x - 20) + " " + (_lowerCenter.y - 15) +
-                "h" + 15 + "M" + (_lowerCenter.x - 20) + " " + (_lowerCenter.y - 10) +
-                "h" + 15 + "M" + (_lowerCenter.x - 20) + " " + (_lowerCenter.y - 5) + "h" + 15
-            );
-            break;
-
-    }
-    this._add(_rect1, rElement.id + OG.Constants.LOOPTYPE_SUFFIX);
-    _rect1.insertAfter(rElement);
-    rElement.appendChild(_rect1);
-
-    return null;
+    //var me = this, rElement = this._getREleById(OG.Util.isElement(element) ? element.id : element),
+    //    geometry = rElement ? rElement.node.shape.geom : null,
+    //    envelope, _upperLeft, _bBoxRect, _rect, _rect1, _lowerCenter,
+    //    _size = me._CONFIG.COLLAPSE_SIZE,
+    //    _hSize = _size / 2;
+    //
+    //_rect1 = this._getREleById(rElement.id + OG.Constants.LOOPTYPE_SUFFIX);
+    //if (_rect1) {
+    //    this._remove(_rect1);
+    //}
+    //
+    //envelope = geometry.getBoundary();
+    //_lowerCenter = envelope.getLowerCenter();
+    //
+    //switch (element.shape.LoopType) {
+    //    case "Standard":
+    //        _rect1 = this._PAPER.image("resources/images/symbol/loop_standard.png", _lowerCenter.x - 10, _lowerCenter.y - 25, 20, 20);
+    //        break;
+    //
+    //    case "MIParallel":
+    //        _rect1 = this._PAPER.path(
+    //            "M" + (_lowerCenter.x - 15) + " " + (_lowerCenter.y - 15) +
+    //            "v" + 15 + "M" + (_lowerCenter.x - 10) + " " + (_lowerCenter.y - 15) +
+    //            "v" + 15 + "M" + (_lowerCenter.x - 5) + " " + (_lowerCenter.y - 15) + "v" + 15
+    //        );
+    //        break;
+    //
+    //    case "MISequential":
+    //        _rect1 = this._PAPER.path(
+    //            "M" + (_lowerCenter.x - 20) + " " + (_lowerCenter.y - 15) +
+    //            "h" + 15 + "M" + (_lowerCenter.x - 20) + " " + (_lowerCenter.y - 10) +
+    //            "h" + 15 + "M" + (_lowerCenter.x - 20) + " " + (_lowerCenter.y - 5) + "h" + 15
+    //        );
+    //        break;
+    //
+    //}
+    //this._add(_rect1, rElement.id + OG.Constants.LOOPTYPE_SUFFIX);
+    //_rect1.insertAfter(rElement);
+    //rElement.appendChild(_rect1);
+    //
+    //return null;
 };
 
 //Marker Draw
@@ -18768,56 +19836,56 @@ OG.renderer.RaphaelRenderer.prototype.drawAttatchEvent = function (element) {
 
 OG.renderer.RaphaelRenderer.prototype.drawTaskType = function (element) {
 
-    var me = this, rElement = this._getREleById(OG.Util.isElement(element) ? element.id : element),
-        geometry = rElement ? rElement.node.shape.geom : null,
-        envelope, _upperLeft, _bBoxRect, _rect, _rect1,
-        _size = me._CONFIG.COLLAPSE_SIZE,
-        _hSize = _size / 2;
-
-    _rect1 = this._getREleById(rElement.id + OG.Constants.TASKTYPE_SUFFIX);
-    if (_rect1) {
-        this._remove(_rect1);
-    }
-
-    envelope = geometry.getBoundary();
-    _upperLeft = envelope.getUpperLeft();
-
-    switch (element.shape.TaskType) {
-        case "User":
-            _rect1 = this._PAPER.image("resources/images/symbol/User.png", _upperLeft.x + 5, _upperLeft.y + 5, 20, 20);
-            break;
-        case "Send":
-            _rect1 = this._PAPER.image("resources/images/symbol/Send.png", _upperLeft.x + 5, _upperLeft.y + 5, 20, 20);
-            break;
-        case "Receive":
-            _rect1 = this._PAPER.image("resources/images/symbol/Receive.png", _upperLeft.x + 5, _upperLeft.y + 5, 20, 20);
-            break;
-        case "Manual":
-            _rect1 = this._PAPER.image("resources/images/symbol/Manual.png", _upperLeft.x + 5, _upperLeft.y + 5, 20, 20);
-            break;
-        case "Service":
-            _rect1 = this._PAPER.image("resources/images/symbol/Service.png", _upperLeft.x + 5, _upperLeft.y + 5, 20, 20);
-            break;
-        case "BusinessRule":
-            _rect1 = this._PAPER.image("resources/images/symbol/BusinessRule.png", _upperLeft.x + 5, _upperLeft.y + 5, 20, 20);
-            break;
-        case "Script":
-            _rect1 = this._PAPER.image("resources/images/symbol/Script.png", _upperLeft.x + 5, _upperLeft.y + 5, 20, 20);
-            break;
-        case "Mapper":
-            _rect1 = this._PAPER.image("resources/images/symbol/Mapper.png", _upperLeft.x + 5, _upperLeft.y + 5, 20, 20);
-            break;
-        case "WebService":
-            _rect1 = this._PAPER.image("resources/images/symbol/WebService.png", _upperLeft.x + 5, _upperLeft.y + 5, 20, 20);
-            break;
-
-    }
-
-    this._add(_rect1, rElement.id + OG.Constants.TASKTYPE_SUFFIX);
-    _rect1.insertAfter(rElement);
-    rElement.appendChild(_rect1);
-
-    return null;
+    //var me = this, rElement = this._getREleById(OG.Util.isElement(element) ? element.id : element),
+    //    geometry = rElement ? rElement.node.shape.geom : null,
+    //    envelope, _upperLeft, _bBoxRect, _rect, _rect1,
+    //    _size = me._CONFIG.COLLAPSE_SIZE,
+    //    _hSize = _size / 2;
+    //
+    //_rect1 = this._getREleById(rElement.id + OG.Constants.TASKTYPE_SUFFIX);
+    //if (_rect1) {
+    //    this._remove(_rect1);
+    //}
+    //
+    //envelope = geometry.getBoundary();
+    //_upperLeft = envelope.getUpperLeft();
+    //
+    //switch (element.shape.TaskType) {
+    //    case "User":
+    //        _rect1 = this._PAPER.image("resources/images/symbol/User.png", _upperLeft.x + 5, _upperLeft.y + 5, 20, 20);
+    //        break;
+    //    case "Send":
+    //        _rect1 = this._PAPER.image("resources/images/symbol/Send.png", _upperLeft.x + 5, _upperLeft.y + 5, 20, 20);
+    //        break;
+    //    case "Receive":
+    //        _rect1 = this._PAPER.image("resources/images/symbol/Receive.png", _upperLeft.x + 5, _upperLeft.y + 5, 20, 20);
+    //        break;
+    //    case "Manual":
+    //        _rect1 = this._PAPER.image("resources/images/symbol/Manual.png", _upperLeft.x + 5, _upperLeft.y + 5, 20, 20);
+    //        break;
+    //    case "Service":
+    //        _rect1 = this._PAPER.image("resources/images/symbol/Service.png", _upperLeft.x + 5, _upperLeft.y + 5, 20, 20);
+    //        break;
+    //    case "BusinessRule":
+    //        _rect1 = this._PAPER.image("resources/images/symbol/BusinessRule.png", _upperLeft.x + 5, _upperLeft.y + 5, 20, 20);
+    //        break;
+    //    case "Script":
+    //        _rect1 = this._PAPER.image("resources/images/symbol/Script.png", _upperLeft.x + 5, _upperLeft.y + 5, 20, 20);
+    //        break;
+    //    case "Mapper":
+    //        _rect1 = this._PAPER.image("resources/images/symbol/Mapper.png", _upperLeft.x + 5, _upperLeft.y + 5, 20, 20);
+    //        break;
+    //    case "WebService":
+    //        _rect1 = this._PAPER.image("resources/images/symbol/WebService.png", _upperLeft.x + 5, _upperLeft.y + 5, 20, 20);
+    //        break;
+    //
+    //}
+    //
+    //this._add(_rect1, rElement.id + OG.Constants.TASKTYPE_SUFFIX);
+    //_rect1.insertAfter(rElement);
+    //rElement.appendChild(_rect1);
+    //
+    //return null;
 };
 
 //Status 드로우
@@ -18844,7 +19912,7 @@ OG.renderer.RaphaelRenderer.prototype.drawStatus = function (element) {
 
     switch (element.shape.status) {
         case "Completed":
-            _rect1 = this._PAPER.image("images/opengraph/complete.png", _upperRight.x - 25, _upperRight.y + 5, 20, 20);
+            _rect1 = this._PAPER.image("resources/images/symbol/complete.png", _upperRight.x - 25, _upperRight.y + 5, 20, 20);
             break;
         case "Running":
             _rect = this._PAPER.rect(envelope.getUpperLeft().x - 10, envelope.getUpperLeft().y - 10, envelope.getWidth() + 20, envelope.getHeight() + 20);
@@ -18854,25 +19922,60 @@ OG.renderer.RaphaelRenderer.prototype.drawStatus = function (element) {
             _rect.attr("fill-opacity", "1");
             _rect.attr("stroke-dasharray", "--");
 
-            _rect1 = this._PAPER.image("images/opengraph/running.png", _upperRight.x - 25, _upperRight.y + 5, 20, 20);
+            _rect1 = this._PAPER.image("resources/images/symbol/running.png", _upperRight.x - 25, _upperRight.y + 5, 20, 20);
             break;
     }
 
     if (element.shape.status == "Running") {
-        var ani1 = Raphael.animation({
-            fill: '#C9E2FC'
-        }, 1000);
-
-        var ani2 = Raphael.animation({
-            fill: 'white'
-        }, 1000, startAni);
-
-        function startAni() {
-            _rect.attr({fill: 'white'}).animate(ani1);
-            _rect.attr({fill: '#C9E2FC'}).animate(ani2.delay(1000));
+        //애니메이션 프로퍼티는,
+        var animationRepeat = true;
+        var animationData =
+            [
+                {
+                    start: {
+                        fill: 'white'
+                    },
+                    to: {
+                        fill: '#C9E2FC'
+                    },
+                    ms: 1000
+                },
+                {
+                    start: {
+                        fill: '#C9E2FC'
+                    },
+                    to: {
+                        fill: 'white'
+                    },
+                    ms: 1000,
+                    delay: 1000
+                }
+            ];
+        var maxDuration = 0;
+        var monitorAnimationIndex;
+        var delay, ms;
+        for (var i = 0; i < animationData.length; i++) {
+            ms = animationData[i].ms ? animationData[i].ms : 0;
+            delay = animationData[i].delay ? animationData[i].delay : 0;
+            if (maxDuration < ms + delay) {
+                maxDuration = ms + delay;
+                monitorAnimationIndex = i;
+            }
         }
 
-        startAni();
+        var startAnimation = function () {
+            for (var i = 0; i < animationData.length; i++) {
+                var ani;
+                if (i == monitorAnimationIndex && animationRepeat) {
+                    ani = Raphael.animation(animationData[i].to, animationData[i].ms, startAnimation);
+                    _rect.attr(animationData[i].start).animate(ani.delay(animationData[i].delay));
+                } else {
+                    ani = Raphael.animation(animationData[i].to, animationData[i].ms);
+                    _rect.attr(animationData[i].start).animate(ani.delay(animationData[i].delay));
+                }
+            }
+        };
+        startAnimation();
     }
     this._add(_rect1, rElement.id + OG.Constants.STATUS_SUFFIX);
     _rect1.insertAfter(rElement);
@@ -19311,7 +20414,7 @@ OG.renderer.RaphaelRenderer.prototype.alignTop = function () {
 /**
  * Shape 을 캔버스에서 관련된 모두를 삭제한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @override
  */
 OG.renderer.RaphaelRenderer.prototype.removeShape = function (element) {
@@ -19348,7 +20451,7 @@ OG.renderer.RaphaelRenderer.prototype.removeShape = function (element) {
 /**
  * ID에 해당하는 Element 를 캔버스에서 제거한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @override
  */
 OG.renderer.RaphaelRenderer.prototype.remove = function (element) {
@@ -19360,7 +20463,7 @@ OG.renderer.RaphaelRenderer.prototype.remove = function (element) {
 /**
  * 하위 엘리먼트만 제거한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @override
  */
 OG.renderer.RaphaelRenderer.prototype.removeChild = function (element) {
@@ -19395,7 +20498,7 @@ OG.renderer.RaphaelRenderer.prototype.getElementByPoint = function (position) {
 /**
  * 엘리먼트에 속성값을 설정한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @param {Object} attribute 속성값
  * @override
  */
@@ -19409,7 +20512,7 @@ OG.renderer.RaphaelRenderer.prototype.setAttr = function (element, attribute) {
 /**
  * 엘리먼트 속성값을 반환한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @param {String} attrName 속성이름
  * @return {Object} attribute 속성값
  * @override
@@ -19425,7 +20528,7 @@ OG.renderer.RaphaelRenderer.prototype.getAttr = function (element, attrName) {
 /**
  * Shape 의 스타일을 변경한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @param {Object} style 스타일
  * @override
  */
@@ -19442,7 +20545,7 @@ OG.renderer.RaphaelRenderer.prototype.setShapeStyle = function (element, style) 
 /**
  * Shape 의 선 연결 커스텀 컨트롤러를 설정한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @param {Array} textList 텍스트 리스트
  * @override
  */
@@ -19450,38 +20553,28 @@ OG.renderer.RaphaelRenderer.prototype.setShapeStyle = function (element, style) 
 OG.renderer.RaphaelRenderer.prototype.setTextListInController = function (element, textList) {
     var rElement = this._getREleById(OG.Util.isElement(element) ? element.id : element);
     if (rElement && element.shape && element.shape.geom) {
-        var data = this._CANVAS.getCustomData(element);
-        if (!data) {
-            data = {}
-        }
-        data['textLineController'] = textList;
-        this._CANVAS.setCustomData(element, data);
+        element.shape.textList = textList;
     }
 };
 
 /**
  * Shape 의 선 연결 커스텀 컨트롤러를 가져온다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @override
  */
 
 OG.renderer.RaphaelRenderer.prototype.getTextListInController = function (element) {
     var rElement = this._getREleById(OG.Util.isElement(element) ? element.id : element);
     if (rElement && element.shape && element.shape.geom) {
-        var data = this._CANVAS.getCustomData(element);
-        if (data) {
-            return data['textLineController'];
-        } else {
-            return null;
-        }
+        return element.shape.textList;
     }
 };
 
 /**
  * ID에 해당하는 Element 를 최상단 레이어로 이동한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @override
  */
 OG.renderer.RaphaelRenderer.prototype.toFront = function (element) {
@@ -19494,7 +20587,7 @@ OG.renderer.RaphaelRenderer.prototype.toFront = function (element) {
 /**
  * ID에 해당하는 Element 를 최하단 레이어로 이동한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @override
  */
 OG.renderer.RaphaelRenderer.prototype.toBack = function (element) {
@@ -19502,6 +20595,50 @@ OG.renderer.RaphaelRenderer.prototype.toBack = function (element) {
     if (rElement) {
         rElement.toBack();
     }
+};
+
+/**
+ * ID에 해당하는 Element 를 앞으로 한단계 이동한다.
+ *
+ * @param {Element|String} element Element 또는 ID
+ * @override
+ */
+OG.renderer.RaphaelRenderer.prototype.bringForward = function (element) {
+    var rElement = this._getREleById(OG.Util.isElement(element) ? element.id : element);
+    if (!rElement) {
+        return;
+    }
+    element = rElement.node;
+    var me = this, root = $(me.getRootGroup());
+    if (me.isLane(element)) {
+        element = me._RENDERER.getRootLane(element);
+    }
+    var length = $(element).prevAll().length;
+    root[0].insertBefore(element, OG.Util.isIE() ? root[0].childNodes[length + 1] : root[0].children[length + 1]);
+};
+
+/**
+ * ID에 해당하는 Element 를 뒤로 한단계 이동한다.
+ *
+ * @param {Element|String} element Element 또는 ID
+ * @override
+ */
+OG.renderer.RaphaelRenderer.prototype.sendBackward = function (element) {
+    var rElement = this._getREleById(OG.Util.isElement(element) ? element.id : element);
+    if (!rElement) {
+        return;
+    }
+    element = rElement.node;
+    var me = this, root = $(me.getRootGroup());
+    if (me.isLane(element)) {
+        element = me.getRootLane(element);
+    }
+    var length = $(element).prevAll().length;
+    var depth = length - 2;
+    if (depth < 0) {
+        depth = 0;
+    }
+    root[0].insertBefore(element, OG.Util.isIE() ? root[0].childNodes[depth] : root[0].children[depth]);
 };
 
 /**
@@ -19619,7 +20756,7 @@ OG.renderer.RaphaelRenderer.prototype.setScale = function (scale) {
 /**
  * ID에 해당하는 Element 를 캔버스에서 show 한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @override
  */
 OG.renderer.RaphaelRenderer.prototype.show = function (element) {
@@ -19632,7 +20769,7 @@ OG.renderer.RaphaelRenderer.prototype.show = function (element) {
 /**
  * ID에 해당하는 Element 를 캔버스에서 hide 한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @override
  */
 OG.renderer.RaphaelRenderer.prototype.hide = function (element) {
@@ -19645,8 +20782,8 @@ OG.renderer.RaphaelRenderer.prototype.hide = function (element) {
 /**
  * Source Element 를 Target Element 아래에 append 한다.
  *
- * @param {Element,String} srcElement Element 또는 ID
- * @param {Element,String} targetElement Element 또는 ID
+ * @param {Element|String} srcElement Element 또는 ID
+ * @param {Element|String} targetElement Element 또는 ID
  * @return {Element} Source Element
  * @override
  */
@@ -19662,8 +20799,8 @@ OG.renderer.RaphaelRenderer.prototype.appendChild = function (srcElement, target
 /**
  * Source Element 를 Target Element 이후에 insert 한다.
  *
- * @param {Element,String} srcElement Element 또는 ID
- * @param {Element,String} targetElement Element 또는 ID
+ * @param {Element|String} srcElement Element 또는 ID
+ * @param {Element|String} targetElement Element 또는 ID
  * @return {Element} Source Element
  * @override
  */
@@ -19679,8 +20816,8 @@ OG.renderer.RaphaelRenderer.prototype.insertAfter = function (srcElement, target
 /**
  * Source Element 를 Target Element 이전에 insert 한다.
  *
- * @param {Element,String} srcElement Element 또는 ID
- * @param {Element,String} targetElement Element 또는 ID
+ * @param {Element|String} srcElement Element 또는 ID
+ * @param {Element|String} targetElement Element 또는 ID
  * @return {Element} Source Element
  * @override
  */
@@ -19696,7 +20833,7 @@ OG.renderer.RaphaelRenderer.prototype.insertBefore = function (srcElement, targe
 /**
  * 해당 Element 를 가로, 세로 Offset 만큼 이동한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @param {Number[]} offset [가로, 세로]
  * @param {String[]} excludeEdgeId redraw 제외할 Edge ID
  * @return {Element} Element
@@ -19746,7 +20883,7 @@ OG.renderer.RaphaelRenderer.prototype.move = function (element, offset, excludeE
 /**
  * 주어진 중심좌표로 해당 Element 를 이동한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @param {Number[]} position [x, y]
  * @return {Element} Element
  * @override
@@ -19775,7 +20912,7 @@ OG.renderer.RaphaelRenderer.prototype.moveCentroid = function (element, position
 /**
  * 중심 좌표를 기준으로 주어진 각도 만큼 회전한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @param {Number} angle 각도
  * @return {Element} Element
  * @override
@@ -19826,7 +20963,7 @@ OG.renderer.RaphaelRenderer.prototype.rotate = function (element, angle) {
 /**
  * 상, 하, 좌, 우 외곽선을 이동한 만큼 리사이즈 한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @param {Number[]} offset [상, 하, 좌, 우] 각 방향으로 + 값
  * @return {Element} Element
  * @override
@@ -19873,7 +21010,7 @@ OG.renderer.RaphaelRenderer.prototype.resize = function (element, offset) {
 /**
  * 중심좌표는 고정한 채 Bounding Box 의 width, height 를 리사이즈 한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @param {Number[]} size [Width, Height]
  * @return {Element} Element
  * @override
@@ -19904,7 +21041,7 @@ OG.renderer.RaphaelRenderer.prototype.resizeBox = function (element, size) {
 /**
  * 노드 Element 를 복사한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @return {Element} Element
  * @override
  */
@@ -19933,7 +21070,7 @@ OG.renderer.RaphaelRenderer.prototype.getElementById = function (id) {
 /**
  * 해당 엘리먼트의 BoundingBox 영역 정보를 반환한다.
  *
- * @param {Element,String} element
+ * @param {Element|String} element
  * @return {Object} {width, height, x, y, x2, y2}
  * @override
  */
@@ -20179,7 +21316,7 @@ OG.renderer.RaphaelRenderer.prototype.drawConnectGuide = function (element) {
 /**
  * ID에 해당하는 Element 의 Connect Guide 를 제거한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  */
 OG.renderer.RaphaelRenderer.prototype.removeConnectGuide = function (element) {
     var me = this;
@@ -20209,7 +21346,7 @@ OG.renderer.RaphaelRenderer.prototype.removeAllConnectGuide = function () {
 /**
  * ID에 해당하는 Element 이외의 모든 Connect Guide 를 제거한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  */
 OG.renderer.RaphaelRenderer.prototype.removeOtherConnectGuide = function (element) {
 
@@ -20226,7 +21363,7 @@ OG.renderer.RaphaelRenderer.prototype.removeOtherConnectGuide = function (elemen
 /**
  * Element 내부의 Spot 들을 반환한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @return {Array} Spot Element Array
  */
 OG.renderer.RaphaelRenderer.prototype.getSpots = function (element) {
@@ -20244,7 +21381,7 @@ OG.renderer.RaphaelRenderer.prototype.getSpots = function (element) {
 /**
  * Element 내부의 변곡점 Spot 들만 반환한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @return {Array} Spot Element Array
  */
 OG.renderer.RaphaelRenderer.prototype.getCircleSpots = function (element) {
@@ -20267,7 +21404,7 @@ OG.renderer.RaphaelRenderer.prototype.getCircleSpots = function (element) {
  *
  * @param {Number} x 이벤트의 캔버스 기준 x 좌표
  * @param {Number} x 이벤트의 캔버스 기준 y 좌표
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @return {Element} Spot Element
  */
 OG.renderer.RaphaelRenderer.prototype.createVirtualSpot = function (x, y, element) {
@@ -20379,7 +21516,7 @@ OG.renderer.RaphaelRenderer.prototype.createVirtualSpot = function (x, y, elemen
 /**
  * Element 내부의 가상 변곡점 스팟을 반환한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @return {Element} Spot Element
  */
 OG.renderer.RaphaelRenderer.prototype.getVirtualSpot = function (element) {
@@ -20396,7 +21533,7 @@ OG.renderer.RaphaelRenderer.prototype.getVirtualSpot = function (element) {
 /**
  * Element 내부의 가상 변곡점 스팟을 삭제한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @return {Element} Spot Element
  */
 OG.renderer.RaphaelRenderer.prototype.removeVirtualSpot = function (element) {
@@ -20413,7 +21550,7 @@ OG.renderer.RaphaelRenderer.prototype.removeVirtualSpot = function (element) {
 /**
  * Element 내부의 Spot 중 선택한 스팟을 제외하고 모두 삭제하고, 가이드라인도 삭제한다.
  *
- * @param {Element,String} 선택한 spot Element 또는 ID
+ * @param {Element|String} 선택한 spot Element 또는 ID
  */
 OG.renderer.RaphaelRenderer.prototype.selectSpot = function (spot) {
     var me = this;
@@ -20460,7 +21597,7 @@ OG.renderer.RaphaelRenderer.prototype._removeEdgeChild = function (rElement) {
 /**
  * 하위 엘리먼트들을 반환한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @return {Array} Array Element
  */
 OG.renderer.RaphaelRenderer.prototype.getChildNodes = function (element) {
@@ -20480,7 +21617,7 @@ OG.renderer.RaphaelRenderer.prototype.getChildNodes = function (element) {
  * Edge Element 내부의 패스중 나열된 두 꼭지점이 매우 짧은 선일 경우 하나의 꼭지점으로 정리한다.
  * Edge Element 내부의 패스중 나열된 세 꼭지점이 평행에 가까울 경우 하나의 선분으로 정리한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  */
 OG.renderer.RaphaelRenderer.prototype.trimEdge = function (element) {
     var me = this, rElement = this._getREleById(OG.Util.isElement(element) ? element.id : element),
@@ -20520,7 +21657,7 @@ OG.renderer.RaphaelRenderer.prototype.trimEdge = function (element) {
  * Edge Element의 연결 정보가 있을 경우 연결대상과 꼭지점의 다중 중복을 정리한다.
  * 다중 중복 정리 후 Edge 의 모양이 직선인 경우 새로운 plain 을 제작한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @return {Element} element
  */
 OG.renderer.RaphaelRenderer.prototype.trimConnectInnerVertice = function (element) {
@@ -20644,7 +21781,7 @@ OG.renderer.RaphaelRenderer.prototype.trimConnectInnerVertice = function (elemen
 /**
  * Edge Element의 연결 정보가 있을 경우 선분과 연결대상의 연결점을 자연스럽게 한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @return {Element} element
  */
 OG.renderer.RaphaelRenderer.prototype.trimConnectIntersection = function (element) {
@@ -20704,7 +21841,7 @@ OG.renderer.RaphaelRenderer.prototype.trimConnectIntersection = function (elemen
 /**
  * ID에 해당하는 Element 의 바운더리 영역을 리턴한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @return {OG.geometry.Envelope} Envelope 영역
  */
 OG.renderer.RaphaelRenderer.prototype.getBoundary = function (element) {
@@ -20721,7 +21858,7 @@ OG.renderer.RaphaelRenderer.prototype.getBoundary = function (element) {
 /**
  * Element 에 하이라이트 속성을 부여한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @param {Object} highlight HIGHLIGHT 속성 집합.
  */
 OG.renderer.RaphaelRenderer.prototype.setHighlight = function (element, highlight) {
@@ -20747,7 +21884,7 @@ OG.renderer.RaphaelRenderer.prototype.setHighlight = function (element, highligh
 /**
  * Element 에 하이라이트 속성을 제거한다.
  *
- * @param {Element,String} element Element 또는 ID
+ * @param {Element|String} element Element 또는 ID
  * @param {Object} highlight HIGHLIGHT 속성 집합.
  */
 OG.renderer.RaphaelRenderer.prototype.removeHighlight = function (element, highlight) {
@@ -20776,7 +21913,7 @@ OG.renderer.RaphaelRenderer.prototype.removeHighlight = function (element, highl
 /**
  * 터미널 문자열을 생성한다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  * @param {Array} point 연결 좌표정보 [x,y]
  *
  * @return {String} terminal 터미널 문자열
@@ -20798,7 +21935,7 @@ OG.renderer.RaphaelRenderer.prototype.createTerminalString = function (element, 
 /**
  * 디폴트 터미널 문자열을 생성한다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  *
  * @return {String} terminal 터미널 문자열
  */
@@ -20819,7 +21956,7 @@ OG.renderer.RaphaelRenderer.prototype.createDefaultTerminalString = function (el
 /**
  * 터미널로부터 부모 Shape element 로의 퍼센테이지 좌표를 반환한다.
  *
- * @param {Element,String} terminal 터미널 Element or ID
+ * @param {Element|String} terminal 터미널 Element or ID
  * @return {Array} [px,py]
  * @private
  */
@@ -20836,7 +21973,7 @@ OG.renderer.RaphaelRenderer.prototype._getPercentageFromTerminal = function (ter
 /**
  * 터미널로부터 좌표를 반환한다.
  *
- * @param {Element,String} terminal 터미널 Element or ID
+ * @param {Element|String} terminal 터미널 Element or ID
  * @return {OG.geometry.Coordinate} 좌표
  * @private
  */
@@ -20895,7 +22032,7 @@ OG.renderer.RaphaelRenderer.prototype.removeAllEdgeGuide = function () {
  *
  * @param {Number} x 이벤트의 캔버스 기준 x 좌표
  * @param {Number} x 이벤트의 캔버스 기준 y 좌표
- * @param {Element,String} targetEle Element 또는 ID
+ * @param {Element|String} targetEle Element 또는 ID
  * @return {Element} Edge Element
  */
 OG.renderer.RaphaelRenderer.prototype.createVirtualEdge = function (x, y, targetEle) {
@@ -21117,7 +22254,7 @@ OG.renderer.RaphaelRenderer.prototype.redo = function () {
 /**
  * 도형의 Lane 타입 여부를 판별한다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  * @return {boolean} true false
  */
 OG.renderer.RaphaelRenderer.prototype.isLane = function (element) {
@@ -21135,7 +22272,7 @@ OG.renderer.RaphaelRenderer.prototype.isLane = function (element) {
 /**
  * 도형의 Pool 타입 여부를 판별한다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  * @return {boolean} true false
  */
 OG.renderer.RaphaelRenderer.prototype.isPool = function (element) {
@@ -21152,7 +22289,7 @@ OG.renderer.RaphaelRenderer.prototype.isPool = function (element) {
 /**
  * 도형의 ScopeActivity 타입 여부를 판별한다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  * @return {boolean} true false
  */
 OG.renderer.RaphaelRenderer.prototype.isScopeActivity = function (element) {
@@ -21169,7 +22306,7 @@ OG.renderer.RaphaelRenderer.prototype.isScopeActivity = function (element) {
 /**
  * 도형의 HorizontalLaneShape 타입 여부를 판별한다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  * @return {boolean} true false
  */
 OG.renderer.RaphaelRenderer.prototype.isHorizontalLane = function (element) {
@@ -21179,7 +22316,7 @@ OG.renderer.RaphaelRenderer.prototype.isHorizontalLane = function (element) {
 /**
  * 도형의 VerticalLaneShape 타입 여부를 판별한다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  * @return {boolean} true false
  */
 OG.renderer.RaphaelRenderer.prototype.isVerticalLane = function (element) {
@@ -21189,7 +22326,7 @@ OG.renderer.RaphaelRenderer.prototype.isVerticalLane = function (element) {
 /**
  * 도형의 HorizontalPoolShape 타입 여부를 판별한다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  * @return {boolean} true false
  */
 OG.renderer.RaphaelRenderer.prototype.isHorizontalPool = function (element) {
@@ -21199,7 +22336,7 @@ OG.renderer.RaphaelRenderer.prototype.isHorizontalPool = function (element) {
 /**
  * 도형의 VerticalPoolShape 타입 여부를 판별한다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  * @return {boolean} true false
  */
 OG.renderer.RaphaelRenderer.prototype.isVerticalPool = function (element) {
@@ -21209,7 +22346,7 @@ OG.renderer.RaphaelRenderer.prototype.isVerticalPool = function (element) {
 /**
  * Lane 타입 도형 하위의 Lane 타입들을 리턴한다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  * @return {Array} childsLanes
  */
 OG.renderer.RaphaelRenderer.prototype.getChildLane = function (element) {
@@ -21231,7 +22368,7 @@ OG.renderer.RaphaelRenderer.prototype.getChildLane = function (element) {
 /**
  * Lane 타입이 내부적으로 분기가 가능한 수를 리턴한다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  * @return {Number} 0,1,2
  */
 OG.renderer.RaphaelRenderer.prototype.enableDivideCount = function (element) {
@@ -21277,7 +22414,7 @@ OG.renderer.RaphaelRenderer.prototype.enableDivideCount = function (element) {
 /**
  * Lane,Pool 의 타이틀 영역을 제외한 boundary 를 리턴한다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  * @param {OG.geometry.Envelope} boundary
  */
 OG.renderer.RaphaelRenderer.prototype.getExceptTitleLaneArea = function (element) {
@@ -21324,8 +22461,8 @@ OG.renderer.RaphaelRenderer.prototype.getExceptTitleLaneArea = function (element
 /**
  * Lane 을 분기한다.
  *
- * @param {Element,String} Element Element 또는 ID
- * @param {String} quarterOrder 분기 명령
+ * @param {Element|String} Element Element 또는 ID
+ * @param {String} quarterOrder 분기 명령 QUARTER_UPPER | QUARTER_LOW | QUARTER_BISECTOR | QUARTER_THIRDS
  */
 OG.renderer.RaphaelRenderer.prototype.divideLane = function (element, quarterOrder) {
     var divedLanes = [];
@@ -21525,6 +22662,8 @@ OG.renderer.RaphaelRenderer.prototype.divideLane = function (element, quarterOrd
     }
 
     me.offDropablePool();
+
+    return divedLanes;
 };
 
 /**
@@ -21532,7 +22671,7 @@ OG.renderer.RaphaelRenderer.prototype.divideLane = function (element, quarterOrd
  * Base Lane 은 자식 Lane 을 가지지 않는 Lane 을 뜻함.
  * 반환하는 Array 는 좌표상의 값을 기준으로 정렬되어 있는 상태이다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  * @return {Array} childBaseLanes
  */
 OG.renderer.RaphaelRenderer.prototype.getBaseLanes = function (element) {
@@ -21600,7 +22739,7 @@ OG.renderer.RaphaelRenderer.prototype.getBaseLanes = function (element) {
 /**
  * Lane 의 최상위 Lane 을 반환한다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  * @return {Element} Lane Element
  */
 OG.renderer.RaphaelRenderer.prototype.getRootLane = function (element) {
@@ -21637,7 +22776,7 @@ OG.renderer.RaphaelRenderer.prototype.getRootLane = function (element) {
 /**
  * Lane 의 BaseLane 으로부터 자신의 순서를 구한다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  * @return {Number} index
  */
 OG.renderer.RaphaelRenderer.prototype.getIndexOfLane = function (element) {
@@ -21669,7 +22808,7 @@ OG.renderer.RaphaelRenderer.prototype.getIndexOfLane = function (element) {
 /**
  * Lane 의 최상위 Lane 으로부터 Depth를 구한다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  * @return {Number} depth
  */
 OG.renderer.RaphaelRenderer.prototype.getDepthOfLane = function (element) {
@@ -21699,7 +22838,7 @@ OG.renderer.RaphaelRenderer.prototype.getDepthOfLane = function (element) {
 /**
  * Lane 의 BaseLane 영역을 기준으로 전체 Lane 의 구조를 재정립한다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  */
 OG.renderer.RaphaelRenderer.prototype.reEstablishLane = function (element) {
     var me = this;
@@ -21829,7 +22968,7 @@ OG.renderer.RaphaelRenderer.prototype.getBoundaryOfElements = function (elements
  * Lane 의 baseLane 들 중
  * Lane의 주어진 direction 과 BaseLane 의 주어진 direction 이 가장 가까운 BaseLane 의 인덱스를 반환한다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  * @param {String} direction
  * @return {Number} index
  */
@@ -21894,7 +23033,7 @@ OG.renderer.RaphaelRenderer.prototype.getNearestBaseLaneIndexAsDirection = funct
  * Group 의 내부 도형들의 Boundary를 반환한다.
  * Lane 이면 최상위 Lane의 내부 도형들의 Boundary를 반환한다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  * @return {OG.geometry.Envelope} Envelope 영역
  */
 OG.renderer.RaphaelRenderer.prototype.getBoundaryOfInnerShapesGroup = function (element) {
@@ -21929,7 +23068,7 @@ OG.renderer.RaphaelRenderer.prototype.getBoundaryOfInnerShapesGroup = function (
 /**
  * Lane 의 BaseLane 중 길이가 가장 작은 Lane 을 반환한다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  * @param {Element} baseLane
  */
 OG.renderer.RaphaelRenderer.prototype.getSmallestBaseLane = function (element) {
@@ -21975,7 +23114,7 @@ OG.renderer.RaphaelRenderer.prototype.getSmallestBaseLane = function (element) {
 /**
  * Lane 을 리사이즈한다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  * @param {Number[]} offset [상, 하, 좌, 우] 각 방향으로 + 값
  */
 OG.renderer.RaphaelRenderer.prototype.resizeLane = function (element, offset) {
@@ -22071,7 +23210,7 @@ OG.renderer.RaphaelRenderer.prototype.resizeLane = function (element, offset) {
 /**
  * Lane 을 삭제한다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  */
 OG.renderer.RaphaelRenderer.prototype.removeLaneShape = function (element) {
     var me = this;
@@ -22162,7 +23301,7 @@ OG.renderer.RaphaelRenderer.prototype.removeLaneShape = function (element) {
 /**
  * Lane 내부 도형들을 구한다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  */
 OG.renderer.RaphaelRenderer.prototype.getInnerShapesOfLane = function (element) {
     var me = this;
@@ -22194,7 +23333,7 @@ OG.renderer.RaphaelRenderer.prototype.getInnerShapesOfLane = function (element) 
 /**
  * Lane 의 내부 도형들을 앞으로 이동시킨다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  */
 OG.renderer.RaphaelRenderer.prototype.fitLaneOrder = function (element) {
     var me = this;
@@ -22221,7 +23360,7 @@ OG.renderer.RaphaelRenderer.prototype.fitLaneOrder = function (element) {
  * Shape 가 소속된 의 최상위 그룹 앨리먼트를 반환한다.
  * 그룹이 소속이 아닌 앨리먼트는 자신을 반환한다.
  *
- * @param {Element,String} Element 또는 ID
+ * @param {Element|String} Element 또는 ID
  * @return {Element} Element
  */
 OG.renderer.RaphaelRenderer.prototype.getRootGroupOfShape = function (element) {
@@ -22257,7 +23396,7 @@ OG.renderer.RaphaelRenderer.prototype.getRootGroupOfShape = function (element) {
 /**
  * Edge 가 Gourp 사이를 넘어가는 경우 스타일에 변화를 준다.
  *
- * @param {Element,String} Element 또는 ID
+ * @param {Element|String} Element 또는 ID
  */
 OG.renderer.RaphaelRenderer.prototype.checkBridgeEdge = function (element) {
     if (!this._CONFIG.CHECK_BRIDGE_EDGE) {
@@ -22330,7 +23469,7 @@ OG.renderer.RaphaelRenderer.prototype.checkAllBridgeEdge = function () {
 /**
  * Group 내부의 모든 shape 을 리턴한다.
  *
- * @param {Element,String} Element Element 또는 ID
+ * @param {Element|String} Element Element 또는 ID
  */
 OG.renderer.RaphaelRenderer.prototype.getInnerShapesOfGroup = function (element) {
     var me = this;
@@ -22440,9 +23579,9 @@ OG.renderer.RaphaelRenderer.prototype.getFrontForBoundary = function (boundary) 
 /**
  * 신규 Edge 의 vertices 를 연결대상 도형에 따라 설정한다
  *
- * @param {Element,String} Edge Element 또는 ID
- * @param {Element,String} FromShape Element 또는 ID
- * @param {Element,String} ToShape Element 또는 ID
+ * @param {Element|String} Edge Element 또는 ID
+ * @param {Element|String} FromShape Element 또는 ID
+ * @param {Element|String} ToShape Element 또는 ID
  * @return {Element} Edge Element
  */
 OG.renderer.RaphaelRenderer.prototype.trimEdgeDirection = function (edge, fromShape, toShape) {
@@ -22516,7 +23655,7 @@ OG.renderer.RaphaelRenderer.prototype.trimEdgeDirection = function (edge, fromSh
 /**
  * Lane 또는 Pool 내부 도형들을 그룹에 포함시킨다.
  *
- * @param {Element,String} Element
+ * @param {Element|String} Element
 
  * @return {Element} Element
  */
@@ -22557,7 +23696,7 @@ OG.renderer.RaphaelRenderer.prototype.putInnerShapeToPool = function (element) {
 /**
  * 신규 Lane 또는 Pool 이 캔버스상에서 드래그하여 그려지도록 사전작업을 수행한다.
  *
- * @param {Element,String} Element
+ * @param {Element|String} Element
 
  * @return {Element} Element
  */
@@ -23616,7 +24755,7 @@ OG.handler.EventHandler.prototype = {
                              * IE 10,11 use parentNode instead parentElement
                              */
                             var parentNode = ele.parentElement;
-                            if(!parentNode){
+                            if (!parentNode) {
                                 parentNode = ele.parentNode;
                             }
                             if (parentNode.id !== root.id) {
@@ -23674,6 +24813,8 @@ OG.handler.EventHandler.prototype = {
                             if (virtualEdge) {
                                 $(root).data(OG.Constants.GUIDE_SUFFIX.LINE_CONNECT_MODE, 'created');
                                 $(root).data(OG.Constants.GUIDE_SUFFIX.LINE_CONNECT_TEXT, line.text);
+                                $(root).data(OG.Constants.GUIDE_SUFFIX.LINE_CONNECT_LABEL, line.label);
+                                $(root).data(OG.Constants.GUIDE_SUFFIX.LINE_CONNECT_SHAPE, line.shape);
                             }
                         }
                     });
@@ -23687,6 +24828,8 @@ OG.handler.EventHandler.prototype = {
                             virtualEdge = me._RENDERER.createVirtualEdge(eventOffset.x, eventOffset.y, element);
                             $(root).data(OG.Constants.GUIDE_SUFFIX.LINE_CONNECT_MODE, 'active');
                             $(root).data(OG.Constants.GUIDE_SUFFIX.LINE_CONNECT_TEXT, line.text);
+                            $(root).data(OG.Constants.GUIDE_SUFFIX.LINE_CONNECT_LABEL, line.label);
+                            $(root).data(OG.Constants.GUIDE_SUFFIX.LINE_CONNECT_SHAPE, line.shape);
                         }
                     });
                 });
@@ -24583,7 +25726,10 @@ OG.handler.EventHandler.prototype = {
             // 마우스 클릭하여 선택 처리
             $(element).bind({
                 click: function (event, param) {
-                    $(me._RENDERER.getContainer()).focus();
+                    if (me._CONFIG.FOCUS_CANVAS_ONSELECT) {
+                        $(me._RENDERER.getContainer()).focus();
+                    }
+                    //$(me._RENDERER.getContainer()).focus();
 
                     if (element.shape) {
                         me._RENDERER.removeAllVirtualEdge();
@@ -24613,6 +25759,8 @@ OG.handler.EventHandler.prototype = {
                         var isConnectable = me._isConnectable(element.shape);
                         var isConnectMode = $(root).data(OG.Constants.GUIDE_SUFFIX.LINE_CONNECT_MODE);
                         var connectText = $(root).data(OG.Constants.GUIDE_SUFFIX.LINE_CONNECT_TEXT);
+                        var connectLabel = $(root).data(OG.Constants.GUIDE_SUFFIX.LINE_CONNECT_LABEL);
+                        var connectShape = $(root).data(OG.Constants.GUIDE_SUFFIX.LINE_CONNECT_SHAPE);
                         var isRectMode = $(root).data(OG.Constants.GUIDE_SUFFIX.RECT_CONNECT_MODE);
                         var isEdge = $(element).attr("_shape") === OG.Constants.SHAPE_TYPE.EDGE;
 
@@ -24632,7 +25780,10 @@ OG.handler.EventHandler.prototype = {
                                     isConnectable = false;
                                 }
                                 if (isConnectable) {
-                                    me._RENDERER._CANVAS.connect(target, element, null, connectText)
+                                    if (connectShape) {
+                                        eval('connectShape = new ' + connectShape + '()');
+                                    }
+                                    me._RENDERER._CANVAS.connect(target, element, null, connectLabel, null, null, null, null, connectShape);
                                     renderer.addHistory();
                                 }
                             } else {
@@ -25001,7 +26152,13 @@ OG.handler.EventHandler.prototype = {
         var renderer = me._RENDERER;
         if (isEnableHotKey === true) {
             // delete, ctrl+A
-            $(renderer.getContainer()).bind("keydown", function (event) {
+            var _container;
+            if (me._CONFIG.FOCUS_CANVAS_ONSELECT) {
+                _container = $(renderer.getContainer());
+            } else {
+                _container = $(document);
+            }
+            _container.bind("keydown", function (event) {
                 // 라벨수정중엔 keydown 이벤트무시
                 if (!/^textarea$/i.test(event.target.tagName) && !/^input$/i.test(event.target.tagName)) {
                     // Undo Redo
@@ -25016,7 +26173,7 @@ OG.handler.EventHandler.prototype = {
                     }
 
                     // Delete : 삭제
-                    if (me._CONFIG.ENABLE_HOTKEY_DELETE && event.keyCode === KeyEvent.DOM_VK_DELETE) {
+                    if (me._CONFIG.ENABLE_HOTKEY_DELETE && (event.keyCode === KeyEvent.DOM_VK_DELETE || event.keyCode === KeyEvent.DOM_VK_BACK_SPACE)) {
                         event.preventDefault();
                         me.deleteSelectedShape();
                     }
@@ -25134,7 +26291,9 @@ OG.handler.EventHandler.prototype = {
             selector: '#' + me._RENDERER.getRootElement().id,
             build: function ($trigger, e) {
                 var root = me._RENDERER.getRootGroup(), copiedElement = $(root).data("copied");
-                $(me._RENDERER.getContainer()).focus();
+                if (me._CONFIG.FOCUS_CANVAS_ONSELECT) {
+                    $(me._RENDERER.getContainer()).focus();
+                }
                 return {
                     items: {
                         'selectAll': {
@@ -26573,7 +27732,9 @@ OG.handler.EventHandler.prototype = {
             },
             selector: '#' + me._RENDERER.getRootElement().id + ' [_type=SHAPE]',
             build: function ($trigger, event) {
-                $(me._RENDERER.getContainer()).focus();
+                if (me._CONFIG.FOCUS_CANVAS_ONSELECT) {
+                    $(me._RENDERER.getContainer()).focus();
+                }
                 var items;
 
                 if (me._getSelectedElement().length == 1) {
@@ -26699,7 +27860,9 @@ OG.handler.EventHandler.prototype = {
         var me = this;
 
         var dragBox = $(this).data("dragBox");
-        $(me._RENDERER.getContainer()).focus();
+        if (me._CONFIG.FOCUS_CANVAS_ONSELECT) {
+            $(me._RENDERER.getContainer()).focus();
+        }
         if (!dragBox || (dragBox && dragBox.width < 1 && dragBox.height < 1)) {
             $(me._RENDERER.getRootElement())
                 .find("[_type=" + OG.Constants.NODE_TYPE.SHAPE + "][_selected=true]").each(
@@ -26894,7 +28057,8 @@ OG.handler.EventHandler.prototype = {
         var renderer = me._RENDERER;
         var root = renderer.getRootGroup(),
             copiedElement = $(root).data("copied"),
-            selectedElement = [], dx, dy, avgX = 0, avgY = 0;
+            selectedElement = [], dx, dy, avgX = 0, avgY = 0,
+            copiedMap = [];
         if (copiedElement) {
             $(renderer.getRootElement()).find("[_type=" + OG.Constants.NODE_TYPE.SHAPE + "][_selected=true]").each(function (index, item) {
                 if (item.id) {
@@ -26967,9 +28131,119 @@ OG.handler.EventHandler.prototype = {
                 me._copyChildren(item, newElement);
 
                 selectedElement.push(newElement);
+                copiedMap.push({
+                    copied: item,
+                    pasted: newElement
+                })
             });
-            $(root).data("copied", selectedElement);
 
+            var getPastedElementByCopied = function (copied) {
+                var pasted;
+                for (var i = 0, leni = copiedMap.length; i < leni; i++) {
+                    if (copiedMap[i]['copied'].id == copied.id) {
+                        pasted = copiedMap[i]['pasted'];
+                    }
+                }
+                return pasted;
+            };
+
+            $.each(copiedElement, function (idx, item) {
+                var relatedElementsFromEdge, relatedFrom, relatedTo,
+                    copiedFrom, copiedTo, copiedEdge, pastedFrom, pastedTo, pastedEdge;
+                //연결선이 복제된 경우, 복제된 대상 중 연결선의 From 과 To 가 모두 있을경우 연결선을 복원한다.
+                if ($(item).attr("_shape") === OG.Constants.SHAPE_TYPE.EDGE) {
+                    relatedElementsFromEdge = renderer._CANVAS.getRelatedElementsFromEdge(item);
+                    relatedFrom = relatedElementsFromEdge.from;
+                    relatedTo = relatedElementsFromEdge.to;
+                    copiedFrom = undefined, copiedTo = undefined, pastedFrom = undefined, pastedTo = undefined, pastedEdge = undefined;
+                    copiedEdge = item;
+
+                    for (var i = 0; i < copiedElement.length; i++) {
+                        if (relatedFrom) {
+                            if (copiedElement[i].id == relatedFrom.id) {
+                                copiedFrom = copiedElement[i];
+                            }
+                        }
+                        if (relatedTo) {
+                            if (copiedElement[i].id == relatedTo.id) {
+                                copiedTo = copiedElement[i];
+                            }
+                        }
+                    }
+                    if (copiedFrom && copiedTo) {
+                        pastedFrom = getPastedElementByCopied(copiedFrom);
+                        pastedTo = getPastedElementByCopied(copiedTo);
+                        pastedEdge = getPastedElementByCopied(copiedEdge);
+                        var pastedShape = pastedEdge.shape;
+                        var pastedId = pastedEdge.id;
+
+                        renderer._CANVAS.removeShape(pastedEdge);
+                        pastedEdge = renderer._CANVAS.connect(pastedFrom, pastedTo, null, null, null, null, null, pastedId);
+                        pastedEdge.shape = pastedShape;
+                        renderer.redrawShape(pastedEdge);
+                    }
+                }
+                // 일반 도형이 복제된 경우, 복제된 대상 중 연결된 도형이 있을 경우, 그 연결선 또한 복제된 대상 속에 있는지 찾는다.
+                // 만약 연결선이 복제 되지 않은 상태라면, 연결선을 복원한다.
+                // 연결선을 복원 한 후에는,
+                // copiedElement , selectedElement(pasted),copiedMap 에 각각 연결선을 추가하도록 한다.
+                else {
+                    var prevEdges = renderer._CANVAS.getPrevEdges(item);
+                    var nextEdges = renderer._CANVAS.getNextEdges(item);
+                    var relatedEdges = prevEdges.concat(nextEdges);
+                    for (var i = 0, leni = relatedEdges.length; i < leni; i++) {
+                        relatedElementsFromEdge = renderer._CANVAS.getRelatedElementsFromEdge(relatedEdges[i]);
+                        relatedFrom = relatedElementsFromEdge.from;
+                        relatedTo = relatedElementsFromEdge.to;
+                        copiedFrom = undefined, copiedTo = undefined, copiedEdge = undefined, pastedFrom = undefined, pastedTo = undefined, pastedEdge = undefined;
+
+                        for (var c = 0; c < copiedElement.length; c++) {
+                            if (relatedFrom) {
+                                if (copiedElement[c].id == relatedFrom.id) {
+                                    copiedFrom = copiedElement[c];
+                                }
+                            }
+                            if (relatedTo) {
+                                if (copiedElement[c].id == relatedTo.id) {
+                                    copiedTo = copiedElement[c];
+                                }
+                            }
+                            if (copiedElement[c].id == relatedEdges[i].id) {
+                                copiedEdge = copiedElement[c];
+                            }
+                        }
+                        if (copiedFrom && copiedTo && !copiedEdge) {
+                            pastedFrom = getPastedElementByCopied(copiedFrom);
+                            pastedTo = getPastedElementByCopied(copiedTo);
+                            copiedEdge = relatedEdges[i];
+
+                            //relatedEdges[i] 를 복사한다.
+                            var newShape = relatedEdges[i].shape.clone();
+                            if (relatedEdges[i].shape.geom instanceof OG.geometry.BezierCurve) {
+                                newShape.geom = new OG.BezierCurve(relatedEdges[i].shape.geom.getControlPoints());
+                            } else {
+                                newShape.geom = new OG.PolyLine(relatedEdges[i].shape.geom.getVertices());
+                            }
+                            newShape.geom.style = relatedEdges[i].shape.geom.style;
+                            newShape.geom.move(me._CONFIG.COPY_PASTE_PADDING, me._CONFIG.COPY_PASTE_PADDING);
+
+                            pastedEdge = renderer._CANVAS.connect(pastedFrom, pastedTo);
+                            pastedEdge.shape = newShape;
+                            pastedEdge.data = relatedEdges[i].data;
+
+                            renderer.redrawShape(pastedEdge);
+                            copiedElement.push(copiedEdge);
+                            selectedElement.push(pastedEdge);
+                            copiedMap.push({
+                                copied: copiedEdge.id,
+                                pasted: pastedEdge.id
+                            });
+                        }
+                    }
+                }
+            });
+
+            $(root).data("copied", selectedElement);
             renderer.addHistory();
         }
 
@@ -28096,10 +29370,10 @@ OG.handler.EventHandler.prototype = {
             var isConnectable;
             var vertices = element.shape.geom.getVertices();
             if ($(spot).data('type') === OG.Constants.CONNECT_GUIDE_SUFFIX.SPOT_CIRCLE) {
-                if($(spot).data("start")){
+                if ($(spot).data("start")) {
                     isConnectable = 'from';
                 }
-                if($(spot).data("end")){
+                if ($(spot).data("end")) {
                     isConnectable = 'to';
                 }
             }
@@ -28108,7 +29382,7 @@ OG.handler.EventHandler.prototype = {
 
         $(element).bind({
             mousemove: function (event) {
-                if(!me._isConnectable(element.shape)){
+                if (!me._isConnectable(element.shape)) {
                     return;
                 }
 
@@ -28273,7 +29547,7 @@ OG.handler.EventHandler.prototype = {
                 }
             },
             mouseout: function (event) {
-                if(!me._isConnectable(element.shape)){
+                if (!me._isConnectable(element.shape)) {
                     return;
                 }
                 var isShape = $(element).attr("_type") === OG.Constants.NODE_TYPE.SHAPE;
@@ -28326,7 +29600,7 @@ OG.handler.EventHandler.prototype = {
                 event.stopImmediatePropagation();
             },
             mouseover: function (event) {
-                if(!me._isConnectable(element.shape)){
+                if (!me._isConnectable(element.shape)) {
                     return;
                 }
                 var guide;
@@ -28649,6 +29923,7 @@ OG.EventHandler = OG.handler.EventHandler;
  * var user = new OG.handler.RemoteUser(key, name, sessionId);
  *
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
 OG.handler.RemoteUser = function (key, name, sessionId) {
 
@@ -28693,14 +29968,21 @@ OG.handler.RemoteUser.prototype = {
 OG.handler.RemoteUser.prototype.constructor = OG.handler.RemoteUser;
 OG.RemoteUser = OG.handler.RemoteUser();
 /**
+ * Remote Repository
+ *
+ * @type {{}}
+ * @private
+ */
+OG.handler.RemoteRepo = {};
+/**
  * Remote Handler
  *
  * @class
  * @requires OG.*
  *
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
  */
-OG.handler.RemoteRepo = {};
 OG.handler.RemoteHandler = function () {
     this._REPO = OG.handler.RemoteRepo;
     this._CLASSNAME = 'org.uengine.opengraph.RemoteService';
@@ -29084,7 +30366,13 @@ OG.RemoteHandler.checkExpiredRemoteCanvas();
  * OpenGraph 캔버스 클래스
  *
  * @class
- * @requires OG.common.*, OG.geometry.*, OG.shape.*, OG.renderer.*, OG.handler.*, OG.layout.*, raphael-2.1.0
+ * @requires OG.common.*
+ * @requires OG.geometry.*
+ * @requires OG.shape.*
+ * @requires OG.renderer.*
+ * @requires OG.handler.*
+ * @requires OG.layout.*
+ * @requires raphael-2.1.0
  *
  * @example
  * var canvas = new OG.Canvas('canvas', [1000, 800], 'white', 'url(./images/grid.gif)');
@@ -29094,7 +30382,7 @@ OG.RemoteHandler.checkExpiredRemoteCanvas();
  *
  * var edge = canvas.connect(circleShape, ellipseShape);
  *
- * @param {HTMLElement,String} container 컨테이너 DOM element or ID
+ * @param {HTMLElement|String} container 컨테이너 DOM element or ID
  * @param {Number[]} containerSize 컨테이너 Width, Height
  * @param {String} backgroundColor 캔버스 배경색
  * @param {String} backgroundImage 캔버스 배경이미지
@@ -29103,6 +30391,10 @@ OG.RemoteHandler.checkExpiredRemoteCanvas();
 OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroundImage) {
 
     this._CONFIG = {
+        /**
+         * 도형 선택시 캔버스 포거싱 여부
+         */
+        FOCUS_CANVAS_ONSELECT: true,
         /**
          * 연결된 두 오브젝트의 소속에 따른 연결선 스타일 변화 여부
          */
@@ -29383,6 +30675,11 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
         GUIDE_MIN_SIZE: 18,
 
         /**
+         * 도형 컨트롤러 아이콘 커넥트 라인 표시 개수
+         */
+        GUIDE_CONTROL_LINE_NUM: 2,
+
+        /**
          * Collapse & Expand 용 가이드 Rect 사이즈
          */
         COLLAPSE_SIZE: 10,
@@ -29467,7 +30764,7 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
         /**
          * 라벨 최소 크기(IE)
          */
-        LABEL_MIN_SIZE: 100,
+        LABEL_MIN_SIZE: 0,
 
         /**
          * 라벨 최대 크기(IE)
@@ -29498,7 +30795,6 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
                 "stroke-width": 1.5,
                 "stroke-opacity": 1,
                 "edge-type": "plain",
-                "edge-direction": "c c",
                 "arrow-start": "none",
                 "arrow-end": "block",
                 "stroke-dasharray": "",
@@ -29672,7 +30968,7 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
             },
             RUBBER_BAND: {stroke: "#0000FF", opacity: 0.2, fill: "#0077FF"},
             DROP_OVER_BBOX: {stroke: "#0077FF", fill: "none", opacity: 0.3, "shape-rendering": "crispEdges"},
-            LABEL: {"font-size": 12, "font-color": "black", "fill": "white"},
+            LABEL: {"font-size": 12, "font-color": "black", "fill": "none"},
             LABEL_EDITOR: {
                 position: "absolute",
                 overflow: "visible",
@@ -29954,7 +31250,7 @@ OG.graph.Canvas.prototype = {
             'overflow-x': 'hidden',
             'overflow-y': 'auto'
         });
-        sliderImage = $('<img class="sliderImage" src=""/>');
+        sliderImage = $('<canvas class="sliderImage"></canvas>');
         sliderImage.css({
             position: 'absolute',
             top: '0px',
@@ -29975,7 +31271,7 @@ OG.graph.Canvas.prototype = {
             background: 'transparent'
         });
 
-//네비게이터가 이동되었을경우의 이벤트
+        //네비게이터가 이동되었을경우의 이벤트
         onNavigatorMove = function () {
             var svg, svgW, svgH, imgW, imgH, xRate, yRate, xOffset, yOffset, sliderX, sliderY;
             svg = me._RENDERER.getRootElement();
@@ -30061,20 +31357,20 @@ OG.graph.Canvas.prototype = {
         sliderImageWrapper.append(sliderImage);
         sliderImageWrapper.append(sliderNavigator);
 
-//캔버스 삭제시 슬라이더도 삭제
+        //캔버스 삭제시 슬라이더도 삭제
         $(container).on("remove", function () {
             me.removeSlider();
         });
 
-//기존에 등록된 슬라이더 삭제
+        //기존에 등록된 슬라이더 삭제
         if (this._CONFIG.SLIDER) {
             me.removeSlider();
         }
 
-//슬라이더를 캔버스에 등록
+        //슬라이더를 캔버스에 등록
         this._CONFIG.SLIDER = slider;
 
-//슬라이더 업데이트
+        //슬라이더 업데이트
         this.updateSlider(this._CONFIG.SCALE * 100);
     },
     updateNavigatior: function () {
@@ -30123,6 +31419,7 @@ OG.graph.Canvas.prototype = {
         var sliderBar = slider.find('.scaleSlider');
         var sliderImage = slider.find('.sliderImage');
         var sliderNavigator = slider.find('.sliderNavigator');
+        var sliderImageWrapper = slider.find('.sliderImageWrapper');
 
         sliderText.html(val);
         sliderBar.val(val);
@@ -30130,10 +31427,28 @@ OG.graph.Canvas.prototype = {
 
         var svg = me._RENDERER.getRootElement();
         var svgData = new XMLSerializer().serializeToString(svg);
-        var srcURL = "data:image/svg+xml;utf-8," + svgData;
-        sliderImage.attr('src', srcURL);
 
+        var image = new Image();
+        image.src = 'data:image/svg+xml;utf-8,' + svgData;
+        image.onload = function () {
+            var canvas = document.getElementById(sliderImage.attr('id'));
+            canvas.width = sliderImageWrapper.width();
+            canvas.height = sliderImageWrapper.width() * image.height / image.width;
+            var context = canvas.getContext('2d');
+            context.drawImage(image, 0, 0, sliderImageWrapper.width(), sliderImageWrapper.width() * image.height / image.width);
+            $(image).remove();
+        };
         me.updateNavigatior();
+
+        //$('#testImg').remove();
+        //$('body').append('<img id="testImg"/>');
+        //$('#testImg').attr('src','data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svgData).replace(/'/g,"%27").replace(/"/g,"%22"));
+        //$('#testImg').css({
+        //   'z-index': '19999',
+        //    'position': 'absolute',
+        //    'left': '0px', 'top': '0px',
+        //    'width': '300px','height':'300px'
+        //});
     }
     ,
     /**
@@ -30156,7 +31471,7 @@ OG.graph.Canvas.prototype = {
      * @param {Number[]} position 드로잉할 위치 좌표(중앙 기준)
      * @param {OG.shape.IShape} shape Shape
      * @param {Number[]} size Shape Width, Height
-     * @param {OG.geometry.Style,Object} style 스타일 (Optional)
+     * @param {OG.geometry.Style|Object} style 스타일 (Optional)
      * @param {String} id Element ID 지정 (Optional)
      * @param {String} parentId 부모 Element ID 지정 (Optional)
      * @param {Boolean} preventDrop Lane, Pool 생성 drop 모드 수행 방지
@@ -30307,14 +31622,14 @@ OG.graph.Canvas.prototype = {
     /**
      * Shape 의 Label 을 캔버스에 위치 및 사이즈 지정하여 드로잉한다.
      *
-     * @param {Element,String} shapeElement Shape DOM element or ID
+     * @param {Element|String} shapeElement Shape DOM element or ID
      * @param {String} text 텍스트
-     * @param {OG.geometry.Style,Object} style 스타일
+     * @param {OG.geometry.Style|Object} style 스타일
      * @return {Element} DOM Element
      * @override
      */
-    drawLabel: function (shapeElement, text, style, position) {
-        return this._RENDERER.drawLabel(shapeElement, text, style, position);
+    drawLabel: function (shapeElement, text, style) {
+        return this._RENDERER.drawLabel(shapeElement, text, style);
     }
     ,
 
@@ -30345,15 +31660,16 @@ OG.graph.Canvas.prototype = {
      *
      * @param {Element} fromElement from Shape Element
      * @param {Element} toElement to Shape Element
-     * @param {OG.geometry.Style,Object} style 스타일
+     * @param {OG.geometry.Style|Object} style 스타일
      * @param {String} label Label
-     * @param fromP fromElement 와 연결될 터미널 좌표(optional)
-     * @param toP toElement 와 연결될 터미널 좌표(optional)
+     * @param fromP fromElement 와 연결될 터미널 좌표 [x,y](optional)
+     * @param toP toElement 와 연결될 터미널 좌표 [x,y](optional)
      * @param preventTrigger 참 일 경우 이벤트 발생을 방지
      * @param id 연결선의 아이디
+     * @param {Element} edgeShape 이 값이 없으면 신규 OG.EdgeShape 를 생성
      * @returns {*|Element}
      */
-    connect: function (fromElement, toElement, style, label, fromP, toP, preventTrigger, id) {
+    connect: function (fromElement, toElement, style, label, fromP, toP, preventTrigger, id, edgeShape) {
         var fromTerminal, toTerminal, edge, fromPosition, toPosition;
 
         if (fromP) {
@@ -30374,9 +31690,14 @@ OG.graph.Canvas.prototype = {
         toPosition = [toPosition.x, toPosition.y];
 
         // draw edge
-        edge = this._RENDERER.drawShape(null, new OG.EdgeShape(fromPosition, toPosition), null, style, id);
+        edgeShape = edgeShape ? edgeShape : new OG.EdgeShape();
+        edgeShape.from = fromPosition;
+        edgeShape.to = toPosition;
+        edge = this._RENDERER.drawShape(null, edgeShape, null, style, id);
         edge = this._RENDERER.trimEdgeDirection(edge, fromElement, toElement);
 
+        //if label null, convert undefined
+        label = label ? label : undefined;
         // connect
         edge = this._RENDERER.connect(fromTerminal, toTerminal, edge, style, label, preventTrigger);
 
@@ -30398,7 +31719,7 @@ OG.graph.Canvas.prototype = {
      *
      * @param {String} fromTerminal from Terminal Id
      * @param {String} toTerminal to Terminal Id
-     * @param {OG.geometry.Style,Object} style 스타일
+     * @param {OG.geometry.Style|Object} style 스타일
      * @param {String} label Label
      * @return {String} id 부여 할 아이디
      * @return {String} shapeId shapeId
@@ -30535,7 +31856,7 @@ OG.graph.Canvas.prototype = {
     /**
      * Shape 을 캔버스에서 관련된 모두를 삭제한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      */
     removeShape: function (element) {
         this._RENDERER.removeShape(element);
@@ -30545,7 +31866,7 @@ OG.graph.Canvas.prototype = {
     /**
      * 하위 엘리먼트만 제거한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      */
     removeChild: function (element) {
         this._RENDERER.removeChild(element);
@@ -30555,7 +31876,7 @@ OG.graph.Canvas.prototype = {
     /**
      * ID에 해당하는 Element 의 Move & Resize 용 가이드를 제거한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      */
     removeGuide: function (element) {
         this._RENDERER.removeGuide(element);
@@ -30616,7 +31937,7 @@ OG.graph.Canvas.prototype = {
     /**
      * 엘리먼트에 속성값을 설정한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @param {Object} attribute 속성값
      */
     setAttr: function (element, attribute) {
@@ -30627,7 +31948,7 @@ OG.graph.Canvas.prototype = {
     /**
      * 엘리먼트 속성값을 반환한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @param {String} attrName 속성이름
      * @return {Object} attribute 속성값
      */
@@ -30639,7 +31960,7 @@ OG.graph.Canvas.prototype = {
     /**
      * ID에 해당하는 Element 를 최상단 레이어로 이동한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      */
     toFront: function (element) {
         this._RENDERER.toFront(element);
@@ -30649,12 +31970,30 @@ OG.graph.Canvas.prototype = {
     /**
      * ID에 해당하는 Element 를 최하단 레이어로 이동한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      */
     toBack: function (element) {
         this._RENDERER.toBack(element);
     }
     ,
+
+    /**
+     * ID에 해당하는 Element 를 앞으로 한단계 이동한다.
+     *
+     * @param {Element|String} element Element 또는 ID
+     */
+    bringForward: function (element) {
+        this._RENDERER.bringForward(element);
+    },
+
+    /**
+     * ID에 해당하는 Element 를 뒤로 한단계 이동한다.
+     *
+     * @param {Element|String} element Element 또는 ID
+     */
+    sendBackward: function (element) {
+        this._RENDERER.sendBackward(element);
+    },
 
     /**
      * 랜더러 캔버스의 사이즈(Width, Height)를 반환한다.
@@ -30722,7 +32061,7 @@ OG.graph.Canvas.prototype = {
     /**
      * ID에 해당하는 Element 를 캔버스에서 show 한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      */
     show: function (element) {
         this._RENDERER.show(element);
@@ -30732,7 +32071,7 @@ OG.graph.Canvas.prototype = {
     /**
      * ID에 해당하는 Element 를 캔버스에서 hide 한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      */
     hide: function (element) {
         this._RENDERER.hide(element);
@@ -30742,8 +32081,8 @@ OG.graph.Canvas.prototype = {
     /**
      * Source Element 를 Target Element 아래에 append 한다.
      *
-     * @param {Element,String} srcElement Element 또는 ID
-     * @param {Element,String} targetElement Element 또는 ID
+     * @param {Element|String} srcElement Element 또는 ID
+     * @param {Element|String} targetElement Element 또는 ID
      * @return {Element} Source Element
      */
     appendChild: function (srcElement, targetElement) {
@@ -30754,8 +32093,8 @@ OG.graph.Canvas.prototype = {
     /**
      * Source Element 를 Target Element 이후에 insert 한다.
      *
-     * @param {Element,String} srcElement Element 또는 ID
-     * @param {Element,String} targetElement Element 또는 ID
+     * @param {Element|String} srcElement Element 또는 ID
+     * @param {Element|String} targetElement Element 또는 ID
      * @return {Element} Source Element
      */
     insertAfter: function (srcElement, targetElement) {
@@ -30766,8 +32105,8 @@ OG.graph.Canvas.prototype = {
     /**
      * Source Element 를 Target Element 이전에 insert 한다.
      *
-     * @param {Element,String} srcElement Element 또는 ID
-     * @param {Element,String} targetElement Element 또는 ID
+     * @param {Element|String} srcElement Element 또는 ID
+     * @param {Element|String} targetElement Element 또는 ID
      * @return {Element} Source Element
      */
     insertBefore: function (srcElement, targetElement) {
@@ -30778,7 +32117,7 @@ OG.graph.Canvas.prototype = {
     /**
      * 해당 Element 를 가로, 세로 Offset 만큼 이동한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @param {Number[]} offset [가로, 세로]
      * @return {Element} Element
      */
@@ -30790,7 +32129,7 @@ OG.graph.Canvas.prototype = {
     /**
      * 주어진 중심좌표로 해당 Element 를 이동한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @param {Number[]} position [x, y]
      * @return {Element} Element
      */
@@ -30802,7 +32141,7 @@ OG.graph.Canvas.prototype = {
     /**
      * 중심 좌표를 기준으로 주어진 각도 만큼 회전한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @param {Number} angle 각도
      * @return {Element} Element
      */
@@ -30814,7 +32153,7 @@ OG.graph.Canvas.prototype = {
     /**
      * 상, 하, 좌, 우 외곽선을 이동한 만큼 리사이즈 한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @param {Number[]} offset [상, 하, 좌, 우] 각 방향으로 + 값
      * @return {Element} Element
      */
@@ -30826,7 +32165,7 @@ OG.graph.Canvas.prototype = {
     /**
      * 중심좌표는 고정한 채 Bounding Box 의 width, height 를 리사이즈 한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @param {Number[]} size [Width, Height]
      * @return {Element} Element
      */
@@ -30838,13 +32177,23 @@ OG.graph.Canvas.prototype = {
     /**
      * 노드 Element 를 복사한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @return {Element} Element
      */
     clone: function (element) {
         return this._RENDERER.clone(element);
     }
     ,
+
+    /**
+     * ID에 해당하는 Element 의 바운더리 영역을 리턴한다.
+     *
+     * @param {Element|String} element Element 또는 ID
+     * @return {OG.geometry.Envelope} Envelope 영역
+     */
+    getBoundary: function (element) {
+        return this._RENDERER.getBoundary(element);
+    },
 
     /**
      * ID로 Node Element 를 반환한다.
@@ -30884,7 +32233,7 @@ OG.graph.Canvas.prototype = {
     /**
      * Edge 엘리먼트와 연결된 fromShape, toShape 엘리먼트를 반환한다.
      *
-     * @param {Element,String} edgeElement Element 또는 ID
+     * @param {Element|String} edgeElement Element 또는 ID
      * @return {Object}
      */
     getRelatedElementsFromEdge: function (edgeElement) {
@@ -30912,11 +32261,48 @@ OG.graph.Canvas.prototype = {
         }
     }
     ,
+    /**
+     * 부모 엘리먼트를 반환한다. 부모가 루트일때는 반환하지 않는다.
+     *
+     * @param {Element} Element  엘리먼트
+     * @return {Element} Element  엘리먼트
+     */
+    getParent: function (element) {
+        return this._RENDERER.getParent(element);
+    },
+
+    /**
+     * 그룹의 하위 엘리먼트를 반환한다.
+     *
+     * @param {Element} element  엘리먼트
+     * @returns {Array} Elements
+     */
+    getChilds: function (element) {
+        return this._RENDERER.getChilds(element);
+    },
+
+    /**
+     * 캔버스의 모든 Shape 들을 리턴
+     *
+     * @return {Array} Elements
+     */
+    getAllShapes: function () {
+        return this._RENDERER.getAllShapes();
+    },
+
+    /**
+     * 캔버스의 모든 Edge를 리턴
+     *
+     * @return {Array} Edge Elements
+     */
+    getAllEdges: function () {
+        return this._RENDERER.getAllEdges();
+    },
 
     /**
      * 해당 엘리먼트의 BoundingBox 영역 정보를 반환한다.
      *
-     * @param {Element,String} element
+     * @param {Element|String} element
      * @return {Object} {width, height, x, y, x2, y2}
      */
     getBBox: function (element) {
@@ -30967,23 +32353,30 @@ OG.graph.Canvas.prototype = {
     /**
      * 주어진 Shape 엘리먼트에 커스텀 데이타를 저장한다.
      *
-     * @param {Element,String} shapeElement Shape DOM Element or ID
+     * @param {Element|String} shapeElement Shape DOM Element or ID
      * @param {Object} data JSON 포맷의 Object
      */
     setCustomData: function (shapeElement, data) {
         var element = OG.Util.isElement(shapeElement) ? shapeElement : document.getElementById(shapeElement);
         element.data = data;
+
+        //도형의 shape 에 데이터를 저장한다.
+        element.shape.data = data;
     }
     ,
 
     /**
      * 주어진 Shape 엘리먼트에 저장된 커스텀 데이터를 반환한다.
      *
-     * @param {Element,String} shapeElement Shape DOM Element or ID
+     * @param {Element|String} shapeElement Shape DOM Element or ID
      * @return {Object} JSON 포맷의 Object
      */
     getCustomData: function (shapeElement) {
         var element = OG.Util.isElement(shapeElement) ? shapeElement : document.getElementById(shapeElement);
+        // element 에 데이터가 없을 경우 (shape 이 데이터를 가지고 있을 경우)
+        if (!element.data) {
+            element.data = element.shape.data;
+        }
         return element.data;
     }
     ,
@@ -30991,7 +32384,7 @@ OG.graph.Canvas.prototype = {
     /**
      * 주어진 Shape 엘리먼트에 확장 커스텀 데이타를 저장한다.
      *
-     * @param {Element,String} shapeElement Shape DOM Element or ID
+     * @param {Element|String} shapeElement Shape DOM Element or ID
      * @param {Object} data JSON 포맷의 Object
      */
     setExtCustomData: function (shapeElement, data) {
@@ -31003,7 +32396,7 @@ OG.graph.Canvas.prototype = {
     /**
      * 주어진 Shape 엘리먼트에 저장된 확장 커스텀 데이터를 반환한다.
      *
-     * @param {Element,String} shapeElement Shape DOM Element or ID
+     * @param {Element|String} shapeElement Shape DOM Element or ID
      * @return {Object} JSON 포맷의 Object
      */
     getExtCustomData: function (shapeElement) {
@@ -31130,6 +32523,9 @@ OG.graph.Canvas.prototype = {
                 if (item.data) {
                     cell['@data'] = escape(OG.JSON.encode(item.data));
                 }
+                if (shape.textList) {
+                    cell['@textList'] = escape(OG.JSON.encode(shape.textList));
+                }
                 if (item.dataExt) {
                     cell['@dataExt'] = escape(OG.JSON.encode(item.dataExt));
                 }
@@ -31168,7 +32564,7 @@ OG.graph.Canvas.prototype = {
     /**
      * OpenGraph XML 문자열로 부터 Shape 을 드로잉한다.
      *
-     * @param {String, Element} xml XML 문자열 또는 DOM Element
+     * @param {String| Element} xml XML 문자열 또는 DOM Element
      * @return {Object} {width, height, x, y, x2, y2}
      */
     loadXML: function (xml) {
@@ -31209,7 +32605,7 @@ OG.graph.Canvas.prototype = {
         var canvasWidth, canvasHeight, rootGroup,
             minX = Number.MAX_VALUE, minY = Number.MAX_VALUE, maxX = Number.MIN_VALUE, maxY = Number.MIN_VALUE,
             i, cell, shape, id, parent, shapeType, shapeId, x, y, width, height, style, geom, from, to,
-            fromEdge, toEdge, label, fromLabel, toLabel, angle, value, data, dataExt, element, loopType, taskType, swimlane;
+            fromEdge, toEdge, label, fromLabel, toLabel, angle, value, data, dataExt, element, loopType, taskType, swimlane, textList;
 
         this._RENDERER.clear();
 
@@ -31252,6 +32648,7 @@ OG.graph.Canvas.prototype = {
                 angle = cell[i]['@angle'];
                 value = cell[i]['@value'];
                 data = cell[i]['@data'];
+                textList = cell[i]['@textList'];
                 dataExt = cell[i]['@dataExt'];
                 loopType = cell[i]['@loopType'];
                 taskType = cell[i]['@taskType'];
@@ -31270,6 +32667,12 @@ OG.graph.Canvas.prototype = {
                         if (label) {
                             shape.label = label;
                         }
+                        if (data) {
+                            shape.data = OG.JSON.decode(unescape(data));
+                        }
+                        if (textList) {
+                            shape.textList = OG.JSON.decode(unescape(textList));
+                        }
                         element = this.drawShape([x, y], shape, [width, height], OG.JSON.decode(style), id, parent, false);
                         if (element.shape instanceof OG.shape.bpmn.A_Task) {
                             element.shape.LoopType = loopType;
@@ -31282,6 +32685,12 @@ OG.graph.Canvas.prototype = {
                         shape = eval('new ' + shapeId + '(' + fromto + ')');
                         if (label) {
                             shape.label = label;
+                        }
+                        if (data) {
+                            shape.data = OG.JSON.decode(unescape(data));
+                        }
+                        if (textList) {
+                            shape.textList = OG.JSON.decode(unescape(textList));
                         }
                         if (fromLabel) {
                             shape.fromLabel = unescape(fromLabel);
@@ -31309,6 +32718,12 @@ OG.graph.Canvas.prototype = {
                         if (label) {
                             shape.label = label;
                         }
+                        if (data) {
+                            shape.data = OG.JSON.decode(unescape(data));
+                        }
+                        if (textList) {
+                            shape.textList = OG.JSON.decode(unescape(textList));
+                        }
                         element = this.drawShape([x, y], shape, [width, height, angle], OG.JSON.decode(style), id, parent, false);
                         break;
                     case OG.Constants.SHAPE_TYPE.IMAGE:
@@ -31316,12 +32731,24 @@ OG.graph.Canvas.prototype = {
                         if (label) {
                             shape.label = label;
                         }
+                        if (data) {
+                            shape.data = OG.JSON.decode(unescape(data));
+                        }
+                        if (textList) {
+                            shape.textList = OG.JSON.decode(unescape(textList));
+                        }
                         element = this.drawShape([x, y], shape, [width, height, angle], OG.JSON.decode(style), id, parent, false);
                         break;
                     case OG.Constants.SHAPE_TYPE.TEXT:
                         shape = eval('new ' + shapeId + '()');
                         if (value) {
                             shape.text = unescape(value);
+                        }
+                        if (data) {
+                            shape.data = OG.JSON.decode(unescape(data));
+                        }
+                        if (textList) {
+                            shape.textList = OG.JSON.decode(unescape(textList));
                         }
                         element = this.drawShape([x, y], shape, [width, height, angle], OG.JSON.decode(style), id, parent, false);
                         break;
@@ -31390,7 +32817,7 @@ OG.graph.Canvas.prototype = {
     /**
      * 연결된 이전 Edge Element 들을 반환한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @return {Element[]} Previous Element's Array
      */
     getPrevEdges: function (element) {
@@ -31401,7 +32828,7 @@ OG.graph.Canvas.prototype = {
     /**
      * 연결된 이후 Edge Element 들을 반환한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @return {Element[]} Previous Element's Array
      */
     getNextEdges: function (element) {
@@ -31412,7 +32839,7 @@ OG.graph.Canvas.prototype = {
     /**
      * 연결된 이전 노드 Element 들을 반환한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @return {Element[]} Previous Element's Array
      */
     getPrevShapes: function (element) {
@@ -31423,7 +32850,7 @@ OG.graph.Canvas.prototype = {
     /**
      * 연결된 이전 노드 Element ID들을 반환한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @return {String[]} Previous Element Id's Array
      */
     getPrevShapeIds: function (element) {
@@ -31434,7 +32861,7 @@ OG.graph.Canvas.prototype = {
     /**
      * 연결된 이후 노드 Element 들을 반환한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @return {Element[]} Previous Element's Array
      */
     getNextShapes: function (element) {
@@ -31445,7 +32872,7 @@ OG.graph.Canvas.prototype = {
     /**
      * 연결된 이후 노드 Element ID들을 반환한다.
      *
-     * @param {Element,String} element Element 또는 ID
+     * @param {Element|String} element Element 또는 ID
      * @return {String[]} Previous Element Id's Array
      */
     getNextShapeIds: function (element) {
@@ -31478,7 +32905,7 @@ OG.graph.Canvas.prototype = {
     ,
 
     /**
-     * Undo 되었을때의 이벤트 리스너
+     * Redo 되었을때의 이벤트 리스너
      *
      * @param {Function} callbackFunc 콜백함수(event)
      */
@@ -31492,11 +32919,11 @@ OG.graph.Canvas.prototype = {
     /**
      * Lane 이 divide 되었을 때의 이벤트 리스너
      *
-     * @param {Function} callbackFunc 콜백함수(event, shapeElement)
+     * @param {Function} callbackFunc 콜백함수(event, dividedLane)
      */
     onDivideLane: function (callbackFunc) {
-        $(this.getRootElement()).bind('divideLane', function (event, divideLanes) {
-            callbackFunc(event, divideLanes);
+        $(this.getRootElement()).bind('divideLane', function (event, dividedLane) {
+            callbackFunc(event, dividedLane);
         });
     }
     ,

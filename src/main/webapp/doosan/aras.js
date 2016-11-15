@@ -102,7 +102,7 @@ Aras.prototype = {
         this.projectId = parent.top.thisItem.getProperty('_rel_project');
         this.body = '';
 
-        //아라츠 팝업창 디자인을 손보도록 한다.
+        //아라츠 팝업창 상태에 따라 에디터/모니터 화면을 리사이즈 한다.
         var resizeView = function () {
             if (window && window.parent && window.parent.document) {
                 var parentDoc;
@@ -136,6 +136,9 @@ Aras.prototype = {
                     //innerMode 일 경우엔 늘 parentIframe 이 존재하고, 그 외의 경우는 처음 한번 존재한다.
                     if (parentIframe && parentIframe.length) {
                         if (innerMode) {
+                            parentIframe.css({
+                                height: '100%'
+                            });
                             var height = parentIframe.height();
                             me.tree._CONFIG.CONTAINER_HEIGHT = height - 50;
                             me.tree._CONTAINER.css({
@@ -204,6 +207,7 @@ Aras.prototype = {
             }
         }
 
+
         resizeView();
     },
     createBody: function (params) {
@@ -227,7 +231,7 @@ Aras.prototype = {
         var identityId = aliasRelItem.getProperty("related_id");
         return identityId ? identityId : '';
     },
-    getUserId: function(){
+    getUserId: function () {
         var inn = this.aras.newIOMInnovator();
         var userId = inn.getUserID();
         return userId;
@@ -403,6 +407,20 @@ Aras.prototype = {
             }
         });
     },
+    getCurrentItemId: function (itemType, id) {
+        var me = this;
+        var params = {
+            item_id: id,
+            item_type: itemType
+        };
+        var item = me.applyMethod('DHI_getCurrentItemID', me.createBody(params));
+        if (!item || !item.getProperty('item_id') || item.getProperty('item_id') == '') {
+            msgBox('A node has been deleted by someone. Please refresh.');
+            throw new Error("");
+        } else {
+            return item.getProperty('item_id');
+        }
+    },
     getItemType: function (type) {
         var itemType;
         if (type == this.TYPE.ACTIVITY) {
@@ -449,18 +467,26 @@ Aras.prototype = {
         var itemType = me.getItemType(type);
         var inn = this.aras.newIOMInnovator();
         var item = inn.newItem(itemType, "get");
-        item.setProperty('id', id);
+        item.setProperty('id', me.getCurrentItemId(me.getItemType(type), id));
         item = item.apply();
 
         this.aras.uiShowItemEx(item.node, undefined, true);
     },
     sortActivities: function (activityIds) {
-        //1. 해당 워크플로우의 액티비티 릴레이션 들을 불러온다.
         var me = this;
         var inn = this.aras.newIOMInnovator();
         var relType = me.getRelType(me.TYPE.WORKFLOW, me.TYPE.ACTIVITY, 'out');
+        var workflowId = me.getCurrentItemId(me.getItemType(me.TYPE.WORKFLOW), me.wfId);
+
+        //1. 릴레이션의 activity 들이 존재하는지 확인한다.
+        for (var i = 0; i < activityIds.length; i++) {
+            var currentItemId = me.getCurrentItemId(me.getItemType(me.TYPE.ACTIVITY), activityIds[i]);
+            activityIds[i] = currentItemId;
+        }
+
+        //2. 해당 워크플로우의 액티비티 릴레이션 들을 불러온다.
         var activityRels = inn.newItem(relType, "get");
-        activityRels.setProperty('source_id', me.wfId);
+        activityRels.setProperty('source_id', workflowId);
         activityRels = activityRels.apply();
 
         var rels = [];
@@ -472,7 +498,7 @@ Aras.prototype = {
             }
         }
 
-        //2. 릴레이션의 sort 들을 업데이트한다.
+        //3. 릴레이션의 sort 들을 업데이트한다.
         var relItem;
         for (var i = 0; i < activityIds.length; i++) {
             for (var r = 0; r < rels.length; r++) {
@@ -511,20 +537,17 @@ Aras.prototype = {
             return;
         }
 
-        this.data = data;
-        this.view = view;
-
         var me = this;
         var inn = this.aras.newIOMInnovator();
         var target_rel_wf_com = '_rel_wf';
 
         var parentItemType = me.getItemType(data.type);
-        var parentId = data.id;
+        var parentId = me.getCurrentItemId(parentItemType, data.id);
         var newItemType = me.getItemType(me.TYPE.FOLDER);
 
         //부모 아이템(선택된 아이템) 가져오기
         var parentItem = inn.newItem(parentItemType, "get");
-        parentItem.setProperty('id', data.extData['f_id']);
+        parentItem.setProperty('id', parentId);
         parentItem = parentItem.apply();
 
         //폴더 아이템 생성
@@ -536,14 +559,16 @@ Aras.prototype = {
         newItem.setProperty(me.stdYN == 'Y' ? '_rel_wfat' : '_rel_wfa', view.root);
 
         //상위 액티비티 아이템 취득
+        var activityId = me.getCurrentItemId(me.getItemType(me.TYPE.ACTIVITY), view.root);
         var activityItem;
         activityItem = inn.newItem(me.getItemType(me.TYPE.ACTIVITY), 'get');
-        activityItem.setProperty('id', view.root);
+        activityItem.setProperty('id', activityId);
         activityItem = activityItem.apply();
 
         //워크플로우 아이템 취득
+        var workflowId = me.getCurrentItemId(me.getItemType(me.TYPE.WORKFLOW), activityItem.getProperty(target_rel_wf_com, ''));
         var workflowItem = inn.newItem(me.getItemType(me.TYPE.WORKFLOW), 'get');
-        workflowItem.setProperty('id', activityItem.getProperty(target_rel_wf_com, ''));
+        workflowItem.setProperty('id', workflowId);
         workflowItem = workflowItem.apply();
 
         //연결 워크플로우 설정
@@ -606,7 +631,7 @@ Aras.prototype = {
             var EventBottomSave = {};
             EventBottomSave.window = window;
             EventBottomSave.handler = function () {
-                me.addFolderOutRelation(data, view, newItem, parentItem, data.type, data.extData['f_id'], data.extData['kind']);
+                me.addFolderOutRelation(data, view, newItem, parentItem, data.type, parentId);
             };
             arasWindow.top.commandEventHandlers['aftersave'] = [];
             arasWindow.top.commandEventHandlers['aftersave'].push(EventBottomSave);
@@ -620,12 +645,13 @@ Aras.prototype = {
         var inn = this.aras.newIOMInnovator();
         var parentItemType = me.getItemType(parentType);
         var relType = me.getRelType(parentType, this.TYPE.FOLDER, 'out');
-
         var path = '';
 
+
         //부모 폴더 객체 얻기
+        parentId = me.getCurrentItemId(parentItemType, parentId);
         var updatedParentItem = this.thisItem.newItem(parentItemType, 'get');
-        updatedParentItem.setProperty('id', parentItem.getID());
+        updatedParentItem.setProperty('id', parentId);
         updatedParentItem = updatedParentItem.apply();
 
         if (updatedParentItem.getItemCount() > 0) {
@@ -638,37 +664,40 @@ Aras.prototype = {
         }
 
         //생성된 폴더 정보 얻기
+        var newItemId = me.getCurrentItemId(me.getItemType(me.TYPE.FOLDER), newItem.getID());
         var createdFolder = this.thisItem.newItem(newItem.GetType(), 'get');
-        createdFolder.setProperty('id', newItem.getID());
+        createdFolder.setProperty('id', newItemId);
         createdFolder = createdFolder.apply();
+
+        //패스 에 생성된 폴더 아이템 넘버 추가
         path += '||' + createdFolder.getProperty('item_number', '');
 
         //릴레이션이 존재하는지 확인
         var existRelItem = this.thisItem.newItem(relType, 'get');
         existRelItem.setProperty('source_id', parentId);
-        existRelItem.setProperty('related_id', newItem.getID());
+        existRelItem.setProperty('related_id', newItemId);
         existRelItem = existRelItem.apply();
 
         //릴레이션이 존재하지 않을 경우
         if (existRelItem.getItemCount() < 1) {
             try {
                 //생성된 폴더의 path 를 업데이트 한다.
-                var sql = "<sqlString>UPDATE innovator." + newItem.GetType() + " SET _PATH = '" + path + "' WHERE id = '" + newItem.getID() + "'</sqlString>";
+                var sql = "<sqlString>UPDATE innovator." + newItem.GetType() + " SET _PATH = '" + path + "' WHERE id = '" + newItemId + "'</sqlString>";
                 inn.applyMethod('DHI_APPLY_SQL', sql);
 
                 //아웃풋 릴레이션을 생성한다.
                 var relItem = inn.newItem(relType, 'add');
                 relItem.setProperty('source_id', parentId);
-                relItem.setProperty('related_id', newItem.getID());
+                relItem.setProperty('related_id', newItemId);
                 relItem.setProperty('owned_by_id', me.getUserIdentity());
                 relItem = relItem.apply();
 
                 //스테이터스를 업데이트한다.
                 var body = '<source_id>' + parentId + '</source_id>';
-                body += '<related_id>' + newItem.getID() + '</related_id>';
+                body += '<related_id>' + newItemId + '</related_id>';
                 var result = inn.applyMethod('DHI_WF_RESET_STATE_ITEM', body);
             } catch (e) {
-                msgBox('Failed to create ' + relType + ' Relation : ' + parentId + ' to ' + newItem.getID());
+                msgBox('Failed to create ' + relType + ' Relation : ' + parentId + ' to ' + newItemId);
             }
         }
 
@@ -678,9 +707,8 @@ Aras.prototype = {
 
         var me = this;
         var inn = this.aras.newIOMInnovator();
-        var parentId = data.id;
-
         var parentItemType = me.getItemType(data.type);
+        var parentId = me.getCurrentItemId(parentItemType, data.id);
 
         //부모 정보 가져오기
         var parentItem = inn.newItem(parentItemType, "get");
@@ -755,39 +783,40 @@ Aras.prototype = {
     addFolderEDOutRelation: function (edItem, parentItem, data, view) {
         var me = this;
         var inn = this.aras.newIOMInnovator();
-        var edId = edItem.getID();
+        var edId = me.getCurrentItemId(edItem.getType(), edItem.getID());
+        var parentId = me.getCurrentItemId(parentItem.getType(), parentItem.getID());
         var relType = me.getRelType(me.TYPE.FOLDER, me.TYPE.ED, 'out');
         var existRelItem;
         var relItem;
 
         var createEDItem = inn.newItem(edItem.getType(), "get");
-        createEDItem.setProperty("id", edItem.getID());
+        createEDItem.setProperty("id", edId);
         createEDItem = createEDItem.apply();
 
         var path = parentItem.getProperty("_path") + '||' + createEDItem.getProperty("_ed_number", "");
 
-        body = "<sqlString>UPDATE innovator." + createEDItem.GetType() + " SET _PATH = '" + path + "' WHERE id = '" + createEDItem.getID() + "'</sqlString>";
+        body = "<sqlString>UPDATE innovator." + createEDItem.getType() + " SET _PATH = '" + path + "' WHERE id = '" + createEDItem.getID() + "'</sqlString>";
         inn.applyMethod("DHI_APPLY_SQL", body);
 
         existRelItem = inn.newItem(relType, "get");
-        existRelItem.setProperty("source_id", data.id);
+        existRelItem.setProperty("source_id", parentId);
         existRelItem.setProperty("related_id", edId);
         existRelItem = existRelItem.apply();
         if (existRelItem.getItemCount() < 1) {
             try {
                 relItem = inn.newItem(relType, "add");
-                relItem.setProperty("source_id", data.id);
+                relItem.setProperty("source_id", parentId);
                 relItem.setProperty("related_id", edId);
                 relItem.setProperty("owned_by_id", me.getUserIdentity());
                 relItem = relItem.apply();
 
                 //스테이터스를 업데이트한다.
-                var body = "<source_id>" + data.id + "</source_id>";
+                var body = "<source_id>" + parentId + "</source_id>";
                 body += "<related_id>" + edId + "</related_id>";
                 var result = inn.applyMethod("DHI_WF_RESET_STATE_ITEM", body);
             }
             catch (e) {
-                msgBox('Failed to create ' + relType + ' Relation : ' + data.id + ' to ' + edId);
+                msgBox('Failed to create ' + relType + ' Relation : ' + parentId + ' to ' + edId);
             }
         }
         this.refreshOutFolder(data, view);
@@ -803,6 +832,9 @@ Aras.prototype = {
                 DDCLEds.push(edItems[i]);
             }
         }
+
+        var parentId = me.getCurrentItemId(parentItem.getType(), parentItem.getID());
+        var activityId = me.getCurrentItemId(me.getItemType(me.TYPE.ACTIVITY), view.root);
 
         //기존 폴더의 DDCL ITEM 의 수를 체크한다.
         var existDDCLItemCount = 0;
@@ -831,8 +863,8 @@ Aras.prototype = {
         //edItems 들에 대한 릴레이션을 생성한다.
         for (var i = 0, leni = edItems.length; i < leni; i++) {
             var edItem = edItems[i];
-            var edId = edItem.getID();
             var edType = edItem.getType();
+            var edId = me.getCurrentItemId(edType, edItem.getID());
             var relType = me.getRelType(me.TYPE.FOLDER, me.TYPE.ED, 'out');
             var existRelItem;
             var relItem;
@@ -845,7 +877,7 @@ Aras.prototype = {
                     ", _P_ID = '" + data.extData['fs_id'] + "'" +
                     ", _REL_PROJECT = '" + parentItem.getProperty('_rel_project', '') + "'" +
                     ", _REL_OWNEDTEAM = '" + parentItem.getProperty('_rel_ownedteam', '') + "'" +
-                    ", _REL_WFAT = '" + view.root + "'" +
+                    ", _REL_WFAT = '" + activityId + "'" +
                     ", _REL_WFT = '" + parentItem.getProperty('_rel_wft', '') + "'" +
                     ", IS_TEMPLATE = '" + 1 + "'" +
                     " WHERE id = '" + edId + "'</sqlString>";
@@ -855,7 +887,7 @@ Aras.prototype = {
                     ", _P_ID = '" + data.extData['fs_id'] + "'" +
                     ", _REL_PROJECT = '" + parentItem.getProperty('_rel_project', '') + "'" +
                     ", _REL_OWNEDTEAM = '" + parentItem.getProperty('_rel_ownedteam', '') + "'" +
-                    ", _REL_WFA = '" + view.root + "'" +
+                    ", _REL_WFA = '" + activityId + "'" +
                     ", _REL_WF = '" + parentItem.getProperty('_rel_wf', '') + "'" +
                     ", IS_TEMPLATE = '" + 1 + "'" +
                     " WHERE id = '" + edId + "'</sqlString>";
@@ -863,19 +895,19 @@ Aras.prototype = {
             inn.applyMethod("DHI_APPLY_SQL", body);
 
             existRelItem = inn.newItem(relType, "get");
-            existRelItem.setProperty("source_id", data.id);
+            existRelItem.setProperty("source_id", parentId);
             existRelItem.setProperty("related_id", edId);
             existRelItem = existRelItem.apply();
             if (existRelItem.getItemCount() < 1) {
                 try {
                     relItem = inn.newItem(relType, "add");
-                    relItem.setProperty("source_id", data.id);
+                    relItem.setProperty("source_id", parentId);
                     relItem.setProperty("related_id", edId);
                     relItem.setProperty("owned_by_id", me.getUserIdentity());
                     relItem.apply();
 
                     //스테이터스를 업데이트한다.
-                    var body = "<source_id>" + data.id + "</source_id>";
+                    var body = "<source_id>" + parentId + "</source_id>";
                     body += "<related_id>" + edId + "</related_id>";
                     inn.applyMethod("DHI_WF_RESET_STATE_ITEM", body);
 
@@ -888,7 +920,7 @@ Aras.prototype = {
                     }
                 }
                 catch (e) {
-                    msgBox('Failed to create ' + relType + ' Relation : ' + data.id + ' to ' + edId);
+                    msgBox('Failed to create ' + relType + ' Relation : ' + parentId + ' to ' + edId);
                 }
             }
         }
@@ -901,7 +933,6 @@ Aras.prototype = {
         var relType;
         var parentData;
         var parentView;
-        var relItem;
         var existRelItem;
 
         //관계 삭제 전 삭제 가능 여부 체크
@@ -913,26 +944,27 @@ Aras.prototype = {
 
         //액티비티 삭제일 경우
         if (data.type == me.TYPE.ACTIVITY) {
-
+            var activityId = me.getCurrentItemId(me.getItemType(me.TYPE.ACTIVITY), data.id);
+            var workflowId = me.getCurrentItemId(me.getItemType(me.TYPE.WORKFLOW), me.wfId);
             if (!checkEnableDelete(me.wfId, data.id)) {
                 msgBox('You do not have permission.');
                 return;
             }
 
             //관계 삭제 전 상위 상태 재설정
-            var body = "<source_id>" + me.wfId + "</source_id>";
-            body += "<related_id>" + data.id + "</related_id>";
+            var body = "<source_id>" + workflowId + "</source_id>";
+            body += "<related_id>" + activityId + "</related_id>";
             var result = inn.applyMethod("DHI_WF_DEL_RELATION_ITEM_WFA", body);
 
             if (result) {
                 relType = me.getRelType(me.TYPE.WORKFLOW, me.TYPE.ACTIVITY, 'out');
                 existRelItem = inn.newItem(relType, 'get');
-                existRelItem.setProperty("source_id", me.wfId);
-                existRelItem.setProperty("related_id", data.id);
+                existRelItem.setProperty("source_id", workflowId);
+                existRelItem.setProperty("related_id", activityId);
                 existRelItem = existRelItem.apply();
 
                 if (existRelItem.getItemCount() > 0) {
-                    var amlStr = "<AML><Item type=\"" + relType + "\" action=\"delete\" where=\"source_id = '" + me.wfId + "' and related_id = '" + data.id + "'\"></Item></AML>"
+                    var amlStr = "<AML><Item type=\"" + relType + "\" action=\"delete\" where=\"source_id = '" + workflowId + "' and related_id = '" + activityId + "'\"></Item></AML>"
                     inn.applyAML(amlStr);
                 }
                 me.refreshMyWorkFlow();
@@ -956,19 +988,22 @@ Aras.prototype = {
                 return;
             }
 
+            var parentId = me.getCurrentItemId(me.getItemType(parentData.type), parentData.id);
+            var delId = me.getCurrentItemId(me.getItemType(data.type), data.id);
+
             //관계 삭제 전 상위 상태 재설정
-            var body = "<source_id>" + parentData.id + "</source_id>";
-            body += "<related_id>" + data.id + "</related_id>";
+            var body = "<source_id>" + parentId + "</source_id>";
+            body += "<related_id>" + delId + "</related_id>";
             var result = inn.applyMethod("DHI_WF_DEL_RELATION_ITEM", body);
 
             if (result) {
                 relType = me.getRelType(parentData.type, data.type, 'out');
                 existRelItem = inn.newItem(relType, 'get');
-                existRelItem.setProperty("source_id", parentData.id);
-                existRelItem.setProperty("related_id", data.id);
+                existRelItem.setProperty("source_id", parentId);
+                existRelItem.setProperty("related_id", delId);
                 existRelItem = existRelItem.apply();
                 if (existRelItem.getItemCount() > 0) {
-                    var amlStr = "<AML><Item type=\"" + relType + "\" action=\"delete\" where=\"source_id = '" + parentData.id + "' and related_id = '" + data.id + "'\"></Item></AML>"
+                    var amlStr = "<AML><Item type=\"" + relType + "\" action=\"delete\" where=\"source_id = '" + parentId + "' and related_id = '" + delId + "'\"></Item></AML>"
                     inn.applyAML(amlStr);
                 }
                 me.refreshMyWorkFlow();
@@ -991,7 +1026,7 @@ Aras.prototype = {
         var target_rel_wf_com = '_rel_wf';
 
         var workflowItemType = me.getItemType(this.TYPE.WORKFLOW);
-        var workflowId = me.wfId;
+        var workflowId = me.getCurrentItemId(workflowItemType, me.wfId);
         var newItemType = me.getItemType(me.TYPE.ACTIVITY);
 
         //워크플로우 아이템 취득
@@ -1036,63 +1071,64 @@ Aras.prototype = {
         });
     },
     addInRel: function (source, target, selectedTargetList) {
-        console.log('addInRel');
         var me = this;
         var inn = this.aras.newIOMInnovator();
         var relType = me.getRelType(source.type, target.type, 'in');
         var existRelItem;
         var relItem;
+        var sourceId = me.getCurrentItemId(me.getItemType(source.type), source.id);
+        var targetId = me.getCurrentItemId(me.getItemType(target.type), target.id);
 
         if (target.type == me.TYPE.ED) {
             existRelItem = inn.newItem(relType, "get");
-            existRelItem.setProperty("source_id", source.id);
-            existRelItem.setProperty("related_id", target.id);
+            existRelItem.setProperty("source_id", sourceId);
+            existRelItem.setProperty("related_id", targetId);
             existRelItem = existRelItem.apply();
             if (existRelItem.getItemCount() == 0) {
                 try {
                     relItem = inn.newItem(relType, "add");
-                    relItem.setProperty("source_id", source.id);
-                    relItem.setProperty("related_id", target.id);
+                    relItem.setProperty("source_id", sourceId);
+                    relItem.setProperty("related_id", targetId);
                     relItem.setProperty("owned_by_id", me.getUserIdentity());
                     relItem = relItem.apply();
 
-                    var body = "<source_id>" + source.id + "</source_id>";
-                    body += "<related_id>" + target.id + "</related_id>";
+                    var body = "<source_id>" + sourceId + "</source_id>";
+                    body += "<related_id>" + targetId + "</related_id>";
                     var result = inn.applyMethod("DHI_WF_PROCESS_AFTER_ED_COPY", body);
                 }
                 catch (e) {
-                    msgBox('Failed to add ' + relType + ' Relation : ' + source.id + ' to ' + target.id);
+                    msgBox('Failed to add ' + relType + ' Relation : ' + sourceId + ' to ' + targetId);
                 }
             }
         } else {
             for (var i = 0, leni = selectedTargetList.length; i < leni; i++) {
-                var targetId = selectedTargetList[i];
+                var selectargetId = me.getCurrentItemId(me.getItemType(target.type), selectedTargetList[i]);
                 existRelItem = inn.newItem(relType, "get");
-                existRelItem.setProperty("source_id", source.id);
-                existRelItem.setProperty("related_id", targetId);
+                existRelItem.setProperty("source_id", sourceId);
+                existRelItem.setProperty("related_id", selectargetId);
                 existRelItem = existRelItem.apply();
                 if (existRelItem.getItemCount() == 0) {
                     try {
                         relItem = inn.newItem(relType, "add");
-                        relItem.setProperty("source_id", source.id);
-                        relItem.setProperty("related_id", targetId);
+                        relItem.setProperty("source_id", sourceId);
+                        relItem.setProperty("related_id", selectargetId);
                         relItem.setProperty("owned_by_id", me.getUserIdentity());
                         relItem = relItem.apply();
 
                         var body = "<_parent_type>" + me.getItemType(me.TYPE.ACTIVITY) + "</_parent_type>";
-                        body += "<_parent_id>" + source.id + "</_parent_id>";
-                        body += "<_ids>" + targetId + "</_ids>";
+                        body += "<_parent_id>" + sourceId + "</_parent_id>";
+                        body += "<_ids>" + selectargetId + "</_ids>";
                         var result = inn.applyMethod("DHI_WF_CREATE_FD_IN_REL", body);
                     }
                     catch (e) {
-                        msgBox('Failed to add ' + relType + ' Relation : ' + source.id + ' to ' + targetId);
+                        msgBox('Failed to add ' + relType + ' Relation : ' + sourceId + ' to ' + selectargetId);
                     }
                 } else {
                     //선택한 타겟일 경우 릴레이션이 없어도 메소드 실행
-                    if (target.id == targetId) {
+                    if (targetId == selectargetId) {
                         var body = "<_parent_type>" + me.getItemType(me.TYPE.ACTIVITY) + "</_parent_type>";
-                        body += "<_parent_id>" + source.id + "</_parent_id>";
-                        body += "<_ids>" + targetId + "</_ids>";
+                        body += "<_parent_id>" + sourceId + "</_parent_id>";
+                        body += "<_ids>" + selectargetId + "</_ids>";
                         var result = inn.applyMethod("DHI_WF_CREATE_FD_IN_REL", body);
                     }
                 }
@@ -1106,6 +1142,8 @@ Aras.prototype = {
         var relType = me.getRelType(sourceType, targetType, 'in');
         var existRelItem;
         var relItem;
+        sourceId = me.getCurrentItemId(me.getItemType(sourceType), sourceId);
+        targetId = me.getCurrentItemId(me.getItemType(targetType), targetId);
 
         //관계 삭제 전 상위 상태 재설정
         var body = "<source_id>" + sourceId + "</source_id>";
@@ -1276,13 +1314,26 @@ Aras.prototype = {
         for (var i = 0; i < tempData.length; i++) {
             node = tempData[i];
             if (inout == 'out') {
-                //스탠다드 일 경우 name 만
+                //스탠다드 일 경우 c_type, name 만
                 if (me.stdYN == 'Y') {
-                    tooltip = node.fs_name;
+                    tooltip = '';
+                    if (node['c_type']) {
+                        tooltip = tooltip + node['c_type'] + ' ' + node['fs_name'];
+                    } else {
+                        tooltip = node['fs_name'];
+                    }
                 }
-                //프로젝트 일 경우 c_c_rev,c_major_rev,_user_name 과 함께
+                //프로젝트 일 경우 c_type, c_c_rev,c_major_rev,_user_name 과 함께
                 else {
-                    tooltip = node.fs_name;
+                    tooltip = '';
+                    if (node['c_type']) {
+                        tooltip = tooltip + node['c_type'] + ' ' + node['fs_name'];
+                    } else {
+                        tooltip = node['fs_name'];
+                    }
+                    if (node['fs_name']) {
+                        tooltip = tooltip + ' ' + node['fs_name'];
+                    }
                     if (node['c_c_rev']) {
                         tooltip = tooltip + ' ' + node['c_c_rev'];
                     }
