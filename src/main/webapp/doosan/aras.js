@@ -1341,6 +1341,9 @@ Aras.prototype = {
                         tooltip = tooltip + ' ' + node['_user_name'];
                     }
                 }
+                if (node.fs_name == 't2') {
+                    console.log('createWorkflowData', node);
+                }
                 if (node.kind == 'A') {
                     colorAndStroke = getStateColorAndStroke(me.tree.Constants.TYPE.ACTIVITY, node.state, checkDelay(node));
                     object = {

@@ -1837,6 +1837,9 @@ Tree.prototype = {
         var me = this;
         var color = view['color'];
         var stroke = view['stroke'];
+        if(view.name == 't2'){
+            console.log('updateImageShapeStatus', view);
+        }
 
         /**
          * svg 의 path 들에 컬러와 stroke 를 적용시킨다.
@@ -2605,8 +2608,8 @@ Tree.prototype = {
             //우측방향 여백채움일 경우
             if (fitList[f].fit == 'right') {
                 if (fRight < containerWidth) {
-                    me.fitToBoundary(fitList[f].area, [upper, low, fLeft, containerWidth - 15]);
-                    right = containerWidth - 15;
+                    me.fitToBoundary(fitList[f].area, [upper, low, fLeft, containerWidth - 20]);
+                    right = containerWidth - 20;
 
                     for (var g = f + 1; g < fitList.length; g++) {
                         me.fitToBoundary(fitList[g].area, [upper, low, right, right]);
