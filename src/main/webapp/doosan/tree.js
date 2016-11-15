@@ -1837,7 +1837,7 @@ Tree.prototype = {
         var me = this;
         var color = view['color'];
         var stroke = view['stroke'];
-        if(view.name == 't2'){
+        if (view.name == 't2') {
             console.log('updateImageShapeStatus', view);
         }
 
@@ -1891,7 +1891,36 @@ Tree.prototype = {
             var imgURL = $img.attr('href');
             var attributes = $img.prop("attributes");
             var $svg = $(element).find('svg');
-            if (imgURL) {
+            //이미지만 존재할 경우
+            if (imgURL && attributes && !$svg.length) {
+                $.get(imgURL, function (data) {
+                    $svg = $(data).find('svg');
+                    $svg = $svg.removeAttr('xmlns:a');
+
+                    $.each(attributes, function () {
+                        $svg.attr(this.name, this.value);
+                    });
+                    applyPathStyle($svg, color, stroke);
+
+                    // Replace IMG with SVG
+                    var rElement = me._RENDERER._getREleById(element.id);
+                    if (rElement) {
+                        var childNodes = rElement.node.childNodes;
+                        for (var i = childNodes.length - 1; i >= 0; i--) {
+                            if (childNodes[i].tagName == 'IMAGE') {
+                                me._RENDERER._remove(this._getREleById(childNodes[i].id));
+                            }
+                        }
+                    }
+                    $(element).append($svg);
+                }, 'xml');
+            }
+            //이미지가 없고 svg 가 존재할 경우
+            else if (!imgURL && $svg.length) {
+                applyPathStyle($svg, color, stroke);
+            }
+            //이미지와 svg 둘 다 있을 경우
+            else if (imgURL && attributes && $svg.length) {
                 if ($svg.length && attributes) {
                     $.each(attributes, function () {
                         $svg.attr(this.name, this.value);
@@ -1908,30 +1937,50 @@ Tree.prototype = {
                             }
                         }
                     }
-                } else if (attributes) {
-                    $.get(imgURL, function (data) {
-                        $svg = $(data).find('svg');
-                        $svg = $svg.removeAttr('xmlns:a');
-
-                        $.each(attributes, function () {
-                            $svg.attr(this.name, this.value);
-                        });
-                        applyPathStyle($svg, color, stroke);
-
-                        // Replace IMG with SVG
-                        var rElement = me._RENDERER._getREleById(element.id);
-                        if (rElement) {
-                            var childNodes = rElement.node.childNodes;
-                            for (var i = childNodes.length - 1; i >= 0; i--) {
-                                if (childNodes[i].tagName == 'IMAGE') {
-                                    me._RENDERER._remove(this._getREleById(childNodes[i].id));
-                                }
-                            }
-                        }
-                        $(element).append($svg);
-                    }, 'xml');
                 }
             }
+
+            //if (imgURL) {
+            //    if ($svg.length && attributes) {
+            //        $.each(attributes, function () {
+            //            $svg.attr(this.name, this.value);
+            //        });
+            //        applyPathStyle($svg, color, stroke);
+            //
+            //        // Remove IMG
+            //        var rElement = me._RENDERER._getREleById(element.id);
+            //        if (rElement) {
+            //            var childNodes = rElement.node.childNodes;
+            //            for (var i = childNodes.length - 1; i >= 0; i--) {
+            //                if (childNodes[i].tagName == 'image') {
+            //                    me._RENDERER._remove(me._RENDERER._getREleById(childNodes[i].id));
+            //                }
+            //            }
+            //        }
+            //    } else if (attributes) {
+            //        $.get(imgURL, function (data) {
+            //            $svg = $(data).find('svg');
+            //            $svg = $svg.removeAttr('xmlns:a');
+            //
+            //            $.each(attributes, function () {
+            //                $svg.attr(this.name, this.value);
+            //            });
+            //            applyPathStyle($svg, color, stroke);
+            //
+            //            // Replace IMG with SVG
+            //            var rElement = me._RENDERER._getREleById(element.id);
+            //            if (rElement) {
+            //                var childNodes = rElement.node.childNodes;
+            //                for (var i = childNodes.length - 1; i >= 0; i--) {
+            //                    if (childNodes[i].tagName == 'IMAGE') {
+            //                        me._RENDERER._remove(this._getREleById(childNodes[i].id));
+            //                    }
+            //                }
+            //            }
+            //            $(element).append($svg);
+            //        }, 'xml');
+            //    }
+            //}
         }
     },
     drawMappingLabel: function (view) {

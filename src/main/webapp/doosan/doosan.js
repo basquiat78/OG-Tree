@@ -80,7 +80,6 @@ Doosan.prototype = {
              * @param activities
              */
             me.tree.onBeforeActivityMove = function (activities) {
-                console.log(activities);
                 var activityIds = [];
                 for (var i = 0; i < activities.length; i++) {
                     activityIds.push(activities[i].id);
@@ -103,7 +102,6 @@ Doosan.prototype = {
              * @returns {boolean}
              */
             me.tree.onBeforeMapping = function (source, target, selectedTargetList) {
-                console.log(source, target, selectedTargetList);
 
                 //아라스에서는 소스와 타겟이 반대
                 me.aras.addInRel(target, source, selectedTargetList);
@@ -125,7 +123,6 @@ Doosan.prototype = {
              * @param targetId
              */
             me.tree.onBeforeDeleteMapping = function (sourceId, sourceType, targetId, targetType) {
-                console.log(sourceId, sourceType, targetId, targetType);
                 var modal = $('#deleteConfirm');
                 modal.find('[name=action]').unbind('click');
                 modal.find('[name=close]').unbind('click');
@@ -158,7 +155,6 @@ Doosan.prototype = {
              * @param view
              */
             me.tree.onShowProperties = function (data, view) {
-                console.log('onShowProperties', data, view);
                 var id, type;
                 if (data.type == me.tree.Constants.TYPE.MAPPING) {
                     id = data.source;
@@ -228,7 +224,6 @@ Doosan.prototype = {
              * @param view
              */
             me.tree.onListRelation = function (data, view) {
-                console.log('onListRelation', data, view);
 
                 var id, type;
                 if (data.type == me.tree.Constants.TYPE.MAPPING) {
