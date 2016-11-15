@@ -3183,19 +3183,17 @@ Tree.prototype = {
     ,
     bindTooltip: function (element) {
         var me = this;
-        var view = me.selectViewById(me._VIEWDATA, element.id);
-        if (view) {
-            var text = view.tooltip ? view.tooltip : view.name;
-            var tooltip =
-                $('<div class="og-tooltip ui-tooltip ui-widget ui-corner-all" id="' + element.id + '-tooltip">' +
-                    '<div class="ui-tooltip-content">' + text + '</div>' +
-                    '</div>');
-            tooltip.css({
-                position: 'absolute'
-            });
-            $(element).bind('mouseover', function (event) {
-                $('.og-tooltip').remove();
+        $(element).bind('mouseover', function (event) {
+            $('.og-tooltip').remove();
+            var view = me.selectViewById(me._VIEWDATA, element.id);
+            if (view) {
+                var text = view.tooltip ? view.tooltip : view.name;
+                var tooltip =
+                    $('<div class="og-tooltip ui-tooltip ui-widget ui-corner-all" id="' + element.id + '-tooltip">' +
+                        '<div class="ui-tooltip-content">' + text + '</div>' +
+                        '</div>');
                 tooltip.css({
+                    position: 'absolute',
                     'top': event.pageY,
                     'left': event.pageX + 15,
                     'background-color': '#333',
@@ -3203,13 +3201,11 @@ Tree.prototype = {
                     'font-size': '12px'
                 });
                 $('body').append(tooltip);
-            });
-            $(element).bind('mouseout', function () {
-                if (tooltip) {
-                    tooltip.remove();
-                }
-            });
-        }
+            }
+        });
+        $(element).bind('mouseout', function () {
+            $('.og-tooltip').remove();
+        });
     }
     ,
     bindDblClickEvent: function (element) {
