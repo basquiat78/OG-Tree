@@ -194,9 +194,25 @@ Doosan.prototype = {
              * 리프레쉬 버튼 클릭시
              */
             $('#refresh').click(function () {
+                //캔버스를 전부 날린다.
+                me.tree.clear();
+
+                //캔버스 Area 를 재구성한다.
+                me.tree.drawArea();
+
+                //아더워크플로우를 그린다.
+                var wfId = $('#targetOtherWorkflow').val();
+                if (wfId && wfId != '') {
+                    var headerItem = me.aras.getWorkflowHeader(wfId);
+                    if (headerItem.getItemCount() == 1) {
+                        me.renderHeaders(headerItem, 'other');
+                    }
+                    me.aras.refreshOtherWorkflow(wfId);
+                }
+
+                //마이 워크플로우를 그린다.
                 me.aras.refreshMyWorkFlow();
             });
-
 
             /**
              * 폴더 또는 ED 또는 액티비티 삭제 콘텍스트 클릭시
@@ -636,7 +652,7 @@ Doosan.prototype = {
         var me = this;
         $.getJSON("doosan/sample/myData.json", function (myData) {
 
-            me.tree._INCOLLAPSE = [];
+            //me.tree._INCOLLAPSE = [];
             me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY});
             me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_IN});
             me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_OUT});

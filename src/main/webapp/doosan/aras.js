@@ -889,8 +889,26 @@ Aras.prototype = {
                     ", _REL_OWNEDTEAM = '" + parentItem.getProperty('_rel_ownedteam', '') + "'" +
                     ", _REL_WFA = '" + activityId + "'" +
                     ", _REL_WF = '" + parentItem.getProperty('_rel_wf', '') + "'" +
-                    ", IS_TEMPLATE = '" + 1 + "'" +
-                    " WHERE id = '" + edId + "'</sqlString>";
+                    ", IS_TEMPLATE = '" + 0 + "'";
+                if (edItem.CLASS != "ETC") {
+                    body = body + " , _FIRST_P6_ACT = '" + parentItem.getProperty('_first_p6_act', '') + "' "
+                        + " , _FIRST_PIMS_ACT = '" + parentItem.getProperty('_first_pims_act', '') + "' "
+                        + " , _FIRST_START_DATE = '" + parentItem.getProperty('_first_start_date', '') + "' "
+                        + " , _FIRST_END_DATE = '" + parentItem.getProperty('_first_end_date', '') + "' "
+                        + " , _FIRST_ACT_NAME = '" + parentItem.getProperty('_first_act_name', '') + "' "
+                        + " , _FINAL_P6_ACT = '" + parentItem.getProperty('_final_p6_act', '') + "' "
+                        + " , _FINAL_PIMS_ACT = '" + parentItem.getProperty('_final_pims_act', '') + "' "
+                        + " , _FINAL_ACT_NAME = '" + parentItem.getProperty('_final_act_name', '') + "' "
+                        + " , _FINAL_START_DATE = '" + parentItem.getProperty('_final_start_date', '') + "' "
+                        + " , _FINAL_END_DATE = '" + parentItem.getProperty('_final_end_date', '') + "' ";
+                }
+                else if (edItem.CLASS == "ETC") {
+                    body = body + " , _FIRST_START_DATE = '" + parentItem.getProperty('_first_start_date', '') + "' "
+                        + " , _FIRST_END_DATE = '" + parentItem.getProperty('_first_end_date', '') + "' "
+                        + " , _FINAL_START_DATE = '" + parentItem.getProperty('_final_start_date', '') + "' "
+                        + " , _FINAL_END_DATE = '" + parentItem.getProperty('_final_end_date', '') + "' ";
+                }
+                body = body + " WHERE id = '" + edId + "'</sqlString>";
             }
             inn.applyMethod("DHI_APPLY_SQL", body);
 
@@ -1341,9 +1359,6 @@ Aras.prototype = {
                         tooltip = tooltip + ' ' + node['_user_name'];
                     }
                 }
-                if (node.fs_name == 't2') {
-                    console.log('createWorkflowData', node);
-                }
                 if (node.kind == 'A') {
                     colorAndStroke = getStateColorAndStroke(me.tree.Constants.TYPE.ACTIVITY, node.state, checkDelay(node));
                     object = {
@@ -1424,13 +1439,32 @@ Aras.prototype = {
                 }
                 var sourceType = node.kind == 'F' ? me.tree.Constants.TYPE.FOLDER : me.tree.Constants.TYPE.ED;
                 colorAndStroke = getStateColorAndStroke(sourceType, node.state, checkDelay(node));
-                //스탠다드 일 경우 name 만
+                //스탠다드 일 경우 c_type, name 만
                 if (me.stdYN == 'Y') {
-                    tooltip = node.fs_name;
+                    tooltip = '';
+                    if (node['c_type']) {
+                        tooltip = tooltip + node['c_type'] + ' ' + node['name'];
+                    } else {
+                        tooltip = node['name'];
+                    }
                 }
-                //프로젝트 일 경우 사람이름과 함께
+                //프로젝트 일 경우 c_type, c_c_rev,c_major_rev,_user_name 과 함께
                 else {
-                    tooltip = node['_user_name'] ? node.name + '-' + node['_user_name'] : node.name;
+                    tooltip = '';
+                    if (node['c_type']) {
+                        tooltip = tooltip + node['c_type'] + ' ' + node['name'];
+                    } else {
+                        tooltip = node['name'];
+                    }
+                    if (node['c_c_rev']) {
+                        tooltip = tooltip + ' ' + node['c_c_rev'];
+                    }
+                    if (node['c_major_rev']) {
+                        tooltip = tooltip + ' ' + node['c_major_rev'];
+                    }
+                    if (node['_user_name']) {
+                        tooltip = tooltip + ' ' + node['_user_name'];
+                    }
                 }
                 object = {
                     type: me.tree.Constants.TYPE.MAPPING,
@@ -1524,7 +1558,6 @@ Aras.prototype = {
         me.syncExpandDataWithTree(concat);
 
         //remove My Data
-        //me.tree._INCOLLAPSE = [];
         me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY});
         me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_IN});
         me.tree.removeDataByFilter({position: me.tree.Constants.POSITION.MY_OUT});

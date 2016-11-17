@@ -255,6 +255,10 @@ Tree.prototype = {
         me._CONTAINER.scrollTop(cuScrollTop + moveY);
 
     },
+    /**
+     * 라벨을 숨김/ 보임 처리한다.
+     * @param show
+     */
     setShowLabel: function (show) {
         var me = this;
         var allShapes = me._RENDERER.getAllNotEdges();
@@ -299,6 +303,12 @@ Tree.prototype = {
         me.canvas.setShapeStyle(me.AREA.rIn, me._CONFIG.AREA_STYLE.rIn);
         me.canvas.setShapeStyle(me.AREA.rAc, me._CONFIG.AREA_STYLE.rAc);
         me.canvas.setShapeStyle(me.AREA.rOut, me._CONFIG.AREA_STYLE.rOut);
+    },
+
+    clear: function(){
+        this.canvas.clear();
+        var rootGroup = this.canvas.getRootGroup();
+        $(rootGroup).empty();
     },
 
     //========================================================================//
