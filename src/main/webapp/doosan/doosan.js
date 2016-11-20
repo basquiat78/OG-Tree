@@ -1,5 +1,9 @@
 /**
- * Created by Seungpil Park on 2016. 9. 6..
+ * Doosan html view Handler
+ *
+ * @class
+ *
+ * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
  */
 var Doosan = function () {
     this.tree = null;
@@ -7,6 +11,9 @@ var Doosan = function () {
     this.mode = 'sample'; //random,sample
 };
 Doosan.prototype = {
+    /**
+     * Html 페이지가 처음 로딩되었을 때 오픈그래프 트리를 활성화하고, 필요한 데이터를 인티그레이션 한다.
+     */
     init: function () {
         var me = this;
         me.tree = new Tree('canvas');
@@ -501,6 +508,9 @@ Doosan.prototype = {
             });
         });
     },
+    /**
+     * discipline, disciplineSpec, bg, 아더 워크플로우 셀렉트 박스 이벤트를 등록한다.
+     */
     bindSelectBoxEvent: function () {
         var me = this;
         var reload = function () {
@@ -534,6 +544,10 @@ Doosan.prototype = {
             }
         });
     },
+    /**
+     * 주어진 데이터로 discipline, disciplineSpec, bg 셀렉트 박스를 구성한다.
+     * @param data json
+     */
     renderSelectBox: function (data) {
         var me = this;
         var json = JSON.parse(data.d);
@@ -556,6 +570,10 @@ Doosan.prototype = {
             }
         }
     },
+    /**
+     * 주어진 데이터로 아더 워크플로우 셀렉트 박스를 구성한다.
+     * @param data json
+     */
     renderOtherWorkFlowBox: function (data) {
         var me = this;
         var json = JSON.parse(data.d);
@@ -568,9 +586,20 @@ Doosan.prototype = {
             }
         }
     },
+    /**
+     * 주어진 데이터로 셀렉트 박스 내부에 option 을 생성한다.
+     * @param element 셀렉트 박스 Dom element
+     * @param label option display value
+     * @param value option value
+     */
     appendSelectBoxElement: function (element, label, value) {
         element.append('<option value="' + value + '">' + label + '</option>');
     },
+    /**
+     * Html 페이지의 헤더 부분에 프로젝트 정보를 표기한다.
+     * @param headerItem
+     * @param myOther
+     */
     renderHeaders: function (headerItem, myOther) {
         var targetTableClass = myOther == 'other' ? 'other-table' : 'my-table';
         var targetTable = $('.' + targetTableClass);
@@ -586,6 +615,9 @@ Doosan.prototype = {
         targetTable.find('[name=processname]').html(processname);
         targetTable.find('[name=sub_processname]').html(sub_processname);
     },
+    /**
+     * doosan/state.json 에 저장된 스테이터스 데이터를 불러와 스테이터스 박스를 구성한다.
+     */
     renderStateBox: function () {
         var me = this;
         var stdYN = 'N';
@@ -651,6 +683,9 @@ Doosan.prototype = {
             }
         }
     },
+    /**
+     * Dev 모드일시 개발용 샘플 데이터를 오픈그래프 트리에 반영한다.
+     */
     renderSampleData: function () {
         var me = this;
         $.getJSON("doosan/sample/myData.json", function (myData) {
@@ -668,12 +703,105 @@ Doosan.prototype = {
             });
         });
     },
+    /**
+     * Dev 모드일시 랜덤 데이터를 오픈그래프 트리에 반영한다.
+     */
     renderRandomData: function () {
         var me = this;
-        var otherData = randomData('other');
-        var myData = randomData('my');
+        var otherData = me.randomData('other');
+        var myData = me.randomData('my');
         me.tree.updateData(otherData, true);
         me.tree.updateData(myData);
+    },
+
+    /**
+     * 오픈그래프 트리 데이터를 랜덤하게 생성한다.
+     * @param type other,my
+     * @returns {Array} json
+     */
+    randomData : function(type){
+        var data = {};
+        var randomCount = function (min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        };
+        var randomType = function () {
+            var number = Math.floor(Math.random() * (2));
+            if (number == 0) {
+                return 'folder';
+            } else {
+                return 'ed';
+            }
+        };
+
+        //var random = randomCount() + 1;
+        for (var i = 0; i < 10; i++) {
+            console.log('=====Activity : ' + i + ' ===========');
+
+            var id = type + "-ac-" + i;
+            var activity = {
+                "type": "activity",
+                "id": id,
+                "name": type + "-ac-" + i + "-Activity",
+                "position": type,
+                "parentId": "",
+                "expand": true,
+                "extData": {}
+            };
+            if (i < 9) {
+                activity.next = type + "-ac-" + (i + 1);
+            }
+            if (i > 0) {
+                activity.prev = type + "-ac-" + (i - 1);
+            }
+            data[id] = activity;
+            var maxDepth = 7;
+            var createdData = [activity];
+            for (var c = 0; c < maxDepth; c++) {
+                var copyData = JSON.parse(JSON.stringify(createdData));
+                createdData = [];
+                for (var g = 0; g < copyData.length; g++) {
+                    var child, childId;
+                    var parent = copyData[g];
+                    var childType = randomType();
+                    if (c == 0) {
+                        childType = 'folder';
+                    }
+                    var randomChildNum = randomCount(1, 3);
+                    if (childType != 'folder') {
+                        randomChildNum = randomCount(1, 5);
+                    }
+                    for (var m = 0; m < randomChildNum; m++) {
+                        if (childType == 'folder') {
+                            childId = type + "-fd-" + i + '-' + c + '-' + g + '-' + m;
+                            child = {
+                                "type": childType,
+                                "id": childId,
+                                "name": type + "-fd-" + i + '-' + c + '-' + g + '-' + m + "-Folder",
+                                "position": type + "-out",
+                                "parentId": parent.id,
+                                "expand": true,
+                                "extData": {}
+                            };
+                            createdData.push(child);
+                            data[childId] = child;
+                        } else {
+                            childId = type + "-ed-" + i + '-' + c + '-' + g + '-' + m;
+                            child = {
+                                "type": childType,
+                                "id": childId,
+                                "name": type + "-ed-" + i + '-' + c + '-' + g + '-' + m + "-Ed",
+                                "position": type + "-out",
+                                "parentId": parent.id,
+                                "expand": true,
+                                "extData": {}
+                            };
+                            data[childId] = child;
+                        }
+                    }
+                }
+            }
+        }
+        return data;
     }
 }
 ;
@@ -683,89 +811,3 @@ $(function () {
     var doosan = new Doosan();
     doosan.init();
 });
-
-
-var randomData = function (type) {
-    var data = {};
-    var randomCount = function (min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    };
-    var randomType = function () {
-        var number = Math.floor(Math.random() * (2));
-        if (number == 0) {
-            return 'folder';
-        } else {
-            return 'ed';
-        }
-    };
-
-    //var random = randomCount() + 1;
-    for (var i = 0; i < 10; i++) {
-        console.log('=====Activity : ' + i + ' ===========');
-
-        var id = type + "-ac-" + i;
-        var activity = {
-            "type": "activity",
-            "id": id,
-            "name": type + "-ac-" + i + "-Activity",
-            "position": type,
-            "parentId": "",
-            "expand": true,
-            "extData": {}
-        };
-        if (i < 9) {
-            activity.next = type + "-ac-" + (i + 1);
-        }
-        if (i > 0) {
-            activity.prev = type + "-ac-" + (i - 1);
-        }
-        data[id] = activity;
-        var maxDepth = 7;
-        var createdData = [activity];
-        for (var c = 0; c < maxDepth; c++) {
-            var copyData = JSON.parse(JSON.stringify(createdData));
-            createdData = [];
-            for (var g = 0; g < copyData.length; g++) {
-                var child, childId;
-                var parent = copyData[g];
-                var childType = randomType();
-                if (c == 0) {
-                    childType = 'folder';
-                }
-                var randomChildNum = randomCount(1, 3);
-                if (childType != 'folder') {
-                    randomChildNum = randomCount(1, 5);
-                }
-                for (var m = 0; m < randomChildNum; m++) {
-                    if (childType == 'folder') {
-                        childId = type + "-fd-" + i + '-' + c + '-' + g + '-' + m;
-                        child = {
-                            "type": childType,
-                            "id": childId,
-                            "name": type + "-fd-" + i + '-' + c + '-' + g + '-' + m + "-Folder",
-                            "position": type + "-out",
-                            "parentId": parent.id,
-                            "expand": true,
-                            "extData": {}
-                        };
-                        createdData.push(child);
-                        data[childId] = child;
-                    } else {
-                        childId = type + "-ed-" + i + '-' + c + '-' + g + '-' + m;
-                        child = {
-                            "type": childType,
-                            "id": childId,
-                            "name": type + "-ed-" + i + '-' + c + '-' + g + '-' + m + "-Ed",
-                            "position": type + "-out",
-                            "parentId": parent.id,
-                            "expand": true,
-                            "extData": {}
-                        };
-                        data[childId] = child;
-                    }
-                }
-            }
-        }
-    }
-    return data;
-};

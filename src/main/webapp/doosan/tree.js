@@ -1,3 +1,12 @@
+/**
+ * Open graph Tree Library (OG-Tree)
+ *
+ * @class
+ * @requires OG.*
+ *
+ * @param {String} container Dom Element Id
+ * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ */
 var Tree = function (container) {
     this.Constants = {
         TYPE: {
@@ -46,14 +55,41 @@ var Tree = function (container) {
         }
     };
     this._CONFIG = {
+        /**
+         * 액티비티를 이동하여 소트시킬 수 있는 여부
+         */
         MOVE_SORTABLE: false,
+        /**
+         * 아이템을 드래그하여 매핑시킬 수 있는 여부
+         */
         MAPPING_ENABLE: false,
+        /**
+         * 폴더 생성 가능 여부
+         */
         CREATE_FOLDER: false,
+        /**
+         * ED 생성 가능 여부
+         */
         CREATE_ED: false,
+        /**
+         * PICK ED 가능 여부
+         */
         PICK_ED: false,
+        /**
+         * 아이템 삭제 가능 여부
+         */
         DELETABLE: false,
+        /**
+         * 라벨 표기 가능 여부
+         */
         SHOW_LABEL: true,
+        /**
+         * 캔버스의 마진
+         */
         DISPLAY_MARGIN: 50,
+        /**
+         * 캔버스 높이
+         */
         CONTAINER_HEIGHT: 600,
         /**
          * 라벨 최소 크기(IE)
@@ -68,78 +104,196 @@ var Tree = function (container) {
          * 라벨 최대 글자 크기
          */
         LABEL_MAX_LENGTH: 20,
+
+        /**
+         * Lane Area 관련 Configration
+         */
         AREA: {
+            /**
+             * 전체 화면 중 아더 워크플로우의 가로 비율
+             */
             LEFT_SIZE_RATE: (5 / 12) - 0.002,
+            /**
+             * 전체 화면 중 마이 워크플로우 가로 비율
+             */
             RIGHT_SIZE_RATE: (7 / 12) + 0.002,
+            /**
+             * 액티비티 Area 사이즈
+             */
             ACTIVITY_SIZE: 120,
+            /**
+             * Area 의 Bottom Margin
+             */
             BOTTOM_MARGIN: 50,
+            /**
+             * Area 의 Top Margin
+             */
             TOP_MARGIN: 30,
+            /**
+             * 아더 - 액티비티 Area 라벨 및 디스플레이 여부
+             */
             lAc: {
                 label: 'Other Activity',
                 display: false
             },
+            /**
+             * 아더 - 아웃 Area 라벨 및 디스플레이 여부
+             */
             lOut: {
                 label: 'Other Output',
                 display: false
             },
+            /**
+             * 마이 - 인 Area 라벨 및 디스플레이 여부
+             */
             rIn: {
                 label: 'My Input',
                 display: true
             },
+            /**
+             * 마이 - 액티비티 Area 라벨 및 디스플레이 여부
+             */
             rAc: {
                 label: 'My Activity',
                 center: true,
                 display: true
             },
+            /**
+             * 마이 - 아웃 Area 라벨 및 디스플레이 여부
+             */
             rOut: {
                 label: 'My Output',
                 display: true
             }
         },
+        /**
+         * Area 의 스타일 관련 Configuration
+         */
         AREA_STYLE: {
+            /**
+             * 아더 - 액티비티 Area Style
+             */
             lAc: {
                 'fill': 'RGB(246,246,246)',
                 'fill-opacity': '1'
             },
+            /**
+             * 아더 - 아웃 Area Style
+             */
             lOut: {
                 'fill': 'RGB(246,246,246)',
                 'fill-opacity': '1'
             },
+            /**
+             * 마이 - 인 Area Style
+             */
             rIn: {
                 'fill': 'RGB(255,255,255)',
                 'fill-opacity': '1'
             },
+            /**
+             * 마이 - 액티비티 Area Style
+             */
             rAc: {
                 'fill': 'RGB(255,255,255)',
                 'fill-opacity': '1'
             },
+            /**
+             * 마이 - 아웃 Area Style
+             */
             rOut: {
                 'fill': 'RGB(246,246,246)',
                 'fill-opacity': '1'
             }
         },
+        /**
+         * 아이템의 사이즈 관련 Configuration
+         */
         SHAPE_SIZE: {
+            /**
+             * 아이템의 너비 (공통)
+             */
             COL_SIZE: 50,
+            /**
+             * 액티비티 가로
+             */
             ACTIVITY_WIDTH: 50,
+            /**
+             * 액티비티 세로
+             */
             ACTIVITY_HEIGHT: 50,
+            /**
+             * 액티비티 라벨 마진
+             */
             ACTIVITY_LABEL_MARGIN: 20,
+            /**
+             * 액티비티 마진
+             */
             ACTIVITY_MARGIN: 50,
+            /**
+             * 폴더 가로
+             */
             FOLDER_WIDTH: 40,
+            /**
+             * 폴더 세로
+             */
             FOLDER_HEIGHT: 40,
+            /**
+             * 폴더 마진
+             */
             FOLDER_MARGIN: 20,
+            /**
+             * ED 가로
+             */
             ED_WIDTH: 30,
+            /**
+             * ED 세로
+             */
             ED_HEIGHT: 30,
+            /**
+             * ED 마진
+             */
             ED_MARGIN: 24,
+            /**
+             * Expand 버튼과 부모사이의 간격
+             */
             EXPANDER_FROM_MARGIN: 10,
+            /**
+             * Expand 버튼과 자식 사이의 꺽음 부위 간격
+             */
             EXPANDER_TO_VERTICE_MARGIN: 10,
+            /**
+             * Expand 버튼과 자식 사이의 간격
+             */
             EXPANDER_TO_MARGIN: 40,
+            /**
+             * Expand 버튼 가로
+             */
             EXPANDER_WIDTH: 14,
+            /**
+             * Expand 버튼 세로
+             */
             EXPANDER_HEIGHT: 14
         },
+        /**
+         * 디폴트 스타일 Configuration
+         */
         DEFAULT_STYLE: {
+            /**
+             * Blur 처리하는 아이템의 opacity
+             */
             BLUR: "0.3",
+            /**
+             * 연결선 타입
+             */
             EDGE: "plain", //bezier || plain,
+            /**
+             * 매핑 연결선 타입
+             */
             MAPPING_EDGE: "bezier", //bezier || plain,
+            /**
+             * 아이템 라벨 폰트 사이즈
+             */
             FONT_SIZE: 9
         }
     };
@@ -150,8 +304,21 @@ var Tree = function (container) {
      * @private
      */
     this._INCOLLAPSE = [];
+
+    /**
+     * 데이터 저장소
+     * @type {HashMap}
+     * @private
+     */
     this._STORAGE = {};
+
+    /**
+     * 뷰 데이터 저장소
+     * @type {HashMap}
+     * @private
+     */
     this._VIEWDATA = {};
+
     this._CONTAINER = $('#' + container);
     this._CONTAINER.css({
         width: '100%',
@@ -261,7 +428,7 @@ Tree.prototype = {
     },
     /**
      * 라벨을 숨김/ 보임 처리한다.
-     * @param show
+     * @param show 보임 여부
      */
     setShowLabel: function (show) {
         var me = this;
@@ -324,14 +491,14 @@ Tree.prototype = {
 
     /**
      * 뷰 데이터를 불러온다.
-     * @returns {Array}
+     * @returns {Array} OG-Tree view data
      */
     loadViewData: function () {
         return this._VIEWDATA.views;
     },
     /**
      * 노드 데이터를 불러온다.
-     * @returns {Array}
+     * @returns {Array} OG-Tree data
      */
     load: function () {
         var data = [];
@@ -343,8 +510,8 @@ Tree.prototype = {
     },
     /**
      * 노드 데이터를 필터링하여 불러온다.
-     * @param filterData
-     * @returns {Array}
+     * @param filterData json
+     * @returns {Array} OG-Tree data
      */
     loadByFilter: function (filterData) {
         var data = [];
@@ -365,7 +532,7 @@ Tree.prototype = {
     },
     /**
      * 노드 데이터를 필터링 하여 삭제한다.
-     * @param filterData
+     * @param filterData json
      */
     removeDataByFilter: function (filterData) {
         var me = this, key;
@@ -385,7 +552,7 @@ Tree.prototype = {
     },
     /**
      * 노드 데이터를 모두 삭제한다.
-     * @param preventRender
+     * @param preventRender 화면 리로드 여부
      */
     clearData: function (preventRender) {
         this._STORAGE = {};
@@ -395,10 +562,10 @@ Tree.prototype = {
     },
     /**
      * 트리의 데이터를 주어진 prop 로 소트한다.
-     * @param prop
-     * @param positions
-     * @param desc
-     * @param preventRender
+     * @param prop 소트 키
+     * @param positions Array of Area position
+     * @param desc 역순 여부
+     * @param preventRender 화면 리로드 여부
      */
     sortData: function (prop, positions, desc, preventRender) {
         var me = this, key, aType, bType, x, y;
@@ -468,8 +635,8 @@ Tree.prototype = {
     },
     /**
      * 데이터를 업데이트한다.
-     * @param data
-     * @param preventRender 업데이트 후 렌더링 방지 여부.
+     * @param data OG-Tree data
+     * @param preventRender 화면 리로드 여부
      */
     updateData: function (data, preventRender) {
         if (!data) {
@@ -1203,6 +1370,12 @@ Tree.prototype = {
         return viewData;
     },
 
+    /**
+     * 매핑 시킬 아더워크플로우가 없는 인 데이터들로 viewData 를 구성한다.
+     * @param mapping OG-Tree data
+     * @param targetActivityView OG-Tree view data
+     * @returns {{totalHeight: number, views: Array, displayViews: Array}}
+     */
     createStandaloneViewData: function (mapping, targetActivityView) {
         //주어진 매핑 데이터에 연관된 매핑으로 이루어진 독립된 공간을 계산하여 리턴한다.
         var me = this, y,
@@ -1815,7 +1988,7 @@ Tree.prototype = {
                 } else if (type == me.Constants.TYPE.EXPANDER_TO) {
                     me.updateExpanderLine(displayViews[i], element);
                 } else if (type == me.Constants.TYPE.ACTIVITY_REL) {
-                    me.updateActivityRelLien(displayViews[i]);
+                    me.updateActivityRelLine(displayViews[i]);
                 }
 
             } else {
@@ -1840,6 +2013,11 @@ Tree.prototype = {
             }
         }
     },
+    /**
+     * 주어진 라벨이 최대 표기 숫자를 넘길 경우 텍스트를 줄인다.
+     * @param label 라벨
+     * @returns {String} fixed label
+     */
     labelSubstring: function (label) {
         var length = this._CONFIG.LABEL_MAX_LENGTH;
         if (label) {
@@ -1850,6 +2028,11 @@ Tree.prototype = {
             }
         }
     },
+    /**
+     * 이미지 Shape 의 컬러와 스트로크를 스테이터스에 따라 변경한다.
+     * @param view OG-Tree view data
+     * @param element OG-Tree Dom Element
+     */
     updateImageShapeStatus: function (view, element) {
         var me = this;
         var color = view['color'];
@@ -1956,50 +2139,13 @@ Tree.prototype = {
                     }
                 }
             }
-
-            //if (imgURL) {
-            //    if ($svg.length && attributes) {
-            //        $.each(attributes, function () {
-            //            $svg.attr(this.name, this.value);
-            //        });
-            //        applyPathStyle($svg, color, stroke);
-            //
-            //        // Remove IMG
-            //        var rElement = me._RENDERER._getREleById(element.id);
-            //        if (rElement) {
-            //            var childNodes = rElement.node.childNodes;
-            //            for (var i = childNodes.length - 1; i >= 0; i--) {
-            //                if (childNodes[i].tagName == 'image') {
-            //                    me._RENDERER._remove(me._RENDERER._getREleById(childNodes[i].id));
-            //                }
-            //            }
-            //        }
-            //    } else if (attributes) {
-            //        $.get(imgURL, function (data) {
-            //            $svg = $(data).find('svg');
-            //            $svg = $svg.removeAttr('xmlns:a');
-            //
-            //            $.each(attributes, function () {
-            //                $svg.attr(this.name, this.value);
-            //            });
-            //            applyPathStyle($svg, color, stroke);
-            //
-            //            // Replace IMG with SVG
-            //            var rElement = me._RENDERER._getREleById(element.id);
-            //            if (rElement) {
-            //                var childNodes = rElement.node.childNodes;
-            //                for (var i = childNodes.length - 1; i >= 0; i--) {
-            //                    if (childNodes[i].tagName == 'IMAGE') {
-            //                        me._RENDERER._remove(this._getREleById(childNodes[i].id));
-            //                    }
-            //                }
-            //            }
-            //            $(element).append($svg);
-            //        }, 'xml');
-            //    }
-            //}
         }
     },
+
+    /**
+     * 매핑시 셀렉트 된 아이템에 S 마크를 붙인다.
+     * @param view OG-Tree view data
+     */
     drawMappingLabel: function (view) {
         //var id = view.id + this.Constants.PREFIX.MAPPING_LABEL, size, offset, shape;
         //if (view.mapping) {
@@ -2024,6 +2170,12 @@ Tree.prototype = {
             this.canvas.drawShape(offset, shape, size, null, id);
         }
     },
+    /**
+     * 매핑시 셀렉트 된 아이템의 S 마크를 업데이트 한다.
+     * @param view OG-Tree view data
+     * @param element OG-Tree Dom Element
+     * @param customData OG-Tree data
+     */
     updateMappingLabel: function (view, element, customData) {
         //엘리먼트와 뷰의 위치가 바뀌었을 경우
         //엘리먼트와 뷰의 매핑이 틀릴경우
@@ -2057,6 +2209,11 @@ Tree.prototype = {
             this.drawMappingLabel(view);
         }
     },
+    /**
+     * 액티비티 아이템을 업데이트 한다.
+     * @param view OG-Tree view data
+     * @param element OG-Tree Dom Element
+     */
     updateActivity: function (view, element) {
         var customData = this.canvas.getCustomData(element);
         var needUpdate = false;
@@ -2069,6 +2226,10 @@ Tree.prototype = {
         }
         this.updateImageShapeStatus(view, element);
     },
+    /**
+     * 액티비티 아이템을 드로잉한다.
+     * @param view OG-Tree view data
+     */
     drawActivity: function (view) {
         var me = this;
         var shape = new OG.Activity(me._CONFIG.SHOW_LABEL ? me.labelSubstring(view.name) : undefined);
@@ -2088,6 +2249,11 @@ Tree.prototype = {
         me.bindTooltip(element);
         me.bindMappingHighLight(element);
     },
+    /**
+     * 폴더 아이템을 업데이트한다.
+     * @param view OG-Tree view data
+     * @param element OG-Tree Dom Element
+     */
     updateFolder: function (view, element) {
         var customData = this.canvas.getCustomData(element);
         var needUpdate = false;
@@ -2109,6 +2275,10 @@ Tree.prototype = {
         this.updateImageShapeStatus(view, element);
         this.updateMappingLabel(view, element, customData);
     },
+    /**
+     * 폴더 아이템을 드로잉한다.
+     * @param view OG-Tree view data
+     */
     drawFolder: function (view) {
         var me = this;
         var shape = new OG.Folder(me._CONFIG.SHOW_LABEL ? me.labelSubstring(view.name) : undefined);
@@ -2133,6 +2303,11 @@ Tree.prototype = {
         me.bindTooltip(element);
         me.bindMappingHighLight(element);
     },
+    /**
+     * ED 아이템을 업데이트 한다.
+     * @param view OG-Tree view data
+     * @param element OG-Tree Dom Element
+     */
     updateEd: function (view, element) {
         var customData = this.canvas.getCustomData(element);
         var needUpdate = false;
@@ -2154,6 +2329,10 @@ Tree.prototype = {
         this.updateImageShapeStatus(view, element);
         this.updateMappingLabel(view, element, customData);
     },
+    /**
+     * ED 아이템을 드로잉한다.
+     * @param view OG-Tree view data
+     */
     drawEd: function (view) {
         var me = this;
         var shape = new OG.Ed(me._CONFIG.SHOW_LABEL ? me.labelSubstring(view.name) : undefined);
@@ -2178,6 +2357,10 @@ Tree.prototype = {
         me.bindTooltip(element);
         me.bindMappingHighLight(element);
     },
+    /**
+     * 매핑 연결선을 드로잉한다.
+     * @param view OG-Tree view data
+     */
     drawMappingLine: function (view) {
         if (view.vertieces) {
             var me = this;
@@ -2199,8 +2382,8 @@ Tree.prototype = {
     },
     /**
      * expander 선연결을 업데이트한다.
-     * @param view
-     * @param element
+     * @param view OG-Tree view data
+     * @param element OG-Tree Dom Element
      */
     updateExpanderLine: function (view, element) {
         var customData = this.canvas.getCustomData(element);
@@ -2214,8 +2397,8 @@ Tree.prototype = {
         }
     },
     /**
-     * view 데이터로부터 expander 선연결을 생성한다.
-     * @param view
+     * expander 선연결을 생성한다.
+     * @param view OG-Tree view data
      */
     drawExpanderLine: function (view) {
         if (view.vertieces) {
@@ -2238,9 +2421,18 @@ Tree.prototype = {
             }
         }
     },
-    updateActivityRelLien: function (view, element) {
+    /**
+     * 액티비티간의 연결선을 업데이트한다.
+     * @param view OG-Tree view data
+     * @param element OG-Tree Dom Element
+     */
+    updateActivityRelLine: function (view, element) {
 
     },
+    /**
+     * 액티비티간의 연결선을 드로잉한다.
+     * @param view OG-Tree view data
+     */
     drawActivityRelLine: function (view) {
         if (view.vertieces) {
             var me = this;
@@ -2254,8 +2446,8 @@ Tree.prototype = {
     },
     /**
      * expander 를 업데이트한다.
-     * @param view
-     * @param element
+     * @param view OG-Tree view data
+     * @param element OG-Tree Dom Element
      */
     updateExpander: function (view, element) {
         var href = $(element).find('image').attr('href');
@@ -2269,8 +2461,8 @@ Tree.prototype = {
         }
     },
     /**
-     * view 데이터로부터 expander 를 생성한다.
-     * @param view
+     * expander 를 드로잉한다.
+     * @param view OG-Tree view data
      */
     drawExpander: function (view) {
         var me = this;
@@ -2338,11 +2530,11 @@ Tree.prototype = {
         });
     },
     /**
-     * expander 도형의 센터를 구한다.
-     * @param position
-     * @param depth
-     * @param standardX
-     * @returns {*}
+     * expander 의 센터를 구한다.
+     * @param position Area position
+     * @param depth 아이템 depth
+     * @param standardX Area X 좌표
+     * @returns {Number} center X 좌표
      */
     getExpanderCenterX: function (position, depth, standardX) {
         var me = this;
@@ -2362,10 +2554,10 @@ Tree.prototype = {
     },
     /**
      * 액티비티, 폴더, Ed 의 센터를 구한다.
-     * @param position
-     * @param depth
-     * @param standardX
-     * @returns {number}
+     * @param position Area position
+     * @param depth 아이템 depth
+     * @param standardX Area X 좌표
+     * @returns {Number} center X 좌표
      */
     getShapeCenterX: function (position, depth, standardX) {
         var me = this;
@@ -2384,6 +2576,16 @@ Tree.prototype = {
         }
         return Math.round(centerX);
     },
+    /**
+     * 매핑 연결선의 vertices 를 구한다.
+     * @param depth 아이템 depth
+     * @param parentY 매핑 대상 액티비티 Y 좌표
+     * @param myY 자신의 Y 좌표
+     * @param pStandardX 매핑 대상 액티비티 Area X 좌표
+     * @param myStandardX 자신의 Area X 좌표
+     * @param hasChild 자식이 있는지 여부
+     * @returns {Array} vertices
+     */
     getMappingEdgeVertices: function (depth, parentY, myY, pStandardX, myStandardX, hasChild) {
         var me = this;
         var vertieces = [];
@@ -2405,6 +2607,15 @@ Tree.prototype = {
         ];
         return vertieces;
     },
+    /**
+     * 액티비티간의 연결선의 vertices 를 구한다.
+     * @param position Area position
+     * @param depth 아이템 depth
+     * @param standardX Area X 좌표
+     * @param parentY 연결대상 액티비티 Y 좌표
+     * @param myY 자신의 Y 좌표
+     * @returns {Array} vertices
+     */
     getActivityRelVertices: function (position, depth, standardX, parentY, myY) {
         var me = this;
 
@@ -2425,12 +2636,12 @@ Tree.prototype = {
     },
     /**
      * Expander To 선의 vertices 를 구한다.
-     * @param position
-     * @param depth
-     * @param standardX
-     * @param parentY
-     * @param myY
-     * @returns {Array}
+     * @param position Area position
+     * @param depth 아이템 depth
+     * @param standardX Area X 좌표
+     * @param parentY 부모 아이템의 Y 좌표
+     * @param myY 자신의 Y 좌표
+     * @returns {Array} vertices
      */
     getExpanderToVertices: function (position, depth, standardX, parentY, myY) {
         var me = this;
@@ -2468,12 +2679,12 @@ Tree.prototype = {
     },
     /**
      * Expander From 선의 vertices 를 구한다.
-     * @param position
-     * @param depth
-     * @param standardX
-     * @param parentY
-     * @param myY
-     * @returns {Array}
+     * @param position Area position
+     * @param depth 아이템 depth
+     * @param standardX Area X 좌표
+     * @param parentY 부모 아이템의 Y 좌표
+     * @param myY 자신의 Y 좌표
+     * @returns {Array} vertices
      */
     getExpanderFromVertices: function (position, depth, standardX, parentY, myY) {
         if (parentY != myY) {
@@ -2515,8 +2726,8 @@ Tree.prototype = {
     },
     /**
      * 주어진 views 를 포지션별로 분류하여 리턴한다.
-     * @param displayViews
-     * @returns {{}}
+     * @param displayViews Array of OG-Tree view data
+     * @returns {Object} HashMap of OG-Tree view data
      */
     dividedViewsByPosition: function (displayViews) {
         var me = this;
@@ -2555,7 +2766,7 @@ Tree.prototype = {
     /**
      * 각 Area 의 크기를 책정하고 redraw 한다.
      * 캔버스의 사이즈를 재조정한다.
-     * @param viewData
+     * @param viewData HashMap of OG-Tree view data
      */
     reRangeAreaSize: function (viewData) {
         //displayViews 중 각 영역의 최고 depth 를 바탕으로 Area 의 크기를 결정한다.
@@ -2691,9 +2902,9 @@ Tree.prototype = {
     /**
      * 주어진 Boundary 영역 안으로 공간 기하 객체를 적용한다.(이동 & 리사이즈)
      *
-     * @param element
+     * @param element OG-Tree Dom Element
      * @param offset[upper,low,left,right]
-     * @return {element} 적용된 엘리먼트
+     * @return {element} OG-Tree Dom Element
      */
     fitToBoundary: function (element, offset) {
         var boundary = element.shape.geom.boundary,
@@ -2711,8 +2922,8 @@ Tree.prototype = {
 
     /**
      * 주어진 에어리어에 해당하는 액티비티 정보를 반환한다.
-     * @param Area position
-     * @returns {Array}
+     * @param position Area position
+     * @returns {Array} Array of OG-Tree data
      */
     selectActivityByPosition: function (position) {
         return this.loadByFilter({
@@ -2723,8 +2934,8 @@ Tree.prototype = {
     ,
     /**
      * 주어진 id 의 액티비티의 next 액티비티를 구한다.
-     * @param id
-     * @returns {*}
+     * @param id 액티비티 id
+     * @returns {Object} OG-Tree data
      */
     selectNextActivity: function (id) {
         var me = this, nextActivity, activities = [];
@@ -2744,8 +2955,8 @@ Tree.prototype = {
     ,
     /**
      * 주어진 id 의 prev 액티비티를 구한다.
-     * @param id
-     * @returns {*}
+     * @param id 액티비티 id
+     * @returns {Object} OG-Tree data
      */
     selectPrevActivity: function (id) {
         var me = this, prevActivity;
@@ -2760,8 +2971,8 @@ Tree.prototype = {
     ,
     /**
      * 주어진 id 의 next 액티비티들을 구한다.
-     * @param id
-     * @returns {Array}
+     * @param id 액티비티 id
+     * @returns {Array} Array of OG-Tree data
      */
     selectNextActivities: function (id) {
         var me = this, nextActivities = [];
@@ -2787,8 +2998,8 @@ Tree.prototype = {
     ,
     /**
      * 주어진 아이디의 자식 데이터를 반환한다.
-     * @param id
-     * @returns {Array}
+     * @param id OG-Tree data id
+     * @returns {Array} Array of OG-Tree data
      */
     selectChildById: function (id) {
         var objects = [];
@@ -2805,9 +3016,9 @@ Tree.prototype = {
     ,
     /**
      * 주어진 소스와 타켓 아이디를 가지는 매핑 데이터의 자식을 반환한다.
-     * @param sourceId
-     * @param targetId
-     * @returns {Array}
+     * @param sourceId OG-Tree data id
+     * @param targetId OG-Tree data id
+     * @returns {Array} Array of OG-Tree data
      */
     selectChildMapping: function (sourceId, targetId) {
         var objects = [];
@@ -2819,9 +3030,9 @@ Tree.prototype = {
     ,
     /**
      * 주어진 소스와 타겟 아이디를 가지는 매핑 데이터의 자식을 재귀호출하여 반환한다.
-     * @param sourceId
-     * @param targetId
-     * @returns {Array}
+     * @param sourceId OG-Tree data id
+     * @param targetId OG-Tree data id
+     * @returns {Array} Array of OG-Tree data
      */
     selectRecursiveChildMapping: function (sourceId, targetId) {
         var me = this, list = [];
@@ -2838,8 +3049,8 @@ Tree.prototype = {
     ,
     /**
      * 주어진 아이디의 부모정보를 반환한다.
-     * @param id
-     * @returns {Object}
+     * @param id OG-Tree data id
+     * @returns {Object} OG-Tree data
      */
     selectParentById: function (id) {
         var object = this.selectById(id);
@@ -2851,6 +3062,12 @@ Tree.prototype = {
         }
     }
     ,
+    /**
+     * 매핑 데이터의 부모 매핑 데이터를 반환한다.
+     * @param sourceId OG-Tree data id
+     * @param targetId OG-Tree data id
+     * @returns {Object} OG-Tree data
+     */
     selectParentMapping: function (sourceId, targetId) {
         var object = this.selectBySourceTarget(sourceId, targetId);
         if (object) {
@@ -2863,8 +3080,8 @@ Tree.prototype = {
     ,
     /**
      * 주어진 아이디의 정보를 반환한다.
-     * @param id
-     * @returns {*}
+     * @param id OG-Tree data id
+     * @returns {Object} OG-Tree data
      */
     selectById: function (id) {
         if (id) {
@@ -2872,6 +3089,12 @@ Tree.prototype = {
         }
     }
     ,
+    /**
+     * 주어진 소스아이디와 타겟아이디와 일치하는 OG-Tree 데이터를 반환한다.
+     * @param sourceId OG-Tree data id
+     * @param targetId OG-Tree data id
+     * @returns {Object} OG-Tree data
+     */
     selectBySourceTarget: function (sourceId, targetId) {
         var mappings = this.loadByFilter({source: sourceId, target: targetId});
         if (!mappings || !mappings.length) {
@@ -2883,7 +3106,7 @@ Tree.prototype = {
     ,
     /**
      * 매핑 데이터를 반환한다.
-     * @returns {Array}
+     * @returns {Array} Array of OG-Tree data
      */
     selectMappings: function () {
         var storage = this._STORAGE;
@@ -2898,8 +3121,8 @@ Tree.prototype = {
     ,
     /**
      * 주어진 아이디의 루트 액티비티 정보를 반환한다.
-     * @param id
-     * @returns {*}
+     * @param id OG-Tree data id
+     * @returns {Object} OG-Tree data
      */
     selectRootActivityById: function (id) {
         var me = this;
@@ -2921,9 +3144,9 @@ Tree.prototype = {
     ,
     /**
      * 매핑 데이터의 루트를 반환한다.
-     * @param sourceId
-     * @param targetId
-     * @returns {*}
+     * @param sourceId OG-Tree data id
+     * @param targetId OG-Tree data id
+     * @returns {Object} OG-Tree data
      */
     selectRootMapping: function (sourceId, targetId) {
         var me = this;
@@ -2942,8 +3165,8 @@ Tree.prototype = {
     ,
     /**
      * 주어진 아이디의 부모 일람을 재귀호출하여 반환한다.
-     * @param id
-     * @returns {Array}
+     * @param id OG-Tree data id
+     * @returns {Array} Array of OG-Tree data
      */
     selectRecursiveParentById: function (id) {
         var me = this, list = [];
@@ -2960,8 +3183,8 @@ Tree.prototype = {
     ,
     /**
      * 주어진 아이디의 자식 데이터를 재귀호출하여 반환한다.
-     * @param id
-     * @returns {Array}
+     * @param id OG-Tree data id
+     * @returns {Array} Array of OG-Tree data
      */
     selectRecursiveChildById: function (id) {
         var me = this, list = [];
@@ -2979,8 +3202,8 @@ Tree.prototype = {
     /**
      * 주어진 아이디의 자식 데이터를 재귀호출하여, 더이상 자식이 없는 마지막 데이터일 경우의 리스트를 반환한다.
      * (자기 자신이 마지막 데이터일 경우 자기 자신을 포함하여)
-     * @param id
-     * @returns {Array}
+     * @param id OG-Tree data id
+     * @returns {Array} Array of OG-Tree data
      */
     selectRecursiveLastChildById: function (id) {
         var me = this, list = [];
@@ -3004,9 +3227,9 @@ Tree.prototype = {
 
     /**
      * 주어진 아이디에 해당하는 뷰 데이터를 반환한다.
-     * @param viewData
-     * @param id
-     * @returns {*}
+     * @param viewData Hashmap of OG-Tree view data
+     * @param id OG-Tree view data id
+     * @returns {Object} OG-Tree view data id
      */
     selectViewById: function (viewData, id) {
         var view;
@@ -3023,9 +3246,9 @@ Tree.prototype = {
     ,
     /**
      * 주어진 필터 조건에 따라 뷰데이터를 반환한다.
-     * @param viewData
-     * @param filterData
-     * @returns {Array}
+     * @param viewData HashMap of OG-Tree view data
+     * @param filterData HashMap filter data
+     * @returns {Array} Array of OG-Tree view data
      */
     selectViewByFilter: function (viewData, filterData) {
         var data = [];
@@ -3050,9 +3273,9 @@ Tree.prototype = {
     ,
     /**
      * 주어진 아이디의 자식 뷰 데이터를 재귀호출하여 반환한다.
-     * @param viewData
-     * @param id
-     * @returns {Array}
+     * @param viewData HashMap of OG-Tree view data
+     * @param id OG-Tree view data id
+     * @returns {Array} Array of OG-Tree view data
      */
     selectRecursiveChildViewsById: function (viewData, id) {
         var me = this, views = [], view, childIdList = [];
@@ -3075,8 +3298,8 @@ Tree.prototype = {
     ,
     /**
      * 주어진 views 중 가장 큰 y 를 반환한다.
-     * @param views
-     * @returns {number}
+     * @param views Array of OG-Tree view data
+     * @returns {number} max Y
      */
     selectMaxyFromViews: function (views) {
         var maxY = 0;
@@ -3092,8 +3315,8 @@ Tree.prototype = {
     ,
     /**
      * 주어진 views 중 가장 큰 depth 를 반환한다.
-     * @param views
-     * @returns {number}
+     * @param views Array of OG-Tree view data
+     * @returns {number} max depth
      */
     selectMaxDepthFromViews: function (views) {
         var maxDepth = 0;
@@ -3107,6 +3330,11 @@ Tree.prototype = {
         return maxDepth;
     }
     ,
+    /**
+     * 주어진 views 중 가장 큰 bottom 을 반환한다.
+     * @param views Array of OG-Tree view data
+     * @returns {number} max bottom
+     */
     selectMaxBottomFromViews: function (views) {
         var maxBottom = 0;
         for (var i = 0, leni = views.length; i < leni; i++) {
@@ -3125,8 +3353,8 @@ Tree.prototype = {
     ,
     /**
      * 주어진 스트링이 빈값인지를 확인한다.
-     * @param value
-     * @returns {boolean}
+     * @param value String
+     * @returns {boolean} 빈 값 여부
      */
     emptyString: function (value) {
         if (typeof value == 'undefined') {
@@ -3153,8 +3381,8 @@ Tree.prototype = {
     ,
     /**
      * 좌표값을 포함하는 가장 앞단의 엘리먼트를 반환한다.
-     * @param point
-     * @returns {*}
+     * @param point [x,y] 좌표
+     * @returns {Element} OG-Tree Dom Element
      */
     getElementByPoint: function (point) {
         var me = this;
@@ -3170,7 +3398,7 @@ Tree.prototype = {
     ,
     /**
      * 무작위 랜덤 아이디 생성
-     * @returns {string}
+     * @returns {string} 랜덤 아이디
      */
     uuid: function () {
         function s4() {
@@ -3187,6 +3415,9 @@ Tree.prototype = {
     //========================================================================//
     //=================================Event==================================//
     //========================================================================//
+    /**
+     * 캔버스가 처음 렌더링 될 시 필요한 이벤트들을 바인딩한다.
+     */
     bindEvent: function () {
         var me = this;
         if (me._CONFIG.MAPPING_ENABLE) {
@@ -3198,6 +3429,10 @@ Tree.prototype = {
         me.enableShapeContextMenu();
     }
     ,
+    /**
+     * 툴팁 이벤트를 바인딩한다.
+     * @param element OG-Tree Dom Element
+     */
     bindTooltip: function (element) {
         var me = this;
         $(element).bind('mouseover', function (event) {
@@ -3225,6 +3460,10 @@ Tree.prototype = {
         });
     }
     ,
+    /**
+     * 더블클릭 이벤트를 바인딩한다.
+     * @param element OG-Tree Dom Element
+     */
     bindDblClickEvent: function (element) {
         var me = this;
         $(element).unbind('dblclick');
@@ -3250,6 +3489,10 @@ Tree.prototype = {
         });
     }
     ,
+    /**
+     * 매핑 연결선의 하이라이트 이벤트를 바인딩한다.
+     * @param element OG-Tree Dom Element
+     */
     bindMappingHighLight: function (element) {
         //나를 매핑으로 가져다 쓰는 것이 있는지 검색
         //매핑 자식들을 찾는다.
@@ -3320,6 +3563,9 @@ Tree.prototype = {
         });
     }
     ,
+    /**
+     * 액티비티의 이동 이벤트를 바인딩한다.
+     */
     bindActivityMove: function () {
         var me = this;
         var eventX, eventY, targetEle, targetView, source, target, position, activityViews, area;
@@ -3467,14 +3713,25 @@ Tree.prototype = {
         });
     }
     ,
+    /**
+     * 액티비티가 이동되기 전 이벤트
+     * @param activities Array of OG-Tree data
+     */
     onBeforeActivityMove: function (activities) {
         console.log(activities);
     }
     ,
+    /**
+     * 액티비티가 이동 된 후 이벤트
+     * @param activities Array of OG-Tree data
+     */
     onActivityMove: function (activities) {
         console.log(activities);
     }
     ,
+    /**
+     * 매핑이 이루어졌을 떄의 이벤트를 처리한다.
+     */
     bindMappingEvent: function () {
         var me = this;
         var eventX, eventY, targetEle, targetView, source, target;
@@ -3630,6 +3887,11 @@ Tree.prototype = {
         });
     }
     ,
+    /**
+     * 매핑을 해제한다.
+     * @param data OG-Tree data
+     * @param view OG-Tree view
+     */
     deleteMapping: function (data, view) {
         //매핑 삭제 로직을 만든다.
         //자기자신을 삭제한다.
@@ -3685,7 +3947,7 @@ Tree.prototype = {
     ,
 
     /**
-     * Shape 에 마우스 우클릭 메뉴를 가능하게 한다.
+     * OG Tree Dom Element 에 마우스 우클릭 메뉴를 가능하게 한다.
      */
     enableShapeContextMenu: function () {
         // 3.Save
@@ -3796,6 +4058,10 @@ Tree.prototype = {
         });
     }
     ,
+    /**
+     * 프로퍼티 보기 콘텍스트 메뉴를 생성한다.
+     * @returns {{name: string, icon: string, callback: Function}}
+     */
     makeShowProperties: function () {
         var me = this;
         return {
@@ -3807,6 +4073,10 @@ Tree.prototype = {
         }
     }
     ,
+    /**
+     * 폴더 생성 콘텍스트 메뉴를 생성한다.
+     * @returns {{name: string, icon: string, callback: Function}}
+     */
     makeFolder: function () {
         var me = this;
         return {
@@ -3818,6 +4088,10 @@ Tree.prototype = {
         }
     }
     ,
+    /**
+     * ED 생성 콘텍스트 메뉴를 생성한다.
+     * @returns {{name: string, icon: string, items: {cad: {name: string, icon: string, callback: Function}, dhi_c3d_output: {name: string, icon: string, callback: Function}, document: {name: string, icon: string, callback: Function}, dhi_intellisheet: {name: string, icon: string, callback: Function}, dhi_ed_kdm: {name: string, icon: string, callback: Function}}}}
+     */
     makeEd: function () {
         var me = this;
         return {
@@ -3863,6 +4137,10 @@ Tree.prototype = {
         }
     }
     ,
+    /**
+     * Pick ED 콘텍스트 메뉴를 생성한다.
+     * @returns {{name: string, icon: string, callback: Function}}
+     */
     makePickEd: function () {
         var me = this;
         return {
@@ -3874,6 +4152,10 @@ Tree.prototype = {
         }
     }
     ,
+    /**
+     * 삭제 콘텍스트 메뉴를 생성한다.
+     * @returns {{name: string, icon: string, callback: Function}}
+     */
     makeDelete: function () {
         var me = this;
         return {
@@ -3885,6 +4167,10 @@ Tree.prototype = {
         }
     }
     ,
+    /**
+     * List Relation 콘텍스트 메뉴를 생성한다.
+     * @returns {{name: string, icon: string, callback: Function}}
+     */
     makeListRelation: function () {
         var me = this;
         return {
@@ -3896,6 +4182,10 @@ Tree.prototype = {
         }
     }
     ,
+    /**
+     * 매핑 삭제 콘텍스트 메뉴를 생성한다.
+     * @returns {{name: string, icon: string, callback: Function}}
+     */
     makeDeleteRelation: function () {
         var me = this;
         return {
@@ -3932,10 +4222,10 @@ Tree.prototype = {
     }
     ,
     /**
-     * GUI 상에서 매핑이 되기 전의 핸들러
-     * @param event
-     * @param source
-     * @param target
+     * 매핑이 이루어지기 전 이벤트
+     * @param source OG-Tree data 드래그 한 대상
+     * @param target OG-Tree data 드랍 한 대상
+     * @param selectedTargetList Array of OG-Tree data 드래그 대상의 하위 요소들
      * @returns {boolean}
      */
     onBeforeMapping: function (source, target, selectedTargetList) {
@@ -3944,21 +4234,39 @@ Tree.prototype = {
     }
     ,
     /**
-     * GUI 상에서 매핑이 이루어졌을 때 핸들러
-     * @param event
-     * @param mapping
+     * 매핑이 이루어졌을 때의 이벤트
+     * @param source OG-Tree data 드래그 한 대상
+     * @param target OG-Tree data 드랍 한 대상
+     * @param selectedTargetList Array of OG-Tree data 드래그 대상의 하위 요소들
+     * @returns {boolean}
      */
     onMapping: function (source, target, selectedTargetList) {
         console.log(source, target, selectedTargetList);
         return true;
     }
     ,
+    /**
+     * 매핑을 삭제하기 전 이벤트
+     * @param sourceId OG-Tree data id 드래그 한 대상
+     * @param sourceType "workflow","activity","folder","ed"
+     * @param targetId OG-Tree data id 드랍 한 대상
+     * @param targetType "workflow","activity","folder","ed"
+     * @returns {boolean}
+     */
     onBeforeDeleteMapping: function (sourceId, sourceType, targetId, targetType) {
         console.log(sourceId, sourceType, targetId, targetType);
         return true;
     }
     ,
 
+    /**
+     * 매핑을 삭제한 후 이벤트
+     * @param sourceId OG-Tree data id 드래그 한 대상
+     * @param sourceType "workflow","activity","folder","ed"
+     * @param targetId OG-Tree data id 드랍 한 대상
+     * @param targetType "workflow","activity","folder","ed"
+     * @returns {boolean}
+     */
     onDeleteMapping: function (sourceId, sourceType, targetId, targetType) {
         console.log(sourceId, sourceType, targetId, targetType);
         return true;

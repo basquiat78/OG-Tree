@@ -1,5 +1,10 @@
 /**
- * Created by Seungpil, Park on 2016. 9. 6..
+ * Aras data Handler
+ *
+ * @class
+ *
+ * @param {Tree} tree 오픈그래프 트리 라이브러리
+ * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
  */
 var Aras = function (tree) {
 
@@ -479,7 +484,7 @@ Aras.prototype = {
         return itemType;
     },
     /**
-     * 주어진 소스와 타켓 , 인아웃으로 아라스 릴레이션 아이템 타입을 구한다.
+     * 주어진 소스의 타입, 타켓의 타입 , 인아웃 으로 아라스 릴레이션 아이템 타입을 구한다.
      * @param sourceType "workflow","activity","folder","ed"
      * @param targetType "workflow","activity","folder","ed"
      * @param inout "in","out"
@@ -1037,9 +1042,9 @@ Aras.prototype = {
         this.refreshOutFolder(data, view);
     },
     /**
-     *
-     * @param data
-     * @param view
+     * 지정된 아웃데이터 아이템(액티비티, 폴더, ED) 과 그 부모간의 릴레이션을 삭제한다.
+     * @param data OG-Tree data
+     * @param view OG-Tree view data
      */
     deleteOutItem: function (data, view) {
         var me = this;
@@ -1124,6 +1129,9 @@ Aras.prototype = {
             }
         }
     },
+    /**
+     * 현재 워크플로우에 액티비티를 생성하는 Aras 팝업을 띄운다.
+     */
     createActivity: function () {
         var me = this;
 
@@ -1184,6 +1192,12 @@ Aras.prototype = {
             arasWindow.top.commandEventHandlers['afterunlock'].push(EventBottomSave);
         });
     },
+    /**
+     * 지정된 마이 워크플로우의 소스와 아더 워크플로우의 타겟간에 릴레이션을 생성한다.
+     * @param source OG-Tree data (My workflow)
+     * @param target OG-Tree data (Other workflow)
+     * @param selectedTargetList Array OG-Tree data (Other workflow) target 의 하위 아이템 데이터
+     */
     addInRel: function (source, target, selectedTargetList) {
         var me = this;
         var inn = this.aras.newIOMInnovator();
@@ -1250,6 +1264,13 @@ Aras.prototype = {
         }
         me.refreshMyWorkFlow();
     },
+    /**
+     * 주어진 마이워크플로우 소스아이디와 아더워크플로우 타겟 아이디간의 릴레이션을 삭제한다.
+     * @param sourceId Aras Item id (My workflow)
+     * @param sourceType "workflow","activity","folder","ed"
+     * @param targetId Aras Item id (Other workflow)
+     * @param targetType "workflow","activity","folder","ed"
+     */
     deleteInRel: function (sourceId, sourceType, targetId, targetType) {
         var me = this;
         var inn = this.aras.newIOMInnovator();
@@ -1276,6 +1297,10 @@ Aras.prototype = {
             me.refreshMyWorkFlow();
         }
     },
+    /**
+     * 화면의 소트 메뉴로부터 현재 소트 지정값을 알아온다.
+     * @returns {Object} key : 소트 키, order : asc/desc
+     */
     currentSortOrder: function () {
         var orderData = {};
         $('.sortBar').find('button').each(function () {
@@ -1292,11 +1317,11 @@ Aras.prototype = {
         return orderData;
     },
     /**
-     *
-     * @param resultNodeList
-     * @param who  other/my
-     * @param inout  in/out
-     * @returns {Array}
+     * Aras 의 메소드 리턴값을 오픈그래프 트리 데이터로 변환한다.
+     * @param resultNodeList Aras 메소드 리턴값의 nodeList
+     * @param who  마이,아더 워크플로우 여부 other/my
+     * @param inout  인 데이터, 아웃데이터 여부 in/out
+     * @returns {Array} json
      */
     createWorkFlowData: function (resultNodeList, who, inout) {
         var me = this;
@@ -1376,6 +1401,11 @@ Aras.prototype = {
             return year + month + date;
         };
 
+        /**
+         * 딜레이 여부를 반환한다.
+         * @param node
+         * @returns {boolean}
+         */
         var checkDelay = function (node) {
             var currentDate = new Date(), compareDate;
             var isDelay = function (dateStr) {
@@ -1586,6 +1616,12 @@ Aras.prototype = {
         }
         return data;
     },
+    /**
+     * Aras 메소드 리턴값을 오픈그래프 마이워크플로우 데이터로 변환한다.
+     * @param resultNodeList Aras 메소드 리턴값의 nodeList
+     * @param inout 인아웃 여부
+     * @returns {Array} json
+     */
     createMyWorkFlowData: function (resultNodeList, inout) {
         var data = [];
         if (resultNodeList) {
@@ -1596,8 +1632,12 @@ Aras.prototype = {
         }
         return data;
     }
-
     ,
+    /**
+     * Aras 메소드 리턴값을 오픈그래프 아더워크플로우 데이터로 변환한다.
+     * @param resultNodeList Aras 메소드 리턴값의 nodeList
+     * @returns {Array} json
+     */
     createOtherWorkFlowData: function (resultNodeList) {
         var data = [];
         if (resultNodeList) {
@@ -1608,6 +1648,10 @@ Aras.prototype = {
         }
         return data;
     },
+    /**
+     * 주어진 아더 워크플로우 아이디로 화면의 아더 워크플로우 트리를 갱신한다.
+     * @param wfId 아더 워크플로우 아이디
+     */
     refreshOtherWorkflow: function (wfId) {
         var me = this;
         var outResult = me.getWorkflowStructure(wfId, 'OUT');
@@ -1626,6 +1670,9 @@ Aras.prototype = {
         }
     }
     ,
+    /**
+     * 현재 화면의 마이 워크플로우 트리를 갱신한다.
+    */
     refreshMyWorkFlow: function () {
         //마이워크플로우 데이터를 불러온다.
         var me = this;
@@ -1671,6 +1718,11 @@ Aras.prototype = {
             me.tree.updateData(concat);
         }
     },
+    /**
+     * 주어진 마이 워프클로우의 폴더의 하위 요소를 갱신한다.
+     * @param data OG-Tree data
+     * @param view OG-Tree view data
+     */
     refreshOutFolder: function (data, view) {
         //이벤트가 발생한 폴더 (부모폴더)
         var tree = this.tree;
@@ -1704,6 +1756,10 @@ Aras.prototype = {
         }
     }
     ,
+    /**
+     * 주어진 오픈그래프 트리 데이터를 화면에 적용시키기 전에, 폴더의 열고 닫음 상태를 화면과 동기화시킨다.
+     * @param data OG-Tree array data
+     */
     syncExpandDataWithTree: function (data) {
         var existData;
         for (var i = 0, leni = data.length; i < leni; i++) {
