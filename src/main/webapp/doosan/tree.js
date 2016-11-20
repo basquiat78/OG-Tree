@@ -195,6 +195,10 @@ var Tree = function (container) {
     }
 };
 Tree.prototype = {
+
+    /**
+     * 캔버스를 초기 빌드한다.  최초 1번만 실행된다.
+     */
     init: function () {
         var me = this;
 
@@ -305,6 +309,9 @@ Tree.prototype = {
         me.canvas.setShapeStyle(me.AREA.rOut, me._CONFIG.AREA_STYLE.rOut);
     },
 
+    /**
+     * 캔버스의 모든 화면요소를 삭제한다.
+     */
     clear: function(){
         this.canvas.clear();
         var rootGroup = this.canvas.getRootGroup();

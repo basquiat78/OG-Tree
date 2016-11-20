@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<!--[if IE 9]>
+<html lang="en" class="ie9"> <![endif]-->
+<!--[if IE 8]>
+<html lang="en" class="ie8"> <![endif]-->
+<!--[if !IE]><!-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org"
+      lang="en">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Doosan Inc | Editor</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <!-- 타이틀 -->
+    <meta name="title" content="Doosan Inc"/>
+    <meta http-equiv="cache-control" content="No-Cache"/>
+    <meta http-equiv="pragma" content="No-Cache"/>
+    <meta name="Location" content="South Korea"/>
+    <meta name="Distribution" content="Global"/>
+
+
+    <!-- CSS Global Compulsory -->
+    <link rel="stylesheet" href="resources/assets/plugins/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="resources/assets/css/style.css">
+
+    <!-- CSS Header and Footer -->
+    <link rel="stylesheet" href="resources/assets/css/headers/header-default.css">
+    <link rel="stylesheet" href="resources/assets/css/footers/footer-v1.css">
+
+    <!-- CSS Implementing Plugins -->
+    <link rel="stylesheet" href="resources/assets/plugins/animate.css">
+    <link rel="stylesheet" href="resources/assets/plugins/line-icons/line-icons.css">
+    <link rel="stylesheet" href="resources/assets/plugins/font-awesome/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="resources/assets/plugins/scrollbar/css/jquery.mCustomScrollbar.css">
+    <link rel="stylesheet" href="resources/assets/plugins/sky-forms-pro/skyforms/css/sky-forms.css">
+    <link rel="stylesheet" href="resources/assets/plugins/sky-forms-pro/skyforms/custom/custom-sky-forms.css">
+    <!-- CSS Customization -->
+    <link rel="stylesheet" href="resources/assets/css/custom.css">
+
+    <!-- JS Global Compulsory -->
+    <script type="text/javascript" src="lib/jquery-1.11.1/jquery-1.11.1.min.js"></script>
+    <!--<script type="text/javascript" src="resources/assets/plugins/jquery/jquery-migrate.min.js"></script>-->
+    <script type="text/javascript" src="resources/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- jquery-ui, jquery.contextmenu -->
+    <link rel="stylesheet" type="text/css"
+          href="resources/assets/plugins/jquery-ui-1.11.0.custom/jquery-ui.css"/>
+    <script type="text/javascript"
+            src="resources/assets/plugins/jquery-ui-1.11.0.custom/jquery-ui.min.js"></script>
+
+    <script type="text/javascript" src="lib/jquery-contextMenu/jquery.contextMenu.js"></script>
+    <link rel="stylesheet" type="text/css" href="lib/jquery-contextMenu/jquery.contextMenu.css"/>
+
+    <!-- CSS Theme -->
+    <link rel="stylesheet" href="resources/assets/css/theme-colors/dark-blue.css">
+
+    <!-- uengine CSS -->
+    <link rel="stylesheet" href="resources/assets/css/uengine.css">
+
+    <!-- data table -->
+    <link rel="stylesheet" href="resources/plugins/datatable/datatables.css">
+    <script type="text/javascript" src="resources/plugins/datatable/datatables.js"></script>
+
+    <!-- libs -->
+    <script type="text/javascript" src="lib/jqueryXML2JSON/jquery.xml2json.js"></script>
+
+    <script type="text/javascript" src="lib/opengraph/OpenGraph-0.1.1-SNAPSHOT.js"></script>
+    <script type="text/javascript" src="doosan/shape/Area.js"></script>
+    <script type="text/javascript" src="doosan/shape/Activity.js"></script>
+    <script type="text/javascript" src="doosan/shape/Folder.js"></script>
+    <script type="text/javascript" src="doosan/shape/Ed.js"></script>
+    <script type="text/javascript" src="doosan/shape/Expander.js"></script>
+    <script type="text/javascript" src="doosan/shape/MLabel.js"></script>
+    <script type="text/javascript" src="doosan/shape/SLabel.js"></script>
+    <script type="text/javascript" src="doosan/tree.js"></script>
+    <script type="text/javascript" src="doosan/aras.js"></script>
+    <script type="text/javascript" src="doosan/doosan.js"></script>
+
+</head>
+
+<div class="wrapper">
+
+    <!-- 메시지 Modal -->
+    <div class="modal fade" id="messageBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                    <h4 id="myModalLabel1" class="modal-title">알림</h4>
+                </div>
+                <div class="modal-body">
+                    <p style="text-align: center" name="content"></p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-u" type="button" name="close">확인</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var msgBox = function (message) {
+            $('#messageBox').find('[name=content]').html(message);
+            $('#messageBox').modal({
+                show: true
+            });
+        };
+        $(function () {
+            $('#logoutbtn').click(function () {
+                $('#logoutform').submit();
+            });
+            $('#messageBox').find('[name=close]').click(function () {
+                $('#messageBox').find('.close').click();
+            });
+        });
+    </script>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <h4 class="pull-left">Doosan Workflow Editor <i class="header-angle fa fa-angle-down"
+                                                            style="cursor: pointer"></i></h4>
+            <script>
+                $(function () {
+                    $('.header-angle').click(function () {
+                        var headerAngle = $(this);
+                        if (headerAngle.hasClass('fa-angle-down')) {
+                            headerAngle.removeClass('fa-angle-down');
+                            headerAngle.addClass('fa-angle-right');
+                            $('.header-info').hide();
+                        } else {
+                            headerAngle.addClass('fa-angle-down');
+                            headerAngle.removeClass('fa-angle-right');
+                            $('.header-info').show();
+                        }
+                    });
+                })
+            </script>
+        </div>
+    </div>
+
+    <!--=== Content Part ===-->
+    <div class="container" style="padding-top: 10px;padding-bottom: 30px;">
+        <div class="row header-info">
+            <div class="col-md-5" style="border-right: 1px solid grey">
+                <h5>Other Workflow</h5>
+
+                <div class="form-group col-md-4">
+                    <select id="discipline" name="discipline" class="custom-form-control">
+                        <option value="" selected>--Discipline--</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <select id="disciplineSpec" name="spec" class="custom-form-control">
+                        <option value="" selected>--Discipline Spec--</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <select id="bg" name="bg" class="custom-form-control">
+                        <option value="" selected>--BG--</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-md-12">
+                    <select id="targetOtherWorkflow" name="targetOtherWorkflow" class="custom-form-control">
+                        <option value="" selected>--Workflow--</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <h5>My Workflow</h5>
+            </div>
+        </div>
+        <div class="row header-info">
+            <div class="col-md-5" style="border-right: 1px solid grey">
+                <div class="tag-box tag-box-v2" style="padding: 5px;">
+                    <table class="table workflow-table other-table">
+                        <thead>
+                        <tr>
+                            <th>PROJECT CODE</th>
+                            <th>PROCESS ID</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td name="project_code"></td>
+                            <td name="process_id"></td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <table class="table workflow-table other-table">
+                        <thead>
+                        <tr>
+                            <th>PROJECT NAME</th>
+                            <th>PROCESS NAME</th>
+                            <th>SUB PROCESS NAME</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td name="pjt_name"></td>
+                            <td name="processname"></td>
+                            <td name="sub_processname"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="tag-box tag-box-v2" style="padding: 5px;">
+                    <table class="table workflow-table my-table">
+                        <thead>
+                        <tr>
+                            <th>PROJECT CODE</th>
+                            <th>PROCESS ID</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td name="project_code"></td>
+                            <td name="process_id"></td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <table class="table workflow-table my-table">
+                        <thead>
+                        <tr>
+                            <th>PROJECT NAME</th>
+                            <th>PROCESS NAME</th>
+                            <th>SUB PROCESS NAME</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td name="pjt_name"></td>
+                            <td name="processname"></td>
+                            <td name="sub_processname"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="row col-md-12">
+                <div class="col-md-5">
+                    <div class="sortBar" style="margin-left: 15px">
+                        <button class="btn btn-xs rounded btn-default" data-key="name" data-order="asc"
+                                type="button"><i
+                                class="fa fa-caret-square-o-down"></i> Name
+                        </button>
+                        <!--<button class="btn btn-xs rounded btn-default" data-key="first_start_date" data-order="asc"-->
+                                <!--type="button"><i-->
+                                <!--class="fa fa-caret-square-o-down"></i> Start-->
+                        <!--</button>-->
+                        <!--<button class="btn btn-xs rounded btn-default" data-key="final_end_date" data-order="asc"-->
+                                <!--type="button"><i-->
+                                <!--class="fa fa-caret-square-o-down"></i> End-->
+                        <!--</button>-->
+                        <button class="btn btn-xs rounded btn-default" data-key="modified_date" data-order="asc"
+                                type="button"><i
+                                class="fa fa-caret-square-o-down"></i> Modified
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="toolbar" style="margin-left: 15px">
+                        <button type="button" class="btn btn-xs rounded btn-default dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            State Color <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu state-color">
+                            <li><a href="Javascript:void(0)">Action</a></li>
+                            <li><a href="#">Another action</a></li>
+                            <li><a href="#">Something else here</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Separated link</a></li>
+                        </ul>
+                        <button class="btn btn-xs rounded btn-default" id="newActivity" type="button"><i
+                                class="fa fa-plus"></i> Activity
+                        </button>
+                        <button class="btn btn-xs rounded btn-default" id="refresh" type="button"><i
+                                class="fa fa-refresh"></i> Refresh
+                        </button>
+                        <button class="btn btn-xs rounded btn-default" id="zoomIn" type="button"><i
+                                class="fa fa-search-plus"></i> Zoom | IN
+                        </button>
+                        <button class="btn btn-xs rounded btn-default" id="zoomFit" type="button"><i
+                                class="fa fa-arrows-h"></i> Zoom | FIT
+                        </button>
+                        <button class="btn btn-xs rounded btn-default" id="zoomOut" type="button"><i
+                                class="fa fa-search-minus"></i> Zoom | OUT
+                        </button>
+                        <button class="btn btn-xs rounded btn-default" id="labelSwitch" type="button"><i
+                                class="fa fa-caret-square-o-down"></i> Label On|Off
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div id="canvas" style="cursor: default;width: 100%;overflow: scroll;"/>
+            </div>
+        </div>
+    </div>
+    <!--/container-->
+    <!-- End Content Part -->
+
+</div>
+<!--/wrapper-->
+
+<div class="modal fade" id="listRelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title">List Relations</h4>
+            </div>
+            <div class="modal-body">
+                <table id="listRelGrid" class="display" width="100%"></table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-u" type="button" name="close">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="pickEdModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title">Pick Ed List</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-inline" role="form">
+                    <div class="form-group">
+                        <label class="sr-only" for="pickEdNumber">Ed number</label>
+                        <input type="text" class="custom-form-control" id="pickEdNumber" placeholder="Ed number">
+                    </div>
+                    <div class="form-group">
+                        <label class="sr-only" for="pickEdName">Ed name</label>
+                        <input type="text" class="custom-form-control" id="pickEdName" placeholder="Ed name">
+                    </div>
+
+                    <a href="Javascript:void(0)" class="btn-u btn-u-default" style="margin-top: 2px"
+                       name="search">Load</a>
+                </form>
+
+                <table id="pickEdGrid" class="display" width="100%"></table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-u" type="button" name="action">Pick</button>
+                <button class="btn-u" type="button" name="close">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title">Delete Confirm</h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-u btn-u-red" type="button" name="action">Delete</button>
+                <button class="btn-u" type="button" name="close">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ajax 호출 UI 블락커 && 커스터마이징 -->
+<script type="text/javascript" src="resources/plugins/blockUI/blockUI.js"></script>
+<script type="text/javascript" src="resources/js/blockUIcustom.js"></script>
+
+
+<!-- Jquery Validator -->
+<script type="text/javascript" src="resources/plugins/validator/jquery.validate.js"></script>
+<script type="text/javascript" src="resources/plugins/validator/additional-methods.js"></script>
+
+<!-- JS Implementing Plugins -->
+<script type="text/javascript" src="resources/assets/plugins/back-to-top.js"></script>
+<script type="text/javascript" src="resources/assets/plugins/sky-forms-pro/skyforms/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="resources/assets/plugins/sky-forms-pro/skyforms/js/jquery.validate.min.js"></script>
+<script type="text/javascript"
+        src="resources/assets/plugins/sky-forms-pro/skyforms/js/jquery.maskedinput.min.js"></script>
+<script type="text/javascript"
+        src="resources/assets/plugins/scrollbar/js/jquery.mCustomScrollbar.concat.min.js"></script>
+
+<!-- JS Customization -->
+<script type="text/javascript" src="resources/assets/js/custom.js"></script>
+
+<!-- JS Page Level -->
+<script type="text/javascript" src="resources/assets/js/app.js"></script>
+<script type="text/javascript" src="resources/assets/js/forms/reg.js"></script>
+<script type="text/javascript" src="resources/assets/js/forms/checkout.js"></script>
+<script type="text/javascript">
+    var editorMode = true;
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+
+
+<!--[if lt IE 9]>
+<script src="resources/assets/plugins/respond.js"></script>
+<script src="resources/assets/plugins/html5shiv.js"></script>
+<script src="resources/assets/plugins/placeholder-IE-fixes.js"></script>
+<script src="resources/assets/plugins/sky-forms-pro/skyforms/js/sky-forms-ie8.js"></script>
+<![endif]-->
+
+<!--[if lt IE 10]>
+<script src="resources/assets/plugins/sky-forms-pro/skyforms/js/jquery.placeholder.min.js"></script>
+<![endif]-->
+</html>

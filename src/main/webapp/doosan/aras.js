@@ -60,6 +60,11 @@ var Aras = function (tree) {
 
 };
 Aras.prototype = {
+    /**
+     * IE 에서 아라스 아이템을 json 으로 변환한다.
+     * @param node Aras Item
+     * @returns {Object} json
+     */
     iExmL2jsobj: function (node) {
         var data = {};
         var item;
@@ -75,6 +80,11 @@ Aras.prototype = {
         }
         return data;
     },
+    /**
+     * URL 에서 지정된 파라미터의 get 프로퍼티를 가져온다.
+     * @param val url 파라미터
+     * @returns {String} parameter value
+     */
     getHtmlParameter: function (val) {
         var result = undefined,
             tmp = [];
@@ -89,6 +99,10 @@ Aras.prototype = {
         }
         return result;
     },
+    /**
+     * 아라스 객체를 얻기 위한 init 메소드. 최초 한번 실행한다.
+     * 부모 페이지로부터 워크플로우 아이템을 받아와서 적용하고, 부모페이지의 리사이즈 이벤트에 반응해 페이지를 레이아웃을 재구성한다.
+     */
     init: function () {
         var me = this;
         this.aras = parent.top.aras;
@@ -207,9 +221,13 @@ Aras.prototype = {
             }
         }
 
-
         resizeView();
     },
+    /**
+     * key value 오브젝트로부터 xml 바디 스트링을 만든다
+     * @param params Object
+     * @returns {string} body string
+     */
     createBody: function (params) {
         var body = '', value;
         for (var key in params) {
@@ -218,10 +236,20 @@ Aras.prototype = {
         }
         return body;
     },
+    /**
+     * 주어진 메소드 이름과 body 스트링으로 아라스의 applyMethod 를 호출한다.
+     * @param methodName
+     * @param body
+     * @returns {Object} Aras Item
+     */
     applyMethod: function (methodName, body) {
         this.inn = this.aras.newIOMInnovator();
         return this.inn.applyMethod(methodName, body);
     },
+    /**
+     * 현재 접속중인 사용자의 IdentityId 를 반환한다.
+     * @returns {String} identityId
+     */
     getUserIdentity: function () {
         var inn = this.aras.newIOMInnovator();
         var userId = inn.getUserID();
@@ -231,6 +259,10 @@ Aras.prototype = {
         var identityId = aliasRelItem.getProperty("related_id");
         return identityId ? identityId : '';
     },
+    /**
+     * 현재 접속중인 사용자의 아이디를 반환한다.
+     * @returns {String} userId
+     */
     getUserId: function () {
         var inn = this.aras.newIOMInnovator();
         var userId = inn.getUserID();
@@ -240,7 +272,7 @@ Aras.prototype = {
      * WF 하위의 액티비티, 폴더 및 ED 조회
      * @param wf_id
      * @param inout IN/OUT
-     * @returns {*}
+     * @returns {Object} Aras Item
      * @constructor
      */
     getWorkflowStructure: function (wf_id, inout) {
@@ -253,8 +285,8 @@ Aras.prototype = {
     },
     /**
      * 워크플로우 데이터를 반환한다.
-     * @param wf_id
-     * @returns {*}
+     * @param wf_id 워크플로우 아이디
+     * @returns {Object} Aras Item
      */
     getWorkflowData: function (wf_id) {
         var me = this;
@@ -274,7 +306,7 @@ Aras.prototype = {
      * 타입과 아이디와 매칭된 데이터를 반환한다.
      * @param type
      * @param id
-     * @returns {*}
+     * @returns {Object} Aras Item
      */
     getItemById: function (type, id) {
         var me = this;
@@ -289,7 +321,7 @@ Aras.prototype = {
      * @param folder_yn Y/N
      * @param folder_id
      * @param inout IN / OUT
-     * @returns {*}
+     * @returns {Object} Aras Item
      */
     getActivityStructure: function (activity_id, folder_yn, folder_id, inout) {
         var me = this, params = {
@@ -306,7 +338,7 @@ Aras.prototype = {
      * 선택한 폴더 또는 ED 를 input 으로 쓰는 워크플로우 - Activity 리스트 조회
      * @param id
      * @param ed_yn Y/N
-     * @returns {*}
+     * @returns {Array} json array
      */
     getEdParentList: function (id, ed_yn) {
         var data = [];
@@ -327,8 +359,9 @@ Aras.prototype = {
     },
     /**
      * PICK ED 에 대한 조회 리스트(Project 에서만 필요)
-     * @param prj_id
-     * @returns {*}
+     * @param ed_number
+     * @param ed_name
+     * @returns {Array} json array
      */
     getPickEd: function (ed_number, ed_name) {
         var data = [];
@@ -355,7 +388,7 @@ Aras.prototype = {
     /**
      * Aras Item 노드를 Json 으로 변환한다.
      * @param xmlNode
-     * @returns {*}
+     * @returns {Object} json
      */
     nodeToJson: function (xmlNode) {
         var me = this;
@@ -371,14 +404,11 @@ Aras.prototype = {
         return xmlNodeStringToJSON;
     },
     /**
-     * 스키마 콤보를 구한다.
+     * 아더 워크플로우의 셀렉트 박스 리스트의 내용을 구한다.
      * @param kind
      * @param discLine
      * @param discSpec
      * @param bg
-     * @param wf_id
-     * @param stdYN
-     * @param project_id
      * @param REL_WF_ID
      * @param callback
      */
@@ -407,6 +437,12 @@ Aras.prototype = {
             }
         });
     },
+    /**
+     * 주어진 아이템의 아이디로 현재 아이템 상태를 조회한다.
+     * @param itemType
+     * @param id
+     * @returns {Object} Aras Item
+     */
     getCurrentItemId: function (itemType, id) {
         var me = this;
         var params = {
@@ -421,6 +457,11 @@ Aras.prototype = {
             return item.getProperty('item_id');
         }
     },
+    /**
+     * 주어진 타입으로 아라스 아이템 타입을 구한다.
+     * @param type "workflow","activity","folder","ed"
+     * @returns {String} itemType
+     */
     getItemType: function (type) {
         var itemType;
         if (type == this.TYPE.ACTIVITY) {
@@ -437,6 +478,13 @@ Aras.prototype = {
         }
         return itemType;
     },
+    /**
+     * 주어진 소스와 타켓 , 인아웃으로 아라스 릴레이션 아이템 타입을 구한다.
+     * @param sourceType "workflow","activity","folder","ed"
+     * @param targetType "workflow","activity","folder","ed"
+     * @param inout "in","out"
+     * @returns {String} itemType
+     */
     getRelType: function (sourceType, targetType, inout) {
         var relType;
         if (inout == 'out') {
@@ -462,6 +510,11 @@ Aras.prototype = {
         }
         return relType;
     },
+    /**
+     * 주어진 타입과 아이디로 아라스의 아이템 상세정보창을 띄운다
+     * @param type "workflow","activity","folder","ed"
+     * @param id
+     */
     showPropertyWindow: function (type, id) {
         var me = this;
         var itemType = me.getItemType(type);
@@ -472,6 +525,10 @@ Aras.prototype = {
 
         this.aras.uiShowItemEx(item.node, undefined, true);
     },
+    /**
+     * 주어진 액티비티 아이디 배열에 따라 아라스 액티비티 아이템을 소팅한다.
+     * @param activityIds Array of Aras Activity id
+     */
     sortActivities: function (activityIds) {
         var me = this;
         var inn = this.aras.newIOMInnovator();
@@ -512,11 +569,11 @@ Aras.prototype = {
         me.refreshMyWorkFlow();
     },
     /**
-     * 최대 생성 개수로 생성 가능 여부를 체크한다.
+     * 주어진 아이템의 depth 로 추가 생성이 가능한지 여부를 반환한다.
      * @param depth
-     * @returns {boolean}
+     * @returns {boolean} enable
      */
-    checkMaxCreateNumber: function (depth, type) {
+    checkMaxCreateNumber: function (depth) {
         var enable = true;
         if (this.stdYN == 'Y') {
             if (depth >= this.stdMaxDepth) {
@@ -532,6 +589,11 @@ Aras.prototype = {
         return enable;
     }
     ,
+    /**
+     * 주어진 OG-Tree 폴더 하위에 신규 아라스 폴더를 생성하는 팝업창을 띄운다.
+     * @param data OG-Tree data
+     * @param view OG-Tree view
+     */
     createFolder: function (data, view) {
         if (!this.checkMaxCreateNumber(view.depth, this.TYPE.FOLDER)) {
             return;
@@ -640,6 +702,15 @@ Aras.prototype = {
             arasWindow.top.commandEventHandlers['afterunlock'].push(EventBottomSave);
         });
     },
+    /**
+     * 주어진 부모 아이템과 자식 아이템(폴더) 사이에 릴레이션을 생성한다.
+     * @param parentData OG-Tree parent data
+     * @param parentView OG-Tree parent view data
+     * @param newItem Aras created folder item
+     * @param parentItem Aras parent item
+     * @param parentType "workflow","activity","folder","ed"
+     * @param parentId Aras parent id
+     */
     addFolderOutRelation: function (parentData, parentView, newItem, parentItem, parentType, parentId) {
         var me = this;
         var inn = this.aras.newIOMInnovator();
@@ -703,6 +774,12 @@ Aras.prototype = {
 
         this.refreshOutFolder(parentData, parentView);
     },
+    /**
+     * 주어진 OG-Tree 폴더 하위에 신규 아라스 ED를 생성하는 팝업창을 띄운다.
+     * @param data OG-Tree data
+     * @param view OG-Tree view data
+     * @param edType 'CAD','DHI_C3D_OUTPUT','Document','DHI_IntelliSheet','DHI_ED_KDM'
+     */
     createEd: function (data, view, edType) {
 
         var me = this;
@@ -780,6 +857,13 @@ Aras.prototype = {
             }
         );
     },
+    /**
+     * 주어진 부모 아이템(폴더)과 신규 생성한 자식 아이템(ED) 사이에 릴레이션을 생성한다.
+     * @param edItem Aras created ED item
+     * @param parentItem Aras parent Folder item
+     * @param data OG-Tree parent data
+     * @param view OG-Tree parent view data
+     */
     addFolderEDOutRelation: function (edItem, parentItem, data, view) {
         var me = this;
         var inn = this.aras.newIOMInnovator();
@@ -821,6 +905,13 @@ Aras.prototype = {
         }
         this.refreshOutFolder(data, view);
     },
+    /**
+     * 주어진 부모 아이템(폴더)과 Pick 된 아이템(ED)들 사이에 DDCL 체크 후 릴레이션을 생성한다.
+     * @param edItems Array of Picked ED Items
+     * @param parentItem Aras parent Folder item
+     * @param data OG-Tree parent data
+     * @param view OG-Tree parent view data
+     */
     addPickEDOutRelation: function (edItems, parentItem, data, view) {
         var me = this;
         var inn = this.aras.newIOMInnovator();
@@ -945,6 +1036,11 @@ Aras.prototype = {
 
         this.refreshOutFolder(data, view);
     },
+    /**
+     *
+     * @param data
+     * @param view
+     */
     deleteOutItem: function (data, view) {
         var me = this;
         var inn = this.aras.newIOMInnovator();

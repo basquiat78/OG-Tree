@@ -528,6 +528,9 @@ Doosan.prototype = {
                     me.renderHeaders(headerItem, 'other');
                 }
                 me.aras.refreshOtherWorkflow(wfId);
+
+                //마이 워크플로우도 함꼐 리프레쉬 해준다.
+                me.aras.refreshMyWorkFlow();
             }
         });
     },
