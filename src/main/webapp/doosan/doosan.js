@@ -6,8 +6,22 @@
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
  */
 var Doosan = function () {
+    /**
+     * OG-Tree 클래스
+     * @type {Tree}
+     */
     this.tree = null;
+
+    /**
+     * Aras 클래스
+     * @type {Aras}
+     */
     this.aras = null;
+
+    /**
+     * Dev 모드
+     * @type {string}
+     */
     this.mode = 'sample'; //random,sample
 };
 Doosan.prototype = {

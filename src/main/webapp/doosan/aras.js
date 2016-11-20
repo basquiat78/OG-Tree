@@ -9,24 +9,45 @@
 var Aras = function (tree) {
 
     /**
-     * 트리 객체
+     * OG-Tree 객체
+     * @type {Tree} OG-Tree
      */
     this.tree = tree;
 
     /**
-     * 현재 aras 객체
-     * @type {null}
+     * 부모페이지의 aras 객체
+     * @type {aras}
      */
     this.aras = null;
 
     /**
-     * 현재 WF 객체
-     * @type {null}
+     * 현재의 워크플로우 아이템
+     * @type {Object}
      */
     this.thisItem = null;
+
+    /**
+     * 현재의 워크플로우 아이디
+     * @type {String}
+     */
     this.wfId = null;
+
+    /**
+     * 현재 워크플로우의 스탠다드 모드 여부
+     * @type {String} Y/N
+     */
     this.stdYN = null;
+
+    /**
+     * 현재 워크플로우의 프로젝트 아이디
+     * @type {String}
+     */
     this.projectId = null;
+
+    /**
+     * newIOMInnovator 리턴 객체
+     * @type {null}
+     */
     this.inn = null;
 
     /**
@@ -34,12 +55,17 @@ var Aras = function (tree) {
      * @type {number}
      */
     this.prjMaxDepth = 5;
+
     /**
      * 스탠다드, 폴더 3레벨 까지 enable, 3레벨 일 경우는 ed 생성 불가
      * @type {number}
      */
     this.stdMaxDepth = 3;
 
+    /**
+     * 아이템 타입 Contants
+     * @type {{WORKFLOW: string, ACTIVITY: string, FOLDER: string, ED: string, MAPPING: string}}
+     */
     this.TYPE = {
         WORKFLOW: "workflow",
         ACTIVITY: "activity",
