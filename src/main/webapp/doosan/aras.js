@@ -6,8 +6,13 @@
  * @param {Tree} tree 오픈그래프 트리 라이브러리
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
  */
-var Aras = function (tree) {
+var Aras = function (tree, viewController) {
 
+    /**
+     * Doosan view controller
+     * @type {Doosan} Doosan
+     */
+    this.viewController = viewController;
     /**
      * OG-Tree 객체
      * @type {Tree} OG-Tree
@@ -1699,7 +1704,7 @@ Aras.prototype = {
     /**
      * 현재 화면의 아더, 마이 워크플로우를 모두 갱신한다.
      */
-    refreshAll: function(){
+    refreshAll: function () {
         var me = this;
         //캔버스를 전부 날린다.
         me.tree.clear();
@@ -1712,7 +1717,7 @@ Aras.prototype = {
         if (wfId && wfId != '') {
             var headerItem = me.getWorkflowHeader(wfId);
             if (headerItem.getItemCount() == 1) {
-                me.renderHeaders(headerItem, 'other');
+                me.viewController.renderHeaders(headerItem, 'other');
             }
             me.refreshOtherWorkflow(wfId);
         }
@@ -1722,7 +1727,7 @@ Aras.prototype = {
     },
     /**
      * 현재 화면의 마이 워크플로우 트리를 갱신한다.
-    */
+     */
     refreshMyWorkFlow: function () {
         //마이워크플로우 데이터를 불러온다.
         var me = this;
