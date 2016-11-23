@@ -215,24 +215,7 @@ Doosan.prototype = {
              * 리프레쉬 버튼 클릭시
              */
             $('#refresh').click(function () {
-                //캔버스를 전부 날린다.
-                me.tree.clear();
-
-                //캔버스 Area 를 재구성한다.
-                me.tree.drawArea();
-
-                //아더워크플로우를 그린다.
-                var wfId = $('#targetOtherWorkflow').val();
-                if (wfId && wfId != '') {
-                    var headerItem = me.aras.getWorkflowHeader(wfId);
-                    if (headerItem.getItemCount() == 1) {
-                        me.renderHeaders(headerItem, 'other');
-                    }
-                    me.aras.refreshOtherWorkflow(wfId);
-                }
-
-                //마이 워크플로우를 그린다.
-                me.aras.refreshMyWorkFlow();
+                me.aras.refreshAll();
             });
 
             /**

@@ -1288,7 +1288,7 @@ Aras.prototype = {
                 }
             }
         }
-        me.refreshMyWorkFlow();
+        me.refreshAll();
     },
     /**
      * 주어진 마이워크플로우 소스아이디와 아더워크플로우 타겟 아이디간의 릴레이션을 삭제한다.
@@ -1320,7 +1320,7 @@ Aras.prototype = {
                 var amlStr = "<AML><Item type=\"" + relType + "\" action=\"delete\" where=\"source_id = '" + sourceId + "' and related_id = '" + targetId + "'\"></Item></AML>"
                 inn.applyAML(amlStr);
             }
-            me.refreshMyWorkFlow();
+            me.refreshAll();
         }
     },
     /**
@@ -1697,6 +1697,30 @@ Aras.prototype = {
     }
     ,
     /**
+     * 현재 화면의 아더, 마이 워크플로우를 모두 갱신한다.
+     */
+    refreshAll: function(){
+        var me = this;
+        //캔버스를 전부 날린다.
+        me.tree.clear();
+
+        //캔버스 Area 를 재구성한다.
+        me.tree.drawArea();
+
+        //아더워크플로우를 그린다.
+        var wfId = $('#targetOtherWorkflow').val();
+        if (wfId && wfId != '') {
+            var headerItem = me.getWorkflowHeader(wfId);
+            if (headerItem.getItemCount() == 1) {
+                me.renderHeaders(headerItem, 'other');
+            }
+            me.refreshOtherWorkflow(wfId);
+        }
+
+        //마이 워크플로우를 그린다.
+        me.refreshMyWorkFlow();
+    },
+    /**
      * 현재 화면의 마이 워크플로우 트리를 갱신한다.
     */
     refreshMyWorkFlow: function () {
@@ -1766,6 +1790,10 @@ Aras.prototype = {
 
         var refreshData = me.createWorkFlowData(nodeList, 'my', 'out');
 
+        //트리의 폴더 하위 데이터 삭제
+        tree.removeRecursiveChildById(data.id);
+
+        //폴더 열고 닫음 상태 업데이트
         me.syncExpandDataWithTree(refreshData);
 
         //update Data

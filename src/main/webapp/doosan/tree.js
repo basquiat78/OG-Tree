@@ -479,7 +479,7 @@ Tree.prototype = {
     /**
      * 캔버스의 모든 화면요소를 삭제한다.
      */
-    clear: function(){
+    clear: function () {
         this.canvas.clear();
         var rootGroup = this.canvas.getRootGroup();
         $(rootGroup).empty();
@@ -3199,6 +3199,19 @@ Tree.prototype = {
         return list;
     }
     ,
+    /**
+     * 주어진 아이디의 자식 데이터를 재귀호출하여 삭제한다.
+     * @param id OG-Tree data id
+     * @returns {Array} Array of OG-Tree data
+     */
+    removeRecursiveChildById: function (id) {
+        var me = this;
+        var list = me.selectRecursiveChildById(id);
+        for (var i = 0; i < list.length; i++) {
+            delete me._STORAGE[list[i]['id']];
+        }
+        me._STORAGE = JSON.parse(JSON.stringify(me._STORAGE));
+    },
     /**
      * 주어진 아이디의 자식 데이터를 재귀호출하여, 더이상 자식이 없는 마지막 데이터일 경우의 리스트를 반환한다.
      * (자기 자신이 마지막 데이터일 경우 자기 자신을 포함하여)
