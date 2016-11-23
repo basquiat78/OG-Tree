@@ -477,12 +477,14 @@ Tree.prototype = {
     },
 
     /**
-     * 캔버스의 모든 화면요소를 삭제한다.
+     * 캔버스의 모든 화면요소와 데이터를 삭제한다.
      */
     clear: function () {
         this.canvas.clear();
         var rootGroup = this.canvas.getRootGroup();
         $(rootGroup).empty();
+
+        this.clearData(true);
     },
 
     //========================================================================//
