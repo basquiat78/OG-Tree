@@ -3584,7 +3584,7 @@ Tree.prototype = {
         var eventX, eventY, targetEle, targetView, source, target, position, activityViews, area;
         me.canvas.onMoveShape(function (event, shapeElement, offset) {
             var view = me.selectViewById(me._VIEWDATA, shapeElement.id);
-            if (view.type == me.Constants.TYPE.ACTIVITY) {
+            if (view && view.type == me.Constants.TYPE.ACTIVITY) {
                 position = view.position;
                 eventX = shapeElement.shape.geom.getBoundary().getCentroid().x;
                 eventY = shapeElement.shape.geom.getBoundary().getCentroid().y;
