@@ -2107,7 +2107,7 @@ Tree.prototype = {
                         var childNodes = rElement.node.childNodes;
                         for (var i = childNodes.length - 1; i >= 0; i--) {
                             if (childNodes[i].tagName == 'IMAGE' || childNodes[i].tagName == 'image') {
-                                me._RENDERER._remove(this._getREleById(childNodes[i].id));
+                                me._RENDERER._remove(me._RENDERER._getREleById(childNodes[i].id));
                             }
                         }
                     }
