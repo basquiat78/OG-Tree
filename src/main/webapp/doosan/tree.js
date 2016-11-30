@@ -2115,19 +2115,19 @@ Tree.prototype = {
             var $svg = $(element).find('svg');
             //이미지만 존재할 경우
             if (imgURL && attributes && !$svg.length) {
-                console.log('이미지만 존재할 경우');
+                //console.log('이미지만 존재할 경우');
                 createNewSvg(imgURL, attributes);
             }
             //이미지가 없고 svg 가 존재할 경우
             else if (!imgURL && $svg.length) {
-                console.log('이미지가 없고 svg 가 존재할 경우', $svg.length);
+                //console.log('이미지가 없고 svg 가 존재할 경우', $svg.length);
                 applyPathStyle($svg, color, stroke);
             }
             //이미지와 svg 둘 다 있을 경우
             else if (imgURL && attributes && $svg.length) {
                 if ($svg.length && attributes) {
                     // Remove Duplicate SVG
-                    console.log('이미지와 svg 둘 다 있을 경우', $svg.length);
+                    //console.log('이미지와 svg 둘 다 있을 경우', $svg.length);
                     if ($svg.length > 1) {
                         $svg.remove();
                         createNewSvg(imgURL, attributes);
@@ -2150,7 +2150,7 @@ Tree.prototype = {
                     }
                 }
             }else{
-                console.log('그 이외의 경우');
+                //console.log('그 이외의 경우');
             }
         }
     },
