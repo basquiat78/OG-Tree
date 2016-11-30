@@ -2039,9 +2039,6 @@ Tree.prototype = {
         var me = this;
         var color = view['color'];
         var stroke = view['stroke'];
-        if (view.name == 't2') {
-            console.log('updateImageShapeStatus', view);
-        }
 
         /**
          * svg 의 path 들에 컬러와 stroke 를 적용시킨다.
@@ -2109,7 +2106,7 @@ Tree.prototype = {
                     if (rElement) {
                         var childNodes = rElement.node.childNodes;
                         for (var i = childNodes.length - 1; i >= 0; i--) {
-                            if (childNodes[i].tagName == 'IMAGE') {
+                            if (childNodes[i].tagName == 'IMAGE' || childNodes[i].tagName == 'image') {
                                 me._RENDERER._remove(this._getREleById(childNodes[i].id));
                             }
                         }
@@ -2124,17 +2121,25 @@ Tree.prototype = {
             //이미지와 svg 둘 다 있을 경우
             else if (imgURL && attributes && $svg.length) {
                 if ($svg.length && attributes) {
-                    $.each(attributes, function () {
-                        $svg.attr(this.name, this.value);
-                    });
-                    applyPathStyle($svg, color, stroke);
+                    // Remove Duplicate SVG
+                    var imgId = $img.attr('id');
+                    for (var i = 0; i < $svg.length; i++) {
+                        if ($($svg.get(i)).attr('id') != imgId) {
+                            $($svg.get(i)).remove();
+                        } else {
+                            $.each(attributes, function () {
+                                $($svg.get(i)).attr(this.name, this.value);
+                            });
+                            applyPathStyle($svg.get(i), color, stroke);
+                        }
+                    }
 
                     // Remove IMG
                     var rElement = me._RENDERER._getREleById(element.id);
                     if (rElement) {
                         var childNodes = rElement.node.childNodes;
                         for (var i = childNodes.length - 1; i >= 0; i--) {
-                            if (childNodes[i].tagName == 'image') {
+                            if (childNodes[i].tagName == 'IMAGE' || childNodes[i].tagName == 'image') {
                                 me._RENDERER._remove(me._RENDERER._getREleById(childNodes[i].id));
                             }
                         }
