@@ -2079,6 +2079,29 @@ Tree.prototype = {
 
             });
         };
+        var createNewSvg = function (imgURL, attributes) {
+            $.get(imgURL, function (data) {
+                var $svg = $(data).find('svg');
+                $svg = $svg.removeAttr('xmlns:a');
+
+                $.each(attributes, function () {
+                    $svg.attr(this.name, this.value);
+                });
+                applyPathStyle($svg, color, stroke);
+
+                // Replace IMG with SVG
+                var rElement = me._RENDERER._getREleById(element.id);
+                if (rElement) {
+                    var childNodes = rElement.node.childNodes;
+                    for (var i = childNodes.length - 1; i >= 0; i--) {
+                        if (childNodes[i].tagName == 'IMAGE' || childNodes[i].tagName == 'image') {
+                            me._RENDERER._remove(me._RENDERER._getREleById(childNodes[i].id));
+                        }
+                    }
+                }
+                $(element).append($svg);
+            }, 'xml');
+        };
         if (!color || color == 'none' || color == '') {
             color = undefined;
         }
@@ -2092,59 +2115,42 @@ Tree.prototype = {
             var $svg = $(element).find('svg');
             //이미지만 존재할 경우
             if (imgURL && attributes && !$svg.length) {
-                $.get(imgURL, function (data) {
-                    $svg = $(data).find('svg');
-                    $svg = $svg.removeAttr('xmlns:a');
-
-                    $.each(attributes, function () {
-                        $svg.attr(this.name, this.value);
-                    });
-                    applyPathStyle($svg, color, stroke);
-
-                    // Replace IMG with SVG
-                    var rElement = me._RENDERER._getREleById(element.id);
-                    if (rElement) {
-                        var childNodes = rElement.node.childNodes;
-                        for (var i = childNodes.length - 1; i >= 0; i--) {
-                            if (childNodes[i].tagName == 'IMAGE' || childNodes[i].tagName == 'image') {
-                                me._RENDERER._remove(me._RENDERER._getREleById(childNodes[i].id));
-                            }
-                        }
-                    }
-                    $(element).append($svg);
-                }, 'xml');
+                console.log('이미지만 존재할 경우');
+                createNewSvg(imgURL, attributes);
             }
             //이미지가 없고 svg 가 존재할 경우
             else if (!imgURL && $svg.length) {
+                console.log('이미지가 없고 svg 가 존재할 경우', $svg.length);
                 applyPathStyle($svg, color, stroke);
             }
             //이미지와 svg 둘 다 있을 경우
             else if (imgURL && attributes && $svg.length) {
                 if ($svg.length && attributes) {
                     // Remove Duplicate SVG
-                    var imgId = $img.attr('id');
-                    for (var i = 0; i < $svg.length; i++) {
-                        if ($($svg.get(i)).attr('id') != imgId) {
-                            $($svg.get(i)).remove();
-                        } else {
-                            $.each(attributes, function () {
-                                $($svg.get(i)).attr(this.name, this.value);
-                            });
-                            applyPathStyle($svg.get(i), color, stroke);
-                        }
-                    }
+                    console.log('이미지와 svg 둘 다 있을 경우', $svg.length);
+                    if ($svg.length > 1) {
+                        $svg.remove();
+                        createNewSvg(imgURL, attributes);
+                    }else{
+                        $.each(attributes, function () {
+                            $svg.attr(this.name, this.value);
+                        });
+                        applyPathStyle($svg, color, stroke);
 
-                    // Remove IMG
-                    var rElement = me._RENDERER._getREleById(element.id);
-                    if (rElement) {
-                        var childNodes = rElement.node.childNodes;
-                        for (var i = childNodes.length - 1; i >= 0; i--) {
-                            if (childNodes[i].tagName == 'IMAGE' || childNodes[i].tagName == 'image') {
-                                me._RENDERER._remove(me._RENDERER._getREleById(childNodes[i].id));
+                        // Remove IMG
+                        var rElement = me._RENDERER._getREleById(element.id);
+                        if (rElement) {
+                            var childNodes = rElement.node.childNodes;
+                            for (var i = childNodes.length - 1; i >= 0; i--) {
+                                if (childNodes[i].tagName == 'IMAGE' || childNodes[i].tagName == 'image') {
+                                    me._RENDERER._remove(me._RENDERER._getREleById(childNodes[i].id));
+                                }
                             }
                         }
                     }
                 }
+            }else{
+                console.log('그 이외의 경우');
             }
         }
     },
