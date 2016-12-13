@@ -104,7 +104,7 @@
   {
     "type": "ed",
     "id": "my-ed-1-1-2-1",
-    "name": "my-ed-1-1-2-1-Ed my-ed-1-1-2-1-Ed my-ed-1-1-2-1-Ed",
+    "name": "[MOV(Gate/Globe)]_Data sheets for Motor Operated Casting Valves",
     "position": "my-out",
     "parentId": "my-fd-1-1-2",
     "extData": {},

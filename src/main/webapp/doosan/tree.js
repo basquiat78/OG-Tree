@@ -103,7 +103,7 @@ var Tree = function (container) {
         /**
          * 라벨 최대 글자 크기
          */
-        LABEL_MAX_LENGTH: 20,
+        LABEL_MAX_LENGTH: 15,
 
         /**
          * Lane Area 관련 Configration
@@ -241,7 +241,7 @@ var Tree = function (container) {
             /**
              * 폴더 마진
              */
-            FOLDER_MARGIN: 25,
+            FOLDER_MARGIN: 40,
             /**
              * ED 가로
              */
@@ -253,7 +253,7 @@ var Tree = function (container) {
             /**
              * ED 마진
              */
-            ED_MARGIN: 29,
+            ED_MARGIN: 40,
             /**
              * Expand 버튼과 부모사이의 간격
              */
@@ -2022,17 +2022,23 @@ Tree.prototype = {
      */
     labelSubstring: function (label) {
         var str = '';
+        var tempStr = label;
         var length = this._CONFIG.LABEL_MAX_LENGTH;
-        if (label) {
-            if (label && label.length > length) {
-                str += label.substring(0, length) + '\n';
-                if (label.length > length * 2) {
-                    str += label.substring(length, length * 2) + '..';
-                } else {
-                    str += label.substring(length, label.length)
+        for (var i = 0; i < 3; i++) {
+            if (tempStr) {
+                if (i > 0) {
+                    str += '\n';
                 }
-            } else if (label) {
-                str = label;
+                if (tempStr.length > length) {
+                    str += tempStr.substring(0, length);
+                    tempStr = tempStr.substring(length, tempStr.length);
+                } else {
+                    str += tempStr;
+                    tempStr = undefined;
+                }
+                if (i == 2) {
+                    str += '..';
+                }
             }
         }
         return str;
@@ -2262,7 +2268,7 @@ Tree.prototype = {
             shape.MOVABLE = false;
         }
         var element = me.canvas.drawShape([view.x, view.y], shape, [view.width, view.height],
-            {'font-size': me._CONFIG.DEFAULT_STYLE.FONT_SIZE}, view.id);
+            {'font-size': me._CONFIG.DEFAULT_STYLE.FONT_SIZE,'vertical-align':'top'}, view.id);
         me.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
         me.updateImageShapeStatus(view, element);
         me.bindDblClickEvent(element);
@@ -2311,7 +2317,7 @@ Tree.prototype = {
             shape.MOVABLE = false;
         }
         var element = me.canvas.drawShape([view.x, view.y], shape, [view.width, view.height],
-            {'font-size': me._CONFIG.DEFAULT_STYLE.FONT_SIZE}, view.id);
+            {'font-size': me._CONFIG.DEFAULT_STYLE.FONT_SIZE,'vertical-align':'top'}, view.id);
         me.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
         if (view.blur) {
             this.canvas.setShapeStyle(element, {"opacity": me._CONFIG.DEFAULT_STYLE.BLUR});
@@ -2365,7 +2371,7 @@ Tree.prototype = {
             shape.MOVABLE = false;
         }
         var element = me.canvas.drawShape([view.x, view.y], shape, [view.width, view.height],
-            {'font-size': me._CONFIG.DEFAULT_STYLE.FONT_SIZE}, view.id);
+            {'font-size': me._CONFIG.DEFAULT_STYLE.FONT_SIZE,'vertical-align':'top'}, view.id);
         me.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
         if (view.blur) {
             this.canvas.setShapeStyle(element, {"opacity": me._CONFIG.DEFAULT_STYLE.BLUR});
