@@ -2021,73 +2021,20 @@ Tree.prototype = {
      * @returns {String} fixed label
      */
     labelSubstring: function (label) {
-        function wordWrap(str, maxWidth) {
-            var texts = str.split("\n"), text;
-            var lines = [];
-            var done = false;
-            var testWhite = function (x) {
-                var white = new RegExp(/^\s$/);
-                return white.test(x.charAt(0));
-            };
-            for (var t = 0; t < texts.length; t++) {
-                text = texts[t];
-                do {
-                    var found = false;
-                    var res = '';
-                    if (text.length <= maxWidth) {
-                        lines.push(text);
-                        done = true;
-                    } else {
-                        // Inserts new line at first whitespace of the line
-                        for (i = maxWidth - 1; i >= 0; i--) {
-                            if (testWhite(text.charAt(i))) {
-                                res = res + text.slice(0, i);
-                                text = text.slice(i + 1);
-                                found = true;
-                                lines.push(res);
-                                break;
-                            }
-                        }
-
-                        // Inserts new line at maxWidth position, the word is too long to wrap
-                        if (!found) {
-                            res = res + text.slice(0, maxWidth);
-                            text = text.slice(maxWidth - 1);
-                            lines.push(res);
-                        }
-                    }
-                } while (!done);
-            }
-
-            var result = [];
-            for (var r = 0, lenr = lines.length; r < lenr; r++) {
-                if (lines[r] && lines[r].length > 0) {
-                    result.push(lines[r]);
-                }
-            }
-            if (!lines.length) {
-                lines.push('');
-            }
-            return lines;
-        }
-
         var str = '';
         var length = this._CONFIG.LABEL_MAX_LENGTH;
         if (label) {
-            var lines = wordWrap(label, length);
-            for (var i = 0; i < lines.length; i++) {
-                if (i == 0) {
-                    str += lines[i];
+            if (label && label.length > length) {
+                str += label.substring(0, length) + '\n';
+                if (label.length > length * 2) {
+                    str += label.substring(length, length * 2) + '..';
+                } else {
+                    str += label.substring(length, label.length)
                 }
-                if (i == 1 && lines.length > 2) {
-                    str += '\n' + lines[i] + '..';
-                }
-                if (i == 1 && lines.length == 2) {
-                    str += '\n' + lines[i];
-                }
+            } else if (label) {
+                str = label;
             }
         }
-        console.log(str);
         return str;
     },
     /**
