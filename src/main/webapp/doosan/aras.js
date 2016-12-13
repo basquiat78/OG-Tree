@@ -1458,13 +1458,41 @@ Aras.prototype = {
             };
 
             var delay = false;
-            //ED 의 상태가 Inactive 이고 first_start_date 가 금일보다 이전일 경우 : 시작지연
-            if (node.state && node.state == 'Inactive' && isDelay(node['first_start_date'])) {
-                delay = true;
+            var startDate = '';
+            var endDate = '';
+
+            if (node.state && node.state !== 'Approved' && (node['purpose'] == 'FI' || node['purpose'] == 'FA')) {
+                startDate = node['first_start_date'];
             }
-            //ED 의 상태가 Approved 가 아니고 final_end_date 가 금일보다 이전일 경우 : 종료 지연
-            if (node.state && node.state != 'Approved' && isDelay(node['final_end_date'])) {
-                delay = true;
+            else if (node.state && node.state == 'Approved' && (node['purpose'] == 'FI' || node['purpose'] == 'FA') && isDelay(node['final_end_date'])) {
+                startDate = node['final_start_date'];
+            }
+            else if (node.state && node.state == 'Approved' && (node['purpose'] == 'FI' || node['purpose'] == 'FA') && !isDelay(node['final_end_date'])) {
+                startDate = node['first_start_date'];
+            }
+            else if (node['purpose'] == 'FC' || node['purpose'] == 'Final') {
+                startDate = node['final_start_date'];
+            }
+
+            if ((node['purpose'] == 'FI' || node['purpose'] == 'FA' || node['purpose'] == 'Preliminary') && node.state !== 'Approved') {
+                endDate = node['first_end_date'];
+            }
+            else if ((node['purpose'] == 'FI' || node['purpose'] == 'FA' || node['purpose'] == 'Preliminary') && node.state == 'Approved' && isDelay(node['final_start_date'])) {
+                endDate = node['final_end_date'];
+            }
+            else if ((node['purpose'] == 'FI' || node['purpose'] == 'FA' || node['purpose'] == 'Preliminary') && node.state == 'Approved' && !isDelay(node['final_start_date'])) {
+                endDate = node['first_end_date'];
+            }
+            else if (node['purpose'] == 'FC' || node['purpose'] == 'Final') {
+                endDate = node['final_end_date'];
+            }
+            if (startDate !== '' && endDate !== '') {
+                if (isDelay(startDate)) {
+                    delay = true;
+                }
+                if (isDelay(endDate)) {
+                    delay = true;
+                }
             }
             return delay;
         };

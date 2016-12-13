@@ -347,8 +347,8 @@
             "fill-cy": .5,
             fill: "#fff",
             "fill-opacity": 1,
-            font: '10px "serif"',
-            "font-family": '"serif"',
+            font: "10px 'serif'",
+            "font-family": "'serif'",
             "font-size": "10",
             "font-style": "normal",
             "font-weight": 400,
@@ -4465,10 +4465,9 @@ window.Raphael.svg && function (R) {
                     tspan;
 
                 //TODO 한 라인의 최대 글자 수. font size 를 얻어와야 하는데 param의 font 프로퍼티는 정확하지 않음.
-                //var fontSize = params['font'];
-                //fontSize = fontSize ? fontSize.substring(0, fontSize.indexOf('px')) : 12;
-                //var maxNum = parseInt(size[0] / fontSize);
-                var maxNum = parseInt(size[0] / 12);
+                var ogFontSize = params['font-size'];
+                ogFontSize = ogFontSize ? ogFontSize : 12;
+                var maxNum = parseInt(size[0] / (ogFontSize / 2));
 
                 function wordWrap(str, maxWidth) {
                     var texts = str.split("\n"), text;
@@ -4489,18 +4488,19 @@ window.Raphael.svg && function (R) {
                             } else {
                                 // Inserts new line at first whitespace of the line
                                 for (i = maxWidth - 1; i >= 0; i--) {
-                                    if (testWhite(str.charAt(i))) {
-                                        res = res + text.slice(0, i)
+                                    if (testWhite(text.charAt(i))) {
+                                        res = res + text.slice(0, i);
                                         text = text.slice(i + 1);
                                         found = true;
                                         lines.push(res);
                                         break;
                                     }
                                 }
+
                                 // Inserts new line at maxWidth position, the word is too long to wrap
                                 if (!found) {
                                     res = res + text.slice(0, maxWidth);
-                                    text = text.slice(maxWidth);
+                                    text = text.slice(maxWidth - 1);
                                     lines.push(res);
                                 }
                             }
@@ -6264,348 +6264,354 @@ OG.shape.essencia = {};
  */
 OG.common.Constants = {
 
-	/**
-	 * 공간 기하 객체 타입 정의
-	 */
-	GEOM_TYPE: {
-		NULL        : 0,
-		POINT       : 1,
-		LINE        : 2,
-		POLYLINE    : 3,
-		POLYGON     : 4,
-		RECTANGLE   : 5,
-		CIRCLE      : 6,
-		ELLIPSE     : 7,
-		CURVE       : 8,
-		BEZIER_CURVE: 9,
-		COLLECTION  : 10
-	},
+    /**
+     * 캔버스 검색용 클래스 SUFFIX
+     */
+    CANVAS_SUFFIX: 'OG-CANVAS',
 
-	/**
-	 * 공간 기하 객체 타입-이름 매핑
-	 */
-	GEOM_NAME: ["", "Point", "Line", "PolyLine", "Polygon", "Rectangle", "Circle", "Ellipse", "Curve", "BezierCurve", "Collection"],
+    /**
+     * 공간 기하 객체 타입 정의
+     */
+    GEOM_TYPE: {
+        NULL: 0,
+        POINT: 1,
+        LINE: 2,
+        POLYLINE: 3,
+        POLYGON: 4,
+        RECTANGLE: 5,
+        CIRCLE: 6,
+        ELLIPSE: 7,
+        CURVE: 8,
+        BEZIER_CURVE: 9,
+        COLLECTION: 10
+    },
 
-	/**
-	 * 숫자 반올림 소숫점 자리수
-	 */
-	NUM_PRECISION: 0,
+    /**
+     * 공간 기하 객체 타입-이름 매핑
+     */
+    GEOM_NAME: ["", "Point", "Line", "PolyLine", "Polygon", "Rectangle", "Circle", "Ellipse", "Curve", "BezierCurve", "Collection"],
 
-	/**
-	 * 캔버스 노드 타입 정의
-	 */
-	NODE_TYPE: {
-		ROOT : "ROOT",
-		SHAPE: "SHAPE",
-		ETC  : "ETC"
-	},
+    /**
+     * 숫자 반올림 소숫점 자리수
+     */
+    NUM_PRECISION: 0,
 
-	/**
-	 * Shape 타입 정의
-	 */
-	SHAPE_TYPE: {
-		GEOM : "GEOM",
-		TEXT : "TEXT",
-		HTML : "HTML",
-		IMAGE: "IMAGE",
-		EDGE : "EDGE",
-		GROUP: "GROUP"
-	},
+    /**
+     * 캔버스 노드 타입 정의
+     */
+    NODE_TYPE: {
+        ROOT: "ROOT",
+        SHAPE: "SHAPE",
+        ETC: "ETC"
+    },
 
-	/**
-	 * Edge 타입 정의
-	 */
-	EDGE_TYPE: {
-		STRAIGHT: "straight",
-		PLAIN   : "plain",
-		BEZIER  : "bezier"
-	},
+    /**
+     * Shape 타입 정의
+     */
+    SHAPE_TYPE: {
+        GEOM: "GEOM",
+        TEXT: "TEXT",
+        HTML: "HTML",
+        IMAGE: "IMAGE",
+        EDGE: "EDGE",
+        GROUP: "GROUP"
+    },
 
-	/**
-	 * 라벨 ID의 suffix 정의
-	 */
-	LABEL_SUFFIX: "_LABEL",
+    /**
+     * Edge 타입 정의
+     */
+    EDGE_TYPE: {
+        STRAIGHT: "straight",
+        PLAIN: "plain",
+        BEZIER: "bezier"
+    },
 
-	/**
-	 * 라벨 에디터 ID의 suffix 정의
-	 */
-	LABEL_EDITOR_SUFFIX: "_LABEL_EDITOR",
+    /**
+     * 라벨 ID의 suffix 정의
+     */
+    LABEL_SUFFIX: "_LABEL",
 
-	/**
-	 * 시작점 라벨 ID의 suffix 정의
-	 */
-	FROM_LABEL_SUFFIX: '_FROMLABEL',
+    /**
+     * 라벨 에디터 ID의 suffix 정의
+     */
+    LABEL_EDITOR_SUFFIX: "_LABEL_EDITOR",
 
-	/**
-	 * 끝점 라벨 ID의 suffix 정의
-	 */
-	TO_LABEL_SUFFIX: '_TOLABEL',
+    /**
+     * 시작점 라벨 ID의 suffix 정의
+     */
+    FROM_LABEL_SUFFIX: '_FROMLABEL',
 
-	/**
-	 * Rectangle 모양의 마우스 드래그 선택 박스 영역
-	 */
-	RUBBER_BAND_ID: "OG_R_BAND",
+    /**
+     * 끝점 라벨 ID의 suffix 정의
+     */
+    TO_LABEL_SUFFIX: '_TOLABEL',
 
-	/**
-	 * Rubber Band 허용 오차
-	 */
-	RUBBER_BAND_TOLERANCE: 3,
+    /**
+     * Rectangle 모양의 마우스 드래그 선택 박스 영역
+     */
+    RUBBER_BAND_ID: "OG_R_BAND",
 
-	/**
-	 * Move & Resize 용 가이드 ID 의 suffix 정의
-	 */
-	GUIDE_SUFFIX: {
-		GUIDE: "_GUIDE",
-		BBOX : "_GUIDE_BBOX",
-		UL   : "_GUIDE_UL",
-		UR   : "_GUIDE_UR",
-		LWL   : "_GUIDE_LWL",
-		LWR   : "_GUIDE_LWR",
-		LC   : "_GUIDE_LC",
-		UC   : "_GUIDE_UC",
-		RC   : "_GUIDE_RC",
-		LWC  : "_GUIDE_LWC",
-		FROM : "_GUIDE_FROM",
-		TO   : "_GUIDE_TO",
-		CTL  : "_GUIDE_CTL_",
-		CTL_H: "_GUIDE_CTL_H_",
-		CTL_V: "_GUIDE_CTL_V_",
-		LINE : "_GUIDE_LINE",
-		LINE_TEXT : "_GUIDE_LINE_TEXT",
-		LINE_CONNECT_MODE: "LINE_CONNECT_MODE",
-		LINE_CONNECT_TEXT: "LINE_CONNECT_TEXT",
-		LINE_CONNECT_SHAPE: "LINE_CONNECT_SHAPE",
-		LINE_CONNECT_LABEL: "LINE_CONNECT_LABEL",
-		LINE_VIRTUAL_EDGE: "LINE_VIRTUAL_EDGE",
-		RECT_CONNECT_MODE: "RECT_CONNECT_MODE",
-		TRASH: "_GUIDE_TRASH",
-		RECT: "_GUIDE_RECT",
-		QUARTER_UPPER: "QUARTER_UPPER",
-		QUARTER_LOW: "QUARTER_LOW",
-		QUARTER_BISECTOR: "QUARTER_BISECTOR",
-		QUARTER_THIRDS: "QUARTER_THIRDS"
-	},
+    /**
+     * Rubber Band 허용 오차
+     */
+    RUBBER_BAND_TOLERANCE: 3,
 
-	/**
-	 * Collapse & Expand 용 가이드 ID의 suffix 정의
-	 */
-	COLLAPSE_SUFFIX     : "_COLLAPSE",
-	COLLAPSE_BBOX_SUFFIX: "_COLLAPSE_BBOX",
+    /**
+     * Move & Resize 용 가이드 ID 의 suffix 정의
+     */
+    GUIDE_SUFFIX: {
+        ONRESIZE: "ONRESIZE",
+        GUIDE: "_GUIDE",
+        BBOX: "_GUIDE_BBOX",
+        UL: "_GUIDE_UL",
+        UR: "_GUIDE_UR",
+        LWL: "_GUIDE_LWL",
+        LWR: "_GUIDE_LWR",
+        LC: "_GUIDE_LC",
+        UC: "_GUIDE_UC",
+        RC: "_GUIDE_RC",
+        LWC: "_GUIDE_LWC",
+        FROM: "_GUIDE_FROM",
+        TO: "_GUIDE_TO",
+        CTL: "_GUIDE_CTL_",
+        CTL_H: "_GUIDE_CTL_H_",
+        CTL_V: "_GUIDE_CTL_V_",
+        LINE: "_GUIDE_LINE",
+        LINE_TEXT: "_GUIDE_LINE_TEXT",
+        LINE_CONNECT_MODE: "LINE_CONNECT_MODE",
+        LINE_CONNECT_TEXT: "LINE_CONNECT_TEXT",
+        LINE_CONNECT_SHAPE: "LINE_CONNECT_SHAPE",
+        LINE_CONNECT_LABEL: "LINE_CONNECT_LABEL",
+        LINE_VIRTUAL_EDGE: "LINE_VIRTUAL_EDGE",
+        RECT_CONNECT_MODE: "RECT_CONNECT_MODE",
+        TRASH: "_GUIDE_TRASH",
+        RECT: "_GUIDE_RECT",
+        QUARTER_UPPER: "QUARTER_UPPER",
+        QUARTER_LOW: "QUARTER_LOW",
+        QUARTER_BISECTOR: "QUARTER_BISECTOR",
+        QUARTER_THIRDS: "QUARTER_THIRDS"
+    },
 
-	/**
-	 * LoopType 용 가이드 ID의 suffix 정의
-	 */
-	LOOPTYPE_SUFFIX : "_LOOPTYPE",
-	LOOPTYPE_BBOX_SUFFIX : "_LOOPTYPE_BBOX",
+    /**
+     * Collapse & Expand 용 가이드 ID의 suffix 정의
+     */
+    COLLAPSE_SUFFIX: "_COLLAPSE",
+    COLLAPSE_BBOX_SUFFIX: "_COLLAPSE_BBOX",
 
-	/**
-	 * TaskType 용 가이드 ID의 suffix 정의
-	 */
-	TASKTYPE_SUFFIX : "_TASKTYPE",
-	TASKTYPE_BBOX_SUFFIX : "_TASKTYPE_BBOX",
+    /**
+     * LoopType 용 가이드 ID의 suffix 정의
+     */
+    LOOPTYPE_SUFFIX: "_LOOPTYPE",
+    LOOPTYPE_BBOX_SUFFIX: "_LOOPTYPE_BBOX",
 
-	/**
-	 * TaskType 용 가이드 ID의 suffix 정의
-	 */
-	INCLUSION_SUFFIX : "_INCLUSION",
-	INCLUSION_BBOX_SUFFIX : "_INCLUSION_BBOX",
+    /**
+     * TaskType 용 가이드 ID의 suffix 정의
+     */
+    TASKTYPE_SUFFIX: "_TASKTYPE",
+    TASKTYPE_BBOX_SUFFIX: "_TASKTYPE_BBOX",
 
-	/**
-	 * STATUS 용 가이드 ID의 suffix 정의
-	 */
-	STATUS_SUFFIX : "_STATUS",
-	STATUS_BBOX_SUFFIX : "_STATUS_BBOX",
+    /**
+     * TaskType 용 가이드 ID의 suffix 정의
+     */
+    INCLUSION_SUFFIX: "_INCLUSION",
+    INCLUSION_BBOX_SUFFIX: "_INCLUSION_BBOX",
 
-	/**
-	 * EXCEPTIONTYPE 용 가이드 ID의 suffix 정의
-	 */
-	EXCEPTIONTYPE_SUFFIX : "_EXCEPTIONTYPE",
-	EXCEPTIONTYPE_BBOX_SUFFIX : "_EXCEPTIONTYPE_BBOX",
+    /**
+     * STATUS 용 가이드 ID의 suffix 정의
+     */
+    STATUS_SUFFIX: "_STATUS",
+    STATUS_BBOX_SUFFIX: "_STATUS_BBOX",
 
-	/**
-	 * Shape Move & Resize 시 이동 간격
-	 */
-	MOVE_SNAP_SIZE: 5,
+    /**
+     * EXCEPTIONTYPE 용 가이드 ID의 suffix 정의
+     */
+    EXCEPTIONTYPE_SUFFIX: "_EXCEPTIONTYPE",
+    EXCEPTIONTYPE_BBOX_SUFFIX: "_EXCEPTIONTYPE_BBOX",
 
-	/**
-	 * Edge 연결할때 Drop Over 가이드 ID의 suffix 정의
-	 */
-	DROP_OVER_BBOX_SUFFIX: "_DROP_OVER",
+    /**
+     * Shape Move & Resize 시 이동 간격
+     */
+    MOVE_SNAP_SIZE: 5,
 
-	/**
-	 * Shape - Edge 와의 연결 포인트 터미널 ID의 suffix 정의
-	 */
-	TERMINAL_SUFFIX: {
-		GROUP: "_TERMINAL",
-		BOX  : "_TERMINAL_BOX"
-	},
+    /**
+     * Edge 연결할때 Drop Over 가이드 ID의 suffix 정의
+     */
+    DROP_OVER_BBOX_SUFFIX: "_DROP_OVER",
 
-	/**
-	 * Shape - Edge 와의 연결 포인트
-	 */
-	TERMINAL: "_TERMINAL",
+    /**
+     * Shape - Edge 와의 연결 포인트 터미널 ID의 suffix 정의
+     */
+    TERMINAL_SUFFIX: {
+        GROUP: "_TERMINAL",
+        BOX: "_TERMINAL_BOX"
+    },
 
-	/**
-	 * 마커 등록을 위한 임시 노드 아이디
-	 */
-	MARKER_TEMP_NODE: "MARKER_TEMP_NODE",
+    /**
+     * Shape - Edge 와의 연결 포인트
+     */
+    TERMINAL: "_TERMINAL",
 
-	/**
-	 * 패턴 등록을 위한 임시 노드 아이디
-	 */
-	PATTERN_TEMP_NODE: "PATTERN_TEMP_NODE",
+    /**
+     * 마커 등록을 위한 임시 노드 아이디
+     */
+    MARKER_TEMP_NODE: "MARKER_TEMP_NODE",
 
-	/**
-	 * 캔버스의 마커 데피니션 suffix 정의
-	 */
-	MARKER_DEFS_SUFFIX: "_MARKER",
-	/**
-	 * Shape 에서 마커가 그려질 경우 원본 노드 suffix 정의
-	 */
-	ORIGINAL_NODE: "ORIGINAL_NODE",
-	/**
-	 * Element 의 커넥트 가이드 이벤트 보정영역의 정의
-	 */
-	CONNECT_GUIDE_EVENT_AREA: {
-		NAME  : "CONNECT_GUIDE"
-	},
-	/**
-	 * Element 의 커넥트 가이드 suffix 정의
-	 */
-	CONNECT_GUIDE_SUFFIX: {
-		SPOT: "_CONNECT_SPOT",
-		VIRTUAL_SPOT: "_CONNECT_VIRTUAL_SPOT",
-		BBOX : "_CONNECT_GUIDE_BBOX",
-		SPOT_CIRCLE : "CIRCLE",
-		SPOT_RECT : "RECT",
-		SPOT_EVENT_DRAG : "SPOT_EVENT_DRAG",
-		SPOT_EVENT_MOUSEROVER : "SPOT_EVENT_MOUSEROVER",
-		CONNECTABLE_SPOT_DRAG : "CONNECTABLE_SPOT_DRAG",
-		CONNECT_FOCUS_SHAPE : "CONNECT_FOCUS_SHAPE"
-	}
+    /**
+     * 패턴 등록을 위한 임시 노드 아이디
+     */
+    PATTERN_TEMP_NODE: "PATTERN_TEMP_NODE",
+
+    /**
+     * 캔버스의 마커 데피니션 suffix 정의
+     */
+    MARKER_DEFS_SUFFIX: "_MARKER",
+    /**
+     * Shape 에서 마커가 그려질 경우 원본 노드 suffix 정의
+     */
+    ORIGINAL_NODE: "ORIGINAL_NODE",
+    /**
+     * Element 의 커넥트 가이드 이벤트 보정영역의 정의
+     */
+    CONNECT_GUIDE_EVENT_AREA: {
+        NAME: "CONNECT_GUIDE"
+    },
+    /**
+     * Element 의 커넥트 가이드 suffix 정의
+     */
+    CONNECT_GUIDE_SUFFIX: {
+        SPOT: "_CONNECT_SPOT",
+        VIRTUAL_SPOT: "_CONNECT_VIRTUAL_SPOT",
+        BBOX: "_CONNECT_GUIDE_BBOX",
+        SPOT_CIRCLE: "CIRCLE",
+        SPOT_RECT: "RECT",
+        SPOT_EVENT_DRAG: "SPOT_EVENT_DRAG",
+        SPOT_EVENT_MOUSEROVER: "SPOT_EVENT_MOUSEROVER",
+        CONNECTABLE_SPOT_DRAG: "CONNECTABLE_SPOT_DRAG",
+        CONNECT_FOCUS_SHAPE: "CONNECT_FOCUS_SHAPE"
+    }
 };
 OG.Constants = OG.common.Constants;
 
 // keyCode Definition
 if (typeof KeyEvent === "undefined") {
-	var KeyEvent = {
-		DOM_VK_CANCEL       : 3,
-		DOM_VK_HELP         : 6,
-		DOM_VK_BACK_SPACE   : 8,
-		DOM_VK_TAB          : 9,
-		DOM_VK_CLEAR        : 12,
-		DOM_VK_RETURN       : 13,
-		DOM_VK_ENTER        : 14,
-		DOM_VK_SHIFT        : 16,
-		DOM_VK_CONTROL      : 17,
-		DOM_VK_ALT          : 18,
-		DOM_VK_PAUSE        : 19,
-		DOM_VK_CAPS_LOCK    : 20,
-		DOM_VK_ESCAPE       : 27,
-		DOM_VK_SPACE        : 32,
-		DOM_VK_PAGE_UP      : 33,
-		DOM_VK_PAGE_DOWN    : 34,
-		DOM_VK_END          : 35,
-		DOM_VK_HOME         : 36,
-		DOM_VK_LEFT         : 37,
-		DOM_VK_UP           : 38,
-		DOM_VK_RIGHT        : 39,
-		DOM_VK_DOWN         : 40,
-		DOM_VK_PRINTSCREEN  : 44,
-		DOM_VK_INSERT       : 45,
-		DOM_VK_DELETE       : 46,
-		DOM_VK_0            : 48,
-		DOM_VK_1            : 49,
-		DOM_VK_2            : 50,
-		DOM_VK_3            : 51,
-		DOM_VK_4            : 52,
-		DOM_VK_5            : 53,
-		DOM_VK_6            : 54,
-		DOM_VK_7            : 55,
-		DOM_VK_8            : 56,
-		DOM_VK_9            : 57,
-		DOM_VK_SEMICOLON    : 59,
-		DOM_VK_EQUALS       : 61,
-		DOM_VK_A            : 65,
-		DOM_VK_B            : 66,
-		DOM_VK_C            : 67,
-		DOM_VK_D            : 68,
-		DOM_VK_E            : 69,
-		DOM_VK_F            : 70,
-		DOM_VK_G            : 71,
-		DOM_VK_H            : 72,
-		DOM_VK_I            : 73,
-		DOM_VK_J            : 74,
-		DOM_VK_K            : 75,
-		DOM_VK_L            : 76,
-		DOM_VK_M            : 77,
-		DOM_VK_N            : 78,
-		DOM_VK_O            : 79,
-		DOM_VK_P            : 80,
-		DOM_VK_Q            : 81,
-		DOM_VK_R            : 82,
-		DOM_VK_S            : 83,
-		DOM_VK_T            : 84,
-		DOM_VK_U            : 85,
-		DOM_VK_V            : 86,
-		DOM_VK_W            : 87,
-		DOM_VK_X            : 88,
-		DOM_VK_Y            : 89,
-		DOM_VK_Z            : 90,
-		DOM_VK_COMMAND      : 91,
-		DOM_VK_CONTEXT_MENU : 93,
-		DOM_VK_NUMPAD0      : 96,
-		DOM_VK_NUMPAD1      : 97,
-		DOM_VK_NUMPAD2      : 98,
-		DOM_VK_NUMPAD3      : 99,
-		DOM_VK_NUMPAD4      : 100,
-		DOM_VK_NUMPAD5      : 101,
-		DOM_VK_NUMPAD6      : 102,
-		DOM_VK_NUMPAD7      : 103,
-		DOM_VK_NUMPAD8      : 104,
-		DOM_VK_NUMPAD9      : 105,
-		DOM_VK_MULTIPLY     : 106,
-		DOM_VK_ADD          : 107,
-		DOM_VK_SEPARATOR    : 108,
-		DOM_VK_SUBTRACT     : 109,
-		DOM_VK_DECIMAL      : 110,
-		DOM_VK_DIVIDE       : 111,
-		DOM_VK_F1           : 112,
-		DOM_VK_F2           : 113,
-		DOM_VK_F3           : 114,
-		DOM_VK_F4           : 115,
-		DOM_VK_F5           : 116,
-		DOM_VK_F6           : 117,
-		DOM_VK_F7           : 118,
-		DOM_VK_F8           : 119,
-		DOM_VK_F9           : 120,
-		DOM_VK_F10          : 121,
-		DOM_VK_F11          : 122,
-		DOM_VK_F12          : 123,
-		DOM_VK_F13          : 124,
-		DOM_VK_F14          : 125,
-		DOM_VK_F15          : 126,
-		DOM_VK_F16          : 127,
-		DOM_VK_F17          : 128,
-		DOM_VK_F18          : 129,
-		DOM_VK_F19          : 130,
-		DOM_VK_F20          : 131,
-		DOM_VK_F21          : 132,
-		DOM_VK_F22          : 133,
-		DOM_VK_F23          : 134,
-		DOM_VK_F24          : 135,
-		DOM_VK_NUM_LOCK     : 144,
-		DOM_VK_SCROLL_LOCK  : 145,
-		DOM_VK_COMMA        : 188,
-		DOM_VK_PERIOD       : 190,
-		DOM_VK_SLASH        : 191,
-		DOM_VK_BACK_QUOTE   : 192,
-		DOM_VK_OPEN_BRACKET : 219,
-		DOM_VK_BACK_SLASH   : 220,
-		DOM_VK_CLOSE_BRACKET: 221,
-		DOM_VK_QUOTE        : 222,
-		DOM_VK_META         : 224
-	};
+    var KeyEvent = {
+        DOM_VK_CANCEL: 3,
+        DOM_VK_HELP: 6,
+        DOM_VK_BACK_SPACE: 8,
+        DOM_VK_TAB: 9,
+        DOM_VK_CLEAR: 12,
+        DOM_VK_RETURN: 13,
+        DOM_VK_ENTER: 14,
+        DOM_VK_SHIFT: 16,
+        DOM_VK_CONTROL: 17,
+        DOM_VK_ALT: 18,
+        DOM_VK_PAUSE: 19,
+        DOM_VK_CAPS_LOCK: 20,
+        DOM_VK_ESCAPE: 27,
+        DOM_VK_SPACE: 32,
+        DOM_VK_PAGE_UP: 33,
+        DOM_VK_PAGE_DOWN: 34,
+        DOM_VK_END: 35,
+        DOM_VK_HOME: 36,
+        DOM_VK_LEFT: 37,
+        DOM_VK_UP: 38,
+        DOM_VK_RIGHT: 39,
+        DOM_VK_DOWN: 40,
+        DOM_VK_PRINTSCREEN: 44,
+        DOM_VK_INSERT: 45,
+        DOM_VK_DELETE: 46,
+        DOM_VK_0: 48,
+        DOM_VK_1: 49,
+        DOM_VK_2: 50,
+        DOM_VK_3: 51,
+        DOM_VK_4: 52,
+        DOM_VK_5: 53,
+        DOM_VK_6: 54,
+        DOM_VK_7: 55,
+        DOM_VK_8: 56,
+        DOM_VK_9: 57,
+        DOM_VK_SEMICOLON: 59,
+        DOM_VK_EQUALS: 61,
+        DOM_VK_A: 65,
+        DOM_VK_B: 66,
+        DOM_VK_C: 67,
+        DOM_VK_D: 68,
+        DOM_VK_E: 69,
+        DOM_VK_F: 70,
+        DOM_VK_G: 71,
+        DOM_VK_H: 72,
+        DOM_VK_I: 73,
+        DOM_VK_J: 74,
+        DOM_VK_K: 75,
+        DOM_VK_L: 76,
+        DOM_VK_M: 77,
+        DOM_VK_N: 78,
+        DOM_VK_O: 79,
+        DOM_VK_P: 80,
+        DOM_VK_Q: 81,
+        DOM_VK_R: 82,
+        DOM_VK_S: 83,
+        DOM_VK_T: 84,
+        DOM_VK_U: 85,
+        DOM_VK_V: 86,
+        DOM_VK_W: 87,
+        DOM_VK_X: 88,
+        DOM_VK_Y: 89,
+        DOM_VK_Z: 90,
+        DOM_VK_COMMAND: 91,
+        DOM_VK_CONTEXT_MENU: 93,
+        DOM_VK_NUMPAD0: 96,
+        DOM_VK_NUMPAD1: 97,
+        DOM_VK_NUMPAD2: 98,
+        DOM_VK_NUMPAD3: 99,
+        DOM_VK_NUMPAD4: 100,
+        DOM_VK_NUMPAD5: 101,
+        DOM_VK_NUMPAD6: 102,
+        DOM_VK_NUMPAD7: 103,
+        DOM_VK_NUMPAD8: 104,
+        DOM_VK_NUMPAD9: 105,
+        DOM_VK_MULTIPLY: 106,
+        DOM_VK_ADD: 107,
+        DOM_VK_SEPARATOR: 108,
+        DOM_VK_SUBTRACT: 109,
+        DOM_VK_DECIMAL: 110,
+        DOM_VK_DIVIDE: 111,
+        DOM_VK_F1: 112,
+        DOM_VK_F2: 113,
+        DOM_VK_F3: 114,
+        DOM_VK_F4: 115,
+        DOM_VK_F5: 116,
+        DOM_VK_F6: 117,
+        DOM_VK_F7: 118,
+        DOM_VK_F8: 119,
+        DOM_VK_F9: 120,
+        DOM_VK_F10: 121,
+        DOM_VK_F11: 122,
+        DOM_VK_F12: 123,
+        DOM_VK_F13: 124,
+        DOM_VK_F14: 125,
+        DOM_VK_F15: 126,
+        DOM_VK_F16: 127,
+        DOM_VK_F17: 128,
+        DOM_VK_F18: 129,
+        DOM_VK_F19: 130,
+        DOM_VK_F20: 131,
+        DOM_VK_F21: 132,
+        DOM_VK_F22: 133,
+        DOM_VK_F23: 134,
+        DOM_VK_F24: 135,
+        DOM_VK_NUM_LOCK: 144,
+        DOM_VK_SCROLL_LOCK: 145,
+        DOM_VK_COMMA: 188,
+        DOM_VK_PERIOD: 190,
+        DOM_VK_SLASH: 191,
+        DOM_VK_BACK_QUOTE: 192,
+        DOM_VK_OPEN_BRACKET: 219,
+        DOM_VK_BACK_SLASH: 220,
+        DOM_VK_CLOSE_BRACKET: 221,
+        DOM_VK_QUOTE: 222,
+        DOM_VK_META: 224
+    };
 }
 /**
  * 공통 유틸리티 Javascript 클래스
@@ -10456,15 +10462,6 @@ OG.RectangleMarker = OG.marker.RectangleMarker;
  * @override
  */
 OG.marker.RectangleMarker.prototype.createMarker = function () {
-	//if (this.geom) {
-	//	return this.geom;
-	//}
-    //
-	//this.geom = new OG.geometry.Rectangle([0, 0], 100, 100);
-	//this.geom.style = new OG.geometry.Style({
-	//	'fill-opacity': 1
-	//});
-	//return this.geom;
 	var geom1, geom2, geomCollection = [];
 	if (this.geom) {
 		return this.geom;
@@ -10493,9 +10490,6 @@ OG.marker.RectangleMarker.prototype.createMarker = function () {
 	geomCollection.push(geom2);
 
 	this.geom = new OG.geometry.GeometryCollection(geomCollection);
-	this.geom.style = new OG.geometry.Style({
-		'label-position': 'bottom'
-	});
 
 	return this.geom;
 };
@@ -10697,7 +10691,7 @@ OG.pattern.HatchedPattern.prototype.createPattern = function () {
     return this.geom;
 };
 /**
- * Hatched Pattern
+ * Rect Pattern
  *
  * @class
  * @extends OG.pattern.IPattern
@@ -10740,159 +10734,184 @@ OG.pattern.RectPattern.prototype.createPattern = function () {
  * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
  */
 OG.shape.IShape = function () {
-	/**
-	 * Shape 유형(GEOM, TEXT, HTML, IMAGE, EDGE, GROUP)
-	 * @type String
-	 */
-	this.TYPE = null;
+    /**
+     * Shape 유형(GEOM, TEXT, HTML, IMAGE, EDGE, GROUP)
+     * @type String
+     */
+    this.TYPE = null;
 
-	/**
-	 * Shape 을 구분하는 Shape ID(Shape 클래스명과 일치)
-	 * @type String
-	 */
-	this.SHAPE_ID = null;
+    /**
+     * Shape 을 구분하는 Shape ID(Shape 클래스명과 일치)
+     * @type String
+     */
+    this.SHAPE_ID = null;
 
-	/**
-	 * Shape 모양을 나타내는 공간기하객체(Geometry)
-	 * @type OG.geometry.Geometry
-	 */
-	this.geom = null;
+    /**
+     * Shape 모양을 나타내는 공간기하객체(Geometry)
+     * @type OG.geometry.Geometry
+     */
+    this.geom = null;
 
-	/**
-	 * Shape 라벨 텍스트
-	 * @type String
-	 */
-	this.label = null;
+    /**
+     * Shape 라벨 텍스트
+     * @type String
+     */
+    this.label = null;
 
-	/**
-	 * Shape 의 Collapse 여부
-	 * @type Boolean
-	 */
-	this.isCollapsed = false;
+    /**
+     * Shape 의 Collapse 여부
+     * @type Boolean
+     */
+    this.isCollapsed = false;
 
 //	 이벤트 속성
-	/**
-	 * 선택 가능여부
-	 * @type Boolean
-	 */
-	this.SELECTABLE = true;
+    /**
+     * 선택 가능여부
+     * @type Boolean
+     */
+    this.SELECTABLE = true;
 
-	/**
-	 * 이동 가능여부
-	 * @type Boolean
-	 */
-	this.MOVABLE = true;
+    /**
+     * 이동 가능여부
+     * @type Boolean
+     */
+    this.MOVABLE = true;
 
-	/**
-	 * 리사이즈 가능여부
-	 * @type Boolean
-	 */
-	this.RESIZABLE = true;
+    /**
+     * 리사이즈 가능여부
+     * @type Boolean
+     */
+    this.RESIZABLE = true;
 
-	/**
-	 * 연결 가능여부
-	 * @type Boolean
-	 */
-	this.CONNECTABLE = true;
+    /**
+     * 연결 가능여부
+     * @type Boolean
+     */
+    this.CONNECTABLE = true;
 
-	/**
-	 * From 연결 가능여부 (From(Shape) => To)
-	 * @type Boolean
-	 */
-	this.ENABLE_FROM = true;
+    /**
+     * From 연결 가능여부 (From(Shape) => To)
+     * @type Boolean
+     */
+    this.ENABLE_FROM = true;
 
-	/**
-	 * To 연결 가능여부 (From => To(Shape))
-	 * @type Boolean
-	 */
-	this.ENABLE_TO = true;
+    /**
+     * To 연결 가능여부 (From => To(Shape))
+     * @type Boolean
+     */
+    this.ENABLE_TO = true;
 
-	/**
-	 * Self 연결 가능여부
-	 * @type Boolean
-	 */
-	this.SELF_CONNECTABLE = false;
+    /**
+     * Self 연결 가능여부
+     * @type Boolean
+     */
+    this.SELF_CONNECTABLE = false;
 
-	/**
-	 * 가이드에 자기자신을 복사하는 컨트롤러 여부.
-	 * @type Boolean
-	 */
-	this.CONNECT_CLONEABLE = true;
+    /**
+     * 가이드에 자기자신을 복사하는 컨트롤러 여부.
+     * @type Boolean
+     */
+    this.CONNECT_CLONEABLE = true;
 
-	/**
-	 * 드래그하여 연결시 연결대상 있는 경우에만 Edge 드로잉 처리 여부
-	 * @type Boolean
-	 */
-	this.CONNECT_REQUIRED = true;
+    /**
+     * 드래그하여 연결시 연결대상 있는 경우에만 Edge 드로잉 처리 여부
+     * @type Boolean
+     */
+    this.CONNECT_REQUIRED = true;
 
-	/**
-	 * 드래그하여 연결시 그룹을 건너뛸때 스타일 변경 여부
-	 * @type Boolean
-	 */
-	this.CONNECT_STYLE_CHANGE = true;
+    /**
+     * 드래그하여 연결시 그룹을 건너뛸때 스타일 변경 여부
+     * @type Boolean
+     */
+    this.CONNECT_STYLE_CHANGE = true;
 
-	/**
-	 * 가이드에 삭제 컨트롤러 여부
-	 * @type Boolean
-	 */
-	this.DELETABLE = true;
+    /**
+     * 가이드에 삭제 컨트롤러 여부
+     * @type Boolean
+     */
+    this.DELETABLE = true;
 
-	/**
-	 * 라벨 수정여부
-	 * @type Boolean
-	 */
-	this.LABEL_EDITABLE = true;
+    /**
+     * 라벨 수정여부
+     * @type Boolean
+     */
+    this.LABEL_EDITABLE = true;
 
 
-	this.exceptionType = '';
+    this.exceptionType = '';
 
-	/**
-	 * 도형의 데이터
-	 * @type Object
-	 */
-	this.data = null;
+    /**
+     * 도형의 데이터
+     * @type Object
+     */
+    this.data = null;
 
-	/**
-	 * 도형 선연결시 선연결 컨트롤러 목록
-	 * @type {Array}
-	 */
-	this.textList = [];
+    /**
+     * 도형 선연결시 선연결 컨트롤러 목록
+     * @type {Array}
+     */
+    this.textList = [];
+
+    /**
+     * 기본 컨텍스트 메뉴 정보
+     * @type {Object} json
+     */
+    this.contextMenu = null;
+
+    /**
+     * 사용자 지정 컨텍스트메뉴
+     * @type {Object} json
+     */
+    this.customContextMenu = null;
+
+    /**
+     * shape 이 적용된 Dom Element
+     * @type {Element} Dom Element
+     */
+    this.currentElement = null;
+
+    /**
+     * shape 이 적용된 Canvas
+     * @type {OG.Canvas} canvas
+     */
+    this.currentCanvas = null;
+
 };
 OG.shape.IShape.prototype = {
 
-	/**
-	 * 드로잉할 Shape 를 생성하여 반환한다.
-	 *
-	 * @return {*} Shape 정보
-	 * @abstract
-	 */
-	createShape: function () {
-		throw new OG.NotImplementedException("OG.shape.IShape.createShape");
-	},
+    /**
+     * 드로잉할 Shape 를 생성하여 반환한다.
+     *
+     * @return {*} Shape 정보
+     * @abstract
+     */
+    createShape: function () {
+        throw new OG.NotImplementedException("OG.shape.IShape.createShape");
+    },
 
-	/**
-	 * Shape 을 복사하여 새로인 인스턴스로 반환한다.
-	 *
-	 * @return {OG.shape.IShape} 복사된 인스턴스
-	 * @abstract
-	 */
-	clone: function () {
-		throw new OG.NotImplementedException("OG.shape.IShape.clone");
-	},
-	addEve : function(){
-	},
+    /**
+     * Shape 을 복사하여 새로인 인스턴스로 반환한다.
+     *
+     * @return {OG.shape.IShape} 복사된 인스턴스
+     * @abstract
+     */
+    clone: function () {
+        throw new OG.NotImplementedException("OG.shape.IShape.clone");
+    },
+    addEve: function () {
+    },
 
-	// (void) 특수한 컨트롤을 생성하기 위한 함수
-	drawCustomControl: function(){
-	},
+    // (void) 특수한 컨트롤을 생성하기 위한 함수
+    drawCustomControl: function () {
+    },
 
-	setData: function(data){
-		this.data = data;
-	},
+    setData: function (data) {
+        this.data = data;
+    },
 
-	getData: function(){
-		return this.data;
-	}
+    getData: function () {
+        return this.data;
+    }
 };
 OG.shape.IShape.prototype.constructor = OG.shape.IShape;
 OG.IShape = OG.shape.IShape;
@@ -10925,6 +10944,7 @@ OG.GeomShape = OG.shape.GeomShape;
 OG.shape.GeomShape.prototype.clone = function () {
 	var shape = eval('new ' + this.SHAPE_ID + '()');
 	shape.label = this.label;
+	shape.setData(JSON.parse(JSON.stringify(this.getData())));
 
 	return shape;
 };
@@ -10982,7 +11002,7 @@ OG.shape.TextShape.prototype.clone = function () {
 	var shape = eval('new ' + this.SHAPE_ID + '()');
 	shape.text = this.text;
 	shape.angle = this.angle;
-
+	shape.setData(JSON.parse(JSON.stringify(this.getData())));
 	return shape;
 };
 /**
@@ -11042,7 +11062,7 @@ OG.shape.ImageShape.prototype.clone = function () {
 	shape.image = this.image;
 	shape.label = this.label;
 	shape.angle = this.angle;
-
+	shape.setData(JSON.parse(JSON.stringify(this.getData())));
 	return shape;
 };
 /**
@@ -11108,7 +11128,7 @@ OG.shape.EdgeShape.prototype.createShape = function () {
 		return this.geom;
 	}
 
-	this.geom = new OG.Line(this.from, this.to);
+	this.geom = new OG.PolyLine([this.from || [0, 0], this.to || [70, 0]]);
 	return this.geom;
 };
 
@@ -11125,6 +11145,7 @@ OG.shape.EdgeShape.prototype.clone = function () {
 	shape.label = this.label;
 	shape.fromLabel = this.fromLabel;
 	shape.toLabel = this.toLabel;
+	shape.setData(JSON.parse(JSON.stringify(this.getData())));
 
 	return shape;
 };
@@ -11318,6 +11339,7 @@ OG.shape.GroupShape.prototype.createShape = function () {
 OG.shape.GroupShape.prototype.clone = function () {
 	var shape = eval('new ' + this.SHAPE_ID + '()');
 	shape.label = this.label;
+	shape.setData(JSON.parse(JSON.stringify(this.getData())));
 
 	return shape;
 };
@@ -11412,6 +11434,35 @@ OG.shape.HorizontalPoolShape.prototype.createShape = function () {
 
     return this.geom;
 };
+
+OG.shape.HorizontalPoolShape.prototype.createSubShape = function () {
+    this.sub = [];
+
+    var loopShape;
+    switch (this.LoopType) {
+        case 'Standard' :
+            loopShape = new OG.ImageShape('resources/images/symbol/loop_standard.png');
+            break;
+        case 'MIParallel' :
+            loopShape = new OG.MIParallel();
+            break;
+        case 'MISequential' :
+            loopShape = new OG.MISequential();
+            break;
+    }
+    if (loopShape) {
+        this.sub.push({
+            shape: loopShape,
+            width: '15px',
+            height: '15px',
+            bottom: '5px',
+            align: 'center',
+            style: {}
+        })
+    }
+
+    return this.sub;
+};
 /**
  * ForeignObject HTML Shape
  *
@@ -11469,6 +11520,7 @@ OG.shape.HtmlShape.prototype.clone = function () {
 	shape.html = this.html;
 	shape.label = this.label;
 	shape.angle = this.angle;
+	shape.setData(JSON.parse(JSON.stringify(this.getData())));
 
 	return shape;
 };
@@ -11735,11 +11787,11 @@ OG.shape.VerticalPoolShape.prototype.createShape = function () {
 OG.shape.bpmn.A_Task = function (label) {
     OG.shape.bpmn.A_Task.superclass.call(this);
 
+    this.GROUP_DROPABLE = false;
     this.SHAPE_ID = 'OG.shape.bpmn.A_Task';
     this.label = label;
     this.CONNECTABLE = true;
     this.GROUP_COLLAPSIBLE = false;
-    //this.HaveButton = true;
     this.LoopType = "None";
     this.TaskType = "None";
     this.status = "None";
@@ -11844,7 +11896,183 @@ OG.shape.bpmn.A_Task.prototype.createSubShape = function () {
         })
     }
 
+    var statusShape, statusAnimation;
+    switch (this.status) {
+        case "Completed":
+            statusShape = new OG.ImageShape("resources/images/symbol/complete.png");
+            break;
+        case "Running":
+            statusShape = new OG.ImageShape('resources/images/symbol/running.png');
+            statusAnimation = new OG.RectangleShape();
+            break;
+    }
+    if (statusShape) {
+        this.sub.push({
+            shape: statusShape,
+            width: '20px',
+            height: '20px',
+            right: '25px',
+            top: '5px',
+            style: {}
+        })
+    }
+    if (statusAnimation) {
+        this.sub.push({
+            shape: statusAnimation,
+            'z-index': -1,
+            width: '120%',
+            height: '120%',
+            left: '-10%',
+            top: '-10%',
+            style: {
+                'fill-opacity': 1,
+                animation: [
+                    {
+                        start: {
+                            fill: 'white'
+                        },
+                        to: {
+                            fill: '#C9E2FC'
+                        },
+                        ms: 1000
+                    },
+                    {
+                        start: {
+                            fill: '#C9E2FC'
+                        },
+                        to: {
+                            fill: 'white'
+                        },
+                        ms: 1000,
+                        delay: 1000
+                    }
+                ],
+                'animation-repeat': true,
+                "fill": "#C9E2FC",
+                "stroke-width": "0.2",
+                "r": "10",
+                'stroke-dasharray': '--'
+            }
+        })
+    }
+
     return this.sub;
+};
+
+OG.shape.bpmn.A_Task.prototype.createContextMenu = function () {
+    var me = this;
+    this.contextMenu = {
+        'delete': true,
+        'copy': true,
+        'format': true,
+        'text': true,
+        'bringToFront': true,
+        'sendToBack': true,
+        'changeshape': {
+            name: '변경',
+            items: {
+                'A_Task': {
+                    name: '추상',
+                    type: 'radio',
+                    radio: 'changeshape',
+                    value: 'OG.shape.bpmn.A_Task',
+                    events: {
+                        change: function (e) {
+                            me.currentCanvas.getEventHandler().changeShape(e.target.value);
+                        }
+                    }
+                },
+                'A_HumanTask': {
+                    name: '사용자',
+                    type: 'radio',
+                    radio: 'changeshape',
+                    value: 'OG.shape.bpmn.A_HumanTask',
+                    events: {
+                        change: function (e) {
+                            me.currentCanvas.getEventHandler().changeShape(e.target.value);
+                        }
+                    }
+                },
+                'A_WebServiceTask': {
+                    name: '서비스',
+                    type: 'radio',
+                    radio: 'changeshape',
+                    value: 'OG.shape.bpmn.A_WebServiceTask',
+                    events: {
+                        change: function (e) {
+                            me.currentCanvas.getEventHandler().changeShape(e.target.value);
+                        }
+                    }
+                },
+                'A_ManualTask': {
+                    name: '수동',
+                    type: 'radio',
+                    radio: 'changeshape',
+                    value: "OG.shape.bpmn.A_ManualTask",
+                    events: {
+                        change: function (e) {
+                            me.currentCanvas.getEventHandler().changeShape(e.target.value);
+                        }
+                    }
+                }
+            }
+        },
+        'addEvent': {
+            name: '이벤트 추가',
+            items: {
+                'Message': {
+                    name: '메시지',
+                    type: 'radio',
+                    radio: 'addEvent',
+                    value: 'Message',
+                    events: {
+                        change: function (e) {
+                            me.currentCanvas.getEventHandler().setAddEventSelectedShape(e.target.value);
+                        }
+                    }
+                },
+                'Timer': {
+                    name: '타이머',
+                    type: 'radio',
+                    radio: 'addEvent',
+                    value: 'Timer',
+                    events: {
+                        change: function (e) {
+                            me.currentCanvas.getEventHandler().setAddEventSelectedShape(e.target.value);
+                        }
+                    }
+                },
+                'Error': {
+                    name: '에러',
+                    type: 'radio',
+                    radio: 'addEvent',
+                    value: 'Error',
+                    events: {
+                        change: function (e) {
+                            me.currentCanvas.getEventHandler().setAddEventSelectedShape(e.target.value);
+                        }
+                    }
+                },
+                'Conditional': {
+                    name: '조건부',
+                    type: 'radio',
+                    radio: 'addEvent',
+                    value: "Conditional",
+                    events: {
+                        change: function (e) {
+                            me.currentCanvas.getEventHandler().setAddEventSelectedShape(e.target.value);
+                        }
+                    }
+                }
+            }
+        },
+        'property': {
+            name: '속성', callback: function () {
+                me.currentCanvas.getEventHandler().showProperty();
+            }
+        }
+    };
+    return this.contextMenu;
 };
 OG.shape.bpmn.Event = function (label) {
     OG.shape.bpmn.Event.superclass.call(this);
@@ -11856,6 +12084,172 @@ OG.shape.bpmn.Event.prototype = new OG.shape.GeomShape();
 OG.shape.bpmn.Event.superclass = OG.shape.GeomShape;
 OG.shape.bpmn.Event.prototype.constructor = OG.shape.bpmn.Event;
 OG.Event = OG.shape.bpmn.Event;
+
+OG.shape.bpmn.Event.prototype.createContextMenu = function () {
+    var me = this;
+    this.contextMenu = {
+        'delete': true,
+        'copy': true,
+        'format': true,
+        'text': true,
+        'bringToFront': true,
+        'sendToBack': true,
+
+        'change': {
+            name: '변경',
+            items: {
+                'start': {
+                    name: '시작',
+                    items: {
+                        'start': {
+                            name: '시작',
+                            type: 'radio',
+                            radio: 'start',
+                            value: 'OG.shape.bpmn.E_Start',
+                            events: {
+                                change: function (e) {
+                                    me.currentCanvas.getEventHandler().changeShape(e.target.value);
+                                }
+                            }
+                        },
+                        'start_message': {
+                            name: '메시지 시작',
+                            type: 'radio',
+                            radio: 'start',
+                            value: 'OG.shape.bpmn.E_Start_Message',
+                            events: {
+                                change: function (e) {
+                                    me.currentCanvas.getEventHandler().changeShape(e.target.value);
+                                }
+                            }
+                        },
+                        'start_timer': {
+                            name: '타이머 시작',
+                            type: 'radio',
+                            radio: 'start',
+                            value: 'OG.shape.bpmn.E_Start_Timer',
+                            events: {
+                                change: function (e) {
+                                    me.currentCanvas.getEventHandler().changeShape(e.target.value);
+                                }
+                            }
+                        },
+                        'start_conditional': {
+                            name: '조건부 시작',
+                            type: 'radio',
+                            radio: 'start',
+                            value: 'OG.shape.bpmn.E_Start_Rule',
+                            events: {
+                                change: function (e) {
+                                    me.currentCanvas.getEventHandler().changeShape(e.target.value);
+                                }
+                            }
+                        }
+                    }
+                },
+                'intermediate': {
+                    name: '중간',
+                    items: {
+                        'intermediate': {
+                            name: '중간',
+                            type: 'radio',
+                            radio: 'intermediate',
+                            value: 'OG.shape.bpmn.E_Intermediate',
+                            events: {
+                                change: function (e) {
+                                    me.currentCanvas.getEventHandler().changeShape(e.target.value);
+                                }
+                            }
+                        },
+                        'intermediate_openMessage': {
+                            name: '열린 메시지 중간',
+                            type: 'radio',
+                            radio: 'intermediate',
+                            value: 'OG.shape.bpmn.E_Intermediate_Message',
+                            events: {
+                                change: function (e) {
+                                    me.currentCanvas.getEventHandler().changeShape(e.target.value);
+                                }
+                            }
+                        },
+                        'intermediate_closeMessage': {
+                            name: '닫힌 메시지 중간',
+                            type: 'radio',
+                            radio: 'intermediate',
+                            value: 'OG.shape.bpmn.E_Intermediate_MessageFill',
+                            events: {
+                                change: function (e) {
+                                    me.currentCanvas.getEventHandler().changeShape(e.target.value);
+                                }
+                            }
+                        },
+                        'intermediate_timer': {
+                            name: '타이머 중간',
+                            type: 'radio',
+                            radio: 'intermediate',
+                            value: 'OG.shape.bpmn.E_Intermediate_Timer',
+                            events: {
+                                change: function (e) {
+                                    me.currentCanvas.getEventHandler().changeShape(e.target.value);
+                                }
+                            }
+                        },
+                        'intermediate_conditional': {
+                            name: '조건부 중간',
+                            type: 'radio',
+                            radio: 'intermediate',
+                            value: 'OG.shape.bpmn.E_Intermediate_Rule',
+                            events: {
+                                change: function (e) {
+                                    me.currentCanvas.getEventHandler().changeShape(e.target.value);
+                                }
+                            }
+                        }
+                    }
+                },
+                'end': {
+                    name: '종료',
+                    items: {
+                        'end': {
+                            name: '종료',
+                            type: 'radio',
+                            radio: 'end',
+                            value: 'OG.shape.bpmn.E_End',
+                            events: {
+                                change: function (e) {
+                                    me.changeShape(e.target.value);
+                                }
+                            }
+                        },
+                        'end_message': {
+                            name: '메시지 종료',
+                            type: 'radio',
+                            radio: 'end',
+                            value: 'OG.shape.bpmn.E_End_Message',
+                            events: {
+                                change: function (e) {
+                                    me.changeShape(e.target.value);
+                                }
+                            }
+                        },
+                        'end_process': {
+                            name: '프로세스 종료',
+                            type: 'radio',
+                            radio: 'end',
+                            value: 'OG.shape.bpmn.E_Terminate',
+                            events: {
+                                change: function (e) {
+                                    me.changeShape(e.target.value);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    };
+    return this.contextMenu;
+};
 /**
  * BPMN : End Event Shape
  *
@@ -11898,6 +12292,23 @@ OG.shape.bpmn.E_End.prototype.createShape = function () {
     });
 
     return this.geom;
+};
+
+OG.shape.bpmn.E_End.prototype.createSubShape = function () {
+    this.sub = [];
+
+    if (this.inclusion) {
+        this.sub.push({
+            shape: new OG.ImageShape('resources/images/symbol/complete.png'),
+            width: '20px',
+            height: '20px',
+            right: '0px',
+            bottom: '20px',
+            style: {}
+        })
+    }
+
+    return this.sub;
 };
 /**
  * BPMN : Intermediate Event Shape
@@ -11987,6 +12398,23 @@ OG.shape.bpmn.E_Start.prototype.createShape = function () {
 
 	return this.geom;
 };
+
+OG.shape.bpmn.E_Start.prototype.createSubShape = function () {
+	this.sub = [];
+
+	if (this.inclusion) {
+		this.sub.push({
+			shape: new OG.ImageShape('resources/images/symbol/complete.png'),
+			width: '20px',
+			height: '20px',
+			right: '0px',
+			bottom: '20px',
+			style: {}
+		})
+	}
+
+	return this.sub;
+};
 /**
  * BPMN : Gateway Shape
  *
@@ -12030,6 +12458,57 @@ OG.shape.bpmn.G_Gateway.prototype.createShape = function () {
 
 	return this.geom;
 };
+
+OG.shape.bpmn.G_Gateway.prototype.createContextMenu = function(){
+	var me = this;
+	this.contextMenu = {
+		'delete': true,
+		'copy': true,
+		'format': true,
+		'text': true,
+		'bringToFront': true,
+		'sendToBack': true,
+		'changegateway': {
+			name: '변경',
+			items: {
+				'G_Gateway': {
+					name: '베타적',
+					type: 'radio',
+					radio: 'changegateway',
+					value: 'OG.shape.bpmn.G_Gateway',
+					events: {
+						change: function (e) {
+							me.currentCanvas.getEventHandler().changeShape(e.target.value);
+						}
+					}
+				},
+				'G_Parallel': {
+					name: '병렬',
+					type: 'radio',
+					radio: 'changegateway',
+					value: 'OG.shape.bpmn.G_Parallel',
+					events: {
+						change: function (e) {
+							me.currentCanvas.getEventHandler().changeShape(e.target.value);
+						}
+					}
+				},
+				'G_Inclusive': {
+					name: '포괄적',
+					type: 'radio',
+					radio: 'changegateway',
+					value: 'OG.shape.bpmn.G_Inclusive',
+					events: {
+						change: function (e) {
+							me.currentCanvas.getEventHandler().changeShape(e.target.value);
+						}
+					}
+				}
+			}
+		}
+	};
+	return this.contextMenu;
+};
 /**
  * BPMN : Human Task Shape
  *
@@ -12052,7 +12531,7 @@ OG.shape.bpmn.A_HumanTask = function (label) {
     this.GROUP_COLLAPSIBLE = false;
     this.LoopType = "None";
     this.TaskType = "User";
-    this.status = "Running";
+    this.status = "None";
 }
 OG.shape.bpmn.A_HumanTask.prototype = new OG.shape.bpmn.A_Task();
 OG.shape.bpmn.A_HumanTask.superclass = OG.shape.bpmn.A_Task;
@@ -12218,6 +12697,117 @@ OG.shape.bpmn.A_Subprocess.prototype.createShape = function () {
     });
 
     return this.geom;
+};
+
+OG.shape.bpmn.A_Subprocess.prototype.createSubShape = function () {
+    this.sub = [];
+
+    var statusShape, statusAnimation;
+    switch (this.status) {
+        case "Completed":
+            statusShape = new OG.ImageShape("resources/images/symbol/complete.png");
+            break;
+        case "Running":
+            statusShape = new OG.ImageShape('resources/images/symbol/running.png');
+            statusAnimation = new OG.RectangleShape();
+            break;
+    }
+    if (statusShape) {
+        this.sub.push({
+            shape: statusShape,
+            width: '20px',
+            height: '20px',
+            right: '25px',
+            top: '5px',
+            style: {}
+        })
+    }
+    if (statusAnimation) {
+        this.sub.push({
+            shape: statusAnimation,
+            'z-index': -1,
+            width: '120%',
+            height: '120%',
+            left: '-10%',
+            top: '-10%',
+            style: {
+                'fill-opacity': 1,
+                animation: [
+                    {
+                        start: {
+                            fill: 'white'
+                        },
+                        to: {
+                            fill: '#C9E2FC'
+                        },
+                        ms: 1000
+                    },
+                    {
+                        start: {
+                            fill: '#C9E2FC'
+                        },
+                        to: {
+                            fill: 'white'
+                        },
+                        ms: 1000,
+                        delay: 1000
+                    }
+                ],
+                'animation-repeat': true,
+                "fill": "#C9E2FC",
+                "stroke-width": "0.2",
+                "r": "10",
+                'stroke-dasharray': '--'
+            }
+        })
+    }
+
+    if (this.inclusion) {
+        this.sub.push({
+            shape: new OG.ImageShape('resources/images/symbol/complete.png'),
+            width: '20px',
+            height: '20px',
+            right: '0px',
+            bottom: '20px',
+            style: {}
+        })
+    }
+
+    if (this.HaveButton) {
+        this.sub.push({
+            shape: new OG.ImageShape('resources/images/symbol/subprocess.png'),
+            width: '20px',
+            height: '20px',
+            align: 'center',
+            bottom: '5px',
+            style: {
+                "stroke-width": 1,
+                fill: "white",
+                "fill-opacity": 0,
+                "shape-rendering": "crispEdges"
+            }
+        })
+    }
+
+    return this.sub;
+};
+
+OG.shape.bpmn.A_Subprocess.prototype.createContextMenu = function () {
+    var me = this;
+    this.contextMenu = {
+        'delete': true,
+        'copy': true,
+        'format': true,
+        'text': true,
+        'bringToFront': true,
+        'sendToBack': true,
+        'property': {
+            name: '속성', callback: function () {
+                me.currentCanvas.getEventHandler().showProperty();
+            }
+        }
+    };
+    return this.contextMenu;
 };
 /**
  * BPMN : WebService(Invokation) Task Shape
@@ -14474,9 +15064,9 @@ OG.shape.bpmn.M_Text = function (label) {
 
 	this.SHAPE_ID = 'OG.shape.bpmn.M_Text';
 	this.label = label || 'Text';
-	this.SELECTABLE = false;
-	this.CONNECTABLE = false;
-	this.MOVABLE = false;
+	//this.SELECTABLE = false;
+	//this.CONNECTABLE = false;
+	//this.MOVABLE = false;
 };
 OG.shape.bpmn.M_Text.prototype = new OG.shape.GeomShape();
 OG.shape.bpmn.M_Text.superclass = OG.shape.GeomShape;
@@ -14682,6 +15272,57 @@ OG.shape.bpmn.Value_Chain.prototype.createShape = function () {
 
     return this.geom;
 };
+
+OG.shape.bpmn.Value_Chain.prototype.createSubShape = function () {
+    this.sub = [];
+
+    if (this.inclusion) {
+        this.sub.push({
+            shape: new OG.ImageShape('resources/images/symbol/complete.png'),
+            width: '20px',
+            height: '20px',
+            right: '0px',
+            bottom: '20px',
+            style: {}
+        })
+    }
+
+    if (this.HaveButton) {
+        this.sub.push({
+            shape: new OG.ImageShape('resources/images/symbol/subprocess.png'),
+            width: '20px',
+            height: '20px',
+            align: 'center',
+            bottom: '5px',
+            style: {
+                "stroke-width": 1,
+                fill: "white",
+                "fill-opacity": 0,
+                "shape-rendering": "crispEdges"
+            }
+        })
+    }
+
+    return this.sub;
+};
+
+OG.shape.bpmn.Value_Chain.prototype.createContextMenu = function () {
+    var me = this;
+    this.contextMenu = {
+        'delete': true,
+        'copy': true,
+        'format': true,
+        'text': true,
+        'bringToFront': true,
+        'sendToBack': true,
+        'property': {
+            name: '속성', callback: function () {
+                me.currentCanvas.getEventHandler().showProperty();
+            }
+        }
+    };
+    return this.contextMenu;
+};
 OG.shape.bpmn.Value_Chain_Module = function (label) {
     OG.shape.bpmn.Value_Chain_Module.superclass.call(this);
 
@@ -14724,6 +15365,1588 @@ OG.shape.bpmn.Value_Chain_Module.prototype.createShape = function () {
 
     return this.geom;
 };
+
+OG.shape.bpmn.Value_Chain.prototype.createSubShape = function () {
+    this.sub = [];
+
+    if (this.inclusion) {
+        this.sub.push({
+            shape: new OG.ImageShape('resources/images/symbol/complete.png'),
+            width: '20px',
+            height: '20px',
+            right: '0px',
+            bottom: '20px',
+            style: {}
+        })
+    }
+
+    if (this.HaveButton) {
+        this.sub.push({
+            shape: new OG.ImageShape('resources/images/symbol/subprocess.png'),
+            width: '20px',
+            height: '20px',
+            align: 'center',
+            bottom: '5px',
+            style: {
+                "stroke-width": 1,
+                fill: "white",
+                "fill-opacity": 0,
+                "shape-rendering": "crispEdges"
+            }
+        })
+    }
+
+    return this.sub;
+};
+/**
+ * ELECTRONIC : Wire Shape
+ *
+ * @class
+ * @extends OG.shape.WireShape
+ * @requires OG.common.*
+ * @requires OG.geometry.*
+ *
+ * @param {Number[]} from 와이어 시작 좌표
+ * @param {Number[]} to 와이어 끝 좌표
+ * @param {String} label 라벨 [Optional]
+ * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
+ */
+OG.shape.elec.WireShape = function (from, to, label) {
+    OG.shape.elec.WireShape.superclass.call(this, from, to, label);
+
+    this.SHAPE_ID = 'OG.shape.elec.WireShape';
+};
+OG.shape.elec.WireShape.prototype = new OG.shape.EdgeShape();
+OG.shape.elec.WireShape.superclass = OG.shape.EdgeShape;
+OG.shape.elec.WireShape.prototype.constructor = OG.shape.elec.WireShape;
+OG.WireShape = OG.shape.elec.WireShape;
+
+OG.shape.elec.WireShape.prototype.createContextMenu = function () {
+    var me = this;
+    this.contextMenu = {
+        'delete': true,
+        'format': true,
+        'text': true,
+        'bringToFront': true,
+        'sendToBack': true,
+        'property': {
+            name: '정보보기', callback: function () {
+                $(me.currentCanvas.getRootElement()).trigger('showProperty', [me.currentElement]);
+            }
+        },
+        'changeShape': {
+            name: '변경',
+            items: {
+                'Wire': {
+                    name: 'Cable',
+                    type: 'radio',
+                    radio: 'changeShape',
+                    value: 'OG.shape.elec.CableShape',
+                    events: {
+                        change: function (e) {
+                            me.currentCanvas.getEventHandler().changeShape(e.target.value, null);
+                        }
+                    }
+                },
+                'IPB': {
+                    name: 'IPB',
+                    type: 'radio',
+                    radio: 'changeShape',
+                    value: 'OG.shape.elec.BusductShape',
+                    events: {
+                        change: function (e) {
+                            me.currentCanvas.getEventHandler().changeShape(e.target.value, 'IPB');
+                        }
+                    }
+                },
+                'SPB': {
+                    name: 'SPB',
+                    type: 'radio',
+                    radio: 'changeShape',
+                    value: 'OG.shape.elec.BusductShape',
+                    events: {
+                        change: function (e) {
+                            me.currentCanvas.getEventHandler().changeShape(e.target.value, 'SPB');
+                        }
+                    }
+                },
+                'NSPB': {
+                    name: 'NSPB',
+                    type: 'radio',
+                    radio: 'changeShape',
+                    value: 'OG.shape.elec.BusductShape',
+                    events: {
+                        change: function (e) {
+                            me.currentCanvas.getEventHandler().changeShape(e.target.value, 'NSPB');
+                        }
+                    }
+                },
+                'CRB': {
+                    name: 'CRB',
+                    type: 'radio',
+                    radio: 'changeShape',
+                    value: 'OG.shape.elec.BusductShape',
+                    events: {
+                        change: function (e) {
+                            me.currentCanvas.getEventHandler().changeShape(e.target.value, 'CRB');
+                        }
+                    }
+                }
+            }
+        }
+    };
+    return this.contextMenu;
+};
+
+OG.shape.elec.Load = function (label) {
+    OG.shape.elec.Load.superclass.call(this);
+
+    this.SHAPE_ID = 'OG.shape.elec.Load';
+    this.label = label;
+};
+OG.shape.elec.Load.prototype = new OG.shape.GeomShape();
+OG.shape.elec.Load.superclass = OG.shape.GeomShape;
+OG.shape.elec.Load.prototype.constructor = OG.shape.elec.Load;
+OG.Load = OG.shape.elec.Load;
+
+OG.shape.elec.Load.prototype.createContextMenu = function () {
+    var me = this;
+    this.contextMenu = {
+        'delete': true,
+        'format': true,
+        'text': true,
+        'bringToFront': true,
+        'sendToBack': true,
+        'property': {
+            name: '정보보기', callback: function () {
+                $(me.currentCanvas.getRootElement()).trigger('showProperty', [me.currentElement]);
+            }
+        }
+    };
+    return this.contextMenu;
+};
+OG.shape.elec.BLDG = function (label) {
+    OG.shape.elec.BLDG.superclass.call(this);
+
+    this.SHAPE_ID = 'OG.shape.elec.BLDG';
+    this.label = label;
+    this.CONNECT_CLONEABLE = false;
+    this.LABEL_EDITABLE = false;
+    this.CONNECTABLE = false;
+};
+OG.shape.elec.BLDG.prototype = new OG.shape.HorizontalPoolShape();
+OG.shape.elec.BLDG.superclass = OG.shape.HorizontalPoolShape;
+OG.shape.elec.BLDG.prototype.constructor = OG.shape.elec.BLDG;
+OG.BLDG = OG.shape.elec.BLDG;
+OG.shape.elec.BLDG.prototype.createShape = function () {
+    if (this.geom) {
+        return this.geom;
+    }
+
+    this.geom = new OG.geometry.Rectangle([0, 0], 100, 100);
+    this.geom.style = new OG.geometry.Style({
+        'label-direction': 'horizontal',
+        'vertical-align' : 'top',
+        'fill': '#ffffff',
+        'fill-opacity': 0,
+        'title-size' : 26,
+        'label-fill': '#428bca',
+        'label-fill-opacity': 1,
+        'font-weight': 700,
+        'font-color' : 'white'
+    });
+
+    return this.geom;
+};
+
+
+OG.shape.elec.BLDG.prototype.createContextMenu = function () {
+    var me = this;
+    this.contextMenu = {
+        'delete': true,
+        'format': true,
+        'text': true,
+        'bringToFront': true,
+        'sendToBack': true,
+        'property': {
+            name: '정보보기', callback: function () {
+                $(me.currentCanvas.getRootElement()).trigger('showProperty', [me.currentElement]);
+            }
+        }
+    };
+    return this.contextMenu;
+};
+
+/**
+ * ELECTRONIC : Busduct Shape
+ *
+ * @class
+ * @extends OG.shape.BusductShape
+ * @requires OG.common.*
+ * @requires OG.geometry.*
+ *
+ * @param {Number[]} from 와이어 시작 좌표
+ * @param {Number[]} to 와이어 끝 좌표
+ * @param {String} label 라벨 [Optional]
+ * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
+ */
+OG.shape.elec.BusductShape = function (from, to, label) {
+    OG.shape.elec.BusductShape.superclass.call(this, from, to, label);
+
+    this.SHAPE_ID = 'OG.shape.elec.BusductShape';
+};
+OG.shape.elec.BusductShape.prototype = new OG.shape.elec.WireShape();
+OG.shape.elec.BusductShape.superclass = OG.shape.elec.WireShape;
+OG.shape.elec.BusductShape.prototype.constructor = OG.shape.elec.BusductShape;
+OG.BusductShape = OG.shape.elec.BusductShape;
+
+/**
+ * 드로잉할 Shape 을 생성하여 반환한다.
+ *
+ * @return {OG.geometry.Geometry} Shape 정보
+ * @override
+ */
+OG.shape.elec.BusductShape.prototype.createShape = function () {
+    if (this.geom) {
+        return this.geom;
+    }
+
+    this.geom = new OG.PolyLine([this.from || [0, 0], this.to || [70, 0]]);
+    this.geom.style = new OG.geometry.Style({
+        'multi': [
+            {
+                top: -10,
+                from: '20px',
+                to: 'end-20px',
+                style: {
+                    'marker': {
+                        'start': {
+                            'id': 'OG.marker.SwitchRMarker',
+                            'size': [8, 8],
+                            'ref': [8, 0]
+                        },
+                        'end': {
+                            'id': 'OG.marker.SwitchLMarker',
+                            'size': [8, 8],
+                            'ref': [1, 0]
+                        }
+                    }
+                }
+            },
+            {
+                top: 10,
+                from: '20px',
+                to: 'end-20px',
+                style: {
+                    'marker': {
+                        'start': {
+                            'id': 'OG.marker.SwitchLMarker',
+                            'size': [8, 8],
+                            'ref': [7, 8]
+                        },
+                        'end': {
+                            'id': 'OG.marker.SwitchRMarker',
+                            'size': [8, 8],
+                            'ref': [0, 8]
+                        }
+                    }
+                }
+            },
+            {
+                top: 0,
+                from: 'start',
+                to: 'end',
+                style: {}
+            }
+        ]
+    });
+    return this.geom;
+};
+
+/**
+ * ELECTRONIC : CableShape
+ *
+ * @class
+ * @extends OG.shape.CableShape
+ * @requires OG.common.*
+ * @requires OG.geometry.*
+ *
+ * @param {Number[]} from 와이어 시작 좌표
+ * @param {Number[]} to 와이어 끝 좌표
+ * @param {String} label 라벨 [Optional]
+ * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
+ */
+OG.shape.elec.CableShape = function (from, to, label) {
+    OG.shape.elec.CableShape.superclass.call(this, from, to, label);
+
+    this.SHAPE_ID = 'OG.shape.elec.CableShape';
+};
+OG.shape.elec.CableShape.prototype = new OG.shape.elec.WireShape();
+OG.shape.elec.CableShape.superclass = OG.shape.elec.WireShape;
+OG.shape.elec.CableShape.prototype.constructor = OG.shape.elec.CableShape;
+OG.CableShape = OG.shape.elec.CableShape;
+
+/**
+ * 드로잉할 Shape 을 생성하여 반환한다.
+ *
+ * @return {OG.geometry.Geometry} Shape 정보
+ * @override
+ */
+OG.shape.elec.CableShape.prototype.createShape = function () {
+    if (this.geom) {
+        return this.geom;
+    }
+
+    this.geom = new OG.PolyLine([this.from || [0, 0], this.to || [70, 0]]);
+    this.geom.style = new OG.geometry.Style({
+        'multi': [
+            {
+                top: 0,
+                from: 'start',
+                to: 'center',
+                style: {
+                    'marker': {
+                        'end': {
+                            'id': 'OG.marker.SwitchLMarker',
+                            'size': [20, 8],
+                            'ref': [3, 0]
+                        }
+                    }
+                }
+            },
+            {
+                top: 0,
+                from: 'center',
+                to: 'end',
+                style: {
+                    'marker': {
+                        'start': {
+                            'id': 'OG.marker.SwitchXMarker',
+                            'size': [6, 6]
+                        }
+                    }
+                }
+            }
+        ]
+    });
+    return this.geom;
+};
+
+OG.shape.elec.EHLoad = function (label) {
+    OG.shape.elec.EHLoad.superclass.call(this);
+
+    this.SHAPE_ID = 'OG.shape.elec.EHLoad';
+    this.label = label;
+    this.CONNECT_CLONEABLE = false;
+    this.LABEL_EDITABLE = false;
+    this.ENABLE_FROM = false;
+};
+OG.shape.elec.EHLoad.prototype = new OG.shape.elec.Load();
+OG.shape.elec.EHLoad.superclass = OG.shape.elec.Load;
+OG.shape.elec.EHLoad.prototype.constructor = OG.shape.elec.EHLoad;
+OG.EHLoad = OG.shape.elec.EHLoad;
+
+OG.shape.elec.EHLoad.prototype.createShape = function () {
+    var geom1, geom2,geom3,geom4, geomCollection = [];
+    if (this.geom) {
+        return this.geom;
+    }
+
+    geom1 = new OG.geometry.Circle([30, 30], 30);
+
+    geom2 = new OG.geometry.Curve([
+        [0, 0],
+        [40, 10],
+        [20, 20]
+    ]);
+    geom3 = new OG.geometry.Curve([
+        [20, 20],
+        [40, 30],
+        [20, 40]
+    ]);
+    geom4 = new OG.geometry.Curve([
+        [20, 40],
+        [40, 50],
+        [0, 60]
+    ]);
+
+    geomCollection.push(geom1);
+    geomCollection.push(geom2);
+    geomCollection.push(geom3);
+    geomCollection.push(geom4);
+
+    this.geom = new OG.geometry.GeometryCollection(geomCollection);
+    this.geom.style = new OG.geometry.Style({
+        'label-position': 'bottom',
+        'label-width': 200,
+        'stroke-width': 2
+    });
+
+    return this.geom;
+};
+
+
+OG.shape.elec.EHLoad.prototype.createSubShape = function () {
+    if (!this.data) {
+        return;
+    }
+
+    this.sub = [
+        {
+            shape: new OG.TextShape(this.data['LO_TYPE'] + ' Load'),
+            width: '200%',
+            height: '15%',
+            left: '-50%',
+            top: '-20%',
+            style: {
+                'font-size': 8,
+                'font-color': 'red',
+                'text-anchor': 'middle'
+            }
+        }
+    ];
+    return this.sub;
+};
+OG.shape.elec.EHSLoad = function (label) {
+    OG.shape.elec.EHSLoad.superclass.call(this);
+
+    this.SHAPE_ID = 'OG.shape.elec.EHSLoad';
+    this.label = label;
+    this.CONNECT_CLONEABLE = false;
+    this.LABEL_EDITABLE = false;
+    this.ENABLE_FROM = false;
+};
+OG.shape.elec.EHSLoad.prototype = new OG.shape.elec.Load();
+OG.shape.elec.EHSLoad.superclass = OG.shape.elec.Load;
+OG.shape.elec.EHSLoad.prototype.constructor = OG.shape.elec.EHSLoad;
+OG.EHSLoad = OG.shape.elec.EHSLoad;
+
+OG.shape.elec.EHSLoad.prototype.createShape = function () {
+    var geom1, geom2,geom3,geom4, geomCollection = [];
+    if (this.geom) {
+        return this.geom;
+    }
+
+    geom1 = new OG.geometry.Circle([30, 30], 30);
+
+    geom2 = new OG.geometry.Curve([
+        [0, 0],
+        [40, 10],
+        [20, 20]
+    ]);
+    geom3 = new OG.geometry.Curve([
+        [20, 20],
+        [40, 30],
+        [20, 40]
+    ]);
+    geom4 = new OG.geometry.Curve([
+        [20, 40],
+        [40, 50],
+        [0, 60]
+    ]);
+
+    geomCollection.push(geom1);
+    geomCollection.push(geom2);
+    geomCollection.push(geom3);
+    geomCollection.push(geom4);
+
+    this.geom = new OG.geometry.GeometryCollection(geomCollection);
+    this.geom.style = new OG.geometry.Style({
+        'label-position': 'bottom',
+        'label-width': 200,
+        'stroke-width': 2
+    });
+
+    return this.geom;
+};
+
+
+OG.shape.elec.EHSLoad.prototype.createSubShape = function () {
+    if (!this.data) {
+        return;
+    }
+
+    this.sub = [
+        {
+            shape: new OG.TextShape(this.data['LO_TYPE'] + ' Load'),
+            width: '200%',
+            height: '15%',
+            left: '-50%',
+            top: '-20%',
+            style: {
+                'font-size': 8,
+                'font-color': 'red',
+                'text-anchor': 'middle'
+            }
+        }
+    ];
+    return this.sub;
+};
+OG.shape.elec.HierarchyBldg = function (label) {
+    OG.shape.elec.HierarchyBldg.superclass.call(this);
+
+    this.SHAPE_ID = 'OG.shape.elec.HierarchyBldg';
+    this.label = label;
+    this.CONNECT_CLONEABLE = false;
+    this.LABEL_EDITABLE = false;
+    this.CONNECTABLE = false;
+};
+OG.shape.elec.HierarchyBldg.prototype = new OG.shape.HorizontalPoolShape();
+OG.shape.elec.HierarchyBldg.superclass = OG.shape.HorizontalPoolShape;
+OG.shape.elec.HierarchyBldg.prototype.constructor = OG.shape.elec.HierarchyBldg;
+OG.HierarchyBldg = OG.shape.elec.HierarchyBldg;
+
+OG.shape.elec.HierarchyBldg.prototype.createShape = function () {
+    if (this.geom) {
+        return this.geom;
+    }
+
+    this.geom = new OG.geometry.Rectangle([0, 0], 100, 100);
+    this.geom.style = new OG.geometry.Style({
+        'label-direction': 'vertical',
+        'vertical-align' : 'top',
+        'fill' : '#ffffff',
+        'fill-opacity': 0,
+        'title-size' : 26,
+        'label-fill': '#428bca',
+        'label-fill-opacity': 1,
+        'font-weight': 700,
+        'font-color' : 'white'
+    });
+
+    return this.geom;
+};
+
+
+OG.shape.elec.HierarchyBldg.prototype.createContextMenu = function () {
+    var me = this;
+    this.contextMenu = {
+        'delete': true,
+        'format': true,
+        'text': true,
+        'bringToFront': true,
+        'sendToBack': true,
+        'property': {
+            name: '정보보기', callback: function () {
+                $(me.currentCanvas.getRootElement()).trigger('showProperty', [me.currentElement]);
+            }
+        }
+    };
+    return this.contextMenu;
+};
+OG.shape.elec.HierarchyFeeder = function (label) {
+    OG.shape.elec.HierarchyFeeder.superclass.call(this);
+
+    this.SHAPE_ID = 'OG.shape.elec.HierarchyFeeder';
+    this.label = label;
+    this.CONNECT_CLONEABLE = false;
+    this.LABEL_EDITABLE = false;
+
+    this.textList = [
+        {
+            text: 'cable',
+            label: '',
+            shape: 'OG.CableShape'
+        },
+        {
+            text: 'IPB',
+            label: 'IPB',
+            shape: 'OG.BusductShape'
+        },
+        {
+            text: 'SPB',
+            label: 'SPB',
+            shape: 'OG.BusductShape'
+        },
+        {
+            text: 'NSPB',
+            label: 'NSPB',
+            shape: 'OG.BusductShape'
+        },
+        {
+            text: 'CRB',
+            label: 'CRB',
+            shape: 'OG.BusductShape'
+        }
+    ];
+};
+OG.shape.elec.HierarchyFeeder.prototype = new OG.shape.GeomShape();
+OG.shape.elec.HierarchyFeeder.superclass = OG.shape.GeomShape;
+OG.shape.elec.HierarchyFeeder.prototype.constructor = OG.shape.elec.HierarchyFeeder;
+OG.HierarchyFeeder = OG.shape.elec.HierarchyFeeder;
+
+OG.shape.elec.HierarchyFeeder.prototype.createShape = function () {
+    var geom1, geom2, geomCollection = [];
+    if (this.geom) {
+        return this.geom;
+    }
+
+    geom1 = new OG.geometry.Circle([50, 50], 50);
+    geom1.style = new OG.geometry.Style({
+        "stroke-width": 4
+    });
+
+    geom2 = new OG.geometry.Polygon([
+        [30, 80],
+        [30, 20],
+        [70, 20],
+        [70, 30],
+        [40, 30],
+        [40, 40],
+        [70, 40],
+        [70, 50],
+        [40, 50],
+        [40, 80],
+        [30, 80]
+    ]);
+    geom2.style = new OG.geometry.Style({
+        "fill": "black",
+        "fill-opacity": 1
+    });
+
+    geomCollection.push(geom1);
+    geomCollection.push(geom2);
+
+    this.geom = new OG.geometry.GeometryCollection(geomCollection);
+    this.geom.style = new OG.geometry.Style({
+        'label-position': 'bottom',
+        'label-width': 200
+    });
+
+    return this.geom;
+};
+
+
+OG.shape.elec.HierarchyFeeder.prototype.createSubShape = function () {
+    if (!this.data) {
+        return;
+    }
+
+    this.sub = [
+        {
+            shape: new OG.TextShape(this.data['SWGR_TYPE'] + ' Swgr'),
+            width: '200%',
+            height: '15%',
+            left: '-50%',
+            top: '-20%',
+            style: {
+                'font-size': 8,
+                'font-color': 'red',
+                'text-anchor': 'middle'
+            }
+        }
+    ];
+    return this.sub;
+};
+
+
+OG.shape.elec.HierarchyFloor = function (label) {
+    OG.shape.elec.HierarchyFloor.superclass.call(this);
+
+    this.SHAPE_ID = 'OG.shape.elec.HierarchyFloor';
+    this.label = label;
+    this.CONNECT_CLONEABLE = false;
+    this.LABEL_EDITABLE = false;
+    this.CONNECTABLE = false;
+};
+OG.shape.elec.HierarchyFloor.prototype = new OG.shape.HorizontalPoolShape();
+OG.shape.elec.HierarchyFloor.superclass = OG.shape.HorizontalPoolShape;
+OG.shape.elec.HierarchyFloor.prototype.constructor = OG.shape.elec.HierarchyFloor;
+OG.HierarchyFloor = OG.shape.elec.HierarchyFloor;
+
+
+OG.shape.elec.HierarchyFloor.prototype.createShape = function () {
+    if (this.geom) {
+        return this.geom;
+    }
+
+    this.geom = new OG.geometry.Rectangle([0, 0], 100, 100);
+    this.geom.style = new OG.geometry.Style({
+        'label-direction': 'vertical',
+        'vertical-align' : 'top',
+        'fill' : '#ffffff',
+        'fill-opacity': 0,
+        'title-size' : 26,
+        'label-fill': '#428bca',
+        'label-fill-opacity': 1,
+        'font-weight': 700,
+        'font-color' : 'white'
+    });
+
+    return this.geom;
+};
+
+OG.shape.elec.HierarchyFloor.prototype.createContextMenu = function () {
+    var me = this;
+    this.contextMenu = {
+        'delete': true,
+        'format': true,
+        'text': true,
+        'bringToFront': true,
+        'sendToBack': true,
+        'property': {
+            name: '정보보기', callback: function () {
+                $(me.currentCanvas.getRootElement()).trigger('showProperty', [me.currentElement]);
+            }
+        }
+    };
+    return this.contextMenu;
+};
+
+
+OG.shape.elec.HierarchyFloor.prototype.createContextMenu = function () {
+    var me = this;
+    this.contextMenu = {
+        'delete': true,
+        'format': true,
+        'text': true,
+        'bringToFront': true,
+        'sendToBack': true,
+        'property': {
+            name: '정보보기', callback: function () {
+                $(me.currentCanvas.getRootElement()).trigger('showProperty', [me.currentElement]);
+            }
+        }
+    };
+    return this.contextMenu;
+};
+OG.shape.elec.Location = function (label) {
+    OG.shape.elec.Location.superclass.call(this);
+
+    this.SHAPE_ID = 'OG.shape.elec.Location';
+    this.label = label;
+    this.CONNECT_CLONEABLE = false;
+    this.LABEL_EDITABLE = false;
+
+    this.textList = [
+        {
+            text: 'Raceway',
+            label: '',
+            shape: 'OG.RacewayShape'
+        }
+    ];
+};
+OG.shape.elec.Location.prototype = new OG.shape.GeomShape();
+OG.shape.elec.Location.superclass = OG.shape.GeomShape;
+OG.shape.elec.Location.prototype.constructor = OG.shape.elec.Location;
+OG.Location = OG.shape.elec.Location;
+OG.shape.elec.Location.prototype.createShape = function () {
+    if (this.geom) {
+        return this.geom;
+    }
+
+    this.geom = new OG.geometry.Rectangle([0, 0], 100, 100);
+    this.geom.style = new OG.geometry.Style({
+        'fill-r': 1,
+        'fill-cx': .1,
+        'fill-cy': .1,
+        "stroke-width": 1.2,
+        fill: 'r(.1, .1)#428bca-#ffffff',
+        'fill-opacity': 1,
+        r: '10'
+    });
+
+    return this.geom;
+};
+
+
+OG.shape.elec.Location.prototype.createSubShape = function () {
+    if (!this.data) {
+        return;
+    }
+
+    this.sub = [
+
+    ];
+    return this.sub;
+};
+
+OG.shape.elec.Location.prototype.createContextMenu = function () {
+    var me = this;
+    this.contextMenu = {
+        'delete': true,
+        'format': true,
+        'text': true,
+        'bringToFront': true,
+        'sendToBack': true,
+        'property': {
+            name: '정보보기', callback: function () {
+                $(me.currentCanvas.getRootElement()).trigger('showProperty', [me.currentElement]);
+            }
+        }
+    };
+    return this.contextMenu;
+};
+OG.shape.elec.MILoad = function (label) {
+    OG.shape.elec.MILoad.superclass.call(this);
+
+    this.SHAPE_ID = 'OG.shape.elec.MILoad';
+    this.label = label;
+    this.CONNECT_CLONEABLE = false;
+    this.LABEL_EDITABLE = false;
+    this.ENABLE_FROM = false;
+};
+OG.shape.elec.MILoad.prototype = new OG.shape.elec.Load();
+OG.shape.elec.MILoad.superclass = OG.shape.elec.Load;
+OG.shape.elec.MILoad.prototype.constructor = OG.shape.elec.MILoad;
+OG.MILoad = OG.shape.elec.MILoad;
+
+OG.shape.elec.MILoad.prototype.createShape = function () {
+    var geom1, geom2, geom3, geom4, geom5,
+        geom6, geom7, geom8, geom9, geom10,
+        geom11, geom12, geomCollection = [];
+    if (this.geom) {
+        return this.geom;
+    }
+
+    geom1 = new OG.geometry.Polygon([[10, 0], [27, 10], [10, 20]]);
+    geom2 = new OG.geometry.Polygon([[44, 0], [27, 10], [44, 20]]);
+    geom3 = new OG.geometry.Line([27, 10], [27, 20]);
+    geom4 = new OG.geometry.Circle([27, 27], 7);
+    geom5 = new OG.geometry.PolyLine([[24, 30], [24, 24], [27, 28], [30, 24], [30, 30]]);
+
+    geom6 = new OG.geometry.Polygon([[10, 40], [27, 50], [10, 60]]);
+    geom7 = new OG.geometry.Polygon([[44, 40], [27, 50], [44, 60]]);
+    geom8 = new OG.geometry.Line([27, 50], [27, 60]);
+    geom9 = new OG.geometry.Circle([27, 67], 7);
+    geom10 = new OG.geometry.PolyLine([[24, 70], [24, 64], [27, 68], [30, 64], [30, 70]]);
+
+    geom11 = new OG.geometry.PolyLine([[10, 10], [0, 10], [0, 34], [10, 34], [10, 40]]);
+    geom12 = new OG.geometry.PolyLine([[44, 10], [54, 10], [54, 34], [44, 34], [44, 40]]);
+
+    geomCollection.push(geom1);
+    geomCollection.push(geom2);
+    geomCollection.push(geom3);
+    geomCollection.push(geom4);
+    geomCollection.push(geom5);
+    geomCollection.push(geom6);
+    geomCollection.push(geom7);
+    geomCollection.push(geom8);
+    geomCollection.push(geom9);
+    geomCollection.push(geom10);
+    geomCollection.push(geom11);
+    geomCollection.push(geom12);
+
+    this.geom = new OG.geometry.GeometryCollection(geomCollection);
+    this.geom.style = new OG.geometry.Style({
+        'label-position': 'bottom',
+        'label-width': 200,
+        'stroke-width': 2
+    });
+
+    return this.geom;
+};
+
+
+OG.shape.elec.MILoad.prototype.createSubShape = function () {
+    if (!this.data) {
+        return;
+    }
+
+    this.sub = [
+        {
+            shape: new OG.TextShape(this.data['LO_TYPE'] + ' Load'),
+            width: '200%',
+            height: '15%',
+            left: '-50%',
+            top: '-20%',
+            style: {
+                'font-size': 8,
+                'font-color': 'red',
+                'text-anchor': 'middle'
+            }
+        }
+    ];
+    return this.sub;
+};
+OG.shape.elec.MKLoad = function (label) {
+    OG.shape.elec.MKLoad.superclass.call(this);
+
+    this.SHAPE_ID = 'OG.shape.elec.MKLoad';
+    this.label = label;
+    this.CONNECT_CLONEABLE = false;
+    this.LABEL_EDITABLE = false;
+    this.ENABLE_FROM = false;
+};
+OG.shape.elec.MKLoad.prototype = new OG.shape.elec.Load();
+OG.shape.elec.MKLoad.superclass = OG.shape.elec.Load;
+OG.shape.elec.MKLoad.prototype.constructor = OG.shape.elec.MKLoad;
+OG.MKLoad = OG.shape.elec.MKLoad;
+
+OG.shape.elec.MKLoad.prototype.createShape = function () {
+    var geom1, geom2,geom3,geom4,geom5, geomCollection = [];
+    if (this.geom) {
+        return this.geom;
+    }
+
+    geom1 = new OG.geometry.Polygon([[10, 0],[27,10],[10,20]]);
+    geom2 = new OG.geometry.Polygon([[44, 0],[27,10],[44,20]]);
+    geom3 = new OG.geometry.Line([27,10],[27,20]);
+    geom4 = new OG.geometry.Circle([27,27],7);
+    geom5 = new OG.geometry.PolyLine([[24,30],[24,24],[27,28],[30,24],[30,30]]);
+
+    geomCollection.push(geom1);
+    geomCollection.push(geom2);
+    geomCollection.push(geom3);
+    geomCollection.push(geom4);
+    geomCollection.push(geom5);
+
+    this.geom = new OG.geometry.GeometryCollection(geomCollection);
+    this.geom.style = new OG.geometry.Style({
+        'label-position': 'bottom',
+        'label-width': 200,
+        'stroke-width': 2
+    });
+
+    return this.geom;
+};
+
+
+OG.shape.elec.MKLoad.prototype.createSubShape = function () {
+    if (!this.data) {
+        return;
+    }
+
+    this.sub = [
+        {
+            shape: new OG.TextShape(this.data['LO_TYPE'] + ' Load'),
+            width: '200%',
+            height: '15%',
+            left: '-50%',
+            top: '-20%',
+            style: {
+                'font-size': 8,
+                'font-color': 'red',
+                'text-anchor': 'middle'
+            }
+        }
+    ];
+    return this.sub;
+};
+OG.shape.elec.MOLoad = function (label) {
+    OG.shape.elec.MOLoad.superclass.call(this);
+
+    this.SHAPE_ID = 'OG.shape.elec.MOLoad';
+    this.label = label;
+    this.CONNECT_CLONEABLE = false;
+    this.LABEL_EDITABLE = false;
+    this.ENABLE_FROM = false;
+};
+OG.shape.elec.MOLoad.prototype = new OG.shape.elec.Load();
+OG.shape.elec.MOLoad.superclass = OG.shape.elec.Load;
+OG.shape.elec.MOLoad.prototype.constructor = OG.shape.elec.MOLoad;
+OG.MOLoad = OG.shape.elec.MOLoad;
+
+OG.shape.elec.MOLoad.prototype.createShape = function () {
+    if (this.geom) {
+        return this.geom;
+    }
+
+    this.geom = new OG.geometry.Circle([50, 50], 50);
+
+    this.geom.style = new OG.geometry.Style({
+        'label-position': 'bottom',
+        'label-width': 200,
+        'stroke-width': 2
+    });
+
+    return this.geom;
+};
+
+
+OG.shape.elec.MOLoad.prototype.createSubShape = function () {
+    this.sub = [
+        {
+            shape: new OG.TextShape('M'),
+            width: '100%',
+            height: '50%',
+            align: 'center',
+            'vertical-align': 'middle',
+            style: {
+                'font-size': 20,
+                'font-color': 'black',
+                'text-anchor': 'middle'
+            }
+        }
+    ];
+    if (this.data) {
+        this.sub.push(
+            {
+                shape: new OG.TextShape(this.data['LO_TYPE'] + ' Load'),
+                width: '200%',
+                height: '15%',
+                left: '-50%',
+                top: '-20%',
+                style: {
+                    'font-size': 8,
+                    'font-color': 'red',
+                    'text-anchor': 'middle'
+                }
+            }
+        )
+    }
+    return this.sub;
+};
+OG.shape.elec.Manhole = function (image, label) {
+    OG.shape.elec.Manhole.superclass.call(this, image, label);
+
+    this.SHAPE_ID = 'OG.shape.elec.Manhole';
+    this.label = label;
+    this.CONNECT_CLONEABLE = false;
+    this.LABEL_EDITABLE = false;
+
+    if (!image) {
+        this.image = 'resources/images/elec/manhole.svg'
+    }
+
+    this.textList = [
+        {
+            text: 'Raceway',
+            label: '',
+            shape: 'OG.RacewayShape'
+        }
+    ];
+};
+OG.shape.elec.Manhole.prototype = new OG.shape.ImageShape();
+OG.shape.elec.Manhole.superclass = OG.shape.ImageShape;
+OG.shape.elec.Manhole.prototype.constructor = OG.shape.elec.Manhole;
+OG.Manhole = OG.shape.elec.Manhole;
+
+OG.shape.elec.Manhole.prototype.createSubShape = function () {
+    if (!this.data) {
+        return;
+    }
+
+    this.sub = [
+
+    ];
+    return this.sub;
+};
+
+
+OG.shape.elec.Manhole.prototype.createContextMenu = function () {
+    var me = this;
+    this.contextMenu = {
+        'delete': true,
+        'format': true,
+        'text': true,
+        'bringToFront': true,
+        'sendToBack': true,
+        'property': {
+            name: '정보보기', callback: function () {
+                $(me.currentCanvas.getRootElement()).trigger('showProperty', [me.currentElement]);
+            }
+        }
+    };
+    return this.contextMenu;
+};
+OG.shape.elec.NMLoad = function (label) {
+    OG.shape.elec.NMLoad.superclass.call(this);
+
+    this.SHAPE_ID = 'OG.shape.elec.NMLoad';
+    this.label = label;
+    this.CONNECT_CLONEABLE = false;
+    this.LABEL_EDITABLE = false;
+    this.ENABLE_FROM = false;
+};
+OG.shape.elec.NMLoad.prototype = new OG.shape.elec.Load();
+OG.shape.elec.NMLoad.superclass = OG.shape.elec.Load;
+OG.shape.elec.NMLoad.prototype.constructor = OG.shape.elec.NMLoad;
+OG.NMLoad = OG.shape.elec.NMLoad;
+
+OG.shape.elec.NMLoad.prototype.createShape = function () {
+    if (this.geom) {
+        return this.geom;
+    }
+
+    this.geom = new OG.geometry.Rectangle([0, 0], 100, 80);
+
+    this.geom.style = new OG.geometry.Style({
+        'label-position': 'bottom',
+        'label-width': 200,
+        'stroke-width': 2
+    });
+
+    return this.geom;
+};
+
+
+OG.shape.elec.NMLoad.prototype.createSubShape = function () {
+    this.sub = [
+        {
+            shape: new OG.TextShape('NM'),
+            width: '100%',
+            height: '50%',
+            align: 'center',
+            'vertical-align': 'middle',
+            style: {
+                'font-size': 20,
+                'font-color': 'black',
+                'text-anchor': 'middle'
+            }
+        }
+    ];
+    if (this.data) {
+        this.sub.push(
+            {
+                shape: new OG.TextShape(this.data['LO_TYPE'] + ' Load'),
+                width: '200%',
+                height: '15%',
+                left: '-50%',
+                top: '-20%',
+                style: {
+                    'font-size': 8,
+                    'font-color': 'red',
+                    'text-anchor': 'middle'
+                }
+            }
+        )
+    }
+    return this.sub;
+};
+OG.shape.elec.PKGLoad = function (label) {
+    OG.shape.elec.PKGLoad.superclass.call(this);
+
+    this.SHAPE_ID = 'OG.shape.elec.PKGLoad';
+    this.label = label;
+    this.CONNECT_CLONEABLE = false;
+    this.LABEL_EDITABLE = false;
+    this.ENABLE_FROM = false;
+};
+OG.shape.elec.PKGLoad.prototype = new OG.shape.elec.Load();
+OG.shape.elec.PKGLoad.superclass = OG.shape.elec.Load;
+OG.shape.elec.PKGLoad.prototype.constructor = OG.shape.elec.PKGLoad;
+OG.PKGLoad = OG.shape.elec.PKGLoad;
+
+OG.shape.elec.PKGLoad.prototype.createShape = function () {
+    if (this.geom) {
+        return this.geom;
+    }
+
+    this.geom = new OG.geometry.Rectangle([0, 0], 100, 80);
+
+    this.geom.style = new OG.geometry.Style({
+        'label-position': 'bottom',
+        'label-width': 200,
+        'stroke-width': 2
+    });
+
+    return this.geom;
+};
+
+
+OG.shape.elec.PKGLoad.prototype.createSubShape = function () {
+    this.sub = [
+        {
+            shape: new OG.TextShape('PKG'),
+            width: '100%',
+            height: '50%',
+            align: 'center',
+            'vertical-align': 'middle',
+            style: {
+                'font-size': 20,
+                'font-color': 'black',
+                'text-anchor': 'middle'
+            }
+        }
+    ];
+    if (this.data) {
+        this.sub.push(
+            {
+                shape: new OG.TextShape(this.data['LO_TYPE'] + ' Load'),
+                width: '200%',
+                height: '15%',
+                left: '-50%',
+                top: '-20%',
+                style: {
+                    'font-size': 8,
+                    'font-color': 'red',
+                    'text-anchor': 'middle'
+                }
+            }
+        )
+    }
+    return this.sub;
+};
+/**
+ * ELECTRONIC : Raceway Shape
+ *
+ * @class
+ * @extends OG.shape.RacewayShape
+ * @requires OG.common.*
+ * @requires OG.geometry.*
+ *
+ * @param {Number[]} from 와이어 시작 좌표
+ * @param {Number[]} to 와이어 끝 좌표
+ * @param {String} label 라벨 [Optional]
+ * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ * @private
+ */
+OG.shape.elec.RacewayShape = function (from, to, label) {
+    OG.shape.elec.RacewayShape.superclass.call(this, from, to, label);
+
+    this.SHAPE_ID = 'OG.shape.elec.RacewayShape';
+};
+OG.shape.elec.RacewayShape.prototype = new OG.shape.EdgeShape();
+OG.shape.elec.RacewayShape.superclass = OG.shape.EdgeShape;
+OG.shape.elec.RacewayShape.prototype.constructor = OG.shape.elec.RacewayShape;
+OG.RacewayShape = OG.shape.elec.RacewayShape;
+
+/**
+ * 드로잉할 Shape 을 생성하여 반환한다.
+ *
+ * @return {OG.geometry.Geometry} Shape 정보
+ * @override
+ */
+OG.shape.elec.RacewayShape.prototype.createShape = function () {
+    if (this.geom) {
+        return this.geom;
+    }
+
+    this.geom = new OG.Line(this.from || [0, 0], this.to || [70, 0]);
+
+    var style = {
+        'multi': [
+            {
+                top: -10,
+                from: 'start',
+                to: 'end',
+                style: {}
+            },
+            {
+                top: 10,
+                from: 'start',
+                to: 'end',
+                style: {}
+            },
+            {
+                top: 0,
+                from: 'start',
+                to: 'end',
+                style: {
+                    pattern: {
+                        'id': 'OG.pattern.HatchedPattern',
+                        'thickness': 10,
+                        'unit-width': 12,
+                        'unit-height': 12,
+                        'pattern-width': 8,
+                        'pattern-height': 8,
+                        'style': {
+                            'stroke': 'black'
+                        }
+                    },
+                    'stroke': 'none',
+                }
+            },
+            {
+                top: 0,
+                from: 'start',
+                to: 'end',
+                style:{
+                    //'stroke': 'none',
+                    'fill-opacity': 1,
+                    animation: [
+                        {
+                            start: {
+                                stroke: 'white'
+                            },
+                            to: {
+                                stroke: '#d9534f'
+                            },
+                            ms: 1000
+                        },
+                        {
+                            start: {
+                                stroke: '#d9534f'
+                            },
+                            to: {
+                                stroke: 'white'
+                            },
+                            ms: 1000,
+                            delay: 1000
+                        }
+                    ],
+                    'animation-repeat': true,
+                    "stroke": "#d9534f",
+                    "stroke-width": "5"
+                }
+            }
+        ]
+    };
+    if (this.data && this.data.selected) {
+        style['stroke'] = '#d9534f';
+        style['stroke-width'] = 2;
+        style['multi'][2]['style']['pattern']['style']['stroke'] = '#d9534f';
+    }
+    this.geom.style = new OG.geometry.Style(style);
+    return this.geom;
+};
+
+
+OG.shape.elec.RacewayShape.prototype.createContextMenu = function () {
+    var me = this;
+    var options = {'':''};
+    if (this.data && this.data.pathList) {
+        for (var i = 0; i < this.data.pathList.length; i++) {
+            options[this.data.pathList[i]['value']] = this.data.pathList[i]['name'];
+        }
+    }
+
+    this.contextMenu = {
+        'delete': true,
+        'format': true,
+        'text': true,
+        'bringToFront': true,
+        'sendToBack': true,
+        'property': {
+            name: '정보보기', callback: function () {
+                $(me.currentCanvas.getRootElement()).trigger('showProperty', [me.currentElement]);
+            }
+        },
+        'pathList': {
+            name: '라우트 보기',
+            items: {
+                'selectPath': {
+                    name: '선택',
+                    type: 'select',
+                    options: options,
+                    selected: '',
+                    events: {
+                        change: function (e) {
+                            if (e.target.value !== '') {
+                                $(me.currentCanvas.getRootElement()).trigger('showRouteList', [me.currentElement, e.target.value]);
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        'alternative': {
+            name: '라우트 변경', callback: function () {
+                $(me.currentCanvas.getRootElement()).trigger('changeRoute', [me.currentElement]);
+            }
+        }
+    };
+    return this.contextMenu;
+};
+
+OG.shape.elec.SHLoad = function (label) {
+    OG.shape.elec.SHLoad.superclass.call(this);
+
+    this.SHAPE_ID = 'OG.shape.elec.SHLoad';
+    this.label = label;
+    this.CONNECT_CLONEABLE = false;
+    this.LABEL_EDITABLE = false;
+    this.ENABLE_FROM = false;
+};
+OG.shape.elec.SHLoad.prototype = new OG.shape.elec.Load();
+OG.shape.elec.SHLoad.superclass = OG.shape.elec.Load;
+OG.shape.elec.SHLoad.prototype.constructor = OG.shape.elec.SHLoad;
+OG.SHLoad = OG.shape.elec.SHLoad;
+
+OG.shape.elec.SHLoad.prototype.createShape = function () {
+    var geom1, geom2, geomCollection = [];
+    if (this.geom) {
+        return this.geom;
+    }
+
+    geom1 = new OG.geometry.Circle([50, 50], 50);
+    geom1.style = new OG.geometry.Style({
+        "stroke-width": 4
+    });
+
+    geom2 = new OG.geometry.Polygon([
+        [20, 20],
+        [20, 80],
+        [30, 80],
+        [30, 50],
+        [70, 50],
+        [70, 80],
+        [80, 80],
+        [80, 20],
+        [70, 20],
+        [70, 40],
+        [30, 40],
+        [30, 20],
+        [20, 20]
+    ]);
+    geom2.style = new OG.geometry.Style({
+        "fill": "black",
+        "fill-opacity": 1
+    });
+
+    geomCollection.push(geom1);
+    geomCollection.push(geom2);
+
+    this.geom = new OG.geometry.GeometryCollection(geomCollection);
+    this.geom.style = new OG.geometry.Style({
+        'label-position': 'bottom',
+        'label-width': 200
+    });
+
+    return this.geom;
+};
+
+OG.shape.elec.SHLoad.prototype.createSubShape = function () {
+    if (!this.data) {
+        return;
+    }
+
+    this.sub = [
+        {
+            shape: new OG.TextShape(this.data['LO_TYPE'] + ' Load'),
+            width: '200%',
+            height: '15%',
+            left: '-50%',
+            top: '-20%',
+            style: {
+                'font-size': 8,
+                'font-color': 'red',
+                'text-anchor': 'middle'
+            }
+        }
+    ];
+    return this.sub;
+};
+OG.shape.elec.SwitchGear = function (label) {
+    OG.shape.elec.SwitchGear.superclass.call(this);
+
+    this.SHAPE_ID = 'OG.shape.elec.SwitchGear';
+    this.label = label;
+    this.DELETABLE = false;
+    this.ENABLE_TO = false;
+    this.CONNECT_CLONEABLE = false;
+    this.LABEL_EDITABLE = false;
+
+    this.textList = [
+        {
+            text: 'cable',
+            label: '',
+            shape: 'OG.CableShape'
+        },
+        {
+            text: 'IPB',
+            label: 'IPB',
+            shape: 'OG.BusductShape'
+        },
+        {
+            text: 'SPB',
+            label: 'SPB',
+            shape: 'OG.BusductShape'
+        },
+        {
+            text: 'NSPB',
+            label: 'NSPB',
+            shape: 'OG.BusductShape'
+        },
+        {
+            text: 'CRB',
+            label: 'CRB',
+            shape: 'OG.BusductShape'
+        }
+    ];
+};
+OG.shape.elec.SwitchGear.prototype = new OG.shape.GeomShape();
+OG.shape.elec.SwitchGear.superclass = OG.shape.GeomShape;
+OG.shape.elec.SwitchGear.prototype.constructor = OG.shape.elec.SwitchGear;
+OG.SwitchGear = OG.shape.elec.SwitchGear;
+
+OG.shape.elec.SwitchGear.prototype.createShape = function () {
+    if (this.geom) {
+        return this.geom;
+    }
+
+    this.geom = new OG.geometry.Line([-100, 0], [100, 0]);
+    this.geom.style = new OG.geometry.Style({
+        'cursor': 'default',
+        'stroke': '#d9534f',
+        'stroke-width': '3',
+        'fill': 'none',
+        'fill-opacity': 0
+    });
+    return this.geom;
+};
+
+
+OG.shape.elec.SwitchGear.prototype.createSubShape = function () {
+    if (!this.data) {
+        return;
+    }
+
+    this.sub = [
+        {
+            shape: new OG.TextShape(this.data['PJT_SQ']),
+            width: '100%',
+            height: '15px',
+            right: '0px',
+            top: '-25px',
+            style: {
+                'font-size': 12,
+                'font-color': 'red',
+                'text-anchor': 'end'
+            }
+        }
+    ];
+
+    return this.sub;
+};
+
+
+OG.shape.elec.SwitchGear.prototype.createContextMenu = function () {
+    var me = this;
+    this.contextMenu = {
+        'format': true,
+        'text': true,
+        'bringToFront': true,
+        'sendToBack': true,
+        'property': {
+            name: '정보보기', callback: function () {
+                $(me.currentCanvas.getRootElement()).trigger('showProperty', [me.currentElement]);
+            }
+        }
+    };
+    return this.contextMenu;
+};
+OG.shape.elec.SwitchTransformer = function (label) {
+    OG.shape.elec.SwitchTransformer.superclass.call(this);
+
+    this.SHAPE_ID = 'OG.shape.elec.SwitchTransformer';
+    this.label = label;
+    this.DELETABLE = false;
+    this.ENABLE_TO = false;
+    this.CONNECT_CLONEABLE = false;
+    this.LABEL_EDITABLE = false;
+};
+OG.shape.elec.SwitchTransformer.prototype = new OG.shape.GeomShape();
+OG.shape.elec.SwitchTransformer.superclass = OG.shape.GeomShape;
+OG.shape.elec.SwitchTransformer.prototype.constructor = OG.shape.elec.SwitchTransformer;
+OG.SwitchTransformer = OG.shape.elec.SwitchTransformer;
+
+OG.shape.elec.SwitchTransformer.prototype.createShape = function () {
+    var geom1, geom2, geomCollection = [];
+    if (this.geom) {
+        return this.geom;
+    }
+
+    geom1 = new OG.geometry.Circle([50, 50], 50);
+    geom2 = new OG.geometry.Circle([50, 125], 50);
+
+    geomCollection.push(geom1);
+    geomCollection.push(geom2);
+
+    this.geom = new OG.geometry.GeometryCollection(geomCollection);
+    this.geom.style = new OG.geometry.Style({
+        'label-position': 'bottom',
+        'label-width': 300,
+        'vertical-align': 'top'
+    });
+
+    return this.geom;
+};
+
 /**
  * 도형의 Style 과 Shape 정보를 통해 캔버스에 렌더링 기능을 정의한 인터페이스
  *
@@ -15349,7 +17572,7 @@ OG.renderer.IRenderer.prototype = {
      *
      * @param {Element|String} element Element 또는 ID
      */
-    bringForward: function(element){
+    bringForward: function (element) {
         throw new OG.NotImplementedException();
     },
 
@@ -15358,7 +17581,7 @@ OG.renderer.IRenderer.prototype = {
      *
      * @param {Element|String} element Element 또는 ID
      */
-    sendBackward: function(element){
+    sendBackward: function (element) {
         throw new OG.NotImplementedException();
     },
 
@@ -15656,6 +17879,41 @@ OG.renderer.IRenderer.prototype = {
     },
 
     /**
+     * 두 도형 사이의 연결된 Edge 를 반환한다.
+     * @param elements
+     * @returns {Element} edge
+     */
+    getRelatedEdgeFromShapes: function (elements) {
+        var edge;
+        var fromElement = elements[0];
+        var toElement = elements[1];
+        if (!fromElement || !toElement) {
+            return null;
+        }
+        var prevShapeId, nextShapeId;
+        var prevEdges = this.getPrevEdges(fromElement);
+        var nextEdges = this.getNextEdges(fromElement);
+        for (var i = 0; i < prevEdges.length; i++) {
+            prevShapeId = $(prevEdges[i]).attr('_from');
+            if (prevShapeId) {
+                prevShapeId = prevShapeId.substring(0, prevShapeId.indexOf(OG.Constants.TERMINAL));
+                if (prevShapeId == toElement.id) {
+                    edge = prevEdges[i];
+                }
+            }
+        }
+        for (var i = 0; i < nextEdges.length; i++) {
+            nextShapeId = $(nextEdges[i]).attr('_to');
+            if (nextShapeId) {
+                nextShapeId = nextShapeId.substring(0, nextShapeId.indexOf(OG.Constants.TERMINAL));
+                if (nextShapeId == toElement.id) {
+                    edge = nextEdges[i];
+                }
+            }
+        }
+        return edge;
+    },
+    /**
      * 연결된 이전 Edge Element 들을 반환한다.
      *
      * @param {Element|String} element Element 또는 ID
@@ -15814,7 +18072,7 @@ OG.renderer.IRenderer.prototype = {
      */
     isTopGroup: function (element) {
         var parent = element.parentElement;
-        if(!parent){
+        if (!parent) {
             parent = element.parentNode;
         }
         if (!element || !parent) {
@@ -15838,7 +18096,7 @@ OG.renderer.IRenderer.prototype = {
      */
     getParent: function (element) {
         var parent = element.parentElement;
-        if(!parent){
+        if (!parent) {
             parent = element.parentNode;
         }
         if (!element || !parent) {
@@ -15877,7 +18135,7 @@ OG.renderer.IRenderer.prototype = {
      */
     isGroup: function (element) {
         var parent = element.parentElement;
-        if(!parent){
+        if (!parent) {
             parent = element.parentNode;
         }
         if (!element || !parent) {
@@ -15953,7 +18211,7 @@ OG.renderer.IRenderer.prototype = {
     /**
      * 캔버스의 히스토리를 초기화한다.
      */
-    initHistory: function(){
+    initHistory: function () {
         throw new OG.NotImplementedException();
     },
     /**
@@ -15965,13 +18223,13 @@ OG.renderer.IRenderer.prototype = {
     /**
      * 캔버스의 Undo
      */
-    undo: function(){
+    undo: function () {
         throw new OG.NotImplementedException();
     },
     /**
      * 캔버스의 Redo
      */
-    redo: function(){
+    redo: function () {
         throw new OG.NotImplementedException();
     }
 };
@@ -16116,8 +18374,8 @@ OG.renderer.RaphaelRenderer.prototype._drawSubShape = function (groupElement) {
     //그룹 엘리먼트에 createSubShape 메소드를 확인한다.
     var me = this, subShapeNodes, subShapeNode, width, height,
         left, top, right, bottom, align, verticalAlign,
-        subVertices, subStyle, subShape, subShapeId, tempNode, cloneNode,
-        boundary, bW, bH, bT, bL;
+        subVertices, subStyle, subShape, subShapeId, tempNode, zIndex,
+        boundary, bW, bH, bT, bL, tempNodes = [];
     if (!groupElement.shape.createSubShape) {
         return;
     }
@@ -16144,6 +18402,7 @@ OG.renderer.RaphaelRenderer.prototype._drawSubShape = function (groupElement) {
         right = subShapeNode.right;
         bottom = subShapeNode.bottom;
         align = subShapeNode.align;
+        zIndex = subShapeNode['z-index'];
         verticalAlign = subShapeNode['vertical-align'];
         subVertices = subShapeNode.vertices;
         subStyle = subShapeNode.style ? subShapeNode.style : {};
@@ -16171,13 +18430,19 @@ OG.renderer.RaphaelRenderer.prototype._drawSubShape = function (groupElement) {
             if (!value && value != 0) {
                 length = undefined;
             }
-            //픽셀인 경우
-            else if (typeof value == 'string' && value.indexOf('px') != -1) {
-                length = parseInt(value.replace('px', ''));
-            }
-            //퍼센테이지 인 경우
-            else {
-                length = standard * (value / 100);
+            //숫자 형태인 경우
+            else if (typeof value == 'number') {
+                length = value;
+            } else if (typeof value == 'string') {
+                //픽셀인 경우
+                if (value.indexOf('px') != -1) {
+                    length = parseInt(value.replace('px', ''));
+                }
+                //퍼센테이지 경우
+                if (value.indexOf('%') != -1) {
+                    value = parseInt(value.replace('%', ''));
+                    length = standard * (value / 100);
+                }
             }
             return length;
         };
@@ -16186,7 +18451,7 @@ OG.renderer.RaphaelRenderer.prototype._drawSubShape = function (groupElement) {
         width = getLength(bW, width);
         height = getLength(bH, height);
         left = getLength(bW, left) + bL;
-        right = bL + bW - getLength(bW, right);
+        right = bL + bW - getLength(bW, right) - width;
         top = getLength(bH, top) + bT;
         bottom = bT + bH - getLength(bH, bottom) - height;
 
@@ -16203,29 +18468,28 @@ OG.renderer.RaphaelRenderer.prototype._drawSubShape = function (groupElement) {
         }
 
         //align 이나 vertice-algin 이 start,center,end 일 경우 left 와 top 값을 오버라이드 한다.
-        if (align == 'start') {
+        if (align == 'left') {
             left = bL;
         } else if (align == 'center') {
             left = bL + (bW / 2) - (width / 2);
-        } else if (align == 'end') {
+        } else if (align == 'right') {
             left = bL + bW - width;
         }
 
-        if (verticalAlign == 'start') {
+        if (verticalAlign == 'top') {
             top = bT;
-        } else if (verticalAlign == 'center') {
+        } else if (verticalAlign == 'middle') {
             top = bT + (bH / 2) - (height / 2);
-        } else if (verticalAlign == 'end') {
+        } else if (verticalAlign == 'bottom') {
             top = bT + bH - height;
         }
-        console.log(subShapeNode, left, top);
 
-        //Edge 인 도형의 위치값을 구한다. Edge 인 도형의 vertices 는 퍼센테이지로만 환산한다.
+        //Edge 인 도형의 위치값을 구한다. subVertices 의 left,top 기준값으로 정한다.
         if (subShape instanceof OG.shape.EdgeShape) {
             if (subVertices && subVertices.length) {
                 for (var v = 0, lenv = subVertices.length; v < lenv; v++) {
-                    subVertices[v][0] = bW * (subVertices[v][0] / 100) + bL;
-                    subVertices[v][1] = bH * (subVertices[v][1] / 100) + bT;
+                    subVertices[v][0] = getLength(bW, subVertices[v][0]) + bL;
+                    subVertices[v][1] = getLength(bH, subVertices[v][1]) + bT;
                 }
             } else {
                 subVertices = [[bL, bT], [bL + bW, bT]];
@@ -16234,18 +18498,56 @@ OG.renderer.RaphaelRenderer.prototype._drawSubShape = function (groupElement) {
         }
 
         //노드 복사를 위한 가상의 그룹노드
-        tempNode = me.drawShape([left + width / 2, top + height / 2], subShape, [width, height], subStyle, subShapeId);
+        tempNode = me.drawShape([left + width / 2, top + height / 2], subShape, [width, height], subStyle, subShapeId, true);
 
-        //가상의 그룹노드 내부의 svg 엘리먼트들을 groupElement 내부로 이전시킨다.
-        $(tempNode).children().each(function () {
-            var child = $(this);
-            child.removeAttr('_type');
-            child.removeAttr('_shape');
-            groupElement.appendChild(child.get(0));
+        //z-index 에 따라 tempNodes 에 인서트한다.
+        //zIndex 가 없거나 0 이면 0 이다.
+        if (!zIndex || zIndex == 0) {
+            zIndex = 0;
+        }
+        tempNodes.push({
+            index: zIndex,
+            node: tempNode
+        });
+    }
+
+    //tempNodes 를 인덱스에 따라 소팅한다.
+    tempNodes.sort(
+        function (a, b) {
+            return a['index'] - b['index']
+        }
+    );
+
+    var index, node, standardChild;
+    for (var i = 0, leni = tempNodes.length; i < leni; i++) {
+        //groupElement 내부의 가장 첫 자식을 기준으로 삼는다.
+        standardChild = groupElement.firstChild;
+        index = tempNodes[i].index;
+        node = $(tempNodes[i].node);
+        $(node).children().each(function (childIndex, child) {
+            $(child).removeAttr('_type');
+            $(child).removeAttr('_shape');
+            $(child).attr('_index', index);
+
+            //0 보다 큰 인덱스는 groupElement 에 순서대로 인서트한다.
+            if (index >= 0) {
+                groupElement.appendChild(child);
+            }
+
+            else {
+                //기준이 없다면 순서대로 인서트한다.
+                if (!standardChild) {
+                    groupElement.appendChild(child);
+                }
+                //기준이 있다면 기준 앞에 인서트한다.
+                else {
+                    groupElement.insertBefore(child, standardChild);
+                }
+            }
         });
 
         //가상의 그룹노드를 삭제한다.
-        me._remove(me._getREleById(tempNode.id));
+        me._remove(me._getREleById($(node).attr('id')));
     }
 };
 
@@ -16338,6 +18640,10 @@ OG.renderer.RaphaelRenderer.prototype._drawGeometry = function (groupElement, ge
             if (typeof distance == 'number') {
                 length = distance;
             } else if (typeof distance == 'string') {
+                //픽셀일 경우
+                if (distance.indexOf('px') != -1) {
+                    length = parseInt(distance.replace('px', ''));
+                }
                 //퍼센테이지 일 경우
                 if (distance.indexOf('%') != -1) {
                     distance = parseInt(distance.replace('%', ''));
@@ -16353,9 +18659,9 @@ OG.renderer.RaphaelRenderer.prototype._drawGeometry = function (groupElement, ge
                     length = totalLenth;
                 }
                 else if (distance.indexOf('end-') != -1) {
-                    distance = parseInt(distance.replace('end-', ''));
-                    length = totalLenth - distance;
-                } else {
+                    length = totalLenth - getSubDistance(nodePath, distance.replace('end-', ''));
+                }
+                else {
                     distance = parseInt(distance);
                     length = distance;
                 }
@@ -16413,6 +18719,9 @@ OG.renderer.RaphaelRenderer.prototype._drawGeometry = function (groupElement, ge
             }
             if (multiStyle['pattern']) {
                 drawPattern(path, multiStyle, subPath, m);
+            }
+            if (multiStyle['animation']) {
+                drawAnimation(path, multiStyle);
             }
         }
     };
@@ -16709,9 +19018,6 @@ OG.renderer.RaphaelRenderer.prototype._drawGeometry = function (groupElement, ge
             }
         };
         startAnimation();
-
-        //TODO 서브 도형의 제트 인덱스가 있어야 한다(원본 도형 뒤로 숨기 등)
-        //애니메이션 효과를 _drawGeometry 전부 넣어주기.
     };
 
     geometry.style.map = _style;
@@ -16766,6 +19072,10 @@ OG.renderer.RaphaelRenderer.prototype._drawGeometry = function (groupElement, ge
                 else if (!multi && rootPattern) {
                     drawPattern(element, _style, pathStr, 0);
                 }
+                //애니메이션 정보가 있을 경우
+                else if (!multi && rootAnimation) {
+                    drawAnimation(element, _style);
+                }
             } else {
                 element = this._PAPER.path(pathStr);
                 element.attr(_style);
@@ -16773,6 +19083,11 @@ OG.renderer.RaphaelRenderer.prototype._drawGeometry = function (groupElement, ge
                 //패턴정보가 있을 경우
                 if (rootPattern) {
                     drawPattern(element, _style, pathStr, 0);
+                }
+
+                //애니메이션 정보가 있을 경우
+                if (rootAnimation) {
+                    drawAnimation(element, _style);
                 }
             }
 
@@ -16837,6 +19152,11 @@ OG.renderer.RaphaelRenderer.prototype._drawGeometry = function (groupElement, ge
                 drawPattern(element, _style, pathStr, 0);
             }
 
+            //애니메이션 정보가 있을 경우
+            if (rootAnimation) {
+                drawAnimation(element, _style);
+            }
+
             setConnectGuideAttr(connectGuideElement);
             break;
 
@@ -16860,6 +19180,11 @@ OG.renderer.RaphaelRenderer.prototype._drawGeometry = function (groupElement, ge
             if (rootPattern) {
                 drawPattern(element, _style, pathStr, 0);
             }
+
+            //애니메이션 정보가 있을 경우
+            if (rootAnimation) {
+                drawAnimation(element, _style);
+            }
             setConnectGuideAttr(connectGuideElement);
             break;
 
@@ -16880,6 +19205,11 @@ OG.renderer.RaphaelRenderer.prototype._drawGeometry = function (groupElement, ge
             //패턴정보가 있을 경우
             if (rootPattern) {
                 drawPattern(element, _style, pathStr, 0);
+            }
+
+            //애니메이션 정보가 있을 경우
+            if (rootAnimation) {
+                drawAnimation(element, _style);
             }
 
             connectGuideElement = this._PAPER.path(pathStr);
@@ -16904,6 +19234,11 @@ OG.renderer.RaphaelRenderer.prototype._drawGeometry = function (groupElement, ge
             //패턴정보가 있을 경우
             if (rootPattern) {
                 drawPattern(element, _style, pathStr, 0);
+            }
+
+            //애니메이션 정보가 있을 경우
+            if (rootAnimation) {
+                drawAnimation(element, _style);
             }
 
             connectGuideElement = this._PAPER.path(pathStr);
@@ -17136,11 +19471,11 @@ OG.renderer.RaphaelRenderer.prototype._drawLabel = function (position, text, siz
  * @param {Number[]} size Shape Width, Height
  * @param {OG.geometry.Style|Object} style 스타일
  * @param {String} id Element ID 지정
- * @param {Boolean} preventDrop Lane, Pool 생성 drop 모드 수행 방지
+ * @param {Boolean} preventEvent 이벤트 방지
  * @return {Element} Group DOM Element with geometry
  * @override
  */
-OG.renderer.RaphaelRenderer.prototype.drawShape = function (position, shape, size, style, id, preventDrop) {
+OG.renderer.RaphaelRenderer.prototype.drawShape = function (position, shape, size, style, id, preventEvent) {
     var width = size ? size[0] : 100,
         height = size ? size[1] : 100,
         groupNode, geometry, text, image, html,
@@ -17204,45 +19539,6 @@ OG.renderer.RaphaelRenderer.prototype.drawShape = function (position, shape, siz
     me._drawSubShape(groupNode);
 
     // Draw for Task
-    if (shape instanceof OG.shape.bpmn.A_Task) {
-        if (groupNode.shape.LoopType != 'None')
-            this.drawLoopType(groupNode);
-        if (groupNode.shape.TaskType != 'None')
-            this.drawTaskType(groupNode);
-        if (groupNode.shape.status != 'None')
-            this.drawStatus(groupNode);
-    }
-
-    if (shape instanceof OG.shape.bpmn.A_Subprocess) {
-        if (groupNode.shape.status != 'None')
-            this.drawStatus(groupNode);
-        if (groupNode.shape.inclusion)
-            this.drawCheckInclusion(groupNode);
-    }
-
-    if (shape instanceof OG.shape.bpmn.Value_Chain) {
-        if (groupNode.shape.inclusion)
-            this.drawCheckInclusion(groupNode);
-    }
-
-    if (shape instanceof OG.shape.bpmn.Value_Chain_Module) {
-        if (groupNode.shape.inclusion)
-            this.drawCheckInclusion(groupNode);
-    }
-
-    if (shape instanceof OG.shape.bpmn.E_Start) {
-        if (groupNode.shape.inclusion)
-            this.drawCheckInclusion(groupNode);
-    }
-
-    if (shape instanceof OG.shape.bpmn.E_End) {
-        if (groupNode.shape.inclusion)
-            this.drawCheckInclusion(groupNode);
-    }
-
-    // Draw Error
-    if (groupNode.shape.exceptionType != '')
-        this.drawExceptionType(groupNode);
 
 
     // Draw Label
@@ -17306,11 +19602,6 @@ OG.renderer.RaphaelRenderer.prototype.drawShape = function (position, shape, siz
             return;
         }
 
-        //그룹이 A_Task 일경우 반응하지 않는다.
-        if (frontGroup.shape instanceof OG.shape.bpmn.A_Task) {
-            return;
-        }
-
         //자신일 경우 반응하지 않는다.
         if (frontGroup.id === groupNode.id) {
             return;
@@ -17336,7 +19627,13 @@ OG.renderer.RaphaelRenderer.prototype.drawShape = function (position, shape, siz
     }
 
     // drawShape event fire
-    $(this._PAPER.canvas).trigger('drawShape', [groupNode]);
+    if (!preventEvent) {
+        $(this._PAPER.canvas).trigger('drawShape', [groupNode]);
+    }
+
+    //shape 에 현재 캔버스,엘리먼트 등록
+    shape.currentElement = groupNode;
+    shape.currentCanvas = this._CANVAS;
 
     return groupNode;
 };
@@ -18199,6 +20496,10 @@ OG.renderer.RaphaelRenderer.prototype.redrawShape = function (element, excludeEd
     };
 
     if (element && element.shape.geom) {
+        if(element.shape.redrawShape){
+            element.shape.redrawShape();
+        }
+
         switch ($(element).attr("_shape")) {
             case OG.Constants.SHAPE_TYPE.GEOM:
                 element = this.drawGeom(element.shape.geom, {}, element.id);
@@ -18260,55 +20561,9 @@ OG.renderer.RaphaelRenderer.prototype.redrawShape = function (element, excludeEd
         //서브 도형 그리기
         me._drawSubShape(element);
 
-        if (element.shape instanceof OG.shape.bpmn.A_Task) {
-            if (element.shape.LoopType != 'None')
-                this.drawLoopType(element);
-            if (element.shape.TaskType != 'None')
-                this.drawTaskType(element);
-            if (element.shape.status != 'None')
-                this.drawStatus(element);
-        }
-
-        if (element.shape instanceof OG.shape.HorizontalPoolShape) {
-            if (element.shape.LoopType != 'None')
-                this.drawLoopType(element);
-        }
-
-        if (element.shape instanceof OG.shape.bpmn.A_Subprocess) {
-            if (element.shape.status != 'None')
-                this.drawStatus(element);
-            if (element.shape.inclusion)
-                this.drawCheckInclusion(element);
-        }
-
-        if (element.shape instanceof OG.shape.bpmn.Value_Chain) {
-            if (element.shape.inclusion)
-                this.drawCheckInclusion(element);
-        }
-
-        if (element.shape instanceof OG.shape.bpmn.Value_Chain_Module) {
-            if (element.shape.inclusion)
-                this.drawCheckInclusion(element);
-        }
-
-        if (element.shape instanceof OG.shape.bpmn.E_Start) {
-            if (element.shape.inclusion)
-                this.drawCheckInclusion(element);
-        }
-
-        if (element.shape instanceof OG.shape.bpmn.E_End) {
-            if (element.shape.inclusion)
-                this.drawCheckInclusion(element);
-        }
-
-        if (element.shape.exceptionType != '')
-            this.drawExceptionType(element);
-
-        //버튼이 필요한 shape 일 경우 리사이즈 시에 그려 준다
-        if (element.shape.HaveButton) {
-            var me = this, collapseObj, clickHandle;
-            collapseObj = this.drawButton(element);
-        }
+        //shape 에 현재 캔버스,엘리먼트 등록
+        element.shape.currentElement = element;
+        element.shape.currentCanvas = this._CANVAS;
     }
 
     // redrawShape event fire
@@ -18384,7 +20639,7 @@ OG.renderer.RaphaelRenderer.prototype.redrawConnectedEdge = function (element, e
     if (edgeId) {
         $.each(edgeId.split(","), function (idx, item) {
             if (!excludeEdgeId || excludeEdgeId.toString().indexOf(item) < 0) {
-                me.connect($(item).attr('_from'), $(item).attr('_to'), rightAngleCalibration(item))
+                me.connect($(item).attr('_from'), $(item).attr('_to'), rightAngleCalibration(item), null, null, true);
             }
         });
     }
@@ -18393,7 +20648,7 @@ OG.renderer.RaphaelRenderer.prototype.redrawConnectedEdge = function (element, e
     if (edgeId) {
         $.each(edgeId.split(","), function (idx, item) {
             if (!excludeEdgeId || excludeEdgeId.toString().indexOf(item) < 0) {
-                me.connect($(item).attr('_from'), $(item).attr('_to'), rightAngleCalibration(item))
+                me.connect($(item).attr('_from'), $(item).attr('_to'), rightAngleCalibration(item), null, null, true);
             }
         });
     }
@@ -18485,6 +20740,9 @@ OG.renderer.RaphaelRenderer.prototype.connect = function (fromTerminal, toTermin
     } else {
         return null;
     }
+
+    //if label null, convert undefined
+    label = label ? label : undefined;
 
     var me = this, _style = {}, fromShape, toShape, fromXY, toXY,
         isSelf, beforeEvent,
@@ -18731,7 +20989,7 @@ OG.renderer.RaphaelRenderer.prototype.disconnect = function (element) {
                         $(me._PAPER.canvas).trigger('disconnectShape', [fromEdge, fromShape, element]);
                     }
 
-                    me.remove(fromEdge);
+                    me.removeShape(fromEdge);
                 });
             }
 
@@ -18750,7 +21008,7 @@ OG.renderer.RaphaelRenderer.prototype.disconnect = function (element) {
                         $(me._PAPER.canvas).trigger('disconnectShape', [toEdge, element, toShape]);
                     }
 
-                    me.remove(toEdge);
+                    me.removeShape(toEdge);
                 });
             }
         }
@@ -19661,125 +21919,6 @@ OG.renderer.RaphaelRenderer.prototype.removeRubberBand = function (root) {
     $(root).removeData("rubberBand");
 };
 
-/**
- * ID에 해당하는 Element 의 Collapse 가이드를 드로잉한다.
- *
- * @param {Element|String} element Element 또는 ID
- * @return {Element}
- * @override
- */
-OG.renderer.RaphaelRenderer.prototype.drawCollapseGuide = function (element) {
-    var me = this, rElement = this._getREleById(OG.Util.isElement(element) ? element.id : element),
-        geometry = rElement ? rElement.node.shape.geom : null,
-        envelope, _upperLeft, _bBoxRect, _rect, _rect1,
-        _size = me._CONFIG.COLLAPSE_SIZE,
-        _hSize = _size / 2;
-
-    if (rElement && geometry && $(element).attr("_shape") === OG.Constants.SHAPE_TYPE.GROUP) {
-        _bBoxRect = this._getREleById(rElement.id + OG.Constants.COLLAPSE_BBOX_SUFFIX);
-        if (_bBoxRect) {
-            this._remove(_bBoxRect);
-        }
-        _rect = this._getREleById(rElement.id + OG.Constants.COLLAPSE_SUFFIX);
-        if (_rect) {
-            this._remove(_rect);
-        }
-
-        envelope = geometry.getBoundary();
-        _upperLeft = envelope.getUpperLeft();
-
-        // hidden box
-        _bBoxRect = this._PAPER.rect(envelope.getUpperLeft().x - _size, envelope.getUpperLeft().y - _size,
-            envelope.getWidth() + _size * 2, envelope.getHeight() + _size * 2);
-        _bBoxRect.attr(me._CONFIG.DEFAULT_STYLE.COLLAPSE_BBOX);
-        this._add(_bBoxRect, rElement.id + OG.Constants.COLLAPSE_BBOX_SUFFIX);
-
-        if (rElement.node.shape.isCollapsed === true) {
-            // expand 랜더링
-            _rect = this._PAPER.path(
-                "M" + (_upperLeft.x + _hSize) + " " + (_upperLeft.y + _hSize) +
-                "h" + _size + "v" + _size + "h" + (-1 * _size) + "v" + (-1 * _size) +
-                "m1 " + _hSize + "h" + (_size - 2) + "M" +
-                (_upperLeft.x + _hSize) + " " + (_upperLeft.y + _hSize) +
-                "m" + _hSize + " 1v" + (_size - 2)
-            );
-        } else {
-            // collapse 랜더링
-            _rect = this._PAPER.path("M" + (_upperLeft.x + _hSize) + " " +
-                (_upperLeft.y + _hSize) + "h" + _size + "v" + _size + "h" + (-1 * _size) + "v" + (-1 * _size) +
-                "m1 " + _hSize + "h" + (_size - 2));
-        }
-
-        _rect.attr(me._CONFIG.DEFAULT_STYLE.COLLAPSE);
-        this._add(_rect, rElement.id + OG.Constants.COLLAPSE_SUFFIX);
-
-        // layer 위치 조정
-        _bBoxRect.insertBefore(rElement);
-        _rect.insertAfter(rElement);
-
-        return {
-            bBox: _bBoxRect.node,
-            collapse: _rect.node
-        };
-    }
-
-    return null;
-};
-
-/*
- + 버튼 그리는 부분
- auth : 민수환
-
- */
-OG.renderer.RaphaelRenderer.prototype.drawButton = function (element) {
-    var me = this, rElement = this._getREleById(OG.Util.isElement(element) ? element.id : element),
-        geometry = rElement ? rElement.node.shape.geom : null,
-        envelope, _upperLeft, _bBoxRect, _rect, _rect1,
-        _size = me._CONFIG.COLLAPSE_SIZE,
-        _hSize = _size / 2;
-
-    _bBoxRect = this._getREleById(rElement.id + OG.Constants.COLLAPSE_BBOX_SUFFIX);
-    if (_bBoxRect) {
-        this._remove(_bBoxRect);
-    }
-    _rect1 = this._getREleById(rElement.id + OG.Constants.COLLAPSE_SUFFIX);
-    if (_rect1) {
-        this._remove(_rect1);
-    }
-
-    envelope = geometry.getBoundary();
-    _lowerCenter = envelope.getLowerCenter();
-    // hidden box
-    _bBoxRect = this._PAPER.rect(envelope.getUpperLeft().x - _size, envelope.getUpperLeft().y - _size,
-        envelope.getWidth() + _size * 2, envelope.getHeight() + _size * 2);
-    _bBoxRect.attr(me._CONFIG.DEFAULT_STYLE.COLLAPSE_BBOX);
-    this._add(_bBoxRect, rElement.id + OG.Constants.COLLAPSE_BBOX_SUFFIX);
-
-    _rect1 = this._PAPER.image("resources/images/symbol/subprocess.png", _lowerCenter.x - 10, _lowerCenter.y - 25, 20, 20);
-
-    _rect1.attr({
-        "stroke": element.shape.geom.style.map.stroke,
-        "stroke-width": 1,
-        fill: "white",
-        "fill-opacity": 0,
-        "shape-rendering": "crispEdges"
-    });
-
-    this._add(_rect1, rElement.id + OG.Constants.COLLAPSE_SUFFIX);
-
-    // layer 위치 조정
-    rElement.appendChild(_bBoxRect);
-    rElement.appendChild(_rect1);
-
-    return {
-        bBox: _bBoxRect.node,
-        collapse: _rect1.node
-    };
-
-
-    return null;
-};
-
 //Loop Type 드로우
 
 OG.renderer.RaphaelRenderer.prototype.drawLoopType = function (element) {
@@ -19891,159 +22030,131 @@ OG.renderer.RaphaelRenderer.prototype.drawTaskType = function (element) {
 //Status 드로우
 
 OG.renderer.RaphaelRenderer.prototype.drawStatus = function (element) {
-    var me = this, rElement = this._getREleById(OG.Util.isElement(element) ? element.id : element),
-        geometry = rElement ? rElement.node.shape.geom : null,
-        envelope, _upperLeft, _bBoxRect, _rect, _rect1,
-        _size = me._CONFIG.COLLAPSE_SIZE,
-        _hSize = _size / 2;
-
-    _rect1 = this._getREleById(rElement.id + OG.Constants.STATUS_SUFFIX);
-    if (_rect1) {
-        this._remove(_rect1);
-    }
-
-    _rect = this._getREleById(rElement.id + OG.Constants.STATUS_SUFFIX + '_IMG');
-    if (_rect) {
-        this._remove(_rect);
-    }
-
-    envelope = geometry.getBoundary();
-    _upperRight = envelope.getUpperRight();
-
-    switch (element.shape.status) {
-        case "Completed":
-            _rect1 = this._PAPER.image("resources/images/symbol/complete.png", _upperRight.x - 25, _upperRight.y + 5, 20, 20);
-            break;
-        case "Running":
-            _rect = this._PAPER.rect(envelope.getUpperLeft().x - 10, envelope.getUpperLeft().y - 10, envelope.getWidth() + 20, envelope.getHeight() + 20);
-            _rect.attr("fill", "#C9E2FC");
-            _rect.attr("stroke-width", "0.2");
-            _rect.attr("r", "10");
-            _rect.attr("fill-opacity", "1");
-            _rect.attr("stroke-dasharray", "--");
-
-            _rect1 = this._PAPER.image("resources/images/symbol/running.png", _upperRight.x - 25, _upperRight.y + 5, 20, 20);
-            break;
-    }
-
-    if (element.shape.status == "Running") {
-        //애니메이션 프로퍼티는,
-        var animationRepeat = true;
-        var animationData =
-            [
-                {
-                    start: {
-                        fill: 'white'
-                    },
-                    to: {
-                        fill: '#C9E2FC'
-                    },
-                    ms: 1000
-                },
-                {
-                    start: {
-                        fill: '#C9E2FC'
-                    },
-                    to: {
-                        fill: 'white'
-                    },
-                    ms: 1000,
-                    delay: 1000
-                }
-            ];
-        var maxDuration = 0;
-        var monitorAnimationIndex;
-        var delay, ms;
-        for (var i = 0; i < animationData.length; i++) {
-            ms = animationData[i].ms ? animationData[i].ms : 0;
-            delay = animationData[i].delay ? animationData[i].delay : 0;
-            if (maxDuration < ms + delay) {
-                maxDuration = ms + delay;
-                monitorAnimationIndex = i;
-            }
-        }
-
-        var startAnimation = function () {
-            for (var i = 0; i < animationData.length; i++) {
-                var ani;
-                if (i == monitorAnimationIndex && animationRepeat) {
-                    ani = Raphael.animation(animationData[i].to, animationData[i].ms, startAnimation);
-                    _rect.attr(animationData[i].start).animate(ani.delay(animationData[i].delay));
-                } else {
-                    ani = Raphael.animation(animationData[i].to, animationData[i].ms);
-                    _rect.attr(animationData[i].start).animate(ani.delay(animationData[i].delay));
-                }
-            }
-        };
-        startAnimation();
-    }
-    this._add(_rect1, rElement.id + OG.Constants.STATUS_SUFFIX);
-    _rect1.insertAfter(rElement);
-    rElement.appendChild(_rect1);
-
-    if (_rect) {
-        this._add(_rect, rElement.id + OG.Constants.STATUS_SUFFIX + '_IMG');
-        _rect.insertAfter(rElement);
-        rElement.prependChild(_rect);
-    }
-
-    return null;
+    //var me = this, rElement = this._getREleById(OG.Util.isElement(element) ? element.id : element),
+    //    geometry = rElement ? rElement.node.shape.geom : null,
+    //    envelope, _upperLeft, _bBoxRect, _upperRight, _rect, _rect1,
+    //    _size = me._CONFIG.COLLAPSE_SIZE,
+    //    _hSize = _size / 2;
+    //
+    //_rect1 = this._getREleById(rElement.id + OG.Constants.STATUS_SUFFIX);
+    //if (_rect1) {
+    //    this._remove(_rect1);
+    //}
+    //
+    //_rect = this._getREleById(rElement.id + OG.Constants.STATUS_SUFFIX + '_IMG');
+    //if (_rect) {
+    //    this._remove(_rect);
+    //}
+    //
+    //envelope = geometry.getBoundary();
+    //_upperRight = envelope.getUpperRight();
+    //
+    //switch (element.shape.status) {
+    //    case "Completed":
+    //        _rect1 = this._PAPER.image("resources/images/symbol/complete.png", _upperRight.x - 25, _upperRight.y + 5, 20, 20);
+    //        break;
+    //    case "Running":
+    //        _rect = this._PAPER.rect(envelope.getUpperLeft().x - 10, envelope.getUpperLeft().y - 10, envelope.getWidth() + 20, envelope.getHeight() + 20);
+    //        _rect.attr("fill", "#C9E2FC");
+    //        _rect.attr("stroke-width", "0.2");
+    //        _rect.attr("r", "10");
+    //        _rect.attr("fill-opacity", "1");
+    //        _rect.attr("stroke-dasharray", "--");
+    //
+    //        _rect1 = this._PAPER.image("resources/images/symbol/running.png", _upperRight.x - 25, _upperRight.y + 5, 20, 20);
+    //        break;
+    //}
+    //
+    //if (element.shape.status == "Running") {
+    //    //애니메이션 프로퍼티는,
+    //    var animationRepeat = true;
+    //    var animationData =
+    //        [
+    //            {
+    //                start: {
+    //                    fill: 'white'
+    //                },
+    //                to: {
+    //                    fill: '#C9E2FC'
+    //                },
+    //                ms: 1000
+    //            },
+    //            {
+    //                start: {
+    //                    fill: '#C9E2FC'
+    //                },
+    //                to: {
+    //                    fill: 'white'
+    //                },
+    //                ms: 1000,
+    //                delay: 1000
+    //            }
+    //        ];
+    //    var maxDuration = 0;
+    //    var monitorAnimationIndex;
+    //    var delay, ms;
+    //    for (var i = 0; i < animationData.length; i++) {
+    //        ms = animationData[i].ms ? animationData[i].ms : 0;
+    //        delay = animationData[i].delay ? animationData[i].delay : 0;
+    //        if (maxDuration < ms + delay) {
+    //            maxDuration = ms + delay;
+    //            monitorAnimationIndex = i;
+    //        }
+    //    }
+    //
+    //    var startAnimation = function () {
+    //        for (var i = 0; i < animationData.length; i++) {
+    //            var ani;
+    //            if (i == monitorAnimationIndex && animationRepeat) {
+    //                ani = Raphael.animation(animationData[i].to, animationData[i].ms, startAnimation);
+    //                _rect.attr(animationData[i].start).animate(ani.delay(animationData[i].delay));
+    //            } else {
+    //                ani = Raphael.animation(animationData[i].to, animationData[i].ms);
+    //                _rect.attr(animationData[i].start).animate(ani.delay(animationData[i].delay));
+    //            }
+    //        }
+    //    };
+    //    startAnimation();
+    //}
+    //this._add(_rect1, rElement.id + OG.Constants.STATUS_SUFFIX);
+    //_rect1.insertAfter(rElement);
+    //rElement.appendChild(_rect1);
+    //
+    //if (_rect) {
+    //    this._add(_rect, rElement.id + OG.Constants.STATUS_SUFFIX + '_IMG');
+    //    _rect.insertAfter(rElement);
+    //    rElement.prependChild(_rect);
+    //}
+    //
+    //return null;
 };
 
 OG.renderer.RaphaelRenderer.prototype.drawCheckInclusion = function (element) {
-    var me = this, rElement = this._getREleById(OG.Util.isElement(element) ? element.id : element),
-        geometry = rElement ? rElement.node.shape.geom : null,
-        envelope, _upperLeft, _bBoxRect, _rect,
-        _size = me._CONFIG.COLLAPSE_SIZE,
-        _hSize = _size / 2;
-
-    _rect1 = this._getREleById(rElement.id + OG.Constants.INCLUSION_SUFFIX);
-    if (_rect1) {
-        this._remove(_rect1);
-    }
-
-    envelope = geometry.getBoundary();
-    _lowerRight = envelope.getLowerRight();
-
-    _rect1 = this._PAPER.image("resources/images/symbol/complete.png", _lowerRight.x, _lowerRight.y - 20, 20, 20);
-
-    this._add(_rect1, rElement.id + OG.Constants.INCLUSION_SUFFIX);
-    _rect1.insertAfter(rElement);
-    rElement.appendChild(_rect1);
-
-    $(_rect1[0]).bind("click", function (event) {
-        $(rElement[0]).trigger("inclusionclick");
-    });
-
-    return null;
-};
-
-OG.renderer.RaphaelRenderer.prototype.drawExceptionType = function (element) {
-
-    var me = this, rElement = this._getREleById(OG.Util.isElement(element) ? element.id : element),
-        geometry = rElement ? rElement.node.shape.geom : null,
-        envelope, _upperLeft, _bBoxRect, _rect,
-        _size = me._CONFIG.COLLAPSE_SIZE,
-        _hSize = _size / 2;
-
-    _rect = this._getREleById(rElement.id + OG.Constants.EXCEPTIONTYPE_SUFFIX);
-    if (_rect) {
-        this._remove(_rect);
-    }
-
-    envelope = geometry.getBoundary();
-    _upperRight = envelope.getUpperRight();
-
-    switch (element.shape.exceptionType) {
-        case "error":
-            _rect = this._PAPER.image("images/activity_status/i_status_CANCELLED.png", _upperRight.x - 25, _upperRight.y + 5, 20, 20);
-            break;
-    }
-
-    this._add(_rect, rElement.id + OG.Constants.EXCEPTIONTYPE_SUFFIX);
-    _rect.insertAfter(rElement);
-    rElement.appendChild(_rect);
-    return null;
+    //var me = this, rElement = this._getREleById(OG.Util.isElement(element) ? element.id : element),
+    //    geometry = rElement ? rElement.node.shape.geom : null,
+    //    envelope, _upperLeft, _bBoxRect, _rect,
+    //    _size = me._CONFIG.COLLAPSE_SIZE,
+    //    _hSize = _size / 2;
+    //
+    //_rect1 = this._getREleById(rElement.id + OG.Constants.INCLUSION_SUFFIX);
+    //if (_rect1) {
+    //    this._remove(_rect1);
+    //}
+    //
+    //envelope = geometry.getBoundary();
+    //_lowerRight = envelope.getLowerRight();
+    //
+    //_rect1 = this._PAPER.image("resources/images/symbol/complete.png", _lowerRight.x, _lowerRight.y - 20, 20, 20);
+    //
+    //this._add(_rect1, rElement.id + OG.Constants.INCLUSION_SUFFIX);
+    //_rect1.insertAfter(rElement);
+    //rElement.appendChild(_rect1);
+    //
+    //$(_rect1[0]).bind("click", function (event) {
+    //    $(rElement[0]).trigger("inclusionclick");
+    //});
+    //
+    //return null;
 };
 
 /**
@@ -20143,162 +22254,6 @@ OG.renderer.RaphaelRenderer.prototype.addToGroup = function (groupElement, eleme
     var i;
     for (i = 0; i < elements.length; i++) {
         groupElement.appendChild(elements[i]);
-    }
-};
-
-/**
- * 주어진 Shape 이 그룹인 경우 collapse 한다.
- *
- * @param {Element} element
- * @override
- */
-OG.renderer.RaphaelRenderer.prototype.collapse = function (element) {
-    var me = this, childNodes, i, hideChildEdge;
-
-    hideChildEdge = function (_collapseRootElement, _element) {
-        var edgeIdArray, fromEdge, toEdge, _childNodes = _element.childNodes, otherShape, i, j, isNeedToRedraw;
-        for (i = _childNodes.length - 1; i >= 0; i--) {
-            if ($(_childNodes[i]).attr("_type") === OG.Constants.NODE_TYPE.SHAPE) {
-                hideChildEdge(_collapseRootElement, _childNodes[i]);
-
-                isNeedToRedraw = false;
-                edgeIdArray = $(_childNodes[i]).attr("_fromedge");
-                if (edgeIdArray) {
-                    edgeIdArray = edgeIdArray.split(",");
-                    for (j = 0; j < edgeIdArray.length; j++) {
-                        fromEdge = me.getElementById(edgeIdArray[j]);
-                        if (fromEdge) {
-                            otherShape = me._getShapeFromTerminal($(fromEdge).attr("_from"));
-
-                            // otherShape 이 같은 collapse 범위내에 있는지 체크
-                            if ($(otherShape).parents("#" + _collapseRootElement.id).length !== 0) {
-                                me.hide(fromEdge);
-                            } else {
-                                isNeedToRedraw = true;
-                            }
-                        }
-                    }
-                }
-
-                edgeIdArray = $(_childNodes[i]).attr("_toedge");
-                if (edgeIdArray) {
-                    edgeIdArray = edgeIdArray.split(",");
-                    for (j = 0; j < edgeIdArray.length; j++) {
-                        toEdge = me.getElementById(edgeIdArray[j]);
-                        if (toEdge) {
-                            otherShape = me._getShapeFromTerminal($(toEdge).attr("_to"));
-
-                            // otherShape 이 같은 collapse 범위내에 있는지 체크
-                            if ($(otherShape).parents("#" + _collapseRootElement.id).length !== 0) {
-                                me.hide(toEdge);
-                            } else {
-                                isNeedToRedraw = true;
-                            }
-                        }
-                    }
-                }
-
-                // group 영역 밖의 연결된 otherShape 이 있는 경우 redraw
-                if (isNeedToRedraw === true) {
-                    me.redrawConnectedEdge(_childNodes[i]);
-                }
-            }
-        }
-    };
-
-    if (element.shape) {
-        childNodes = element.childNodes;
-        for (i = childNodes.length - 1; i >= 0; i--) {
-            if ($(childNodes[i]).attr("_type") === OG.Constants.NODE_TYPE.SHAPE) {
-                this.hide(childNodes[i]);
-            }
-        }
-        element.shape.isCollapsed = true;
-        $(element).attr("_collapsed", true);
-
-        hideChildEdge(element, element);
-        this.redrawShape(element);
-
-        // collapsed event fire
-        $(this._PAPER.canvas).trigger('collapsed', [element]);
-    }
-};
-
-/**
- * 주어진 Shape 이 그룹인 경우 expand 한다.
- *
- * @param {Element} element
- * @override
- */
-OG.renderer.RaphaelRenderer.prototype.expand = function (element) {
-    var me = this, childNodes, i, showChildEdge;
-
-    showChildEdge = function (_collapseRootElement, _element) {
-        var edgeIdArray, fromEdge, toEdge, _childNodes = _element.childNodes, otherShape, i, j, isNeedToRedraw;
-        for (i = _childNodes.length - 1; i >= 0; i--) {
-            if ($(_childNodes[i]).attr("_type") === OG.Constants.NODE_TYPE.SHAPE) {
-                showChildEdge(_collapseRootElement, _childNodes[i]);
-
-                isNeedToRedraw = false;
-                edgeIdArray = $(_childNodes[i]).attr("_fromedge");
-                if (edgeIdArray) {
-                    edgeIdArray = edgeIdArray.split(",");
-                    for (j = 0; j < edgeIdArray.length; j++) {
-                        fromEdge = me.getElementById(edgeIdArray[j]);
-                        if (fromEdge) {
-                            otherShape = me._getShapeFromTerminal($(fromEdge).attr("_from"));
-
-                            // otherShape 이 같은 collapse 범위내에 있는지 체크
-                            if ($(otherShape).parents("#" + _collapseRootElement.id).length !== 0) {
-                                me.show(fromEdge);
-                            } else {
-                                isNeedToRedraw = true;
-                            }
-                        }
-                    }
-                }
-
-                edgeIdArray = $(_childNodes[i]).attr("_toedge");
-                if (edgeIdArray) {
-                    edgeIdArray = edgeIdArray.split(",");
-                    for (j = 0; j < edgeIdArray.length; j++) {
-                        toEdge = me.getElementById(edgeIdArray[j]);
-                        if (toEdge) {
-                            otherShape = me._getShapeFromTerminal($(toEdge).attr("_to"));
-
-                            // otherShape 이 같은 collapse 범위내에 있는지 체크
-                            if ($(otherShape).parents("#" + _collapseRootElement.id).length !== 0) {
-                                me.show(toEdge);
-                            } else {
-                                isNeedToRedraw = true;
-                            }
-                        }
-                    }
-                }
-
-                // group 영역 밖의 연결된 otherShape 이 있는 경우 redrawConnectedEdge
-                if (isNeedToRedraw === true) {
-                    me.redrawConnectedEdge(_childNodes[i]);
-                }
-            }
-        }
-    };
-
-    if (element.shape) {
-        childNodes = element.childNodes;
-        for (i = childNodes.length - 1; i >= 0; i--) {
-            if ($(childNodes[i]).attr("_type") === OG.Constants.NODE_TYPE.SHAPE) {
-                this.show(childNodes[i]);
-            }
-        }
-        element.shape.isCollapsed = false;
-        $(element).attr("_collapsed", false);
-
-        showChildEdge(element, element);
-        this.redrawShape(element);
-
-        // expanded event fire
-        $(this._PAPER.canvas).trigger('expanded', [element]);
     }
 };
 
@@ -24109,63 +26064,6 @@ OG.handler.EventHandler.prototype = {
     },
 
     /**
-     * 주어진 Shape Element 를 Collapse/Expand 가능하도록 한다.
-     *
-     * @param {Element} element Shape Element
-     */
-    enableCollapse: function (element) {
-        var me = this, collapseObj, clickHandle;
-
-        clickHandle = function (_element, _collapsedOjb) {
-            if (_collapsedOjb && _collapsedOjb.bBox && _collapsedOjb.collapse) {
-                $(_collapsedOjb.collapse).bind("click", function (event) {
-                    if (_element.shape.isCollapsed === true) {
-                        me._RENDERER.expand(_element);
-                        _collapsedOjb = me._RENDERER.drawCollapseGuide(_element);
-                        clickHandle(_element, _collapsedOjb);
-                    } else {
-                        me._RENDERER.collapse(_element);
-                        _collapsedOjb = me._RENDERER.drawCollapseGuide(_element);
-                        clickHandle(_element, _collapsedOjb);
-                    }
-                });
-
-                $(_collapsedOjb.bBox).bind("mouseout", function (event) {
-                    me._RENDERER.remove(_element.id + OG.Constants.COLLAPSE_BBOX);
-                    me._RENDERER.remove(_element.id + OG.Constants.COLLAPSE_SUFFIX);
-                });
-            }
-        };
-
-        if (element && $(element).attr("_shape") === OG.Constants.SHAPE_TYPE.GROUP) {
-            $(element).bind({
-                mouseover: function () {
-                    collapseObj = me._RENDERER.drawCollapseGuide(this);
-                    if (collapseObj && collapseObj.bBox && collapseObj.collapse) {
-                        clickHandle(element, collapseObj);
-                    }
-                }
-            });
-        }
-    },
-
-    /*
-     + 버튼을 만들어 버튼을 누를 경우 팝업이 뜬다.
-     auth :  민수환
-     */
-    enableButton: function (element) {
-        var me = this, collapseObj, clickHandle;
-        collapseObj = me._RENDERER.drawButton(element);
-        clickHandle = function (_element, _collapsedOjb) {
-            if (_collapsedOjb && _collapsedOjb.bBox && _collapsedOjb.collapse) {
-                $(_collapsedOjb.collapse).bind("click", function (event) {
-                    $(_element).trigger("btnclick");
-                });
-            }
-        };
-    },
-
-    /**
      * Shape 엘리먼트의 이동 가능여부를 설정한다.
      *
      * @param {Element} element Shape 엘리먼트
@@ -24867,7 +26765,7 @@ OG.handler.EventHandler.prototype = {
      */
     setResizable: function (element, guide, isResizable) {
         var me = this;
-
+        var root = me._RENDERER.getRootGroup();
         if (!element || !guide) {
             return;
         }
@@ -25493,9 +27391,11 @@ OG.handler.EventHandler.prototype = {
                     if (indexOfHandle === -1) {
                         continue;
                     }
+
                     $(guide[_handleName]).data('handleName', _handleName);
                     $(guide[_handleName]).draggable({
                         start: function (event) {
+                            $(root).data(OG.Constants.GUIDE_SUFFIX.ONRESIZE, 'active');
                             var handleName = $(this).data('handleName');
                             var eventOffset = me._getOffset(event);
                             var hx = renderer.getAttr(guide[handleName], "x");
@@ -25512,6 +27412,7 @@ OG.handler.EventHandler.prototype = {
                             renderer.removeRubberBand(renderer.getRootElement());
                         },
                         drag: function (event) {
+                            $(root).data(OG.Constants.GUIDE_SUFFIX.ONRESIZE, 'active');
                             var handleName = $(this).data('handleName');
                             var eventOffset = me._getOffset(event),
                                 start = $(this).data("start"),
@@ -25586,6 +27487,7 @@ OG.handler.EventHandler.prototype = {
                             renderer.removeAllConnectGuide();
                         },
                         stop: function (event) {
+                            $(root).data(OG.Constants.GUIDE_SUFFIX.ONRESIZE, false);
                             var handleName = $(this).data('handleName');
                             var eventOffset = me._getOffset(event),
                                 start = $(this).data("start"),
@@ -25726,6 +27628,7 @@ OG.handler.EventHandler.prototype = {
             // 마우스 클릭하여 선택 처리
             $(element).bind({
                 click: function (event, param) {
+                    root = me._RENDERER.getRootGroup();
                     if (me._CONFIG.FOCUS_CANVAS_ONSELECT) {
                         $(me._RENDERER.getContainer()).focus();
                     }
@@ -25755,6 +27658,7 @@ OG.handler.EventHandler.prototype = {
                     event.stopPropagation();
                 },
                 mouseup: function (event) {
+                    root = me._RENDERER.getRootGroup();
                     if (element.shape) {
                         var isConnectable = me._isConnectable(element.shape);
                         var isConnectMode = $(root).data(OG.Constants.GUIDE_SUFFIX.LINE_CONNECT_MODE);
@@ -25784,6 +27688,9 @@ OG.handler.EventHandler.prototype = {
                                         eval('connectShape = new ' + connectShape + '()');
                                     }
                                     me._RENDERER._CANVAS.connect(target, element, null, connectLabel, null, null, null, null, connectShape);
+                                    $(root).removeData(OG.Constants.GUIDE_SUFFIX.LINE_CONNECT_SHAPE);
+                                    $(root).removeData(OG.Constants.GUIDE_SUFFIX.LINE_CONNECT_TEXT);
+                                    $(root).removeData(OG.Constants.GUIDE_SUFFIX.LINE_CONNECT_LABEL);
                                     renderer.addHistory();
                                 }
                             } else {
@@ -25798,8 +27705,7 @@ OG.handler.EventHandler.prototype = {
                             var target = renderer.getTargetfromVirtualEdge();
                             renderer.removeAllVirtualEdge();
                             var shapeId = $(target).attr('_shape_id');
-                            var newShape;
-                            eval('newShape = new ' + shapeId + '()');
+                            var newShape = target.shape.clone();
 
                             var style = target.shape.geom.style;
                             var boundary = renderer.getBoundary(target);
@@ -25829,7 +27735,7 @@ OG.handler.EventHandler.prototype = {
                 $(element).bind("contextmenu", function (event) {
 
                     //중복된 콘텍스트를 방지
-                    var eventOffset = me._getOffset(event)
+                    var eventOffset = me._getOffset(event);
                     var frontElement = renderer.getFrontForCoordinate([eventOffset.x, eventOffset.y]);
                     if (!frontElement) {
                         return;
@@ -25887,13 +27793,128 @@ OG.handler.EventHandler.prototype = {
             renderer.offDropablePool();
         });
     },
+
+    /**
+     * 드래그하여 페이지 이동이 가능하게 한다.
+     * @param {Boolean} dragPageMovable 드래그 페이지 이동 가능 여부
+     */
+    setDragPageMovable: function (dragPageMovable) {
+        if (!dragPageMovable) {
+            return;
+        }
+        var renderer = this._RENDERER;
+        var me = this, rootEle = renderer.getRootElement();
+        var root = renderer.getRootGroup();
+        var container = renderer._CANVAS._CONTAINER;
+        $(rootEle).bind("mousedown", function (event) {
+            root = renderer.getRootGroup();
+            var isConnectMode = $(root).data(OG.Constants.GUIDE_SUFFIX.LINE_CONNECT_MODE);
+            var isRectMode = $(root).data(OG.Constants.GUIDE_SUFFIX.RECT_CONNECT_MODE);
+            if (isConnectMode === 'active' || isRectMode === 'active') {
+                return;
+            }
+            var eventOffset = me._getOffset(event);
+            $(root).data("dragPageMove", {x: eventOffset.x, y: eventOffset.y});
+        });
+        $(rootEle).bind("mousemove", function (event) {
+            root = renderer.getRootGroup();
+            var isResizing = $(root).data(OG.Constants.GUIDE_SUFFIX.ONRESIZE);
+            var isConnectMode = $(root).data(OG.Constants.GUIDE_SUFFIX.LINE_CONNECT_MODE);
+            var isRectMode = $(root).data(OG.Constants.GUIDE_SUFFIX.RECT_CONNECT_MODE);
+            if (isConnectMode === 'active' || isRectMode === 'active' || isResizing === 'active') {
+                return;
+            }
+            var pageMove = $(root).data("dragPageMove"), eventOffset;
+
+            if (pageMove) {
+                eventOffset = me._getOffset(event);
+                var moveX = eventOffset.x - pageMove.x;
+                var moveY = eventOffset.y - pageMove.y;
+                var cuScrollLeft = container.scrollLeft;
+                var cuScrollTop = container.scrollTop;
+                $(container).scrollLeft(cuScrollLeft - moveX);
+                $(container).scrollTop(cuScrollTop - moveY);
+            }
+        });
+        $(rootEle).bind("mouseup", function (event) {
+            root = renderer.getRootGroup();
+            var isConnectMode = $(root).data(OG.Constants.GUIDE_SUFFIX.LINE_CONNECT_MODE);
+            var isRectMode = $(root).data(OG.Constants.GUIDE_SUFFIX.RECT_CONNECT_MODE);
+            if (isConnectMode === 'active' || isRectMode === 'active') {
+                return;
+            }
+            $(root).removeData('dragPageMove');
+        });
+    },
+
+    /**
+     * 휠 스케일을 가능하게 한다.
+     * @param {Boolean} wheelScalable 휠 스케일 가능 여부
+     */
+    setWheelScale: function (wheelScalable) {
+        if (!wheelScalable) {
+            return;
+        }
+        var renderer = this._RENDERER;
+        var me = this, rootEle = renderer.getRootElement();
+        var updateScale = function (event, isUp) {
+            var eventOffset = me._getOffset(event);
+            var scrollLeft = rootEle.scrollLeft;
+            var scrollTop = rootEle.scrollTop;
+            var cuScale;
+            var preScale = renderer.getScale();
+            if (isUp) {
+                cuScale = preScale + 0.1;
+            } else {
+                cuScale = preScale - 0.1;
+            }
+            if (cuScale < 0.25) {
+                cuScale = 0.25;
+            }
+            if (cuScale > 4) {
+                cuScale = 4;
+            }
+            var container = renderer._CANVAS._CONTAINER;
+            var preCenterX = eventOffset.x;
+            var preCenterY = eventOffset.y;
+
+            renderer.setScale(cuScale);
+
+            eventOffset = me._getOffset(event);
+            var cuCenterX = eventOffset.x;
+            var cuCenterY = eventOffset.y;
+
+            var moveX = (preCenterX - cuCenterX) * cuScale;
+            var moveY = (preCenterY - cuCenterY) * cuScale;
+
+            var cuScrollLeft = container.scrollLeft;
+            var cuScrollTop = container.scrollTop;
+            $(container).scrollLeft(cuScrollLeft + moveX);
+            $(container).scrollTop(cuScrollTop + moveY);
+            renderer._CANVAS.updateNavigatior();
+
+        };
+        $(rootEle).bind('mousewheel DOMMouseScroll', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
+                // scroll up
+                updateScale(event, true);
+            }
+            else {
+                updateScale(event, false);
+            }
+        });
+    },
+
     /**
      * 마우스 드래그 영역지정 선택가능여부를 설정한다.
      * 선택가능해야 리사이즈가 가능하다.
      *
      * @param {Boolean} isSelectable 선택가능여부
+     * @param {Boolean} dragPageMovable 드래그 페이지 이동 가능 여부
      */
-    setDragSelectable: function (isSelectable) {
+    setDragSelectable: function (isSelectable, dragPageMovable) {
         var renderer = this._RENDERER;
         var me = this, rootEle = renderer.getRootElement(),
             root = renderer.getRootGroup();
@@ -25967,6 +27988,7 @@ OG.handler.EventHandler.prototype = {
 
         // 배경클릭한 경우 deselect 하도록
         $(rootEle).bind("click", function (event) {
+            root = me._RENDERER.getRootGroup();
             if (!$(this).data("dragBox")) {
                 me.deselectAll();
                 renderer.removeRubberBand(rootEle);
@@ -26013,6 +28035,7 @@ OG.handler.EventHandler.prototype = {
                         isConnectable = false;
                     }
                     if (isConnectable) {
+                        newShape.setData(JSON.parse(JSON.stringify(target.shape.getData())));
                         var rectShape = renderer._CANVAS.drawShape([eventOffset.x, eventOffset.y], newShape, [width, height], style);
                         $(renderer._PAPER.canvas).trigger('duplicated', [target, rectShape]);
 
@@ -26065,9 +28088,11 @@ OG.handler.EventHandler.prototype = {
                 if (isConnectMode === 'active' || isRectMode === 'active') {
                     return;
                 }
-                var eventOffset = me._getOffset(event);
-                $(this).data("dragBox_first", {x: eventOffset.x, y: eventOffset.y});
-                $(this).removeData("dragBox");
+                if (!dragPageMovable) {
+                    var eventOffset = me._getOffset(event);
+                    $(this).data("dragBox_first", {x: eventOffset.x, y: eventOffset.y});
+                    $(this).removeData("dragBox");
+                }
             });
             $(rootEle).bind("mousemove", function (event) {
                 var isConnectMode = $(root).data(OG.Constants.GUIDE_SUFFIX.LINE_CONNECT_MODE);
@@ -26079,7 +28104,7 @@ OG.handler.EventHandler.prototype = {
                 var first = $(this).data("dragBox_first"),
                     eventOffset, width, height, x, y;
 
-                if (first) {
+                if (first && !dragPageMovable) {
                     eventOffset = me._getOffset(event);
                     width = eventOffset.x - first.x;
                     height = eventOffset.y - first.y;
@@ -26100,7 +28125,7 @@ OG.handler.EventHandler.prototype = {
                 if (isConnectMode === 'active' || isRectMode === 'active') {
                     return;
                 }
-                if ("start" == $(this).data("rubber_band_status")) {
+                if ("start" == $(this).data("rubber_band_status") && !dragPageMovable) {
                     var first = $(this).data("dragBox_first"),
                         eventOffset, width, height, x, y, envelope, guide, elements = [];
                     renderer.removeRubberBand(rootEle);
@@ -27177,129 +29202,6 @@ OG.handler.EventHandler.prototype = {
         }
     },
 
-    makeProperty: function () {
-        var me = this;
-
-        return {
-            'property': {
-                name: '속성', callback: function () {
-                    me.showProperty();
-                }
-            }
-        }
-    },
-
-    makeTaskChange: function () {
-        var me = this;
-
-        return {
-            'changeshape': {
-                name: '변경',
-                items: {
-                    'A_Task': {
-                        name: '추상',
-                        type: 'radio',
-                        radio: 'changeshape',
-                        value: 'OG.shape.bpmn.A_Task',
-                        events: {
-                            change: function (e) {
-                                me.changeShape(e.target.value);
-                            }
-                        }
-                    },
-                    'A_HumanTask': {
-                        name: '사용자',
-                        type: 'radio',
-                        radio: 'changeshape',
-                        value: 'OG.shape.bpmn.A_HumanTask',
-                        events: {
-                            change: function (e) {
-                                me.changeShape(e.target.value);
-                            }
-                        }
-                    },
-                    'A_WebServiceTask': {
-                        name: '서비스',
-                        type: 'radio',
-                        radio: 'changeshape',
-                        value: 'OG.shape.bpmn.A_WebServiceTask',
-                        events: {
-                            change: function (e) {
-                                me.changeShape(e.target.value);
-                            }
-                        }
-                    },
-                    'A_ManualTask': {
-                        name: '수동',
-                        type: 'radio',
-                        radio: 'changeshape',
-                        value: "OG.shape.bpmn.A_ManualTask",
-                        events: {
-                            change: function (e) {
-                                me.changeShape(e.target.value);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    },
-
-    makeAddEvent: function () {
-        var me = this;
-
-        return {
-            'addEvent': {
-                name: '이벤트 추가',
-                items: {
-                    'Message': {
-                        name: '메시지',
-                        type: 'radio',
-                        radio: 'addEvent',
-                        value: 'Message',
-                        events: {
-                            change: function (e) {
-                                me.setAddEventSelectedShape(e.target.value);
-                            }
-                        }
-                    },
-                    'Timer': {
-                        name: '타이머',
-                        type: 'radio',
-                        radio: 'addEvent',
-                        value: 'Timer',
-                        events: {
-                            change: function (e) {
-                                me.setAddEventSelectedShape(e.target.value);
-                            }
-                        }
-                    },
-                    'Error': {
-                        name: '에러',
-                        type: 'radio',
-                        radio: 'addEvent',
-                        value: 'Error',
-                        events: {
-                            change: function (e) {
-                                me.setAddEventSelectedShape(e.target.value);
-                            }
-                        }
-                    },
-                    'Conditional': {
-                        name: '조건부',
-                        type: 'radio',
-                        radio: 'addEvent',
-                        value: "Conditional",
-                        events: {
-                            change: function (e) {
-                                me.setAddEventSelectedShape(e.target.value);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    },
 
     makeDelete: function () {
         var me = this;
@@ -27385,309 +29287,19 @@ OG.handler.EventHandler.prototype = {
         }
     },
 
-    makeEventChange: function () {
-        var me = this;
-
+    makeFormat: function () {
         return {
-            'change': {
-                name: '변경',
-                items: {
-                    'start': {
-                        name: '시작',
-                        items: {
-                            'start': {
-                                name: '시작',
-                                type: 'radio',
-                                radio: 'start',
-                                value: 'OG.shape.bpmn.E_Start',
-                                events: {
-                                    change: function (e) {
-                                        me.changeShape(e.target.value);
-                                    }
-                                }
-                            },
-                            'start_message': {
-                                name: '메시지 시작',
-                                type: 'radio',
-                                radio: 'start',
-                                value: 'OG.shape.bpmn.E_Start_Message',
-                                events: {
-                                    change: function (e) {
-                                        me.changeShape(e.target.value);
-                                    }
-                                }
-                            },
-                            'start_timer': {
-                                name: '타이머 시작',
-                                type: 'radio',
-                                radio: 'start',
-                                value: 'OG.shape.bpmn.E_Start_Timer',
-                                events: {
-                                    change: function (e) {
-                                        me.changeShape(e.target.value);
-                                    }
-                                }
-                            },
-                            'start_conditional': {
-                                name: '조건부 시작',
-                                type: 'radio',
-                                radio: 'start',
-                                value: 'OG.shape.bpmn.E_Start_Rule',
-                                events: {
-                                    change: function (e) {
-                                        me.changeShape(e.target.value);
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    'intermediate': {
-                        name: '중간',
-                        items: {
-                            'intermediate': {
-                                name: '중간',
-                                type: 'radio',
-                                radio: 'intermediate',
-                                value: 'OG.shape.bpmn.E_Intermediate',
-                                events: {
-                                    change: function (e) {
-                                        me.changeShape(e.target.value);
-                                    }
-                                }
-                            },
-                            'intermediate_openMessage': {
-                                name: '열린 메시지 중간',
-                                type: 'radio',
-                                radio: 'intermediate',
-                                value: 'OG.shape.bpmn.E_Intermediate_Message',
-                                events: {
-                                    change: function (e) {
-                                        me.changeShape(e.target.value);
-                                    }
-                                }
-                            },
-                            'intermediate_closeMessage': {
-                                name: '닫힌 메시지 중간',
-                                type: 'radio',
-                                radio: 'intermediate',
-                                value: 'OG.shape.bpmn.E_Intermediate_MessageFill',
-                                events: {
-                                    change: function (e) {
-                                        me.changeShape(e.target.value);
-                                    }
-                                }
-                            },
-                            'intermediate_timer': {
-                                name: '타이머 중간',
-                                type: 'radio',
-                                radio: 'intermediate',
-                                value: 'OG.shape.bpmn.E_Intermediate_Timer',
-                                events: {
-                                    change: function (e) {
-                                        me.changeShape(e.target.value);
-                                    }
-                                }
-                            },
-                            'intermediate_conditional': {
-                                name: '조건부 중간',
-                                type: 'radio',
-                                radio: 'intermediate',
-                                value: 'OG.shape.bpmn.E_Intermediate_Rule',
-                                events: {
-                                    change: function (e) {
-                                        me.changeShape(e.target.value);
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    'end': {
-                        name: '종료',
-                        items: {
-                            'end': {
-                                name: '종료',
-                                type: 'radio',
-                                radio: 'end',
-                                value: 'OG.shape.bpmn.E_End',
-                                events: {
-                                    change: function (e) {
-                                        me.changeShape(e.target.value);
-                                    }
-                                }
-                            },
-                            'end_message': {
-                                name: '메시지 종료',
-                                type: 'radio',
-                                radio: 'end',
-                                value: 'OG.shape.bpmn.E_End_Message',
-                                events: {
-                                    change: function (e) {
-                                        me.changeShape(e.target.value);
-                                    }
-                                }
-                            },
-                            'end_process': {
-                                name: '프로세스 종료',
-                                type: 'radio',
-                                radio: 'end',
-                                value: 'OG.shape.bpmn.E_Terminate',
-                                events: {
-                                    change: function (e) {
-                                        me.changeShape(e.target.value);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+            format: {
+                name: '형식',
+                items: this.mergeContextMenu(
+                    this.makeFillColor(),
+                    this.makeFillOpacity(),
+                    this.makeLineStyle(),
+                    this.makeLineColor(),
+                    this.makeLineWidth()
+                )
             }
         }
-    },
-
-    makeGatewayChange: function () {
-        var me = this;
-
-        return {
-            'changegateway': {
-                name: '변경',
-                items: {
-                    'G_Gateway': {
-                        name: '베타적',
-                        type: 'radio',
-                        radio: 'changegateway',
-                        value: 'OG.shape.bpmn.G_Gateway',
-                        events: {
-                            change: function (e) {
-                                me.changeShape(e.target.value);
-                            }
-                        }
-                    },
-                    'G_Parallel': {
-                        name: '병렬',
-                        type: 'radio',
-                        radio: 'changegateway',
-                        value: 'OG.shape.bpmn.G_Parallel',
-                        events: {
-                            change: function (e) {
-                                me.changeShape(e.target.value);
-                            }
-                        }
-                    },
-                    'G_Inclusive': {
-                        name: '포괄적',
-                        type: 'radio',
-                        radio: 'changegateway',
-                        value: 'OG.shape.bpmn.G_Inclusive',
-                        events: {
-                            change: function (e) {
-                                me.changeShape(e.target.value);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    },
-
-    makeFormat: function (isEdge) {
-        if (isEdge) {
-            return {
-                format: {
-                    name: '형식',
-                    items: this.mergeContextMenu(
-                        this.makeLineStyle(),
-                        this.makeLineColor(),
-                        this.makeLineWidth()
-                    )
-                }
-            }
-        } else {
-            return {
-                format: {
-                    name: '형식',
-                    items: this.mergeContextMenu(
-                        this.makeFillColor(),
-                        this.makeFillOpacity(),
-                        this.makeLineStyle(),
-                        this.makeLineColor(),
-                        this.makeLineWidth()
-                    )
-                }
-            }
-        }
-    },
-
-    makeEdgeContextMenu: function (isEdge) {
-        return this.mergeContextMenu(
-            this.makeDelete(),
-            this.makeCopy(),
-            this.makeFormat(isEdge),
-            this.makeFont(),
-            this.makeBring(),
-            this.makeSend()
-        )
-    },
-
-    makeTaskContextMenu: function () {
-        return this.mergeContextMenu(
-            this.makeDelete(),
-            this.makeCopy(),
-            this.makeFormat(),
-            this.makeFont(),
-            this.makeBring(),
-            this.makeSend(),
-            this.makeTaskChange(),
-            this.makeAddEvent(),
-            this.makeProperty()
-        );
-    },
-
-    makeValueChainContextMenu: function () {
-        return this.mergeContextMenu(
-            this.makeDelete(),
-            this.makeCopy(),
-            this.makeFormat(),
-            this.makeFont(),
-            this.makeBring(),
-            this.makeSend(),
-            this.makeProperty()
-        );
-    },
-
-    makeSubprocessContextMenu: function () {
-        return this.mergeContextMenu(
-            this.makeDelete(),
-            this.makeCopy(),
-            this.makeFormat(),
-            this.makeFont(),
-            this.makeBring(),
-            this.makeSend(),
-            this.makeProperty()
-        );
-    },
-
-    makeEventContextMenu: function () {
-        return this.mergeContextMenu(
-            this.makeDelete(),
-            this.makeCopy(),
-            this.makeFormat(),
-            this.makeFont(),
-            this.makeBring(),
-            this.makeSend(),
-            this.makeEventChange()
-        );
-    },
-
-    makeGatewayContextMenu: function () {
-        return this.mergeContextMenu(
-            this.makeDelete(),
-            this.makeCopy(),
-            this.makeFormat(),
-            this.makeFont(),
-            this.makeBring(),
-            this.makeSend(),
-            this.makeGatewayChange()
-        );
     },
 
     makeMultiContextMenu: function () {
@@ -27699,7 +29311,6 @@ OG.handler.EventHandler.prototype = {
     },
 
     mergeContextMenu: function () {
-
         var menu = {};
         for (var i = 0; i < arguments.length; i++) {
             for (var key in arguments[i]) {
@@ -27710,15 +29321,36 @@ OG.handler.EventHandler.prototype = {
         return menu;
     },
 
-    makeDefaultContextMenu: function () {
-        return this.mergeContextMenu(
-            this.makeDelete(),
-            this.makeCopy(),
-            this.makeFormat(),
-            this.makeFont(),
-            this.makeBring(),
-            this.makeSend()
-        );
+    makeDefaultContextMenu: function (key) {
+        if (key) {
+            if (key == 'delete') {
+                return this.makeDelete();
+            }
+            else if (key == 'copy') {
+                return this.makeCopy();
+            }
+            else if (key == 'format') {
+                return this.makeFormat();
+            }
+            else if (key == 'text') {
+                return this.makeFont();
+            }
+            else if (key == 'bringToFront') {
+                return this.makeBring();
+            }
+            else if (key == 'sendToBack') {
+                return this.makeSend();
+            }
+        } else {
+            return this.mergeContextMenu(
+                this.makeDelete(),
+                this.makeCopy(),
+                this.makeFormat(),
+                this.makeFont(),
+                this.makeBring(),
+                this.makeSend()
+            );
+        }
     },
 
     /**
@@ -27729,30 +29361,55 @@ OG.handler.EventHandler.prototype = {
         $.contextMenu({
             position: function (opt, x, y) {
                 opt.$menu.css({top: y + 10, left: x + 10});
+                opt.canvas = me._CANVAS;
             },
             selector: '#' + me._RENDERER.getRootElement().id + ' [_type=SHAPE]',
             build: function ($trigger, event) {
+                //1. shape 에 contextMenu 를 정의시 실행된다.
+
+                //2. canvas.setContextMenu 실행시 shape 의 콘텍스트에 오버라이드 된다.
+
+                //$trigger 실행시 shape 에 커스텀 컨텍스트 메뉴가 있을 경우, 그에 맞는 컨텍스트 메뉴를 빌드한다.
+
+                //default 컨텍스트 메뉴를 설정한다.
+
                 if (me._CONFIG.FOCUS_CANVAS_ONSELECT) {
                     $(me._RENDERER.getContainer()).focus();
                 }
-                var items;
+                var items = {};
 
                 if (me._getSelectedElement().length == 1) {
-                    if (me._getSelectedElement()[0].shape instanceof OG.shape.EdgeShape) {
-                        items = me.makeEdgeContextMenu(true);
-                    } else if (me._getSelectedElement()[0].shape instanceof OG.shape.bpmn.G_Gateway) {
-                        items = me.makeGatewayContextMenu();
-                    } else if (me._getSelectedElement()[0].shape instanceof OG.shape.bpmn.Event) {
-                        items = me.makeEventContextMenu();
-                    } else if (me._getSelectedElement()[0].shape instanceof OG.shape.bpmn.A_Task) {
-                        items = me.makeTaskContextMenu();
-                    } else if (me._getSelectedElement()[0].shape instanceof OG.shape.bpmn.A_Subprocess) {
-                        items = me.makeSubprocessContextMenu();
-                    } else if (me._getSelectedElement()[0].shape instanceof OG.shape.bpmn.Value_Chain) {
-                        items = me.makeValueChainContextMenu();
-                    } else {
+                    var defaultList = ['delete', 'copy', 'format', 'text', 'bringToFront', 'sendToBack'];
+                    var eventShape = $trigger.get(0).shape;
+                    //사용자가 지정한 customContextMenu 가 있다면 기본 createContextMenu 보다 우선한다.
+                    var customMenu = eventShape.customContextMenu;
+                    if (!customMenu) {
+                        if (eventShape.createContextMenu) {
+                            customMenu = eventShape.createContextMenu();
+                        }
+                    }
+
+                    //커스텀 콘텍스트 메뉴가 있을경우 처리
+                    if (customMenu) {
+                        for (var key in customMenu) {
+                            if (!customMenu[key]) {
+                                continue;
+                            }
+                            //기본 메뉴인경우
+                            if (defaultList.indexOf(key) != -1) {
+                                items[key] = me.makeDefaultContextMenu()[key];
+                            }
+                            //기본 메뉴가 아닌경우
+                            else {
+                                items[key] = customMenu[key];
+                            }
+                        }
+                    }
+                    //커스텀 콘텍스트 메뉴가 없을경우 처리
+                    else {
                         items = me.makeDefaultContextMenu();
                     }
+
                 } else {
                     items = me.makeMultiContextMenu();
                 }
@@ -27971,21 +29628,37 @@ OG.handler.EventHandler.prototype = {
     /**
      * 메뉴 : Shape를 선택한 모양으로 변경한다.
      */
-    changeShape: function (value) {
+    changeShape: function (value, label) {
         var me = this, geometry, position, width, height, shape;
 
         $(me._RENDERER.getRootElement()).find("[_selected=true]").each(function (index, item) {
-            shape = eval('new ' + value + '(\'' + item.shape.label + '\')');
-            position = [item.shape.geom.boundary.getCentroid().x, item.shape.geom.boundary.getCentroid().y];
-            width = item.shape.geom.boundary.getWidth();
-            height = item.shape.geom.boundary.getHeight();
+            shape = eval('new ' + value + '()');
+            if (label) {
+                shape.label = label;
+            } else{
+                shape.label = undefined;
+            }
 
-            geometry = shape.createShape();
+            if (shape instanceof OG.EdgeShape) {
+                geometry = shape.createShape();
+                geometry.vertices = item.shape.geom.vertices;
+                shape.geom = geometry;
+            } else {
+                position = [item.shape.geom.boundary.getCentroid().x, item.shape.geom.boundary.getCentroid().y];
+                width = item.shape.geom.boundary.getWidth();
+                height = item.shape.geom.boundary.getHeight();
+                geometry = shape.createShape();
 
-            // 좌상단으로 이동 및 크기 조정
-            geometry.moveCentroid(position);
-            geometry.resizeBox(width, height);
-            shape.geom = geometry;
+                // 좌상단으로 이동 및 크기 조정
+                geometry.moveCentroid(position);
+                geometry.resizeBox(width, height);
+                shape.geom = geometry;
+            }
+
+            //데이터 복제
+            shape.setData(JSON.parse(JSON.stringify(item.shape.getData())));
+
+            //shape 등록
             item.shape = shape;
 
             me._RENDERER.redrawShape(item);
@@ -28120,9 +29793,6 @@ OG.handler.EventHandler.prototype = {
                 me.setResizable(newElement, newGuide, me._isResizable(newElement.shape));
                 me.setConnectable(newElement, newGuide, me._isConnectable(newElement.shape));
 
-                if (me._CONFIG.GROUP_COLLAPSIBLE && newElement.shape.GROUP_COLLAPSIBLE) {
-                    me.enableCollapse(newElement);
-                }
                 if (me._isLabelEditable(newElement.shape)) {
                     me.enableEditLabel(newElement);
                 }
@@ -28485,6 +30155,19 @@ OG.handler.EventHandler.prototype = {
         var me = this;
         element.shape.inclusion = inclusion;
         me._RENDERER.redrawShape(element, null, true);
+        me._RENDERER.addHistory();
+    },
+
+    /**
+     * 메뉴 : 선택된 Shape 들의 Fill Opacity 를 설정한다.
+     *
+     * @param {String} opacity
+     */
+    setFillOpacitySelectedShape: function (opacity) {
+        var me = this;
+        $(me._RENDERER.getRootElement()).find("[_type=" + OG.Constants.NODE_TYPE.SHAPE + "][_selected=true]").each(function (idx, item) {
+            me._RENDERER.setShapeStyle(item, {"fill-opacity": opacity});
+        });
         me._RENDERER.addHistory();
     },
 
@@ -29006,9 +30689,6 @@ OG.handler.EventHandler.prototype = {
                 me.setMovable(newElement, me._isMovable(newElement.shape));
                 me.setConnectGuide(newElement, me._isConnectable(newElement.shape));
 
-                if (me._CONFIG.GROUP_COLLAPSIBLE && newElement.shape.GROUP_COLLAPSIBLE) {
-                    me.enableCollapse(newElement);
-                }
                 if (me._isLabelEditable(newElement.shape)) {
                     me.enableEditLabel(newElement);
                 }
@@ -29370,11 +31050,14 @@ OG.handler.EventHandler.prototype = {
             var isConnectable;
             var vertices = element.shape.geom.getVertices();
             if ($(spot).data('type') === OG.Constants.CONNECT_GUIDE_SUFFIX.SPOT_CIRCLE) {
-                if ($(spot).data("start")) {
-                    isConnectable = 'from';
-                }
-                if ($(spot).data("end")) {
-                    isConnectable = 'to';
+                var index = $(spot).data("index");
+                if (index || index === 0) {
+                    if (index === 0) {
+                        isConnectable = 'from'
+                    }
+                    if (index === vertices.length - 1) {
+                        isConnectable = 'to'
+                    }
                 }
             }
             return isConnectable;
@@ -29482,7 +31165,6 @@ OG.handler.EventHandler.prototype = {
                                 renderer.selectSpot(virtualSpot);
                             },
                             drag: function (event) {
-
                                 if (!renderer._getREleById(virtualSpot.id)) {
                                     renderer.removeAllConnectGuide();
                                     $(root).data(OG.Constants.CONNECT_GUIDE_SUFFIX.SPOT_EVENT_DRAG, false);
@@ -29512,7 +31194,6 @@ OG.handler.EventHandler.prototype = {
                                 renderer.trimConnectIntersection(element);
                             },
                             stop: function (event) {
-
                                 $(root).data(OG.Constants.CONNECT_GUIDE_SUFFIX.SPOT_EVENT_DRAG, false);
                                 $(root).data(OG.Constants.CONNECT_GUIDE_SUFFIX.SPOT_EVENT_MOUSEROVER, false);
 
@@ -29580,7 +31261,7 @@ OG.handler.EventHandler.prototype = {
                             && eventOffset.y >= spotBBOX.y && eventOffset.y <= spotBBOX.y2) {
                             skipRemove = true;
                         }
-                    })
+                    });
 
                     //가상스팟이 선택되어 바운더리 영역 밖으로 나갔다고 판단될 경우 예외처리한다.
                     var virtualSpot = renderer.getVirtualSpot(element);
@@ -30392,6 +32073,14 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
 
     this._CONFIG = {
         /**
+         * 마우스 휠 스케일 변경 여부
+         */
+        WHEEL_SCALABLE: false,
+        /**
+         * 마우스 드래그 페이지 이동 가능 여부
+         */
+        DRAG_PAGE_MOVABLE: false,
+        /**
          * 도형 선택시 캔버스 포거싱 여부
          */
         FOCUS_CANVAS_ONSELECT: true,
@@ -30466,7 +32155,8 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
             IMAGE: true,
             EDGE: true,
             GROUP: true
-        },
+        }
+        ,
 
         /**
          * 리사이즈 가능여부
@@ -30479,7 +32169,8 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
             IMAGE: true,
             EDGE: true,
             GROUP: true
-        },
+        }
+        ,
 
         /**
          * 연결 가능여부
@@ -30512,7 +32203,8 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
             IMAGE: true,
             EDGE: true,
             GROUP: true
-        },
+        }
+        ,
 
         /**
          * 가이드에 삭제 컨트롤러 여부
@@ -30525,7 +32217,8 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
             IMAGE: true,
             EDGE: true,
             GROUP: true
-        },
+        }
+        ,
 
         /**
          * 라벨 수정여부
@@ -30538,17 +32231,13 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
             IMAGE: true,
             EDGE: true,
             GROUP: true
-        },
+        }
+        ,
 
         /**
          * 그룹핑 가능여부
          */
         GROUP_DROPABLE: true,
-
-        /**
-         * 최소화 가능여부
-         */
-        GROUP_COLLAPSIBLE: true,
 
         /**
          * 이동, 리사이즈 드래그시 MOVE_SNAP_SIZE 적용 여부
@@ -30769,13 +32458,16 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
         /**
          * 라벨 최대 크기(IE)
          */
-        LABEL_MAX_SIZE: 300,
+        LABEL_MAX_SIZE: 1000,
 
         /**
          * 디폴트 스타일 정의
          */
         DEFAULT_STYLE: {
-            SHAPE: {cursor: "default"},
+            SHAPE: {
+                cursor: "default"
+            }
+            ,
             GEOM: {
                 stroke: "black",
                 "fill-r": ".5",
@@ -30784,10 +32476,20 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
                 fill: "white",
                 "fill-opacity": 0,
                 "label-position": "center"
-            },
-            TEXT: {stroke: "none", "text-anchor": "middle"},
-            HTML: {"label-position": "bottom", "text-anchor": "middle", "vertical-align": "top"},
-            IMAGE: {"label-position": "bottom", "text-anchor": "middle", "vertical-align": "top"},
+            }
+            ,
+            TEXT: {
+                stroke: "none", "text-anchor": "middle"
+            }
+            ,
+            HTML: {
+                "label-position": "bottom", "text-anchor": "middle", "vertical-align": "top"
+            }
+            ,
+            IMAGE: {
+                "label-position": "bottom", "text-anchor": "middle", "vertical-align": "top"
+            }
+            ,
             EDGE: {
                 stroke: "black",
                 fill: "none",
@@ -30801,7 +32503,8 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
                 "label-position": "center",
                 "stroke-linejoin": "round",
                 cursor: "pointer"
-            },
+            }
+            ,
             EDGE_SHADOW: {
                 stroke: "#00FF00",
                 fill: "none",
@@ -30813,7 +32516,8 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
                 "stroke-dasharray": "- ",
                 "edge-type": "plain",
                 cursor: "pointer"
-            },
+            }
+            ,
             EDGE_HIDDEN: {
                 stroke: "white",
                 fill: "none",
@@ -30821,7 +32525,8 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
                 "stroke-width": 10,
                 "stroke-opacity": 0,
                 cursor: "pointer"
-            },
+            }
+            ,
             GROUP: {
                 stroke: "black",
                 fill: "none",
@@ -30829,8 +32534,12 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
                 "label-position": "bottom",
                 "text-anchor": "middle",
                 "vertical-align": "top"
-            },
-            GROUP_HIDDEN: {stroke: "black", fill: "white", "fill-opacity": 0, "stroke-opacity": 0, cursor: "move"},
+            }
+            ,
+            GROUP_HIDDEN: {
+                stroke: "black", fill: "white", "fill-opacity": 0, "stroke-opacity": 0, cursor: "move"
+            }
+            ,
             GROUP_SHADOW: {
                 stroke: "white",
                 fill: "none",
@@ -30838,7 +32547,8 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
                 "stroke-width": 15,
                 "stroke-opacity": 0,
                 cursor: "pointer"
-            },
+            }
+            ,
             GROUP_SHADOW_MAPPER: {
                 stroke: "white",
                 fill: "none",
@@ -30846,7 +32556,8 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
                 "stroke-width": 1,
                 "stroke-opacity": 0,
                 cursor: "pointer"
-            },
+            }
+            ,
             GUIDE_BBOX: {
                 stroke: "#00FF00",
                 fill: "white",
@@ -30854,68 +32565,92 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
                 "stroke-dasharray": "- ",
                 "shape-rendering": "crispEdges",
                 cursor: "move"
-            },
+            }
+            ,
             GUIDE_UL: {
                 stroke: "#03689a",
                 fill: "#03689a",
                 "fill-opacity": 0.5,
                 cursor: "nwse-resize",
                 "shape-rendering": "crispEdges"
-            },
+            }
+            ,
             GUIDE_UR: {
                 stroke: "#03689a",
                 fill: "#03689a",
                 "fill-opacity": 0.5,
                 cursor: "nesw-resize",
                 "shape-rendering": "crispEdges"
-            },
+            }
+            ,
             GUIDE_LL: {
                 stroke: "#03689a",
                 fill: "#03689a",
                 "fill-opacity": 0.5,
                 cursor: "nesw-resize",
                 "shape-rendering": "crispEdges"
-            },
+            }
+            ,
             GUIDE_LR: {
                 stroke: "#03689a",
                 fill: "#03689a",
                 "fill-opacity": 0.5,
                 cursor: "nwse-resize",
                 "shape-rendering": "crispEdges"
-            },
+            }
+            ,
             GUIDE_LC: {
                 stroke: "#03689a",
                 fill: "#03689a",
                 "fill-opacity": 0.5,
                 cursor: "ew-resize",
                 "shape-rendering": "crispEdges"
-            },
+            }
+            ,
             GUIDE_UC: {
                 stroke: "black",
                 fill: "#03689a",
                 "fill-opacity": 0.5,
                 cursor: "ns-resize",
                 "shape-rendering": "crispEdges"
-            },
+            }
+            ,
             GUIDE_RC: {
                 stroke: "black",
                 fill: "#03689a",
                 "fill-opacity": 0.5,
                 cursor: "ew-resize",
                 "shape-rendering": "crispEdges"
-            },
+            }
+            ,
             GUIDE_LWC: {
                 stroke: "black",
                 fill: "#03689a",
                 "fill-opacity": 0.5,
                 cursor: "ns-resize",
                 "shape-rendering": "crispEdges"
-            },
-            GUIDE_FROM: {stroke: "black", fill: "#00FF00", cursor: "move", "shape-rendering": "crispEdges"},
-            GUIDE_TO: {stroke: "black", fill: "#00FF00", cursor: "move", "shape-rendering": "crispEdges"},
-            GUIDE_CTL_H: {stroke: "black", fill: "#00FF00", cursor: "ew-resize", "shape-rendering": "crispEdges"},
-            GUIDE_CTL_V: {stroke: "black", fill: "#00FF00", cursor: "ns-resize", "shape-rendering": "crispEdges"},
-            GUIDE_SHADOW: {stroke: "black", fill: "none", "stroke-dasharray": "- ", "shape-rendering": "crispEdges"},
+            }
+            ,
+            GUIDE_FROM: {
+                stroke: "black", fill: "#00FF00", cursor: "move", "shape-rendering": "crispEdges"
+            }
+            ,
+            GUIDE_TO: {
+                stroke: "black", fill: "#00FF00", cursor: "move", "shape-rendering": "crispEdges"
+            }
+            ,
+            GUIDE_CTL_H: {
+                stroke: "black", fill: "#00FF00", cursor: "ew-resize", "shape-rendering": "crispEdges"
+            }
+            ,
+            GUIDE_CTL_V: {
+                stroke: "black", fill: "#00FF00", cursor: "ns-resize", "shape-rendering": "crispEdges"
+            }
+            ,
+            GUIDE_SHADOW: {
+                stroke: "black", fill: "none", "stroke-dasharray": "- ", "shape-rendering": "crispEdges"
+            }
+            ,
             GUIDE_LINE: {
                 stroke: "black",
                 fill: "none",
@@ -30926,7 +32661,8 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
                 "arrow-end": "block",
                 "stroke-linejoin": "round",
                 cursor: "pointer"
-            },
+            }
+            ,
             GUIDE_LINE_ESSENSIA: {
                 stroke: "black",
                 fill: "none",
@@ -30938,7 +32674,8 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
                 "arrow-end": "none",
                 "stroke-linejoin": "round",
                 cursor: "pointer"
-            },
+            }
+            ,
             GUIDE_VIRTUAL_EDGE: {
                 stroke: "black",
                 fill: "none",
@@ -30949,7 +32686,8 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
                 "stroke-linejoin": "round",
                 "arrow-start": "none",
                 "arrow-end": "none"
-            },
+            }
+            ,
             GUIDE_LINE_AREA: {
                 stroke: "#ffffff",
                 fill: "#ffffff",
@@ -30957,7 +32695,8 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
                 "stroke-width": 1,
                 "stroke-opacity": 0.2,
                 cursor: "pointer"
-            },
+            }
+            ,
             GUIDE_RECT_AREA: {
                 stroke: "black",
                 fill: "#ffffff",
@@ -30965,10 +32704,20 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
                 "stroke-width": 1,
                 "stroke-opacity": 1,
                 cursor: "pointer"
-            },
-            RUBBER_BAND: {stroke: "#0000FF", opacity: 0.2, fill: "#0077FF"},
-            DROP_OVER_BBOX: {stroke: "#0077FF", fill: "none", opacity: 0.3, "shape-rendering": "crispEdges"},
-            LABEL: {"font-size": 12, "font-color": "black", "fill": "none"},
+            }
+            ,
+            RUBBER_BAND: {
+                stroke: "#0000FF", opacity: 0.2, fill: "#0077FF"
+            }
+            ,
+            DROP_OVER_BBOX: {
+                stroke: "#0077FF", fill: "none", opacity: 0.3, "shape-rendering": "crispEdges"
+            }
+            ,
+            LABEL: {
+                "font-size": 12, "font-color": "black", "fill": "none"
+            }
+            ,
             LABEL_EDITOR: {
                 position: "absolute",
                 overflow: "visible",
@@ -30976,35 +32725,43 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
                 "text-align": "center",
                 display: "block",
                 padding: 0
-            },
+            }
+            ,
             COLLAPSE: {
                 stroke: "black",
                 fill: "none",
                 "fill-opacity": 0,
                 cursor: "pointer",
                 "shape-rendering": "crispEdges"
-            },
-            COLLAPSE_BBOX: {stroke: "none", fill: "none", "fill-opacity": 0},
+            }
+            ,
+            COLLAPSE_BBOX: {
+                stroke: "none", fill: "none", "fill-opacity": 0
+            }
+            ,
             BUTTON: {
                 stroke: "#9FD7FF",
                 fill: "white",
                 "fill-opacity": 0,
                 cursor: "pointer",
                 "shape-rendering": "crispEdges"
-            },
+            }
+            ,
             CONNECT_GUIDE_EVENT_AREA: {
                 stroke: "#ffffff",
                 fill: "none",
                 "fill-opacity": 0,
                 "stroke-width": 20,
                 "stroke-opacity": 0
-            },
+            }
+            ,
             CONNECT_GUIDE_BBOX: {
                 stroke: "#00FF00",
                 fill: "none",
                 "stroke-dasharray": "- ",
                 "shape-rendering": "crispEdges"
-            },
+            }
+            ,
             CONNECT_GUIDE_BBOX_EXPEND: 10,
             CONNECT_GUIDE_SPOT_CIRCLE: {
                 r: 7,
@@ -31013,7 +32770,8 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
                 fill: "#FFE400",
                 "fill-opacity": 0.5,
                 cursor: "pointer"
-            },
+            }
+            ,
             CONNECT_GUIDE_SPOT_RECT: {
                 stroke: "#A6A6A6",
                 "stroke-width": 1,
@@ -31022,10 +32780,12 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
                 cursor: "ns-resize",
                 w: 20,
                 h: 10
-            },
+            }
+            ,
             CONNECTABLE_HIGHLIGHT: {
                 "stroke-width": 2
-            },
+            }
+            ,
             NOT_CONNECTABLE_HIGHLIGHT: {
                 fill: "#FAAFBE",
                 "fill-opacity": 0.5
@@ -31037,9 +32797,13 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
     this._RENDERER._CANVAS = this;
     this._HANDLER = new OG.EventHandler(this._RENDERER, this._CONFIG);
     this._CONTAINER = OG.Util.isElement(container) ? container : document.getElementById(container);
-};
+}
+;
 
 OG.graph.Canvas.prototype = {
+    getEventHandler: function () {
+        return this._HANDLER;
+    },
     setRemoteDuring: function (during) {
         this._CONFIG.REMOTE_PERFORMED_DURING = during;
     },
@@ -31087,7 +32851,6 @@ OG.graph.Canvas.prototype = {
      * - connectRequired    : 드래그하여 연결시 연결대상 있는 경우에만 Edge 드로잉 처리 여부(디폴트 true)
      * - labelEditable      : 라벨 수정여부(디폴트 true)
      * - groupDropable      : 그룹핑 가능여부(디폴트 true)
-     * - collapsible        : 최소화 가능여부(디폴트 true)
      * - enableHotKey       : 핫키 가능여부(디폴트 true)
      * - enableContextMenu  : 마우스 우클릭 메뉴 가능여부(디폴트 true)
      * - autoExtensional    : 캔버스 자동 확장 기능(디폴트 true)
@@ -31111,7 +32874,6 @@ OG.graph.Canvas.prototype = {
             this._CONFIG.CONNECT_REQUIRED = config.connectRequired === undefined ? this._CONFIG.CONNECT_REQUIRED : config.connectRequired;
             this._CONFIG.LABEL_EDITABLE = config.labelEditable === undefined ? this._CONFIG.LABEL_EDITABLE : config.labelEditable;
             this._CONFIG.GROUP_DROPABLE = config.groupDropable === undefined ? this._CONFIG.GROUP_DROPABLE : config.groupDropable;
-            this._CONFIG.GROUP_COLLAPSIBLE = config.collapsible === undefined ? this._CONFIG.GROUP_COLLAPSIBLE : config.collapsible;
             this._CONFIG.ENABLE_HOTKEY = config.enableHotKey === undefined ? this._CONFIG.ENABLE_HOTKEY : config.enableHotKey;
             this._CONFIG.ENABLE_CONTEXTMENU = config.enableContextMenu === undefined ? this._CONFIG.ENABLE_CONTEXTMENU : config.enableContextMenu;
             this._CONFIG.AUTO_EXTENSIONAL = config.autoExtensional === undefined ? this._CONFIG.AUTO_EXTENSIONAL : config.autoExtensional;
@@ -31120,7 +32882,9 @@ OG.graph.Canvas.prototype = {
             this._CONFIG.CHECK_BRIDGE_EDGE = config.checkBridgeEdge === undefined ? this._CONFIG.CHECK_BRIDGE_EDGE : config.checkBridgeEdge;
         }
 
-        this._HANDLER.setDragSelectable(this._CONFIG.SELECTABLE && this._CONFIG.DRAG_SELECTABLE);
+        this._HANDLER.setDragSelectable(this._CONFIG.SELECTABLE && this._CONFIG.DRAG_SELECTABLE, this._CONFIG.DRAG_PAGE_MOVABLE);
+        this._HANDLER.setWheelScale(this._CONFIG.WHEEL_SCALABLE);
+        this._HANDLER.setDragPageMovable(this._CONFIG.DRAG_PAGE_MOVABLE);
         this._HANDLER.setEnableHotKey(this._CONFIG.ENABLE_HOTKEY);
         if (this._CONFIG.ENABLE_CONTEXTMENU) {
             this._HANDLER.enableRootContextMenu();
@@ -31402,7 +33166,12 @@ OG.graph.Canvas.prototype = {
         sliderNavigator.css({
             left: (vx * xImgRate) + 'px',
             top: (vy * yImgRate) + 'px'
-        })
+        });
+
+        var sliderText = slider.find('.scaleSliderText');
+        var sliderBar = slider.find('.scaleSlider');
+        sliderText.html(Math.round(this._CONFIG.SCALE * 100));
+        sliderBar.val(Math.round(this._CONFIG.SCALE * 100));
     }
     ,
     updateSlider: function (val) {
@@ -31421,8 +33190,8 @@ OG.graph.Canvas.prototype = {
         var sliderNavigator = slider.find('.sliderNavigator');
         var sliderImageWrapper = slider.find('.sliderImageWrapper');
 
-        sliderText.html(val);
-        sliderBar.val(val);
+        sliderText.html(Math.round(val));
+        sliderBar.val(Math.round(val));
         me._RENDERER.setScale(val / 100);
 
         var svg = me._RENDERER.getRootElement();
@@ -31474,12 +33243,12 @@ OG.graph.Canvas.prototype = {
      * @param {OG.geometry.Style|Object} style 스타일 (Optional)
      * @param {String} id Element ID 지정 (Optional)
      * @param {String} parentId 부모 Element ID 지정 (Optional)
-     * @param {Boolean} preventDrop Lane, Pool 생성 drop 모드 수행 방지
+     * @param {Boolean} preventEvent  이벤트 생성 방지
      * @return {Element} Group DOM Element with geometry
      */
-    drawShape: function (position, shape, size, style, id, parentId, preventDrop) {
+    drawShape: function (position, shape, size, style, id, parentId, preventEvent) {
 
-        var element = this._RENDERER.drawShape(position, shape, size, style, id, preventDrop);
+        var element = this._RENDERER.drawShape(position, shape, size, style, id, preventEvent);
 
         if (position && (shape.TYPE === OG.Constants.SHAPE_TYPE.EDGE)) {
             element = this._RENDERER.move(element, position);
@@ -31500,14 +33269,6 @@ OG.graph.Canvas.prototype = {
 
         if (this._HANDLER._isLabelEditable(element.shape)) {
             this._HANDLER.enableEditLabel(element);
-        }
-
-        if (element.shape.HaveButton) {   // + 버튼을 만들기 위해서
-            this._HANDLER.enableButton(element);
-        }
-
-        if (this._CONFIG.GROUP_COLLAPSIBLE && element.shape.GROUP_COLLAPSIBLE) {
-            this._HANDLER.enableCollapse(element);
         }
 
         if (!id) {
@@ -31698,6 +33459,7 @@ OG.graph.Canvas.prototype = {
 
         //if label null, convert undefined
         label = label ? label : undefined;
+
         // connect
         edge = this._RENDERER.connect(fromTerminal, toTerminal, edge, style, label, preventTrigger);
 
@@ -31715,7 +33477,7 @@ OG.graph.Canvas.prototype = {
     ,
 
     /**
-     * 두개의 터미널 아이디로 부터 얻어진 Shape를 Edge 로 연결한다.
+     * 두개의 터미널 아이디로 부터 얻어진 도형들을 Edge 로 연결한다.
      *
      * @param {String} fromTerminal from Terminal Id
      * @param {String} toTerminal to Terminal Id
@@ -31742,6 +33504,9 @@ OG.graph.Canvas.prototype = {
 
         fromto = JSON.stringify(vertices[0]) + ',' + JSON.stringify(vertices[vertices.length - 1]);
         shape = eval('new ' + shapeId + '(' + fromto + ')');
+
+        //if label null, convert undefined
+        label = label ? label : undefined;
         if (label) {
             shape.label = label;
         }
@@ -31755,7 +33520,7 @@ OG.graph.Canvas.prototype = {
                 shape.geom = geom;
             }
         }
-        edge = this.drawShape(null, shape, null, style, id, null, false);
+        edge = this.drawShape(null, shape, null, style, id, null);
 
         // connect
         edge = this._RENDERER.connect(fromTerminal, toTerminal, edge, style, label, true);
@@ -32231,6 +33996,15 @@ OG.graph.Canvas.prototype = {
     ,
 
     /**
+     * 두 도형 사이의 연결된 Edge 를 반환한다.
+     * @param elements
+     * @returns {Element} edge
+     */
+    getRelatedEdgeFromShapes: function (elements) {
+        return this._RENDERER.getRelatedEdgeFromShapes(elements);
+    },
+
+    /**
      * Edge 엘리먼트와 연결된 fromShape, toShape 엘리먼트를 반환한다.
      *
      * @param {Element|String} edgeElement Element 또는 ID
@@ -32402,6 +34176,30 @@ OG.graph.Canvas.prototype = {
     getExtCustomData: function (shapeElement) {
         var element = OG.Util.isElement(shapeElement) ? shapeElement : document.getElementById(shapeElement);
         return element.dataExt;
+    }
+    ,
+
+    /**
+     * 주어진 Shape 엘리먼트에 커스텀 컨텍스트 메뉴를 지정한다.
+     *
+     * @param {Element|String} shapeElement Shape DOM Element or ID
+     * @param {Object} data JSON 포맷의 context Object
+     */
+    setCustomContextMenu: function (shapeElement, data) {
+        var element = OG.Util.isElement(shapeElement) ? shapeElement : document.getElementById(shapeElement);
+
+        element.shape.customContextMenu = data;
+    },
+
+    /**
+     * 주어진 Shape 엘리먼트에 저장된 커스텀 컨텍스트 메뉴를 반환한다.
+     *
+     * @param {Element|String} shapeElement Shape DOM Element or ID
+     * @return {Object} JSON 포맷의 context Object
+     */
+    getCustomContextMenu: function (shapeElement) {
+        var element = OG.Util.isElement(shapeElement) ? shapeElement : document.getElementById(shapeElement);
+        return element.shape.customContextMenu;
     }
     ,
 
@@ -32673,7 +34471,7 @@ OG.graph.Canvas.prototype = {
                         if (textList) {
                             shape.textList = OG.JSON.decode(unescape(textList));
                         }
-                        element = this.drawShape([x, y], shape, [width, height], OG.JSON.decode(style), id, parent, false);
+                        element = this.drawShape([x, y], shape, [width, height], OG.JSON.decode(style), id, parent);
                         if (element.shape instanceof OG.shape.bpmn.A_Task) {
                             element.shape.LoopType = loopType;
                             element.shape.TaskType = taskType;
@@ -32708,7 +34506,7 @@ OG.graph.Canvas.prototype = {
                                 shape.geom = geom;
                             }
                         }
-                        element = this.drawShape(null, shape, null, OG.JSON.decode(style), id, parent, false);
+                        element = this.drawShape(null, shape, null, OG.JSON.decode(style), id, parent);
                         break;
                     case OG.Constants.SHAPE_TYPE.HTML:
                         shape = eval('new ' + shapeId + '()');
@@ -32724,7 +34522,7 @@ OG.graph.Canvas.prototype = {
                         if (textList) {
                             shape.textList = OG.JSON.decode(unescape(textList));
                         }
-                        element = this.drawShape([x, y], shape, [width, height, angle], OG.JSON.decode(style), id, parent, false);
+                        element = this.drawShape([x, y], shape, [width, height, angle], OG.JSON.decode(style), id, parent);
                         break;
                     case OG.Constants.SHAPE_TYPE.IMAGE:
                         shape = eval('new ' + shapeId + '(\'' + value + '\')');
@@ -32737,7 +34535,7 @@ OG.graph.Canvas.prototype = {
                         if (textList) {
                             shape.textList = OG.JSON.decode(unescape(textList));
                         }
-                        element = this.drawShape([x, y], shape, [width, height, angle], OG.JSON.decode(style), id, parent, false);
+                        element = this.drawShape([x, y], shape, [width, height, angle], OG.JSON.decode(style), id, parent);
                         break;
                     case OG.Constants.SHAPE_TYPE.TEXT:
                         shape = eval('new ' + shapeId + '()');
@@ -32750,7 +34548,7 @@ OG.graph.Canvas.prototype = {
                         if (textList) {
                             shape.textList = OG.JSON.decode(unescape(textList));
                         }
-                        element = this.drawShape([x, y], shape, [width, height, angle], OG.JSON.decode(style), id, parent, false);
+                        element = this.drawShape([x, y], shape, [width, height, angle], OG.JSON.decode(style), id, parent);
                         break;
                 }
 

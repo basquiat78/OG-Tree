@@ -84,7 +84,7 @@
   {
     "type": "folder",
     "id": "my-fd-1-1-1",
-    "name": "my-fd-1-1-1-Folder",
+    "name": "my-fd-1-1-1-Folder my-fd-1-1-1-Folder my-fd-1-1-1-Folder",
     "position": "my-out",
     "parentId": "my-fd-1-1",
     "expand": true,
@@ -104,7 +104,7 @@
   {
     "type": "ed",
     "id": "my-ed-1-1-2-1",
-    "name": "my-ed-1-1-2-1-Ed",
+    "name": "my-ed-1-1-2-1-Ed my-ed-1-1-2-1-Ed my-ed-1-1-2-1-Ed",
     "position": "my-out",
     "parentId": "my-fd-1-1-2",
     "extData": {},
@@ -263,7 +263,8 @@
     "position": "my-in",
     "extData": {},
     "parentId": "another-fd-1-1",
-    "name": "another-ed-1-1-2-Ed"
+    "name": "another-ed-1-1-2-Ed",
+    "stroke": "#d9534f"
   },
   {
     "type": "mapping",

@@ -241,7 +241,7 @@ var Tree = function (container) {
             /**
              * 폴더 마진
              */
-            FOLDER_MARGIN: 20,
+            FOLDER_MARGIN: 25,
             /**
              * ED 가로
              */
@@ -253,7 +253,7 @@ var Tree = function (container) {
             /**
              * ED 마진
              */
-            ED_MARGIN: 24,
+            ED_MARGIN: 29,
             /**
              * Expand 버튼과 부모사이의 간격
              */
@@ -2021,14 +2021,74 @@ Tree.prototype = {
      * @returns {String} fixed label
      */
     labelSubstring: function (label) {
+        function wordWrap(str, maxWidth) {
+            var texts = str.split("\n"), text;
+            var lines = [];
+            var done = false;
+            var testWhite = function (x) {
+                var white = new RegExp(/^\s$/);
+                return white.test(x.charAt(0));
+            };
+            for (var t = 0; t < texts.length; t++) {
+                text = texts[t];
+                do {
+                    var found = false;
+                    var res = '';
+                    if (text.length <= maxWidth) {
+                        lines.push(text);
+                        done = true;
+                    } else {
+                        // Inserts new line at first whitespace of the line
+                        for (i = maxWidth - 1; i >= 0; i--) {
+                            if (testWhite(text.charAt(i))) {
+                                res = res + text.slice(0, i);
+                                text = text.slice(i + 1);
+                                found = true;
+                                lines.push(res);
+                                break;
+                            }
+                        }
+
+                        // Inserts new line at maxWidth position, the word is too long to wrap
+                        if (!found) {
+                            res = res + text.slice(0, maxWidth);
+                            text = text.slice(maxWidth - 1);
+                            lines.push(res);
+                        }
+                    }
+                } while (!done);
+            }
+
+            var result = [];
+            for (var r = 0, lenr = lines.length; r < lenr; r++) {
+                if (lines[r] && lines[r].length > 0) {
+                    result.push(lines[r]);
+                }
+            }
+            if (!lines.length) {
+                lines.push('');
+            }
+            return lines;
+        }
+
+        var str = '';
         var length = this._CONFIG.LABEL_MAX_LENGTH;
         if (label) {
-            if (label.length <= length) {
-                return label;
-            } else {
-                return label.substring(0, length) + '..';
+            var lines = wordWrap(label, length);
+            for (var i = 0; i < lines.length; i++) {
+                if (i == 0) {
+                    str += lines[i];
+                }
+                if (i == 1 && lines.length > 2) {
+                    str += '\n' + lines[i] + '..';
+                }
+                if (i == 1 && lines.length == 2) {
+                    str += '\n' + lines[i];
+                }
             }
         }
+        console.log(str);
+        return str;
     },
     /**
      * 이미지 Shape 의 컬러와 스트로크를 스테이터스에 따라 변경한다.
@@ -2131,7 +2191,7 @@ Tree.prototype = {
                     if ($svg.length > 1) {
                         $svg.remove();
                         createNewSvg(imgURL, attributes);
-                    }else{
+                    } else {
                         $.each(attributes, function () {
                             $svg.attr(this.name, this.value);
                         });
@@ -2149,7 +2209,7 @@ Tree.prototype = {
                         }
                     }
                 }
-            }else{
+            } else {
                 //console.log('그 이외의 경우');
             }
         }

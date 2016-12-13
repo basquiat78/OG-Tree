@@ -102,6 +102,7 @@
 
 <a name="new_Tree_new"></a>
 
+--------------------------------------------------------------------------------
 ### new Tree(container)
 Open graph Tree Library (OG-Tree)
 
@@ -112,12 +113,14 @@ Open graph Tree Library (OG-Tree)
 
 <a name="Tree+init"></a>
 
+--------------------------------------------------------------------------------
 ### tree.init()
 캔버스를 초기 빌드한다.  최초 1번만 실행된다.
 
 **Kind**: instance method of <code>[Tree](#Tree)</code>  
 <a name="Tree+getScale"></a>
 
+--------------------------------------------------------------------------------
 ### tree.getScale() ⇒ <code>Number</code>
 Scale 을 반환한다. (리얼 사이즈 : Scale = 1)
 
@@ -125,6 +128,7 @@ Scale 을 반환한다. (리얼 사이즈 : Scale = 1)
 **Returns**: <code>Number</code> - 스케일값  
 <a name="Tree+setScale"></a>
 
+--------------------------------------------------------------------------------
 ### tree.setScale(scale)
 Scale 을 설정한다. (기본 사이즈 : Scale = 1)
 
@@ -136,6 +140,7 @@ Scale 을 설정한다. (기본 사이즈 : Scale = 1)
 
 <a name="Tree+setShowLabel"></a>
 
+--------------------------------------------------------------------------------
 ### tree.setShowLabel(show)
 라벨을 숨김/ 보임 처리한다.
 
@@ -147,6 +152,7 @@ Scale 을 설정한다. (기본 사이즈 : Scale = 1)
 
 <a name="Tree+drawArea"></a>
 
+--------------------------------------------------------------------------------
 ### tree.drawArea()
 기본 Area 를 생성한다.
 lAc,lOut,rIn,rAc,rOut,Canvas
@@ -154,12 +160,14 @@ lAc,lOut,rIn,rAc,rOut,Canvas
 **Kind**: instance method of <code>[Tree](#Tree)</code>  
 <a name="Tree+clear"></a>
 
+--------------------------------------------------------------------------------
 ### tree.clear()
 캔버스의 모든 화면요소를 삭제한다.
 
 **Kind**: instance method of <code>[Tree](#Tree)</code>  
 <a name="Tree+loadViewData"></a>
 
+--------------------------------------------------------------------------------
 ### tree.loadViewData() ⇒ <code>Array</code>
 뷰 데이터를 불러온다.
 
@@ -167,6 +175,7 @@ lAc,lOut,rIn,rAc,rOut,Canvas
 **Returns**: <code>Array</code> - OG-Tree view data  
 <a name="Tree+load"></a>
 
+--------------------------------------------------------------------------------
 ### tree.load() ⇒ <code>Array</code>
 노드 데이터를 불러온다.
 
@@ -174,6 +183,7 @@ lAc,lOut,rIn,rAc,rOut,Canvas
 **Returns**: <code>Array</code> - OG-Tree data  
 <a name="Tree+loadByFilter"></a>
 
+--------------------------------------------------------------------------------
 ### tree.loadByFilter(filterData) ⇒ <code>Array</code>
 노드 데이터를 필터링하여 불러온다.
 
@@ -186,6 +196,7 @@ lAc,lOut,rIn,rAc,rOut,Canvas
 
 <a name="Tree+removeDataByFilter"></a>
 
+--------------------------------------------------------------------------------
 ### tree.removeDataByFilter(filterData)
 노드 데이터를 필터링 하여 삭제한다.
 
@@ -197,6 +208,7 @@ lAc,lOut,rIn,rAc,rOut,Canvas
 
 <a name="Tree+clearData"></a>
 
+--------------------------------------------------------------------------------
 ### tree.clearData(preventRender)
 노드 데이터를 모두 삭제한다.
 
@@ -208,6 +220,7 @@ lAc,lOut,rIn,rAc,rOut,Canvas
 
 <a name="Tree+sortData"></a>
 
+--------------------------------------------------------------------------------
 ### tree.sortData(prop, positions, desc, preventRender)
 트리의 데이터를 주어진 prop 로 소트한다.
 
@@ -222,6 +235,7 @@ lAc,lOut,rIn,rAc,rOut,Canvas
 
 <a name="Tree+updateData"></a>
 
+--------------------------------------------------------------------------------
 ### tree.updateData(data, preventRender)
 데이터를 업데이트한다.
 
@@ -234,18 +248,21 @@ lAc,lOut,rIn,rAc,rOut,Canvas
 
 <a name="Tree+render"></a>
 
+--------------------------------------------------------------------------------
 ### tree.render()
 스토리지의 데이터를 기반으로 화면에 렌더링한다.
 
 **Kind**: instance method of <code>[Tree](#Tree)</code>  
 <a name="Tree+createViewData"></a>
 
+--------------------------------------------------------------------------------
 ### tree.createViewData() ⇒ <code>Object</code>
 스토리지의 데이터를 기반으로 화면에 표현되야 하는 각 객체의 y 좌표를 생성한 ViewData 를 반환한다.
 
 **Kind**: instance method of <code>[Tree](#Tree)</code>  
 <a name="Tree+createViewData..getViewData"></a>
 
+--------------------------------------------------------------------------------
 #### createViewData~getViewData(object, depth, parentView, childFromParent)
 주어진 객체의 좌표를 생성하여 viewData 에 저장하고, 객체에 자식이 있다면 함수를 반복수행한다.
 
@@ -253,13 +270,14 @@ lAc,lOut,rIn,rAc,rOut,Canvas
 
 | Param |
 | --- |
-| object | 
-| depth | 
-| parentView | 
-| childFromParent | 
+| object |
+| depth |
+| parentView |
+| childFromParent |
 
 <a name="Tree+createStandaloneViewData"></a>
 
+--------------------------------------------------------------------------------
 ### tree.createStandaloneViewData(mapping, targetActivityView) ⇒ <code>Object</code>
 매핑 시킬 아더워크플로우가 없는 인 데이터들로 viewData 를 구성한다.
 
@@ -272,6 +290,7 @@ lAc,lOut,rIn,rAc,rOut,Canvas
 
 <a name="Tree+renderViews"></a>
 
+--------------------------------------------------------------------------------
 ### tree.renderViews()
 viewData 중에서 실제로 화면에 표현되야 할 객체를 선정하고 각 x 좌표를 책정한다.
 선정된 객체들을 화면에 드로잉한다.
@@ -279,6 +298,7 @@ viewData 중에서 실제로 화면에 표현되야 할 객체를 선정하고 �
 **Kind**: instance method of <code>[Tree](#Tree)</code>  
 <a name="Tree+labelSubstring"></a>
 
+--------------------------------------------------------------------------------
 ### tree.labelSubstring(label) ⇒ <code>String</code>
 주어진 라벨이 최대 표기 숫자를 넘길 경우 텍스트를 줄인다.
 
@@ -291,6 +311,7 @@ viewData 중에서 실제로 화면에 표현되야 할 객체를 선정하고 �
 
 <a name="Tree+updateImageShapeStatus"></a>
 
+--------------------------------------------------------------------------------
 ### tree.updateImageShapeStatus(view, element)
 이미지 Shape 의 컬러와 스트로크를 스테이터스에 따라 변경한다.
 
@@ -303,6 +324,7 @@ viewData 중에서 실제로 화면에 표현되야 할 객체를 선정하고 �
 
 <a name="Tree+updateImageShapeStatus..applyPathStyle"></a>
 
+--------------------------------------------------------------------------------
 #### updateImageShapeStatus~applyPathStyle($svg, color, stroke)
 svg 의 path 들에 컬러와 stroke 를 적용시킨다.
 
@@ -310,12 +332,13 @@ svg 의 path 들에 컬러와 stroke 를 적용시킨다.
 
 | Param |
 | --- |
-| $svg | 
-| color | 
-| stroke | 
+| $svg |
+| color |
+| stroke |
 
 <a name="Tree+drawMappingLabel"></a>
 
+--------------------------------------------------------------------------------
 ### tree.drawMappingLabel(view)
 매핑시 셀렉트 된 아이템에 S 마크를 붙인다.
 
@@ -327,6 +350,7 @@ svg 의 path 들에 컬러와 stroke 를 적용시킨다.
 
 <a name="Tree+updateMappingLabel"></a>
 
+--------------------------------------------------------------------------------
 ### tree.updateMappingLabel(view, element, customData)
 매핑시 셀렉트 된 아이템의 S 마크를 업데이트 한다.
 
@@ -340,6 +364,7 @@ svg 의 path 들에 컬러와 stroke 를 적용시킨다.
 
 <a name="Tree+updateActivity"></a>
 
+--------------------------------------------------------------------------------
 ### tree.updateActivity(view, element)
 액티비티 아이템을 업데이트 한다.
 
@@ -352,6 +377,7 @@ svg 의 path 들에 컬러와 stroke 를 적용시킨다.
 
 <a name="Tree+drawActivity"></a>
 
+--------------------------------------------------------------------------------
 ### tree.drawActivity(view)
 액티비티 아이템을 드로잉한다.
 
@@ -363,6 +389,7 @@ svg 의 path 들에 컬러와 stroke 를 적용시킨다.
 
 <a name="Tree+updateFolder"></a>
 
+--------------------------------------------------------------------------------
 ### tree.updateFolder(view, element)
 폴더 아이템을 업데이트한다.
 
@@ -375,6 +402,7 @@ svg 의 path 들에 컬러와 stroke 를 적용시킨다.
 
 <a name="Tree+drawFolder"></a>
 
+--------------------------------------------------------------------------------
 ### tree.drawFolder(view)
 폴더 아이템을 드로잉한다.
 
@@ -386,6 +414,7 @@ svg 의 path 들에 컬러와 stroke 를 적용시킨다.
 
 <a name="Tree+updateEd"></a>
 
+--------------------------------------------------------------------------------
 ### tree.updateEd(view, element)
 ED 아이템을 업데이트 한다.
 
@@ -398,6 +427,7 @@ ED 아이템을 업데이트 한다.
 
 <a name="Tree+drawEd"></a>
 
+--------------------------------------------------------------------------------
 ### tree.drawEd(view)
 ED 아이템을 드로잉한다.
 
@@ -409,6 +439,7 @@ ED 아이템을 드로잉한다.
 
 <a name="Tree+drawMappingLine"></a>
 
+--------------------------------------------------------------------------------
 ### tree.drawMappingLine(view)
 매핑 연결선을 드로잉한다.
 
@@ -420,6 +451,7 @@ ED 아이템을 드로잉한다.
 
 <a name="Tree+updateExpanderLine"></a>
 
+--------------------------------------------------------------------------------
 ### tree.updateExpanderLine(view, element)
 expander 선연결을 업데이트한다.
 
@@ -432,6 +464,7 @@ expander 선연결을 업데이트한다.
 
 <a name="Tree+drawExpanderLine"></a>
 
+--------------------------------------------------------------------------------
 ### tree.drawExpanderLine(view)
 expander 선연결을 생성한다.
 
@@ -443,6 +476,7 @@ expander 선연결을 생성한다.
 
 <a name="Tree+updateActivityRelLine"></a>
 
+--------------------------------------------------------------------------------
 ### tree.updateActivityRelLine(view, element)
 액티비티간의 연결선을 업데이트한다.
 
@@ -455,6 +489,7 @@ expander 선연결을 생성한다.
 
 <a name="Tree+drawActivityRelLine"></a>
 
+--------------------------------------------------------------------------------
 ### tree.drawActivityRelLine(view)
 액티비티간의 연결선을 드로잉한다.
 
@@ -466,6 +501,7 @@ expander 선연결을 생성한다.
 
 <a name="Tree+updateExpander"></a>
 
+--------------------------------------------------------------------------------
 ### tree.updateExpander(view, element)
 expander 를 업데이트한다.
 
@@ -478,6 +514,7 @@ expander 를 업데이트한다.
 
 <a name="Tree+drawExpander"></a>
 
+--------------------------------------------------------------------------------
 ### tree.drawExpander(view)
 expander 를 드로잉한다.
 
@@ -489,6 +526,7 @@ expander 를 드로잉한다.
 
 <a name="Tree+getExpanderCenterX"></a>
 
+--------------------------------------------------------------------------------
 ### tree.getExpanderCenterX(position, depth, standardX) ⇒ <code>Number</code>
 expander 의 센터를 구한다.
 
@@ -503,6 +541,7 @@ expander 의 센터를 구한다.
 
 <a name="Tree+getShapeCenterX"></a>
 
+--------------------------------------------------------------------------------
 ### tree.getShapeCenterX(position, depth, standardX) ⇒ <code>Number</code>
 액티비티, 폴더, Ed 의 센터를 구한다.
 
@@ -517,6 +556,7 @@ expander 의 센터를 구한다.
 
 <a name="Tree+getMappingEdgeVertices"></a>
 
+--------------------------------------------------------------------------------
 ### tree.getMappingEdgeVertices(depth, parentY, myY, pStandardX, myStandardX, hasChild) ⇒ <code>Array</code>
 매핑 연결선의 vertices 를 구한다.
 
@@ -534,6 +574,7 @@ expander 의 센터를 구한다.
 
 <a name="Tree+getActivityRelVertices"></a>
 
+--------------------------------------------------------------------------------
 ### tree.getActivityRelVertices(position, depth, standardX, parentY, myY) ⇒ <code>Array</code>
 액티비티간의 연결선의 vertices 를 구한다.
 
@@ -550,6 +591,7 @@ expander 의 센터를 구한다.
 
 <a name="Tree+getExpanderToVertices"></a>
 
+--------------------------------------------------------------------------------
 ### tree.getExpanderToVertices(position, depth, standardX, parentY, myY) ⇒ <code>Array</code>
 Expander To 선의 vertices 를 구한다.
 
@@ -566,6 +608,7 @@ Expander To 선의 vertices 를 구한다.
 
 <a name="Tree+getExpanderFromVertices"></a>
 
+--------------------------------------------------------------------------------
 ### tree.getExpanderFromVertices(position, depth, standardX, parentY, myY) ⇒ <code>Array</code>
 Expander From 선의 vertices 를 구한다.
 
@@ -582,6 +625,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+dividedViewsByPosition"></a>
 
+--------------------------------------------------------------------------------
 ### tree.dividedViewsByPosition(displayViews) ⇒ <code>Object</code>
 주어진 views 를 포지션별로 분류하여 리턴한다.
 
@@ -594,6 +638,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+reRangeAreaSize"></a>
 
+--------------------------------------------------------------------------------
 ### tree.reRangeAreaSize(viewData)
 각 Area 의 크기를 책정하고 redraw 한다.
 캔버스의 사이즈를 재조정한다.
@@ -606,6 +651,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+fitToBoundary"></a>
 
+--------------------------------------------------------------------------------
 ### tree.fitToBoundary(element, offset[upper,low,left,right) ⇒ <code>element</code>
 주어진 Boundary 영역 안으로 공간 기하 객체를 적용한다.(이동 & 리사이즈)
 
@@ -619,6 +665,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+selectActivityByPosition"></a>
 
+--------------------------------------------------------------------------------
 ### tree.selectActivityByPosition(position) ⇒ <code>Array</code>
 주어진 에어리어에 해당하는 액티비티 정보를 반환한다.
 
@@ -631,6 +678,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+selectNextActivity"></a>
 
+--------------------------------------------------------------------------------
 ### tree.selectNextActivity(id) ⇒ <code>Object</code>
 주어진 id 의 액티비티의 next 액티비티를 구한다.
 
@@ -643,6 +691,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+selectPrevActivity"></a>
 
+--------------------------------------------------------------------------------
 ### tree.selectPrevActivity(id) ⇒ <code>Object</code>
 주어진 id 의 prev 액티비티를 구한다.
 
@@ -655,6 +704,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+selectNextActivities"></a>
 
+--------------------------------------------------------------------------------
 ### tree.selectNextActivities(id) ⇒ <code>Array</code>
 주어진 id 의 next 액티비티들을 구한다.
 
@@ -667,6 +717,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+selectChildById"></a>
 
+--------------------------------------------------------------------------------
 ### tree.selectChildById(id) ⇒ <code>Array</code>
 주어진 아이디의 자식 데이터를 반환한다.
 
@@ -679,6 +730,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+selectChildMapping"></a>
 
+--------------------------------------------------------------------------------
 ### tree.selectChildMapping(sourceId, targetId) ⇒ <code>Array</code>
 주어진 소스와 타켓 아이디를 가지는 매핑 데이터의 자식을 반환한다.
 
@@ -692,6 +744,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+selectRecursiveChildMapping"></a>
 
+--------------------------------------------------------------------------------
 ### tree.selectRecursiveChildMapping(sourceId, targetId) ⇒ <code>Array</code>
 주어진 소스와 타겟 아이디를 가지는 매핑 데이터의 자식을 재귀호출하여 반환한다.
 
@@ -705,6 +758,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+selectParentById"></a>
 
+--------------------------------------------------------------------------------
 ### tree.selectParentById(id) ⇒ <code>Object</code>
 주어진 아이디의 부모정보를 반환한다.
 
@@ -717,6 +771,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+selectParentMapping"></a>
 
+--------------------------------------------------------------------------------
 ### tree.selectParentMapping(sourceId, targetId) ⇒ <code>Object</code>
 매핑 데이터의 부모 매핑 데이터를 반환한다.
 
@@ -730,6 +785,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+selectById"></a>
 
+--------------------------------------------------------------------------------
 ### tree.selectById(id) ⇒ <code>Object</code>
 주어진 아이디의 정보를 반환한다.
 
@@ -742,6 +798,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+selectBySourceTarget"></a>
 
+--------------------------------------------------------------------------------
 ### tree.selectBySourceTarget(sourceId, targetId) ⇒ <code>Object</code>
 주어진 소스아이디와 타겟아이디와 일치하는 OG-Tree 데이터를 반환한다.
 
@@ -755,6 +812,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+selectMappings"></a>
 
+--------------------------------------------------------------------------------
 ### tree.selectMappings() ⇒ <code>Array</code>
 매핑 데이터를 반환한다.
 
@@ -762,6 +820,7 @@ Expander From 선의 vertices 를 구한다.
 **Returns**: <code>Array</code> - Array of OG-Tree data  
 <a name="Tree+selectRootActivityById"></a>
 
+--------------------------------------------------------------------------------
 ### tree.selectRootActivityById(id) ⇒ <code>Object</code>
 주어진 아이디의 루트 액티비티 정보를 반환한다.
 
@@ -774,6 +833,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+selectRootMapping"></a>
 
+--------------------------------------------------------------------------------
 ### tree.selectRootMapping(sourceId, targetId) ⇒ <code>Object</code>
 매핑 데이터의 루트를 반환한다.
 
@@ -787,6 +847,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+selectRecursiveParentById"></a>
 
+--------------------------------------------------------------------------------
 ### tree.selectRecursiveParentById(id) ⇒ <code>Array</code>
 주어진 아이디의 부모 일람을 재귀호출하여 반환한다.
 
@@ -799,6 +860,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+selectRecursiveChildById"></a>
 
+--------------------------------------------------------------------------------
 ### tree.selectRecursiveChildById(id) ⇒ <code>Array</code>
 주어진 아이디의 자식 데이터를 재귀호출하여 반환한다.
 
@@ -811,6 +873,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+selectRecursiveLastChildById"></a>
 
+--------------------------------------------------------------------------------
 ### tree.selectRecursiveLastChildById(id) ⇒ <code>Array</code>
 주어진 아이디의 자식 데이터를 재귀호출하여, 더이상 자식이 없는 마지막 데이터일 경우의 리스트를 반환한다.
 (자기 자신이 마지막 데이터일 경우 자기 자신을 포함하여)
@@ -824,6 +887,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+selectViewById"></a>
 
+--------------------------------------------------------------------------------
 ### tree.selectViewById(viewData, id) ⇒ <code>Object</code>
 주어진 아이디에 해당하는 뷰 데이터를 반환한다.
 
@@ -837,6 +901,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+selectViewByFilter"></a>
 
+--------------------------------------------------------------------------------
 ### tree.selectViewByFilter(viewData, filterData) ⇒ <code>Array</code>
 주어진 필터 조건에 따라 뷰데이터를 반환한다.
 
@@ -850,6 +915,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+selectRecursiveChildViewsById"></a>
 
+--------------------------------------------------------------------------------
 ### tree.selectRecursiveChildViewsById(viewData, id) ⇒ <code>Array</code>
 주어진 아이디의 자식 뷰 데이터를 재귀호출하여 반환한다.
 
@@ -863,6 +929,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+selectMaxyFromViews"></a>
 
+--------------------------------------------------------------------------------
 ### tree.selectMaxyFromViews(views) ⇒ <code>number</code>
 주어진 views 중 가장 큰 y 를 반환한다.
 
@@ -875,6 +942,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+selectMaxDepthFromViews"></a>
 
+--------------------------------------------------------------------------------
 ### tree.selectMaxDepthFromViews(views) ⇒ <code>number</code>
 주어진 views 중 가장 큰 depth 를 반환한다.
 
@@ -887,6 +955,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+selectMaxBottomFromViews"></a>
 
+--------------------------------------------------------------------------------
 ### tree.selectMaxBottomFromViews(views) ⇒ <code>number</code>
 주어진 views 중 가장 큰 bottom 을 반환한다.
 
@@ -899,6 +968,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+emptyString"></a>
 
+--------------------------------------------------------------------------------
 ### tree.emptyString(value) ⇒ <code>boolean</code>
 주어진 스트링이 빈값인지를 확인한다.
 
@@ -911,6 +981,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+getElementByPoint"></a>
 
+--------------------------------------------------------------------------------
 ### tree.getElementByPoint(point) ⇒ <code>Element</code>
 좌표값을 포함하는 가장 앞단의 엘리먼트를 반환한다.
 
@@ -923,6 +994,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+uuid"></a>
 
+--------------------------------------------------------------------------------
 ### tree.uuid() ⇒ <code>string</code>
 무작위 랜덤 아이디 생성
 
@@ -930,12 +1002,14 @@ Expander From 선의 vertices 를 구한다.
 **Returns**: <code>string</code> - 랜덤 아이디  
 <a name="Tree+bindEvent"></a>
 
+--------------------------------------------------------------------------------
 ### tree.bindEvent()
 캔버스가 처음 렌더링 될 시 필요한 이벤트들을 바인딩한다.
 
 **Kind**: instance method of <code>[Tree](#Tree)</code>  
 <a name="Tree+bindTooltip"></a>
 
+--------------------------------------------------------------------------------
 ### tree.bindTooltip(element)
 툴팁 이벤트를 바인딩한다.
 
@@ -947,6 +1021,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+bindDblClickEvent"></a>
 
+--------------------------------------------------------------------------------
 ### tree.bindDblClickEvent(element)
 더블클릭 이벤트를 바인딩한다.
 
@@ -958,6 +1033,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+bindMappingHighLight"></a>
 
+--------------------------------------------------------------------------------
 ### tree.bindMappingHighLight(element)
 매핑 연결선의 하이라이트 이벤트를 바인딩한다.
 
@@ -969,12 +1045,14 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+bindActivityMove"></a>
 
+--------------------------------------------------------------------------------
 ### tree.bindActivityMove()
 액티비티의 이동 이벤트를 바인딩한다.
 
 **Kind**: instance method of <code>[Tree](#Tree)</code>  
 <a name="Tree+onBeforeActivityMove"></a>
 
+--------------------------------------------------------------------------------
 ### tree.onBeforeActivityMove(activities)
 액티비티가 이동되기 전 이벤트
 
@@ -986,6 +1064,7 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+onActivityMove"></a>
 
+--------------------------------------------------------------------------------
 ### tree.onActivityMove(activities)
 액티비티가 이동 된 후 이벤트
 
@@ -997,12 +1076,14 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+bindMappingEvent"></a>
 
+--------------------------------------------------------------------------------
 ### tree.bindMappingEvent()
 매핑이 이루어졌을 떄의 이벤트를 처리한다.
 
 **Kind**: instance method of <code>[Tree](#Tree)</code>  
 <a name="Tree+deleteMapping"></a>
 
+--------------------------------------------------------------------------------
 ### tree.deleteMapping(data, view)
 매핑을 해제한다.
 
@@ -1015,54 +1096,63 @@ Expander From 선의 vertices 를 구한다.
 
 <a name="Tree+enableShapeContextMenu"></a>
 
+--------------------------------------------------------------------------------
 ### tree.enableShapeContextMenu()
 OG Tree Dom Element 에 마우스 우클릭 메뉴를 가능하게 한다.
 
 **Kind**: instance method of <code>[Tree](#Tree)</code>  
 <a name="Tree+makeShowProperties"></a>
 
+--------------------------------------------------------------------------------
 ### tree.makeShowProperties() ⇒ <code>Object</code>
 프로퍼티 보기 콘텍스트 메뉴를 생성한다.
 
 **Kind**: instance method of <code>[Tree](#Tree)</code>  
 <a name="Tree+makeFolder"></a>
 
+--------------------------------------------------------------------------------
 ### tree.makeFolder() ⇒ <code>Object</code>
 폴더 생성 콘텍스트 메뉴를 생성한다.
 
 **Kind**: instance method of <code>[Tree](#Tree)</code>  
 <a name="Tree+makeEd"></a>
 
+--------------------------------------------------------------------------------
 ### tree.makeEd() ⇒ <code>Object</code>
 ED 생성 콘텍스트 메뉴를 생성한다.
 
 **Kind**: instance method of <code>[Tree](#Tree)</code>  
 <a name="Tree+makePickEd"></a>
 
+--------------------------------------------------------------------------------
 ### tree.makePickEd() ⇒ <code>Object</code>
 Pick ED 콘텍스트 메뉴를 생성한다.
 
 **Kind**: instance method of <code>[Tree](#Tree)</code>  
 <a name="Tree+makeDelete"></a>
 
+--------------------------------------------------------------------------------
 ### tree.makeDelete() ⇒ <code>Object</code>
 삭제 콘텍스트 메뉴를 생성한다.
 
 **Kind**: instance method of <code>[Tree](#Tree)</code>  
 <a name="Tree+makeListRelation"></a>
 
+--------------------------------------------------------------------------------
 ### tree.makeListRelation() ⇒ <code>Object</code>
 List Relation 콘텍스트 메뉴를 생성한다.
 
 **Kind**: instance method of <code>[Tree](#Tree)</code>  
 <a name="Tree+makeDeleteRelation"></a>
 
+--------------------------------------------------------------------------------
 ### tree.makeDeleteRelation() ⇒ <code>Object</code>
 매핑 삭제 콘텍스트 메뉴를 생성한다.
 
 **Kind**: instance method of <code>[Tree](#Tree)</code>  
 <a name="Tree+onBeforeMapping"></a>
 
+--------------------------------------------------------------------------------
 ### tree.onBeforeMapping(source, target, selectedTargetList) ⇒ <code>boolean</code>
 매핑이 이루어지기 전 이벤트
 
@@ -1076,6 +1166,7 @@ List Relation 콘텍스트 메뉴를 생성한다.
 
 <a name="Tree+onMapping"></a>
 
+--------------------------------------------------------------------------------
 ### tree.onMapping(source, target, selectedTargetList) ⇒ <code>boolean</code>
 매핑이 이루어졌을 때의 이벤트
 
@@ -1089,6 +1180,7 @@ List Relation 콘텍스트 메뉴를 생성한다.
 
 <a name="Tree+onBeforeDeleteMapping"></a>
 
+--------------------------------------------------------------------------------
 ### tree.onBeforeDeleteMapping(sourceId, sourceType, targetId, targetType) ⇒ <code>boolean</code>
 매핑을 삭제하기 전 이벤트
 
@@ -1103,6 +1195,7 @@ List Relation 콘텍스트 메뉴를 생성한다.
 
 <a name="Tree+onDeleteMapping"></a>
 
+--------------------------------------------------------------------------------
 ### tree.onDeleteMapping(sourceId, sourceType, targetId, targetType) ⇒ <code>boolean</code>
 매핑을 삭제한 후 이벤트
 
@@ -1114,4 +1207,3 @@ List Relation 콘텍스트 메뉴를 생성한다.
 | sourceType | "workflow","activity","folder","ed" |
 | targetId | OG-Tree data id 드랍 한 대상 |
 | targetType | "workflow","activity","folder","ed" |
-
