@@ -997,47 +997,33 @@ Aras.prototype = {
             var relItem;
 
             var path = parentItem.getProperty("_path") + '||' + edItem.getProperty("_ed_number", "");
+            body =  "<class>"+edItem.CLASS+"</class>";
+            body += "<edtype>"+edType+"</edtype>";
+            body += "<path>"+path+"</path>";
+            body += "<_p_id>"+data.extData['fs_id']+"</_p_id>";
+            body += "<_rel_project>"+parentItem.getProperty('_rel_project', '')+"</_rel_project>";
 
-            if (me.stdYN == 'Y') {
-                body = "<sqlString>UPDATE innovator." + edType +
-                    " SET _PATH = '" + path + "'" +
-                    ", _P_ID = '" + data.extData['fs_id'] + "'" +
-                    ", _REL_PROJECT = '" + parentItem.getProperty('_rel_project', '') + "'" +
-                    ", _REL_OWNEDTEAM = '" + parentItem.getProperty('_rel_ownedteam', '') + "'" +
-                    ", _REL_WFAT = '" + activityId + "'" +
-                    ", _REL_WFT = '" + parentItem.getProperty('_rel_wft', '') + "'" +
-                    ", IS_TEMPLATE = '" + 1 + "'" +
-                    " WHERE id = '" + edId + "'</sqlString>";
-            } else {
-                body = "<sqlString>UPDATE innovator." + edType +
-                    " SET _PATH = '" + path + "'" +
-                    ", _P_ID = '" + data.extData['fs_id'] + "'" +
-                    ", _REL_PROJECT = '" + parentItem.getProperty('_rel_project', '') + "'" +
-                    ", _REL_OWNEDTEAM = '" + parentItem.getProperty('_rel_ownedteam', '') + "'" +
-                    ", _REL_WFA = '" + activityId + "'" +
-                    ", _REL_WF = '" + parentItem.getProperty('_rel_wf', '') + "'" +
-                    ", IS_TEMPLATE = '" + 0 + "'";
-                if (edItem.CLASS != "ETC") {
-                    body = body + " , _FIRST_P6_ACT = '" + parentItem.getProperty('_first_p6_act', '') + "' "
-                        + " , _FIRST_PIMS_ACT = '" + parentItem.getProperty('_first_pims_act', '') + "' "
-                        + " , _FIRST_START_DATE = '" + parentItem.getProperty('_first_start_date', '') + "' "
-                        + " , _FIRST_END_DATE = '" + parentItem.getProperty('_first_end_date', '') + "' "
-                        + " , _FIRST_ACT_NAME = '" + parentItem.getProperty('_first_act_name', '') + "' "
-                        + " , _FINAL_P6_ACT = '" + parentItem.getProperty('_final_p6_act', '') + "' "
-                        + " , _FINAL_PIMS_ACT = '" + parentItem.getProperty('_final_pims_act', '') + "' "
-                        + " , _FINAL_ACT_NAME = '" + parentItem.getProperty('_final_act_name', '') + "' "
-                        + " , _FINAL_START_DATE = '" + parentItem.getProperty('_final_start_date', '') + "' "
-                        + " , _FINAL_END_DATE = '" + parentItem.getProperty('_final_end_date', '') + "' ";
-                }
-                else if (edItem.CLASS == "ETC") {
-                    body = body + " , _FIRST_START_DATE = '" + parentItem.getProperty('_first_start_date', '') + "' "
-                        + " , _FIRST_END_DATE = '" + parentItem.getProperty('_first_end_date', '') + "' "
-                        + " , _FINAL_START_DATE = '" + parentItem.getProperty('_final_start_date', '') + "' "
-                        + " , _FINAL_END_DATE = '" + parentItem.getProperty('_final_end_date', '') + "' ";
-                }
-                body = body + " WHERE id = '" + edId + "'</sqlString>";
-            }
-            inn.applyMethod("DHI_APPLY_SQL", body);
+            body += "<_rel_ownedteam>"+ parentItem.getProperty('_rel_ownedteam', '')+"</_rel_ownedteam>";
+            body += "<_rel_wfa>"+activityId+"</_rel_wfa>";
+            body += "<_rel_wf>"+parentItem.getProperty('_rel_wf', '')+"</_rel_wf>";
+            body += "<_first_p6_act>"+parentItem.getProperty('_first_p6_act', '')+"</_first_p6_act>";
+            body += "<_first_pims_act>"+parentItem.getProperty('_first_pims_act', '')+"</_first_pims_act>";
+
+            body += "<_first_start_date>"+parentItem.getProperty('_first_start_date', '')+"</_first_start_date>";
+            body += "<_first_end_date>"+parentItem.getProperty('_first_end_date', '')+"</_first_end_date>";
+            body += "<_first_act_name>"+parentItem.getProperty('_first_act_name', '')+"</_first_act_name>";
+            body += "<_final_p6_act>"+parentItem.getProperty('_final_p6_act', '')+"</_final_p6_act>";
+            body += "<_final_pims_act>"+parentItem.getProperty('_final_pims_act', '')+"</_final_pims_act>";
+
+            body += "<_final_act_name>"+parentItem.getProperty('_final_act_name', '')+"</_final_act_name>";
+            body += "<_final_start_date>"+parentItem.getProperty('_final_start_date', '')+"</_final_start_date>";
+            body += "<_final_end_date>"+parentItem.getProperty('_final_end_date', '')+"</_final_end_date>";
+            body += "<edid>"+edId+"</edid>";
+
+
+
+
+            inn.applyMethod("DHI_WF_SetUpdateEDData", body);
 
             existRelItem = inn.newItem(relType, "get");
             existRelItem.setProperty("source_id", parentId);

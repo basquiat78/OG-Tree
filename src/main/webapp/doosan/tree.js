@@ -2268,7 +2268,7 @@ Tree.prototype = {
             shape.MOVABLE = false;
         }
         var element = me.canvas.drawShape([view.x, view.y], shape, [view.width, view.height],
-            {'font-size': me._CONFIG.DEFAULT_STYLE.FONT_SIZE,'vertical-align':'top'}, view.id);
+            {'font-size': me._CONFIG.DEFAULT_STYLE.FONT_SIZE, 'vertical-align': 'top'}, view.id);
         me.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
         me.updateImageShapeStatus(view, element);
         me.bindDblClickEvent(element);
@@ -2317,7 +2317,7 @@ Tree.prototype = {
             shape.MOVABLE = false;
         }
         var element = me.canvas.drawShape([view.x, view.y], shape, [view.width, view.height],
-            {'font-size': me._CONFIG.DEFAULT_STYLE.FONT_SIZE,'vertical-align':'top'}, view.id);
+            {'font-size': me._CONFIG.DEFAULT_STYLE.FONT_SIZE, 'vertical-align': 'top'}, view.id);
         me.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
         if (view.blur) {
             this.canvas.setShapeStyle(element, {"opacity": me._CONFIG.DEFAULT_STYLE.BLUR});
@@ -2335,6 +2335,7 @@ Tree.prototype = {
      * @param element OG-Tree Dom Element
      */
     updateEd: function (view, element) {
+        console.log(view, element);
         var customData = this.canvas.getCustomData(element);
         var needUpdate = false;
         if (customData.blur != view.blur) {
@@ -2371,7 +2372,7 @@ Tree.prototype = {
             shape.MOVABLE = false;
         }
         var element = me.canvas.drawShape([view.x, view.y], shape, [view.width, view.height],
-            {'font-size': me._CONFIG.DEFAULT_STYLE.FONT_SIZE,'vertical-align':'top'}, view.id);
+            {'font-size': me._CONFIG.DEFAULT_STYLE.FONT_SIZE, 'vertical-align': 'top'}, view.id);
         me.canvas.setCustomData(element, JSON.parse(JSON.stringify(view)));
         if (view.blur) {
             this.canvas.setShapeStyle(element, {"opacity": me._CONFIG.DEFAULT_STYLE.BLUR});
@@ -3665,73 +3666,6 @@ Tree.prototype = {
                         activities.push(data);
                     }
                 }
-                //1.선 중복 버그 => 이것은.... 스탠드어론 객체 디스플레이가 남아있어서 일어나는 문제이다. ==> ok.
-                //2.expander 미러된 쪽에서 안움직임. ==> ok.
-                //부모 창 제어.done
-                //선 하이라이트. done.
-
-                //모니터 화면 만들 것. ok.
-                //1. 같은 로직, 마이 데이터만 부른다.ok
-                //2. 에어리어 부분의 디스에이블 처리 과정이 있어야 한다.ok
-
-                //워크플로우 - 액티비티 관게를 표현할 그리드 창 만들기. OK
-                //각 아이템마다, 말풍선은 넘버와 name 이 표기되면 된다. OK.
-                //라벨 on / off 옵션 OK.
-                //상단 정보창 접었다 핌 OK.
-
-                //3.전체 크기 늘이기. ok
-                //스테이터스 범례조건. ok
-
-                //ed 개별 추가시 메소드 붙이기.ok
-                //창 이동시에 사이즈 부모 창 재조절이 필요함.ok
-
-                //모니터 팝업이 다이렉트로 뜰 경우 창 크기 제어하기.ok
-
-                //액티비티 생성 체크 로직.ok
-                //properties => details.ok
-
-                //상단 기본정보창 워크플로우 정보 바인딩.ok
-                //접을때 툴바 버튼 살리기.ok
-                //매핑 또는 리프레쉬 시에 선 스타일 변경.ok
-                //가상 expanderFrom 생성하기.ok
-                //상단 검색 조건 이상하게 보이는 것.ok
-                //툴바 아이콘 적용하기.ok
-                //검증 메소드 추가하기.ok
-                //IE 전환 살펴보기.ok
-                //pick ed 화면 ed number, ed name 필드 추가하기.ok
-                //expand 상태 기억하게 하기(aras 에서 데이터 업데이트 하기 전에 조치해야 함).ok
-                //IE 라벨 살펴보기.ok
-                //액티비티,ed,폴더 생성시 현재 유저 아이디 적용.ok
-                //EDB 도트 확실하게 보이게 하기.(svg 다시 만들어 테스트).ok
-                //줌 인 아웃시에 캔버스 사이즈도 변경하기.ok
-                //줌 인의 기준이 현재 스크롤 상태에서 부터 확대하기.ok
-                //Area 라벨 표기 하기.ok
-                //스탠다드, 폴더 3레벨 까지 enable, 3레벨 일 경우는 ed 생성 불가.ok
-                //프로젝트, 폴더 5레벨 까지 enable, 5레벨 일 경우는 ed 생성 불가.ok
-                //계획일, 완료일, 수정일 소트(_first_start_date, _final_end_date, modified_date).ok
-                //스테이터스 컬러 재조정하기.ok
-                //셀릭트 패널 크기 줄이기.ok
-                //툴팁 사람 이름 추가하기.ok
-                //스테이터스 컬러 재조정하기.ok
-
-                //스탠다드일때는 owner 이름 안보이게.ok
-                //start,end 버튼 가리기.ok
-                //모니터에 My Workflow 가리기.ok
-                //데이터 리프레쉬 할때 포지션 배포가 섞임.ok
-
-                //폴더 하나만 가진 액티비티 리스트가 있을 경우 선이 깨짐.ok
-                //depth, ed 하나 늘리기.ok
-                //m 라벨 지우기.ok
-                //picked, 또는 Structure 불러올때 카운트 1 처리하기.ok
-                //액티비티가 하나일때는 표현이 안되는 문제.ok
-                //순서를 재정렬 하고 난 이후에는 콘텍스트가 안먹힘.ok
-                //우클릭 했을때 포커싱이 같이 갈 수 있도록.ok
-                //In의 루트 폴더 와 Activity 연결선 실선으로 바꾸기.ok
-
-                //TODO
-                //상단 창 더 줄이기.
-                //부모창에 겹친 스크롤바 지우기.
-
                 //before 이벤트
                 var beforeActivityMove = me.onBeforeActivityMove(activities);
                 if (typeof beforeActivityMove == 'boolean') {
@@ -3783,6 +3717,12 @@ Tree.prototype = {
                 //원래 상태로 원복
                 shapeElement.shape.geom.move(-(offset[0]), -(offset[1]));
                 me._RENDERER.redrawShape(shapeElement);
+
+                if (shapeElement.shape instanceof OG.Folder) {
+                    me.updateFolder(view, shapeElement);
+                } else if (shapeElement.shape instanceof OG.Ed) {
+                    me.updateEd(view, shapeElement);
+                }
 
                 targetEle = me.getElementByPoint([eventX, eventY]);
                 if (!targetEle) {

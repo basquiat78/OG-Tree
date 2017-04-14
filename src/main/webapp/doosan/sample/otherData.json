@@ -142,7 +142,8 @@
     "position": "other-out",
     "parentId": "other-fd-2-1-1",
     "extData": {},
-    "color": "#5bc0de"
+    "color": "#5bc0de",
+    "stroke": "#d9534f"
   },
   {
     "type": "ed",

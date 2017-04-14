@@ -565,6 +565,11 @@ Doosan.prototype = {
             for (var key in bg.data) {
                 me.appendSelectBoxElement($('#bg'), bg.data[key].LABEL, bg.data[key]['VALUE']);
             }
+
+            //최초의 워크플로우 리스트를 불러와준다.
+            me.aras.getSchCombo('', $("#discipline").val(), $("#disciplineSpec").val(), $("#bg").val(), '', function (err, res) {
+                me.renderOtherWorkFlowBox(res);
+            });
         }
     },
     /**
