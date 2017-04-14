@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<!--[if IE 9]>
+<html lang="en" class="ie9"> <![endif]-->
+<!--[if IE 8]>
+<html lang="en" class="ie8"> <![endif]-->
+<!--[if !IE]><!-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org"
+      lang="en">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Doosan Inc | Editor</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <!-- 타이틀 -->
+    <meta name="title" content="Doosan Inc"/>
+    <meta http-equiv="cache-control" content="No-Cache"/>
+    <meta http-equiv="pragma" content="No-Cache"/>
+    <meta name="Location" content="South Korea"/>
+    <meta name="Distribution" content="Global"/>
+
+
+    <!-- CSS Global Compulsory -->
+    <link rel="stylesheet" href="resources/assets/plugins/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="resources/assets/css/style.css">
+
+    <!-- CSS Header and Footer -->
+    <link rel="stylesheet" href="resources/assets/css/headers/header-default.css">
+    <link rel="stylesheet" href="resources/assets/css/footers/footer-v1.css">
+
+    <!-- CSS Implementing Plugins -->
+    <link rel="stylesheet" href="resources/assets/plugins/animate.css">
+    <link rel="stylesheet" href="resources/assets/plugins/line-icons/line-icons.css">
+    <link rel="stylesheet" href="resources/assets/plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="resources/assets/plugins/parallax-slider/css/parallax-slider.css">
+    <link rel="stylesheet" href="resources/assets/plugins/owl-carousel/owl-carousel/owl.carousel.css">
+
+    <link rel="stylesheet" href="resources/assets/plugins/scrollbar/css/jquery.mCustomScrollbar.css">
+    <link rel="stylesheet" href="resources/assets/plugins/sky-forms-pro/skyforms/css/sky-forms.css">
+    <link rel="stylesheet" href="resources/assets/plugins/sky-forms-pro/skyforms/custom/custom-sky-forms.css">
+    <!-- CSS Customization -->
+    <link rel="stylesheet" href="resources/assets/css/custom.css">
+
+    <!-- CSS Page Style -->
+    <link rel="stylesheet" href="resources/assets/css/pages/blog.css">
+    <link rel="stylesheet" href="resources/assets/css/pages/blog_magazine.css">
+
+
+    <!-- JS Global Compulsory -->
+    <script type="text/javascript" src="lib/jquery-1.11.1/jquery-1.11.1.min.js"></script>
+    <!--<script type="text/javascript" src="resources/assets/plugins/jquery/jquery-migrate.min.js"></script>-->
+    <script type="text/javascript" src="resources/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- jquery-ui, jquery.contextmenu -->
+    <link rel="stylesheet" type="text/css"
+          href="resources/assets/plugins/jquery-ui-1.11.0.custom/jquery-ui.css"/>
+    <script type="text/javascript"
+            src="resources/assets/plugins/jquery-ui-1.11.0.custom/jquery-ui.min.js"></script>
+
+    <script type="text/javascript" src="lib/jquery-contextMenu/jquery.contextMenu.js"></script>
+    <link rel="stylesheet" type="text/css" href="lib/jquery-contextMenu/jquery.contextMenu.css"/>
+
+    <!-- CSS Theme -->
+    <link rel="stylesheet" href="resources/assets/css/theme-colors/dark-blue.css">
+
+    <!-- uengine CSS -->
+    <link rel="stylesheet" href="resources/assets/css/uengine.css">
+
+    <!-- data table -->
+    <link rel="stylesheet" href="resources/plugins/datatable/datatables.css">
+    <script type="text/javascript" src="resources/plugins/datatable/datatables.js"></script>
+
+    <!-- libs -->
+    <script type="text/javascript" src="lib/jqueryXML2JSON/jquery.xml2json.js"></script>
+
+    <script type="text/javascript" src="lib/opengraph/OpenGraph-0.1.2-SNAPSHOT.js"></script>
+    <script type="text/javascript" src="workflow/viewController.js"></script>
+    <script type="text/javascript" src="workflow/dataController.js"></script>
+    <script type="text/javascript" src="workflow/renderer.js"></script>
+
+</head>
+
+<div class="wrapper">
+
+
+    <!--=== Purchase Block ===-->
+    <div class="purchase">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9 animated fadeInLeft">
+                    <span>두산중공업 워크플로우 차트 Template 에디터</span>
+                </div>
+            </div>
+        </div>
+    </div><!--/row-->
+    <!-- End Purchase Block -->
+
+
+    <!--=== Content Part ===-->
+    <div class="container content">
+        <div class="row blog-page">
+            <!-- Left Sidebar -->
+            <div class="col-md-9">
+                <!--Blog Post-->
+                <div class="blog margin-bottom-40">
+                    <h2 id="project-title">현대 2차 파워플랜트 프로젝트 견적서 워크플로우 차트</h2>
+                    <div class="blog-post-tags">
+                        <ul class="list-unstyled list-inline blog-info">
+                            <li><i class="fa fa-calendar"></i> February 02, 2013 년 제작</li>
+                            <li><i class="fa fa-pencil"></i> 박종훈</li>
+                            <li><i class="fa fa-comments"></i> <a href="#">24 Comments</a></li>
+                            <li><i class="fa fa-comments"></i> <a href="#" id="refresh">Refresh</a></li>
+                        </ul>
+                        <ul class="list-unstyled list-inline blog-tags">
+                            <li>
+                                <i class="fa fa-tags"></i>
+                                <a href="#">Technology</a>
+                                <a href="#">Education</a>
+                                <a href="#">Internet</a>
+                                <a href="#">Media</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!--End Blog Post-->
+
+                오픈그래프 캔버스 들어갈 자리
+                <div id="canvas" style="cursor: default;width: 100%;height: 500px;overflow: scroll">
+
+                </div>
+
+            </div>
+            <!-- End Left Sidebar -->
+
+            <!-- Right Sidebar -->
+            <div class="col-md-3 magazine-page">
+                <!-- Search Bar -->
+                <div class="headline headline-md"><h2>Search</h2></div>
+                <div class="input-group margin-bottom-40">
+                    <input type="text" class="form-control" placeholder="Search">
+                    <span class="input-group-btn">
+                        <button class="btn-u" type="button">Go</button>
+                    </span>
+                </div>
+                <!-- End Search Bar -->
+
+                프로젝트 리스트 테이블
+            </div>
+            <!-- End Right Sidebar -->
+        </div><!--/row-->
+    </div><!--/container-->
+    <!--=== End Content Part ===-->
+
+    <!--=== Footer Version 1 ===-->
+    <div class="footer-v1">
+        <div class="footer">
+            <div class="container">
+                <div class="row">
+                    <!-- About -->
+                    <div class="col-md-3 md-margin-bottom-40">
+                        <a href="index.html"><img id="logo-footer" class="footer-logo"
+                                                  src="/resources/assets/img/logo2-default.png" alt=""></a>
+                        <p>About Unify dolor sit amet, consectetur adipiscing elit. Maecenas eget nisl id libero
+                            tincidunt sodales.</p>
+                        <p>Duis eleifend fermentum ante ut aliquam. Cras mi risus, dignissim sed adipiscing ut, placerat
+                            non arcu.</p>
+                    </div><!--/col-md-3-->
+                    <!-- End About -->
+
+                    <!-- Latest -->
+                    <div class="col-md-3 md-margin-bottom-40">
+                        <div class="posts">
+                            <div class="headline"><h2>Latest Posts</h2></div>
+                            <ul class="list-unstyled latest-list">
+                                <li>
+                                    <a href="#">Incredible content</a>
+                                    <small>May 8, 2014</small>
+                                </li>
+                                <li>
+                                    <a href="#">Best shoots</a>
+                                    <small>June 23, 2014</small>
+                                </li>
+                                <li>
+                                    <a href="#">New Terms and Conditions</a>
+                                    <small>September 15, 2014</small>
+                                </li>
+                            </ul>
+                        </div>
+                    </div><!--/col-md-3-->
+                    <!-- End Latest -->
+
+                    <!-- Link List -->
+                    <div class="col-md-3 md-margin-bottom-40">
+                        <div class="headline"><h2>Useful Links</h2></div>
+                        <ul class="list-unstyled link-list">
+                            <li><a href="#">About us</a><i class="fa fa-angle-right"></i></li>
+                            <li><a href="#">Portfolio</a><i class="fa fa-angle-right"></i></li>
+                            <li><a href="#">Latest jobs</a><i class="fa fa-angle-right"></i></li>
+                            <li><a href="#">Community</a><i class="fa fa-angle-right"></i></li>
+                            <li><a href="#">Contact us</a><i class="fa fa-angle-right"></i></li>
+                        </ul>
+                    </div><!--/col-md-3-->
+                    <!-- End Link List -->
+
+                    <!-- Address -->
+                    <div class="col-md-3 map-img md-margin-bottom-40">
+                        <div class="headline"><h2>Contact Us</h2></div>
+                        <address class="md-margin-bottom-40">
+                            25, Lorem Lis Street, Orange <br/>
+                            California, US <br/>
+                            Phone: 800 123 3456 <br/>
+                            Fax: 800 123 3456 <br/>
+                            Email: <a href="mailto:info@anybiz.com" class="">info@anybiz.com</a>
+                        </address>
+                    </div><!--/col-md-3-->
+                    <!-- End Address -->
+                </div>
+            </div>
+        </div><!--/footer-->
+
+        <div class="copyright">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p>
+                            2015 &copy; All Rights Reserved.
+                            <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
+                        </p>
+                    </div>
+
+                    <!-- Social Links -->
+                    <div class="col-md-6">
+                        <ul class="footer-socials list-inline">
+                            <li>
+                                <a href="#" class="tooltips" data-toggle="tooltip" data-placement="top" title=""
+                                   data-original-title="Facebook">
+                                    <i class="fa fa-facebook"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="tooltips" data-toggle="tooltip" data-placement="top" title=""
+                                   data-original-title="Skype">
+                                    <i class="fa fa-skype"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="tooltips" data-toggle="tooltip" data-placement="top" title=""
+                                   data-original-title="Google Plus">
+                                    <i class="fa fa-google-plus"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="tooltips" data-toggle="tooltip" data-placement="top" title=""
+                                   data-original-title="Linkedin">
+                                    <i class="fa fa-linkedin"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="tooltips" data-toggle="tooltip" data-placement="top" title=""
+                                   data-original-title="Pinterest">
+                                    <i class="fa fa-pinterest"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="tooltips" data-toggle="tooltip" data-placement="top" title=""
+                                   data-original-title="Twitter">
+                                    <i class="fa fa-twitter"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="tooltips" data-toggle="tooltip" data-placement="top" title=""
+                                   data-original-title="Dribbble">
+                                    <i class="fa fa-dribbble"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- End Social Links -->
+                </div>
+            </div>
+        </div><!--/copyright-->
+    </div>
+    <!--=== End Footer Version 1 ===-->
+</div>
+
+
+<!--[if lt IE 9]>
+<script src="assets/plugins/respond.js"></script>
+<script src="assets/plugins/html5shiv.js"></script>
+<script src="assets/plugins/placeholder-IE-fixes.js"></script>
+<![endif]-->
+
+<!-- ajax 호출 UI 블락커 && 커스터마이징 -->
+<script type="text/javascript" src="resources/plugins/blockUI/blockUI.js"></script>
+<script type="text/javascript" src="resources/js/blockUIcustom.js"></script>
+
+<!-- Jquery Validator -->
+<script type="text/javascript" src="resources/plugins/validator/jquery.validate.js"></script>
+<script type="text/javascript" src="resources/plugins/validator/additional-methods.js"></script>
+
+<!-- JS Implementing Plugins -->
+<script type="text/javascript" src="resources/assets/plugins/back-to-top.js"></script>
+<script type="text/javascript" src="resources/assets/plugins/sky-forms-pro/skyforms/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="resources/assets/plugins/sky-forms-pro/skyforms/js/jquery.validate.min.js"></script>
+<script type="text/javascript"
+        src="resources/assets/plugins/sky-forms-pro/skyforms/js/jquery.maskedinput.min.js"></script>
+<script type="text/javascript"
+        src="resources/assets/plugins/scrollbar/js/jquery.mCustomScrollbar.concat.min.js"></script>
+
+
+<script type="text/javascript" src="resources/assets/plugins/smoothScroll.js"></script>
+<script type="text/javascript" src="resources/assets/plugins/parallax-slider/js/modernizr.js"></script>
+<script type="text/javascript" src="resources/assets/plugins/parallax-slider/js/jquery.cslider.js"></script>
+<script type="text/javascript" src="resources/assets/plugins/owl-carousel/owl-carousel/owl.carousel.js"></script>
+
+<!-- JS Customization -->
+<script type="text/javascript" src="resources/assets/js/custom.js"></script>
+
+<!-- JS Page Level -->
+<script type="text/javascript" src="resources/assets/js/app.js"></script>
+<script type="text/javascript" src="resources/assets/js/plugins/owl-carousel.js"></script>
+<script type="text/javascript" src="resources/assets/js/plugins/parallax-slider.js"></script>
+<script type="text/javascript" src="resources/assets/js/forms/reg.js"></script>
+<script type="text/javascript" src="resources/assets/js/forms/checkout.js"></script>
+<script type="text/javascript">
+    var editorMode = true;
+    jQuery(document).ready(function () {
+        App.init();
+        OwlCarousel.initOwlCarousel();
+        ParallaxSlider.initParallaxSlider();
+    });
+</script>
+
+
+<!--[if lt IE 9]>
+<script src="resources/assets/plugins/respond.js"></script>
+<script src="resources/assets/plugins/html5shiv.js"></script>
+<script src="resources/assets/plugins/placeholder-IE-fixes.js"></script>
+<script src="resources/assets/plugins/sky-forms-pro/skyforms/js/sky-forms-ie8.js"></script>
+<![endif]-->
+
+<!--[if lt IE 10]>
+<script src="resources/assets/plugins/sky-forms-pro/skyforms/js/jquery.placeholder.min.js"></script>
+<![endif]-->
+</html>
