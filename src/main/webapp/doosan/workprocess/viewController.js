@@ -20,7 +20,7 @@ ViewController.prototype = {
     //챠트 데이터를 불러오고, 그다음 캔버스를 만든다음 캔버스를 데이터대로 조작하자!!
     init: function () {
         var me = this;
-        me.renderer.openCanvs(me.canvasId);
+        me.renderer.openCanvas(me.canvasId);
     }
 
 }

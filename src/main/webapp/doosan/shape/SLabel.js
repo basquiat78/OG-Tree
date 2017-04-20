@@ -3,6 +3,7 @@ OG.shape.SLabel = function () {
 
     this.SHAPE_ID = 'OG.shape.SLabel';
     this.LABEL_EDITABLE = false;
+    this.SELECTABLE = false;
     this.MOVABLE = false;
     this.CONNECTABLE = false;
     this.DELETABLE = false;

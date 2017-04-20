@@ -7,7 +7,7 @@ var Renderer = function () {
 Renderer.prototype = {
     
 		
-	openCanvs: function(canvasId) {
+	openCanvas: function(canvasId) {
         var me = this;
         var height = $("#"+canvasId).height();
         var width = $("#"+canvasId).width();
@@ -22,7 +22,20 @@ Renderer.prototype = {
         me.canvas.onMoveShape(function (event, shapeElement, offset) {
         });
     },
-    
+
+	drawSLabel: function(element) {
+		var me = this;
+		var boundary = me.canvas.getBoundary(element);
+		console.log(boundary);
+		var x = boundary.getUpperRight().x - 6;
+		var y = boundary.getUpperRight().y - 7;
+		var id = 'sLabel_' + element.id;
+		var size = [12, 14];
+		var offset = [x, y];
+		var shape = new OG.SLabel();
+		var sLabel = me.canvas.drawShape(offset, shape, size, null, id, element.id);
+	},
+
     drawTask: function() {
     	var me = this;
     	for(var i = 0 ; i < 3; i ++) {
@@ -30,8 +43,12 @@ Renderer.prototype = {
     		var positionX = 50 + (i*10);
     		var positionY = 50;
     		var label = "test_1_"+i;
-    		me.canvas.drawShape([positionX, positionY], new OG.TestTask(label), [50, 50], {stroke: '#555', 'stroke-width': 2});
-    	}
+    		var taskShape = me.canvas.drawShape([positionX, positionY], new OG.TestTask(label), [50, 50], {stroke: '#555', 'stroke-width': 2});
+			if(i > 0) {
+				me.drawSLabel(taskShape);
+			}
+		}
+
     	
     	for(var j = 0 ; j < 3; j ++) {
 
