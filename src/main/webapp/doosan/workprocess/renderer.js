@@ -49,7 +49,6 @@ Renderer.prototype = {
 			}
 		}
 
-    	
     	for(var j = 0 ; j < 5; j ++) {
 
     		var positionX = 50 + (j*10);
@@ -60,6 +59,17 @@ Renderer.prototype = {
 				me.drawSLabel(taskShape);
 			}
     	}
+
+		for(var k = 0 ; k < 8; k ++) {
+
+			var positionX = 50 + (k*10);
+			var positionY = 250;
+			var label = "test_3_"+k;
+			var taskShape = me.canvas.drawShape([positionX, positionY], new OG.TestTask(label), [50, 50], {stroke: '#555', 'stroke-width': 2});
+			if(k > 3) {
+				me.drawSLabel(taskShape);
+			}
+		}
     },
 }
 
