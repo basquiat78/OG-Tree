@@ -21,19 +21,43 @@ Renderer.prototype = {
     	var me = this;
         me.canvas.onMoveShape(function (event, shapeElement, offset) {
         });
+
+		me.canvas.onConnectShape(function (event, edgeElement, fromElement, toElement) {
+
+			me.bindHightlightTask(fromElement);
+
+		});
     },
 
 	drawSLabel: function(element) {
 		var me = this;
 		var boundary = me.canvas.getBoundary(element);
-		console.log(boundary);
 		var x = boundary.getUpperRight().x - 6;
 		var y = boundary.getUpperRight().y - 4;
 		var id = 'sLabel_' + element.id;
 		var size = [12, 14];
 		var offset = [x, y];
 		var shape = new OG.SLabel();
-		var sLabel = me.canvas.drawShape(offset, shape, size, null, id, element.id);
+		me.canvas.drawShape(offset, shape, size, null, id, element.id);
+	},
+
+	bindHightlightTask: function(element) {
+
+		$(element).unbind('mouseover');
+		$(element).unbind('mouseout');
+		$(element).unbind('click');
+
+		$(element).bind({
+			click: function(event) {
+				console.log('click');
+			},
+			mouseover: function(event) {
+				event.preventDefault();
+			},
+			mouseout: function(event) {
+				event.preventDefault();
+			}
+		});
 	},
 
     drawTask: function() {
