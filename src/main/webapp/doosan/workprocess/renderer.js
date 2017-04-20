@@ -28,7 +28,7 @@ Renderer.prototype = {
 		var boundary = me.canvas.getBoundary(element);
 		console.log(boundary);
 		var x = boundary.getUpperRight().x - 6;
-		var y = boundary.getUpperRight().y - 7;
+		var y = boundary.getUpperRight().y - 4;
 		var id = 'sLabel_' + element.id;
 		var size = [12, 14];
 		var offset = [x, y];
@@ -38,24 +38,27 @@ Renderer.prototype = {
 
     drawTask: function() {
     	var me = this;
-    	for(var i = 0 ; i < 3; i ++) {
+    	for(var i = 0 ; i < 6; i ++) {
 
     		var positionX = 50 + (i*10);
     		var positionY = 50;
     		var label = "test_1_"+i;
     		var taskShape = me.canvas.drawShape([positionX, positionY], new OG.TestTask(label), [50, 50], {stroke: '#555', 'stroke-width': 2});
-			if(i > 0) {
+			if(i > 3) {
 				me.drawSLabel(taskShape);
 			}
 		}
 
     	
-    	for(var j = 0 ; j < 3; j ++) {
+    	for(var j = 0 ; j < 5; j ++) {
 
     		var positionX = 50 + (j*10);
     		var positionY = 150;
     		var label = "test_2_"+j;
-    		me.canvas.drawShape([positionX, positionY], new OG.TestTask(label), [50, 50], {stroke: '#555', 'stroke-width': 2});
+			var taskShape = me.canvas.drawShape([positionX, positionY], new OG.TestTask(label), [50, 50], {stroke: '#555', 'stroke-width': 2});
+			if(j > 1) {
+				me.drawSLabel(taskShape);
+			}
     	}
     },
 }
