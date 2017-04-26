@@ -134,33 +134,52 @@ Renderer.prototype = {
 					'font-size': '12px'
 				});
 				$('body').append(tooltip);
+
 				var nextEdges = me.canvas.getNextEdges(element);
-				if(nextEdges.length > 0) {
-					nextEdges.forEach(function(edge){
+				var prevEdges = me.canvas.getPrevEdges(element);
+				if(nextEdges.length > 0 || prevEdges.length > 0) {
+
+					var allEdges = me.canvas.getAllEdges();
+					allEdges.forEach(function(edge){
 						me.canvas.setShapeStyle(edge, {
+							"stroke": "RGB(0,0,0)",
+							"stroke-width": "1.5",
+							"opacity": "0.2"
+						});
+					});
+
+					nextEdges.forEach(function(nextEdge){
+						me.canvas.setShapeStyle(nextEdge, {
 							"stroke": "RGB(66,139,202)",
 							"stroke-width": "1.5",
 							"opacity": "1"
 						});
-
 						var root = $(me.canvas.getRootGroup());
-						root[0].appendChild(edge);
+						root[0].appendChild(nextEdge);
+					});
+
+					prevEdges.forEach(function(prevEdge){
+						me.canvas.setShapeStyle(prevEdge, {
+							"stroke": "RGB(255,0,255)",
+							"stroke-width": "1.5",
+							"opacity": "1"
+						});
+						var root = $(me.canvas.getRootGroup());
+						root[0].appendChild(prevEdge);
 					});
 				}
 				event.preventDefault();
 			},
 			mouseout: function(event) {
 				$('.og-tooltip').remove();
-				var nextEdges = me.canvas.getNextEdges(element);
-				if(nextEdges.length > 0) {
-					nextEdges.forEach(function(edge){
-						me.canvas.setShapeStyle(edge, {
-							"stroke": "RGB(0,0,0)",
-							"stroke-width": "1.5",
-							"opacity": "1"
-						});
+				var allEdges = me.canvas.getAllEdges();
+				allEdges.forEach(function(edge){
+					me.canvas.setShapeStyle(edge, {
+						"stroke": "RGB(0,0,0)",
+						"stroke-width": "1.5",
+						"opacity": "1"
 					});
-				}
+				});
 				event.preventDefault();
 			}
 		});

@@ -4076,7 +4076,7 @@ window.Raphael.svg && function (R) {
                 }
                 if (type != "none") {
                     var pathId = "raphael-marker-" + type,
-                        markerId = "raphael-marker-" + se + type + w + h + p.id;
+                        markerId = "raphael-marker-" + se + type + w + h + p.id + "_"+(Math.floor(Math.random() * 100) + 1);
                     if (!p.canvas.getElementById(pathId)) {
                         p.defs.appendChild($($("path"), {
                             "stroke-linecap": "round",
