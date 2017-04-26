@@ -15,7 +15,73 @@ Renderer.prototype = {
         me.drawActivity();
         me.bindEvent();
     },
-    
+
+	drawActivity: function() {
+		var me = this;
+		for(var i = 0 ; i < 6; i ++) {
+
+			var positionX = 50 + (i*10);
+			var positionY = 50;
+			var label = "testtest_1_"+i;
+			var customData = {};
+			var newLabel = "";
+			if(label.length > 9) {
+				newLabel = label.substring(0, 5) + "...";
+			} else {
+				newLabel = label;
+			}
+			customData['label'] = label;
+			var activity = me.canvas.drawShape([positionX, positionY], new OG.Activity(newLabel), [50, 50], {'font-size': 9, 'vertical-align': 'top'});
+			me.canvas.setCustomData(activity, customData);
+			if(i > 3) {
+				me.drawSLabel(activity);
+			}
+			me.bindHoverActivity(activity);
+		}
+
+		for(var j = 0 ; j < 5; j ++) {
+
+			var positionX = 50 + (j*10);
+			var positionY = 150;
+			var label = "test_2_"+j;
+			var customData = {};
+			var newLabel = "";
+			if(label.length > 9) {
+				newLabel = label.substring(0, 5) + "...";
+			} else {
+				newLabel = label;
+			}
+			customData['label'] = label;
+			var activity = me.canvas.drawShape([positionX, positionY], new OG.Activity(newLabel), [50, 50], {'font-size': 9, 'vertical-align': 'top'});
+			me.canvas.setCustomData(activity, customData);
+			if(j > 1) {
+				me.drawSLabel(activity);
+			}
+			me.bindHoverActivity(activity);
+		}
+
+		for(var k = 0 ; k < 8; k ++) {
+
+			var positionX = 50 + (k*10);
+			var positionY = 250;
+			var label = "test_3_"+k;
+			var customData = {};
+			var newLabel = "";
+			if(label.length > 9) {
+				newLabel = label.substring(0, 5) + "...";
+			} else {
+				newLabel = label;
+			}
+			customData['label'] = label;
+			var activity = me.canvas.drawShape([positionX, positionY], new OG.Activity(newLabel), [50, 50], {'font-size': 9, 'vertical-align': 'top'});
+			me.canvas.setCustomData(activity, customData);
+			if(k > 3) {
+				me.drawSLabel(activity);
+			}
+			me.bindHoverActivity(activity);
+		}
+	},
+
     bindEvent: function() {
     	var me = this;
         me.canvas.onMoveShape(function (event, shapeElement, offset) {
@@ -47,15 +113,17 @@ Renderer.prototype = {
 
 	bindHoverActivity: function(element) {
 
+		var me = this;
 		$(element).unbind('mouseover');
 		$(element).unbind('mouseout');
 
 		$(element).bind({
 			mouseover: function(event) {
 				$('.og-tooltip').remove();
+				var label = me.canvas.getCustomData(element).label;
 				var tooltip =
 					$('<div class="og-tooltip ui-tooltip ui-widget ui-corner-all" id="' + element.id + '-tooltip">' +
-						'<div class="ui-tooltip-content">' + element.shape.label + '</div>' +
+						'<div class="ui-tooltip-content">' + label + '</div>' +
 						'</div>');
 				tooltip.css({
 					position: 'absolute',
@@ -66,53 +134,38 @@ Renderer.prototype = {
 					'font-size': '12px'
 				});
 				$('body').append(tooltip);
+				var nextEdges = me.canvas.getNextEdges(element);
+				if(nextEdges.length > 0) {
+					nextEdges.forEach(function(edge){
+						me.canvas.setShapeStyle(edge, {
+							"stroke": "RGB(66,139,202)",
+							"stroke-width": "1.5",
+							"opacity": "1"
+						});
+
+						var root = $(me.canvas.getRootGroup());
+						root[0].appendChild(edge);
+					});
+				}
 				event.preventDefault();
 			},
 			mouseout: function(event) {
 				$('.og-tooltip').remove();
+				var nextEdges = me.canvas.getNextEdges(element);
+				if(nextEdges.length > 0) {
+					nextEdges.forEach(function(edge){
+						me.canvas.setShapeStyle(edge, {
+							"stroke": "RGB(0,0,0)",
+							"stroke-width": "1.5",
+							"opacity": "1"
+						});
+					});
+				}
 				event.preventDefault();
 			}
 		});
-	},
+	}
 
-	drawActivity: function() {
-    	var me = this;
-    	for(var i = 0 ; i < 6; i ++) {
-
-    		var positionX = 50 + (i*10);
-    		var positionY = 50;
-    		var label = "test_1_"+i;
-    		var activity = me.canvas.drawShape([positionX, positionY], new OG.Activity(label), [50, 50], {stroke: '#555', 'stroke-width': 2});
-			if(i > 3) {
-				me.drawSLabel(activity);
-			}
-			me.bindHoverActivity(activity);
-		}
-
-    	for(var j = 0 ; j < 5; j ++) {
-
-    		var positionX = 50 + (j*10);
-    		var positionY = 150;
-    		var label = "test_2_"+j;
-			var activity = me.canvas.drawShape([positionX, positionY], new OG.Activity(label), [50, 50], {stroke: '#555', 'stroke-width': 2});
-			if(j > 1) {
-				me.drawSLabel(activity);
-			}
-			me.bindHoverActivity(activity);
-    	}
-
-		for(var k = 0 ; k < 8; k ++) {
-
-			var positionX = 50 + (k*10);
-			var positionY = 250;
-			var label = "test_3_"+k;
-			var activity = me.canvas.drawShape([positionX, positionY], new OG.Activity(label), [50, 50], {stroke: '#555', 'stroke-width': 2});
-			if(k > 3) {
-				me.drawSLabel(activity);
-			}
-			me.bindHoverActivity(activity);
-		}
-    },
 }
 
 ;
