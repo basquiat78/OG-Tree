@@ -116,8 +116,16 @@ Renderer.prototype = {
 		var me = this;
 		$(element).unbind('mouseover');
 		$(element).unbind('mouseout');
-
+		$(element).unbind('dblclick');
 		$(element).bind({
+
+			dblclick: function(event) {
+				//TODO
+				// 더블클릭시 aras 화면 호출하는 로직
+				console.log(element);
+				event.preventDefault();
+			},
+
 			mouseover: function(event) {
 				$('.og-tooltip').remove();
 				var label = me.canvas.getCustomData(element).label;
