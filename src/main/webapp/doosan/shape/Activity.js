@@ -4,7 +4,12 @@ OG.shape.Activity = function (label) {
     this.SHAPE_ID = 'OG.shape.Activity';
     this.LABEL_EDITABLE = false;
     this.label = label;
-    this.CONNECTABLE = false;
+    this.MOVABLE = true;
+    this.RESIZABLE = false;
+    this.SELECTABLE = true;
+    this.ONLY_MOVE_AXIS = 'X';
+    this.CONNECTABLE = true;
+    this.CONNECT_CLONEABLE = false;
     this.DELETABLE = false;
 };
 OG.shape.Activity.prototype = new OG.shape.ImageShape();
