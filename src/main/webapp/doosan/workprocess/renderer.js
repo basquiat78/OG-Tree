@@ -12,7 +12,8 @@ var Renderer = function () {
 			color 	: 'rgb(255,0,255)',
 			stroke	: 'rgb(0,0,0)'
 		}
-	}
+	};
+	this.selectedShape = null;
 };
 
 Renderer.prototype = {
@@ -22,6 +23,24 @@ Renderer.prototype = {
         var height = $("#"+canvasId).height();
         var width = $("#"+canvasId).width();
         me.canvas = new OG.Canvas(canvasId, [width, height], 'white');
+		me.canvas.initConfig({
+			selectable: true,
+			dragSelectable: true,
+			movable: true,
+			resizable: false,
+			connectable: true,
+			selfConnectable: false,
+			connectCloneable: false,
+			connectRequired: true,
+			labelEditable: false,
+			groupDropable: true,
+			collapsible: true,
+			enableHotKey: false,
+			enableContextMenu: false,
+			useSlider: true,
+			stickGuide: false,
+			checkBridgeEdge: false
+		});
         me.drawActivity();
         me.bindEvent();
     },
@@ -107,6 +126,11 @@ Renderer.prototype = {
 
 		me.canvas.onConnectShape(function (event, edgeElement, fromElement, toElement) {
 		});
+
+		/**
+		 * contextMenu Binding
+		 */
+		me.enableShapeContextMenu();
     },
 
 	/**
@@ -359,6 +383,70 @@ Renderer.prototype = {
 			}
 		}
 	},
+
+	/**
+	 * OG Tree Dom Element 에 마우스 우클릭 메뉴를 가능하게 한다.
+	 * 기존 기능 수정
+	 */
+	enableShapeContextMenu: function () {
+
+		var me = this;
+		$.contextMenu({
+			position: function (opt, x, y) {
+				opt.$menu.css({top: y + 10, left: x + 10});
+			},
+			selector: '#' + me.canvas._RENDERER.getRootElement().id + ' [_type=SHAPE]',
+			build: function ($trigger, event) {
+				var items = {};
+				$(me.canvas._RENDERER.getContainer()).focus();
+				var element = $trigger[0];
+				//선택된 엘리먼트 셀렉트
+				if ($(element).attr("_selected") === "true") {
+					me.canvas._HANDLER.deselectShape(element);
+					me.canvas._HANDLER.selectShape(element);
+				} else {
+					me.canvas._HANDLER.selectShape(element);
+				}
+				me.selectedShape = element;
+				//공통
+				items.showProperties = me.makeShowProperties();
+				items.showProperties1 = me.makeShowProperties1();
+				return {
+					items: items
+				};
+			}
+		});
+	},
+
+	/**
+	 * 프로퍼티 보기 콘텍스트 메뉴를 생성한다.
+	 * @returns {{name: string, icon: string, callback: Function}}
+	 */
+	makeShowProperties: function () {
+		var me = this;
+		return {
+			name: 'test',
+			icon: '',
+			callback: function () {
+				console.log(me.selectedShape)
+			}
+		}
+	},
+
+	/**
+	 * 프로퍼티 보기 콘텍스트 메뉴를 생성한다.
+	 * @returns {{name: string, icon: string, callback: Function}}
+	 */
+	makeShowProperties1: function () {
+		var me = this;
+		return {
+			name: 'test1',
+			icon: '',
+			callback: function () {
+				console.log(me.selectedShape)
+			}
+		}
+	}
 }
 
 ;
