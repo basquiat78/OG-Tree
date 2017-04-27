@@ -70,7 +70,7 @@
 
     <!-- libs -->
     <script type="text/javascript" src="lib/jqueryXML2JSON/jquery.xml2json.js"></script>
-
+    <script type="text/javascript" src="lib/lodash/lodash.min.js"></script>
     <script type="text/javascript" src="lib/opengraph/OpenGraph-0.1.2-SNAPSHOT.js"></script>
     <script type="text/javascript" src="doosan/shape/Activity.js"></script>
     <script type="text/javascript" src="doosan/shape/SLabel.js"></script>
@@ -189,10 +189,10 @@
             <div class="row col-md-12">
                 <div class="col-md-5">
                     <div class="sortBar" style="margin-left: 15px">
-                        <button class="btn btn-xs rounded btn-default" data-key="name" data-order="asc"
+                        <!--<button class="btn btn-xs rounded btn-default" data-key="name" data-order="asc"
                                 type="button"><i
                                 class="fa fa-caret-square-o-down"></i> Name
-                        </button>
+                        </button>-->
                         <!--<button class="btn btn-xs rounded btn-default" data-key="first_start_date" data-order="asc"-->
                                 <!--type="button"><i-->
                                 <!--class="fa fa-caret-square-o-down"></i> Start-->
@@ -201,15 +201,15 @@
                                 <!--type="button"><i-->
                                 <!--class="fa fa-caret-square-o-down"></i> End-->
                         <!--</button>-->
-                        <button class="btn btn-xs rounded btn-default" data-key="modified_date" data-order="asc"
+                        <!--<button class="btn btn-xs rounded btn-default" data-key="modified_date" data-order="asc"
                                 type="button"><i
                                 class="fa fa-caret-square-o-down"></i> Modified
-                        </button>
+                        </button>-->
                     </div>
                 </div>
                 <div class="col-md-7">
-                    <div class="toolbar" style="margin-left: 15px">
-                        <button type="button" class="btn btn-xs rounded btn-default dropdown-toggle"
+                    <div class="toolbar" style="margin-left: 150px">
+                        <!--<button type="button" class="btn btn-xs rounded btn-default dropdown-toggle"
                                 data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
                             State Color <span class="caret"></span>
@@ -220,6 +220,15 @@
                             <li><a href="#">Something else here</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="#">Separated link</a></li>
+                        </ul>-->
+                        <button type="button" class="btn btn-xs rounded btn-default dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            Cavans Data Handling <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li id="menu-printJson"><a href="#">Print Json</a></li>
+                            <li id="menu-loadJson"><a href="#">Load Json</a></li>
                         </ul>
                         <button class="btn btn-xs rounded btn-default" id="refresh" type="button"><i
                                 class="fa fa-refresh"></i> Refresh
@@ -233,9 +242,9 @@
                         <button class="btn btn-xs rounded btn-default" id="zoomOut" type="button"><i
                                 class="fa fa-search-minus"></i> Zoom | OUT
                         </button>
-                        <button class="btn btn-xs rounded btn-default" id="labelSwitch" type="button"><i
+                        <!--<button class="btn btn-xs rounded btn-default" id="labelSwitch" type="button"><i
                                 class="fa fa-caret-square-o-down"></i> Label On|Off
-                        </button>
+                        </button>-->
                     </div>
                 </div>
             </div>
@@ -286,7 +295,24 @@
         </div>
     </div>
 </div>
-
+<!-- Data Modal -->
+<div class="modal fade" id="dataBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title">Data</h4>
+            </div>
+            <div class="modal-body">
+                <textarea rows="12" style="width:100%"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal" type="button" name="save">저장</button>
+                <button class="btn btn-white" data-dismiss="modal" type="button" name="close">닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- ajax 호출 UI 블락커 && 커스터마이징 -->
 <script type="text/javascript" src="resources/plugins/blockUI/blockUI.js"></script>
 <script type="text/javascript" src="resources/js/blockUIcustom.js"></script>

@@ -5,8 +5,7 @@ var Renderer = function () {
 };
 
 Renderer.prototype = {
-    
-		
+
 	openCanvas: function(canvasId) {
         var me = this;
         var height = $("#"+canvasId).height();
@@ -34,7 +33,7 @@ Renderer.prototype = {
 			var activity = me.canvas.drawShape([positionX, positionY], new OG.Activity(newLabel), [50, 50], {'font-size': 9, 'vertical-align': 'top'});
 			me.canvas.setCustomData(activity, customData);
 			if(i > 3) {
-				me.drawSLabel(activity);
+				me.drawALabel(activity);
 			}
 			me.bindHoverActivity(activity);
 		}
@@ -55,7 +54,7 @@ Renderer.prototype = {
 			var activity = me.canvas.drawShape([positionX, positionY], new OG.Activity(newLabel), [50, 50], {'font-size': 9, 'vertical-align': 'top'});
 			me.canvas.setCustomData(activity, customData);
 			if(j > 1) {
-				me.drawSLabel(activity);
+				me.drawALabel(activity);
 			}
 			me.bindHoverActivity(activity);
 		}
@@ -76,7 +75,7 @@ Renderer.prototype = {
 			var activity = me.canvas.drawShape([positionX, positionY], new OG.Activity(newLabel), [50, 50], {'font-size': 9, 'vertical-align': 'top'});
 			me.canvas.setCustomData(activity, customData);
 			if(k > 3) {
-				me.drawSLabel(activity);
+				me.drawALabel(activity);
 			}
 			me.bindHoverActivity(activity);
 		}
@@ -89,7 +88,7 @@ Renderer.prototype = {
 			var targetElement = me.canvas.getElementById(id);
 			if(targetElement != null) {
 				me.canvas.removeShape(targetElement);
-				me.drawSLabel(shapeElement);
+				me.drawALabel(shapeElement);
 			}
 
         });
@@ -98,7 +97,12 @@ Renderer.prototype = {
 		});
     },
 
-	drawSLabel: function(parentElement) {
+	/**
+	 * TODO
+	 * 차후 알람 액티비티로 바꿔야 함
+	 * @param parentElement
+	 */
+	drawALabel: function(parentElement) {
 		var me = this;
 		var boundary = me.canvas.getBoundary(parentElement);
 		var x = boundary.getUpperRight().x - 6;
@@ -109,6 +113,17 @@ Renderer.prototype = {
 		var shape = new OG.SLabel();
 		//me.canvas.drawShape(offset, shape, size, null, id, parentElement.id);
 		me.canvas.drawShape(offset, shape, size, null, id);
+	},
+
+	drawCanvasFromJSON: function(jsonData) {
+		var me = this;
+		me.canvas.loadJSON(jsonData);
+		var allShapes = me.canvas.getAllShapes();
+		_.forEach(allShapes, function(shapeElement){
+			if(shapeElement.shape instanceof OG.shape.Activity) {
+				me.bindHoverActivity(shapeElement);
+			}
+		});
 	},
 
 	bindHoverActivity: function(element) {
@@ -148,7 +163,7 @@ Renderer.prototype = {
 				if(nextEdges.length > 0 || prevEdges.length > 0) {
 
 					var allEdges = me.canvas.getAllEdges();
-					allEdges.forEach(function(edge){
+					_.forEach(allEdges, function(edge){
 						me.canvas.setShapeStyle(edge, {
 							"stroke": "RGB(0,0,0)",
 							"stroke-width": "1.5",
@@ -156,7 +171,7 @@ Renderer.prototype = {
 						});
 					});
 
-					nextEdges.forEach(function(nextEdge){
+					_.forEach(nextEdges, function(nextEdge){
 						me.canvas.setShapeStyle(nextEdge, {
 							"stroke": "RGB(66,139,202)",
 							"stroke-width": "1.5",
@@ -166,7 +181,7 @@ Renderer.prototype = {
 						root[0].appendChild(nextEdge);
 					});
 
-					prevEdges.forEach(function(prevEdge){
+					_.forEach(prevEdges, function(prevEdge){
 						me.canvas.setShapeStyle(prevEdge, {
 							"stroke": "RGB(255,0,255)",
 							"stroke-width": "1.5",
@@ -181,7 +196,7 @@ Renderer.prototype = {
 			mouseout: function(event) {
 				$('.og-tooltip').remove();
 				var allEdges = me.canvas.getAllEdges();
-				allEdges.forEach(function(edge){
+				_.forEach(allEdges, function(edge){
 					me.canvas.setShapeStyle(edge, {
 						"stroke": "RGB(0,0,0)",
 						"stroke-width": "1.5",
@@ -191,7 +206,7 @@ Renderer.prototype = {
 				event.preventDefault();
 			}
 		});
-	}
+	},
 
 }
 
