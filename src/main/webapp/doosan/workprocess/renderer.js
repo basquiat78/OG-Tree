@@ -64,7 +64,7 @@ Renderer.prototype = {
 			var activity = me.canvas.drawShape([positionX, positionY], new OG.Activity(newLabel), [50, 50], {'font-size': 9, 'vertical-align': 'top'});
 			me.canvas.setCustomData(activity, customData);
 			if(i > 3) {
-				me.drawALabel(activity);
+				me.attachALabel(activity);
 			}
 			me.bindHoverActivity(activity);
 		}
@@ -85,7 +85,7 @@ Renderer.prototype = {
 			var activity = me.canvas.drawShape([positionX, positionY], new OG.Activity(newLabel), [50, 50], {'font-size': 9, 'vertical-align': 'top'});
 			me.canvas.setCustomData(activity, customData);
 			if(j > 1) {
-				me.drawALabel(activity);
+				me.attachALabel(activity);
 			}
 			me.bindHoverActivity(activity);
 		}
@@ -106,7 +106,7 @@ Renderer.prototype = {
 			var activity = me.canvas.drawShape([positionX, positionY], new OG.Activity(newLabel), [50, 50], {'font-size': 9, 'vertical-align': 'top'});
 			me.canvas.setCustomData(activity, customData);
 			if(k > 3) {
-				me.drawALabel(activity);
+				me.attachALabel(activity);
 			}
 			me.bindHoverActivity(activity);
 		}
@@ -115,12 +115,12 @@ Renderer.prototype = {
     bindEvent: function() {
     	var me = this;
         me.canvas.onMoveShape(function (event, shapeElement, offset) {
-			var id = "sLabel_"+shapeElement.id;
+			var id = "aLabel_"+shapeElement.id;
 			//$(shapeElement).find('svg').remove();
 			var targetElement = me.canvas.getElementById(id);
 			if(targetElement != null) {
 				me.canvas.removeShape(targetElement);
-				me.drawALabel(shapeElement);
+				me.attachALabel(shapeElement);
 			}
         });
 
@@ -138,17 +138,24 @@ Renderer.prototype = {
 	 * 차후 알람 액티비티로 바꿔야 함
 	 * @param parentElement
 	 */
-	drawALabel: function(parentElement) {
+	attachALabel: function(parentElement) {
 		var me = this;
 		var boundary = me.canvas.getBoundary(parentElement);
 		var x = boundary.getUpperRight().x - 6;
 		var y = boundary.getUpperRight().y + 4;
-		var id = 'sLabel_' + parentElement.id;
+		var id = 'aLabel_' + parentElement.id;
 		var size = [12, 14];
 		var offset = [x, y];
 		var shape = new OG.SLabel();
 		//me.canvas.drawShape(offset, shape, size, null, id, parentElement.id);
 		me.canvas.drawShape(offset, shape, size, null, id);
+	},
+
+	removeALabel: function(parentElement) {
+		var me = this;
+		var id = "aLabel_"+parentElement.id;
+		var targetElement = me.canvas.getElementById(id);
+		me.canvas.removeShape(targetElement);
 	},
 
 	drawCanvasFromJSON: function(jsonData) {
@@ -409,8 +416,12 @@ Renderer.prototype = {
 				}
 				me.selectedShape = element;
 				//공통
+				if(me.isALabel(element)) {
+					items.removeALabel = me.makeRemoveALabel();
+				} else {
+					items.attatchALabel = me.makeAttatchALabel();
+				}
 				items.showProperties = me.makeShowProperties();
-				items.showProperties1 = me.makeShowProperties1();
 				return {
 					items: items
 				};
@@ -419,7 +430,52 @@ Renderer.prototype = {
 	},
 
 	/**
-	 * 프로퍼티 보기 콘텍스트 메뉴를 생성한다.
+	 * 컨텍스트 메뉴 생성시 해당 Shape에 ALabel이 있는지 없는지 체크
+	 * @param element
+	 */
+	isALabel: function(element) {
+		var me = this;
+		var isALabel = false;
+		var id = "aLabel_"+element.id;
+		var targetElement = me.canvas.getElementById(id);
+		if(targetElement != null) {
+			isALabel = true;
+		}
+		return isALabel;
+	},
+
+	/**
+	 * Attach ALabel Context Menu
+	 * @returns {{name: string, icon: string, callback: Function}}
+	 */
+	makeAttatchALabel: function () {
+		var me = this;
+		return {
+			name: 'attach ALabel',
+			icon: '',
+			callback: function () {
+				me.attachALabel(me.selectedShape);
+			}
+		}
+	},
+
+	/**
+	 * Remove ALabel Context Menu
+	 * @returns {{name: string, icon: string, callback: Function}}
+	 */
+	makeRemoveALabel: function () {
+		var me = this;
+		return {
+			name: 'remove ALabel',
+			icon: '',
+			callback: function () {
+				me.removeALabel(me.selectedShape);
+			}
+		}
+	},
+
+	/**
+	 * 프로퍼티 보기 콘텍스트 메뉴를 생성한다. 테스트
 	 * @returns {{name: string, icon: string, callback: Function}}
 	 */
 	makeShowProperties: function () {
@@ -428,25 +484,10 @@ Renderer.prototype = {
 			name: 'test',
 			icon: '',
 			callback: function () {
-				console.log(me.selectedShape)
+				console.log(me.selectedShape);
 			}
 		}
 	},
-
-	/**
-	 * 프로퍼티 보기 콘텍스트 메뉴를 생성한다.
-	 * @returns {{name: string, icon: string, callback: Function}}
-	 */
-	makeShowProperties1: function () {
-		var me = this;
-		return {
-			name: 'test1',
-			icon: '',
-			callback: function () {
-				console.log(me.selectedShape)
-			}
-		}
-	}
 }
 
 ;
