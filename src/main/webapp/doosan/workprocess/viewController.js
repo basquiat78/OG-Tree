@@ -36,6 +36,11 @@ ViewController.prototype = {
 
         });
 
+        $('#dataHandler').click(function () {
+            var o = $(this).position();
+            $(".state-data").css({'top': '20px', 'left': o.left+"px"});
+        });
+
         $('#zoomIn').click(function () {
             var scale = me.renderer.canvas.getScale();
             var reScale = scale + 0.1;

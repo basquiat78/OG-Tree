@@ -2,6 +2,17 @@
 
 var Renderer = function () {
     this.canvas = undefined;
+	this.STYLE = {
+		NEXT_ACTIVITY: {
+			color 	: 'rgb(91,192,222)',
+			stroke	: 'rgb(0,0,0)'
+		},
+
+		PREV_ACTIVITY: {
+			color 	: 'rgb(255,0,255)',
+			stroke	: 'rgb(0,0,0)'
+		}
+	}
 };
 
 Renderer.prototype = {
@@ -17,6 +28,7 @@ Renderer.prototype = {
 
 	drawActivity: function() {
 		var me = this;
+
 		for(var i = 0 ; i < 6; i ++) {
 
 			var positionX = 50 + (i*10);
@@ -85,12 +97,12 @@ Renderer.prototype = {
     	var me = this;
         me.canvas.onMoveShape(function (event, shapeElement, offset) {
 			var id = "sLabel_"+shapeElement.id;
+			//$(shapeElement).find('svg').remove();
 			var targetElement = me.canvas.getElementById(id);
 			if(targetElement != null) {
 				me.canvas.removeShape(targetElement);
 				me.drawALabel(shapeElement);
 			}
-
         });
 
 		me.canvas.onConnectShape(function (event, edgeElement, fromElement, toElement) {
@@ -179,6 +191,8 @@ Renderer.prototype = {
 						});
 						var root = $(me.canvas.getRootGroup());
 						root[0].appendChild(nextEdge);
+						//var nextActivity = me.canvas.getRelatedElementsFromEdge(nextEdge).to;
+						//me.updateImageShapeStatus(nextActivity, me.STYLE.NEXT_ACTIVITY);
 					});
 
 					_.forEach(prevEdges, function(prevEdge){
@@ -189,6 +203,8 @@ Renderer.prototype = {
 						});
 						var root = $(me.canvas.getRootGroup());
 						root[0].appendChild(prevEdge);
+						//var prevActivity = me.canvas.getRelatedElementsFromEdge(prevEdge).from;
+						//me.updateImageShapeStatus(prevActivity, me.STYLE.PREV_ACTIVITY);
 					});
 				}
 				event.preventDefault();
@@ -203,11 +219,146 @@ Renderer.prototype = {
 						"opacity": "1"
 					});
 				});
+				/*
+				var allShapes = me.canvas.getAllShapes();
+				_.forEach(allShapes, function(shapeElement){
+					if(shapeElement.shape instanceof OG.shape.Activity) {
+						var $svg = $(shapeElement).find('svg')[0];
+						if($svg) {
+							me.canvas.move(shapeElement, [0, 0]);
+						}
+					}
+				});
+				*/
 				event.preventDefault();
 			}
 		});
 	},
 
+	/**
+	 * 이미지 Shape 의 컬러와 스트로크를 스테이터스에 따라 변경한다.
+	 * @param view OG-Tree view data
+	 * @param element OG-Tree Dom Element
+	 */
+	updateImageShapeStatus: function (element, style) {
+		var me = this;
+		var color = style['color'];
+		var stroke = style['stroke'];
+
+		/**
+		 * svg 의 path 들에 컬러와 stroke 를 적용시킨다.
+		 * @param $svg
+		 * @param color
+		 * @param stroke
+		 */
+		var applyPathStyle = function ($svg, color, stroke) {
+			$svg.find('path').each(function () {
+				//컬러가 없지만 선색상은 변경해야 하는경우
+				if (!color && stroke) {
+					color = '#fff';
+				}
+				//컬러 입히기
+				if (color) {
+					var ignoreColor = false;
+					if ($(this).attr('class')) {
+						if ($(this).attr('class').indexOf('ignoreColor') != -1) {
+							ignoreColor = true;
+						}
+					}
+					if (!ignoreColor) {
+						$(this).css('fill', color);
+					}
+				}
+				//라인 색 입히기
+				if (stroke) {
+					var ignoreStroke = false;
+					if ($(this).attr('class')) {
+						if ($(this).attr('class').indexOf('ignoreStroke') != -1) {
+							ignoreStroke = true;
+						}
+					}
+					if (!ignoreStroke) {
+						$(this).css('stroke', stroke);
+					}
+				}
+
+			});
+		};
+		var createNewSvg = function (imgURL, attributes) {
+			$.get(imgURL, function (data) {
+				var $svg = $(data).find('svg');
+				$svg = $svg.removeAttr('xmlns:a');
+
+				$.each(attributes, function () {
+					$svg.attr(this.name, this.value);
+				});
+				applyPathStyle($svg, color, stroke);
+
+				// Replace IMG with SVG
+				var rElement = me.canvas._RENDERER._getREleById(element.id);
+				if (rElement) {
+					var childNodes = rElement.node.childNodes;
+					for (var i = childNodes.length - 1; i >= 0; i--) {
+						if (childNodes[i].tagName == 'IMAGE' || childNodes[i].tagName == 'image') {
+							me.canvas._RENDERER._remove( me.canvas._RENDERER._getREleById(childNodes[i].id));
+						}
+					}
+				}
+				$(element).append($svg);
+			}, 'xml');
+		};
+		if (!color || color == 'none' || color == '') {
+			color = undefined;
+		}
+		if (!stroke || stroke == 'none' || stroke == '') {
+			stroke = undefined;
+		}
+		if (color || stroke) {
+			var $img = $(element).find('image');
+			var imgURL = $img.attr('href');
+			var attributes = $img.prop("attributes");
+			var $svg = $(element).find('svg');
+			//이미지만 존재할 경우
+			if (imgURL && attributes && !$svg.length) {
+				//console.log('이미지만 존재할 경우');
+				createNewSvg(imgURL, attributes);
+			}
+			//이미지가 없고 svg 가 존재할 경우
+			else if (!imgURL && $svg.length) {
+				//console.log('이미지가 없고 svg 가 존재할 경우', $svg.length);
+				applyPathStyle($svg, color, stroke);
+			}
+			//이미지와 svg 둘 다 있을 경우
+			else if (imgURL && attributes && $svg.length) {
+				if ($svg.length && attributes) {
+					// Remove Duplicate SVG
+					//console.log('이미지와 svg 둘 다 있을 경우', $svg.length);
+					if ($svg.length > 1) {
+						$svg.remove();
+						createNewSvg(imgURL, attributes);
+					} else {
+						$.each(attributes, function () {
+							$svg.attr(this.name, this.value);
+						});
+						applyPathStyle($svg, color, stroke);
+
+						// Remove IMG
+						var rElement = me.canvas._RENDERER._getREleById(element.id);
+						if (rElement) {
+							var childNodes = rElement.node.childNodes;
+							for (var i = childNodes.length - 1; i >= 0; i--) {
+								if (childNodes[i].tagName == 'IMAGE' || childNodes[i].tagName == 'image') {
+									me.canvas._RENDERER._remove(me.canvas._RENDERER._getREleById(childNodes[i].id));
+								}
+							}
+						}
+					}
+				}
+			} else {
+				//console.log('그 이외의 경우');
+			}
+		}
+	},
 }
 
 ;
