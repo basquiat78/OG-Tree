@@ -110,13 +110,34 @@ Renderer.prototype = {
 			}
 			me.bindHoverActivity(activity);
 		}
+
+		for(var l = 0 ; l < 5; l ++) {
+
+			var positionX = 50 + (l*10);
+			var positionY = 350;
+			var label = "test_4_"+l;
+			var customData = {};
+			var newLabel = "";
+			if(label.length > 9) {
+				newLabel = label.substring(0, 5) + "...";
+			} else {
+				newLabel = label;
+			}
+			customData['label'] = label;
+			var activity = me.canvas.drawShape([positionX, positionY], new OG.Activity(newLabel), [50, 50], {'font-size': 9, 'vertical-align': 'top'});
+			me.canvas.setCustomData(activity, customData);
+			if(l > 3) {
+				me.attachALabel(activity);
+			}
+			me.bindHoverActivity(activity);
+		}
 	},
 
     bindEvent: function() {
     	var me = this;
         me.canvas.onMoveShape(function (event, shapeElement, offset) {
 			var id = "aLabel_"+shapeElement.id;
-			//$(shapeElement).find('svg').remove();
+			$(shapeElement).find('svg').remove();
 			var targetElement = me.canvas.getElementById(id);
 			if(targetElement != null) {
 				me.canvas.removeShape(targetElement);
@@ -222,8 +243,8 @@ Renderer.prototype = {
 						});
 						var root = $(me.canvas.getRootGroup());
 						root[0].appendChild(nextEdge);
-						//var nextActivity = me.canvas.getRelatedElementsFromEdge(nextEdge).to;
-						//me.updateImageShapeStatus(nextActivity, me.STYLE.NEXT_ACTIVITY);
+						var nextActivity = me.canvas.getRelatedElementsFromEdge(nextEdge).to;
+						me.updateImageShapeStatus(nextActivity, me.STYLE.NEXT_ACTIVITY);
 					});
 
 					_.forEach(prevEdges, function(prevEdge){
@@ -234,8 +255,8 @@ Renderer.prototype = {
 						});
 						var root = $(me.canvas.getRootGroup());
 						root[0].appendChild(prevEdge);
-						//var prevActivity = me.canvas.getRelatedElementsFromEdge(prevEdge).from;
-						//me.updateImageShapeStatus(prevActivity, me.STYLE.PREV_ACTIVITY);
+						var prevActivity = me.canvas.getRelatedElementsFromEdge(prevEdge).from;
+						me.updateImageShapeStatus(prevActivity, me.STYLE.PREV_ACTIVITY);
 					});
 				}
 				event.preventDefault();
@@ -250,7 +271,7 @@ Renderer.prototype = {
 						"opacity": "1"
 					});
 				});
-				/*
+
 				var allShapes = me.canvas.getAllShapes();
 				_.forEach(allShapes, function(shapeElement){
 					if(shapeElement.shape instanceof OG.shape.Activity) {
@@ -260,7 +281,7 @@ Renderer.prototype = {
 						}
 					}
 				});
-				*/
+
 				event.preventDefault();
 			}
 		});
