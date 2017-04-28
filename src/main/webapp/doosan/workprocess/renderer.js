@@ -137,7 +137,7 @@ Renderer.prototype = {
     	var me = this;
         me.canvas.onMoveShape(function (event, shapeElement, offset) {
 			var id = "aLabel_"+shapeElement.id;
-			$(shapeElement).find('svg').remove();
+			//$(shapeElement).find('svg').remove();
 			var targetElement = me.canvas.getElementById(id);
 			if(targetElement != null) {
 				me.canvas.removeShape(targetElement);
@@ -162,12 +162,12 @@ Renderer.prototype = {
 	attachALabel: function(parentElement) {
 		var me = this;
 		var boundary = me.canvas.getBoundary(parentElement);
-		var x = boundary.getUpperRight().x - 6;
-		var y = boundary.getUpperRight().y + 4;
+		var x = boundary.getUpperLeft().x + 10;
+		var y = boundary.getUpperLeft().y + 6;
 		var id = 'aLabel_' + parentElement.id;
 		var size = [12, 14];
 		var offset = [x, y];
-		var shape = new OG.SLabel();
+		var shape = new OG.ALabel();
 		//me.canvas.drawShape(offset, shape, size, null, id, parentElement.id);
 		me.canvas.drawShape(offset, shape, size, null, id);
 	},
@@ -243,8 +243,8 @@ Renderer.prototype = {
 						});
 						var root = $(me.canvas.getRootGroup());
 						root[0].appendChild(nextEdge);
-						var nextActivity = me.canvas.getRelatedElementsFromEdge(nextEdge).to;
-						me.updateImageShapeStatus(nextActivity, me.STYLE.NEXT_ACTIVITY);
+						//var nextActivity = me.canvas.getRelatedElementsFromEdge(nextEdge).to;
+						//me.updateImageShapeStatus(nextActivity, me.STYLE.NEXT_ACTIVITY);
 					});
 
 					_.forEach(prevEdges, function(prevEdge){
@@ -255,8 +255,8 @@ Renderer.prototype = {
 						});
 						var root = $(me.canvas.getRootGroup());
 						root[0].appendChild(prevEdge);
-						var prevActivity = me.canvas.getRelatedElementsFromEdge(prevEdge).from;
-						me.updateImageShapeStatus(prevActivity, me.STYLE.PREV_ACTIVITY);
+						//var prevActivity = me.canvas.getRelatedElementsFromEdge(prevEdge).from;
+						//me.updateImageShapeStatus(prevActivity, me.STYLE.PREV_ACTIVITY);
 					});
 				}
 				event.preventDefault();
@@ -272,6 +272,7 @@ Renderer.prototype = {
 					});
 				});
 
+				/*
 				var allShapes = me.canvas.getAllShapes();
 				_.forEach(allShapes, function(shapeElement){
 					if(shapeElement.shape instanceof OG.shape.Activity) {
@@ -281,7 +282,7 @@ Renderer.prototype = {
 						}
 					}
 				});
-
+				*/
 				event.preventDefault();
 			}
 		});
