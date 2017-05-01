@@ -2,15 +2,62 @@
 
 var Renderer = function () {
     this.canvas = undefined;
-	this.STYLE = {
-		NEXT_ACTIVITY: {
-			color 	: 'rgb(91,192,222)',
-			stroke	: 'rgb(0,0,0)'
-		},
 
-		PREV_ACTIVITY: {
-			color 	: 'rgb(255,0,255)',
-			stroke	: 'rgb(0,0,0)'
+	this.STATUS = {
+		NEXT: 'NEXT',
+		PREV: 'PREV'
+		/**
+		 * TODO
+		 * STATUS에 설정
+		 */
+	};
+
+	this.ACTIVITY = {
+
+		/**
+		 * TODO
+		 * STATUS에 따른 액티비티 스타일 설정
+		 */
+		STYLE: {
+			NEXT_ACTIVITY: {
+				color 	: 'rgb(91,192,222)',
+				stroke	: 'rgb(0,0,0)'
+			},
+
+			PREV_ACTIVITY: {
+				color 	: 'rgb(255,0,255)',
+				stroke	: 'rgb(0,0,0)'
+			},
+
+			NORMAL: {
+				color: 'rgb(255,0,255)',
+				stroke: 'rgb(0,0,0)'
+			},
+
+			TEST1: {
+				color: 'rgb(255,0,255)',
+				stroke: 'rgb(0,0,0)'
+			},
+
+			TEST1: {
+				color: 'rgb(255,0,255)',
+				stroke: 'rgb(0,0,0)'
+			},
+
+			TEST1: {
+				color: 'rgb(255,0,255)',
+				stroke: 'rgb(0,0,0)'
+			},
+
+			TEST1: {
+				color: 'rgb(255,0,255)',
+				stroke: 'rgb(0,0,0)'
+			},
+
+			TEST1: {
+				color: 'rgb(255,0,255)',
+				stroke: 'rgb(0,0,0)'
+			}
 		}
 	};
 	this.selectedShape = null;
@@ -61,12 +108,14 @@ Renderer.prototype = {
 				newLabel = label;
 			}
 			customData['label'] = label;
+			customData['status'] = me.STATUS.PREV;
 			var activity = me.canvas.drawShape([positionX, positionY], new OG.Activity(newLabel), [50, 50], {'font-size': 9, 'vertical-align': 'top'});
 			me.canvas.setCustomData(activity, customData);
 			if(i > 3) {
 				me.attachALabel(activity);
 			}
 			me.bindHoverActivity(activity);
+			me.updateImageShapeStatus(activity, me.ACTIVITY.STYLE.PREV_ACTIVITY);
 		}
 
 		for(var j = 0 ; j < 5; j ++) {
@@ -82,12 +131,14 @@ Renderer.prototype = {
 				newLabel = label;
 			}
 			customData['label'] = label;
+			customData['status'] = me.STATUS.NEXT;
 			var activity = me.canvas.drawShape([positionX, positionY], new OG.Activity(newLabel), [50, 50], {'font-size': 9, 'vertical-align': 'top'});
 			me.canvas.setCustomData(activity, customData);
 			if(j > 1) {
 				me.attachALabel(activity);
 			}
 			me.bindHoverActivity(activity);
+			me.updateImageShapeStatus(activity, me.ACTIVITY.STYLE.NEXT_ACTIVITY);
 		}
 
 		for(var k = 0 ; k < 8; k ++) {
@@ -124,12 +175,14 @@ Renderer.prototype = {
 				newLabel = label;
 			}
 			customData['label'] = label;
+			customData['status'] = me.STATUS.NEXT;
 			var activity = me.canvas.drawShape([positionX, positionY], new OG.Activity(newLabel), [50, 50], {'font-size': 9, 'vertical-align': 'top'});
 			me.canvas.setCustomData(activity, customData);
 			if(l > 3) {
 				me.attachALabel(activity);
 			}
 			me.bindHoverActivity(activity);
+			me.updateImageShapeStatus(activity, me.ACTIVITY.STYLE.NEXT_ACTIVITY);
 		}
 	},
 
@@ -137,12 +190,18 @@ Renderer.prototype = {
     	var me = this;
         me.canvas.onMoveShape(function (event, shapeElement, offset) {
 			var id = "aLabel_"+shapeElement.id;
-			//$(shapeElement).find('svg').remove();
 			var targetElement = me.canvas.getElementById(id);
 			if(targetElement != null) {
 				me.canvas.removeShape(targetElement);
 				me.attachALabel(shapeElement);
+
 			}
+			var elementData = me.canvas.getCustomData(shapeElement);
+			if(elementData.hasOwnProperty('status')) {
+				$(shapeElement).find('svg').remove();
+				me.updateImageShapeStatus(shapeElement, me.getActivityStyleByStatus(elementData.status));
+			}
+
         });
 
 		me.canvas.onConnectShape(function (event, edgeElement, fromElement, toElement) {
@@ -155,8 +214,6 @@ Renderer.prototype = {
     },
 
 	/**
-	 * TODO
-	 * 차후 알람 액티비티로 바꿔야 함
 	 * @param parentElement
 	 */
 	attachALabel: function(parentElement) {
@@ -179,6 +236,12 @@ Renderer.prototype = {
 		me.canvas.removeShape(targetElement);
 	},
 
+	/**
+	 * json데이터로 그리기
+	 *
+	 * 테스트용 jsonData는 sample폴더의 test.json데이터로한다.
+	 * @param jsonData
+	 */
 	drawCanvasFromJSON: function(jsonData) {
 		var me = this;
 		me.canvas.loadJSON(jsonData);
@@ -186,6 +249,11 @@ Renderer.prototype = {
 		_.forEach(allShapes, function(shapeElement){
 			if(shapeElement.shape instanceof OG.shape.Activity) {
 				me.bindHoverActivity(shapeElement);
+				var elementData = me.canvas.getCustomData(shapeElement);
+				if(elementData.hasOwnProperty('status')) {
+					$(shapeElement).find('svg').remove();
+					me.updateImageShapeStatus(shapeElement, me.getActivityStyleByStatus(elementData.status));
+				}
 			}
 		});
 	},
@@ -231,7 +299,7 @@ Renderer.prototype = {
 						me.canvas.setShapeStyle(edge, {
 							"stroke": "RGB(0,0,0)",
 							"stroke-width": "1.5",
-							"opacity": "0.2"
+							"opacity": "0.1"
 						});
 					});
 
@@ -243,8 +311,6 @@ Renderer.prototype = {
 						});
 						var root = $(me.canvas.getRootGroup());
 						root[0].appendChild(nextEdge);
-						//var nextActivity = me.canvas.getRelatedElementsFromEdge(nextEdge).to;
-						//me.updateImageShapeStatus(nextActivity, me.STYLE.NEXT_ACTIVITY);
 					});
 
 					_.forEach(prevEdges, function(prevEdge){
@@ -255,8 +321,6 @@ Renderer.prototype = {
 						});
 						var root = $(me.canvas.getRootGroup());
 						root[0].appendChild(prevEdge);
-						//var prevActivity = me.canvas.getRelatedElementsFromEdge(prevEdge).from;
-						//me.updateImageShapeStatus(prevActivity, me.STYLE.PREV_ACTIVITY);
 					});
 				}
 				event.preventDefault();
@@ -272,20 +336,39 @@ Renderer.prototype = {
 					});
 				});
 
-				/*
-				var allShapes = me.canvas.getAllShapes();
-				_.forEach(allShapes, function(shapeElement){
-					if(shapeElement.shape instanceof OG.shape.Activity) {
-						var $svg = $(shapeElement).find('svg')[0];
-						if($svg) {
-							me.canvas.move(shapeElement, [0, 0]);
-						}
-					}
-				});
-				*/
 				event.preventDefault();
 			}
 		});
+	},
+
+	getActivityStyleByStatus: function(status){
+		var me = this;
+		var style = "";
+		if(status == me.STATUS.NEXT) {
+			style = me.ACTIVITY.STYLE.NEXT_ACTIVITY;
+		} else if(status == me.STATUS.PREV) {
+			style = me.ACTIVITY.STYLE.PREV_ACTIVITY;
+		}
+		/*
+		if(status == me.STATUS.xx) {
+			style = me.ACTIVITY.STYLE.NEXT_ACTIVITY;
+		} else if(status == me.STATUS.xx) {
+		 	style = me.ACTIVITY.STYLE.NEXT_ACTIVITY;
+		} else if(status == me.STATUS.xx) {
+		 	style = me.ACTIVITY.STYLE.xxx;
+		} else if(status == me.STATUS.xx) {
+		 	style = me.ACTIVITY.STYLE.xxx;
+		} else if(status == me.STATUS.xx) {
+		 	style = me.ACTIVITY.STYLE.xxx;
+		} else if(status == me.STATUS.xx) {
+		 	style = me.ACTIVITY.STYLE.xxx;
+		} else if(status == me.STATUS.xx) {
+		 	style = me.ACTIVITY.STYLE.xxx;
+		} else if(status == me.STATUS.xx) {
+		 	style = me.ACTIVITY.STYLE.xxx;
+		}
+		 */
+		return style
 	},
 
 	/**
@@ -429,6 +512,10 @@ Renderer.prototype = {
 				var items = {};
 				$(me.canvas._RENDERER.getContainer()).focus();
 				var element = $trigger[0];
+				// 연결선은 binding하지 않는다.
+				if(element.shape instanceof OG.shape.EdgeShape) {
+					return false;
+				}
 				//선택된 엘리먼트 셀렉트
 				if ($(element).attr("_selected") === "true") {
 					me.canvas._HANDLER.deselectShape(element);
